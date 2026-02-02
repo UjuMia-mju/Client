@@ -1,0 +1,50 @@
+# Unity 기본 캐시 및 빌드 파일 무시
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+MemoryCaptures/
+
+# IDE 설정 무시
+*.csproj
+*.sln
+*.user
+*.unityproj
+*.pidb
+*.booproj
+*.suo
+*.tmp
+*.pdb
+*.svd
+.idea/
+.vscode/
+.utmp/
+
+# 유니티 패키지/자동 저장 무시
+*.unitypackage
+*.autosave
+
+# macOS
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+.*.swp
+
+# ❗ Assets는 추적해야 하므로 명시적으로 포함 (선택적)
+!Assets/
+!Assets/**
+
+# 만약 asset 무시하는 규칙이 있다면, 다시 포함
+!Assets/**/*.asset
+!Assets/**/*.meta
+
+# Config 파일
+Config.cs
