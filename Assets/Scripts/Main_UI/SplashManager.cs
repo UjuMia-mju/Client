@@ -9,7 +9,7 @@ public class SplashController : MonoBehaviour
     
     private float fadeInTime = 2.5f;   // 로고 나타나는 시간
     private float stayTime = 0.1f;    // 로고 유지 시간
-    private float fadeOutTime = 2.5f;  // 로고 사라지는 시간
+    private float fadeOutTime = 2.0f;  // 로고 사라지는 시간
     private string nextSceneName = "Main";
 
     void Start()
