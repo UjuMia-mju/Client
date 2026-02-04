@@ -12,7 +12,7 @@ public class SplashController : MonoBehaviour
     private float stayTime = 2.0f;
     private float fadeOutTime = 1.0f;
     
-    private string nextSceneName = "Main";
+    private string nextSceneName = Define.Scene.MAIN;
 
     private void Start()
     {

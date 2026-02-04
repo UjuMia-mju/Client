@@ -1,0 +1,24 @@
+/// <summary>
+/// 유니티의 고유 시스템(Scene, Tag, Layer 등) 이름 관리
+/// </summary>
+public static class Define
+{
+    public static class Scene
+    {
+        public const string SPLASH = "Splash";
+        public const string MAIN   = "Main";
+        public const string GACHA  = "Gacha";
+        public const string LOBBY  = "Lobby";
+        public const string GAME   = "Game";
+    }
+
+    public static class Tag
+    {
+        
+    }
+
+    public static class Layer
+    {
+        
+    }
+}
