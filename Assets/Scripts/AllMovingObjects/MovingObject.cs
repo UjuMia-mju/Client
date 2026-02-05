@@ -12,7 +12,7 @@ public class MovingObject : MonoBehaviour
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }

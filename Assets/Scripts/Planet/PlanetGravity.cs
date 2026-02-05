@@ -18,7 +18,7 @@ public class PlanetGravity : MonoBehaviour
 
         if (camForward.sqrMagnitude < 0.0001f)
         {
-            // yaw 계산 불가 → 중력 정렬만 적용
+            // 정사영 값이 너무 적을 경우 생략하고 중력 정렬만 적용
             rb.MoveRotation(gravityRotation);
             rb.AddForce(gravityUp * gravityMag);
             return;
