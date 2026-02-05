@@ -48,3 +48,6 @@ Desktop.ini
 
 # Config 파일
 Config.cs
+
+# vs 파일
+.vs/
