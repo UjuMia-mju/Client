@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Animations;
 
 public class Player : MovingObject
 {
@@ -7,7 +8,10 @@ public class Player : MovingObject
 
     private PlayerInput playerInput;
     private PlayerAnimator playerAnimator;
-    private PlayerRaycastCollisionSystem playerCollisionControl;
+    public PlayerRaycastCollisionSystem playerRaycastCollisionControl { get; private set; }
+    private PlayerGravityController playerGravityController;
+
+
 
     // 새롭게 리팩토링된 버전
     protected override void Awake()
@@ -16,27 +20,24 @@ public class Player : MovingObject
 
         playerInput = GetComponent<PlayerInput>();
         playerAnimator = GetComponent<PlayerAnimator>();
-        playerCollisionControl = GetComponent<PlayerRaycastCollisionSystem>();
+        playerRaycastCollisionControl = GetComponent<PlayerRaycastCollisionSystem>();
+        playerGravityController = GetComponent<PlayerGravityController>();
 
         playerAnimator.Initialize();
-
-        groundMask = LayerMask.GetMask("Ground");
-        wallMask = LayerMask.GetMask("Wall");
     }
 
     private void Update()
     {
-        inputFreeze = playerCollisionControl.CollisionDetectWithRaycast(playerInput.axisResultDir, wallMask);
+        playerInput.InputProcess();
+        inputFreeze = playerRaycastCollisionControl.CollisionDetectWithRaycast(playerInput.axisResultDir, wallMask);
 
         if (!inputFreeze)
         {
-            playerInput.InputProcess();
-
-            playerCollisionControl.GroundDetectingWithRaycast(groundMask);
+            playerRaycastCollisionControl.GroundDetectingWithRaycast(groundMask);
 
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
-                playerCollisionControl.GetIsGrounded(),
+                playerRaycastCollisionControl.GetIsGrounded(),
                 inputFreeze);
         }
     }

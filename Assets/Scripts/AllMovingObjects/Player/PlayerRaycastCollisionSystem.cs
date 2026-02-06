@@ -6,8 +6,13 @@ public class PlayerRaycastCollisionSystem : MonoBehaviour
 
     private bool isGrounded = true;
 
+    public Vector3 groundDir { get; private set; }
+
     public bool CollisionDetectWithRaycast(Vector3 dirData, LayerMask wallMask)
     {
+        if (dirData.sqrMagnitude < 0.01f)
+            return false;
+
         Vector3 rayTargetDir = transform.TransformDirection(dirData);
 
         Ray ray = new Ray(this.transform.position, rayTargetDir);
@@ -39,6 +44,7 @@ public class PlayerRaycastCollisionSystem : MonoBehaviour
         // 발이 땅에 닿았을 때를 감지
         if (Physics.Raycast(ray, out hit, 1.1f, groundMask))
         {
+            groundDir = hit.normal;
             isGrounded = true;
         }
         else

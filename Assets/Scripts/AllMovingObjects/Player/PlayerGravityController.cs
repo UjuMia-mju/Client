@@ -7,6 +7,8 @@ public class PlayerGravityController : MonoBehaviour
 
     private Player player;
 
+    public Vector3 gravityUp { get; private set; }
+
     private void Start()
     {
         player = GetComponent<Player>();
@@ -16,7 +18,7 @@ public class PlayerGravityController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        planet.AttractPlayer(transform);
+        gravityUp = planet.AttractPlayer(player);
         player.rb.useGravity = false;
     }
 }

@@ -23,27 +23,21 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (inputFreeze || isGrounded && moveDir == Vector3.zero)
         {
-            Debug.Log(1);
             state = AnimState.Idle;
         }
 
         else if (isJumping && isGrounded)
         {
-            Debug.Log(2);
             state = AnimState.Jump;
         }
 
         else if (moveDir != Vector3.zero && isGrounded)
         {
-
-            Debug.Log(3);
             state = AnimState.Run;
         }
 
         else if (!isGrounded)
         {
-
-            Debug.Log(4);
             state = AnimState.Falling;
         }
 
