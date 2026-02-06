@@ -40,6 +40,8 @@ public class Player : MovingObject
                 playerRaycastCollisionControl.GetIsGrounded(),
                 inputFreeze);
         }
+
+        playerRaycastCollisionControl.GetGroundNormal(groundMask);
     }
 
     private void FixedUpdate()

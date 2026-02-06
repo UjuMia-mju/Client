@@ -1,14 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 
 public class PlayerTPCamera : MonoBehaviour
 {
     private const float Y_ANGLE_MIN = 0.0f;
     private const float Y_ANGLE_MAX = 50.0f;
-
-    public Transform playerMesh;
 
     public float distance = 5.0f;
 
@@ -18,22 +14,16 @@ public class PlayerTPCamera : MonoBehaviour
     // 마우스 민감도, 추후 설정에 민감도 옵션 추가 시 이 상수는 제거하거나 리팩토링해야 합니다. 상의 필요합니다.
     private const float SENSITIVITY = 0.2f;
 
-    private GameObject player;
-    private PlayerGravityController pgr;
-
     private PlayerInputSystem inputActions;
+
+    public Transform cameraOffset;
+    public Transform planet;
+
 
     private void Awake()
     {
         inputActions = new PlayerInputSystem();
         inputActions.Player.Enable();
-    }
-
-
-    private void Start()
-    {
-        player = transform.parent.gameObject;
-        pgr = FindFirstObjectByType<PlayerGravityController>();
     }
 
     private void Update()
@@ -44,71 +34,58 @@ public class PlayerTPCamera : MonoBehaviour
         currentY += -look.y * SENSITIVITY;
 
         currentY = Mathf.Clamp(currentY, Y_ANGLE_MIN, Y_ANGLE_MAX);
+
+        Debug.Log(this.transform.eulerAngles);
     }
 
     private void LateUpdate()
     {
+        if (cameraOffset == null || planet == null) return;
 
+        // =========================
+        //  X축 연산 (Yaw)
+        // =========================
+        Vector3 gravityUp = (cameraOffset.position - planet.position).normalized;
+
+        Quaternion yawRot = Quaternion.AngleAxis(currentX, gravityUp);
+
+        Vector3 baseForward = Vector3.ProjectOnPlane(cameraOffset.forward, gravityUp).normalized;
+        if (baseForward.sqrMagnitude < 0.01f)
+            baseForward = Vector3.ProjectOnPlane(transform.forward, gravityUp).normalized;
+        if (baseForward.sqrMagnitude < 0.01f)
+            baseForward = Vector3.ProjectOnPlane(Vector3.forward, gravityUp).normalized;
+
+        Vector3 right = Vector3.Cross(gravityUp, baseForward).normalized;
+        Vector3 forward = Vector3.Cross(right, gravityUp).normalized;
+
+        // --- yaw 적용 offset ---
+        Vector3 offset = yawRot * (-forward * distance);
+
+
+        // =========================
+        //  Y축 연산 (Pitch 추가!)
+        // =========================
+
+        // pitch 회전축 = yaw 적용 후의 right 축
+        Vector3 pitchAxis = yawRot * right;
+        pitchAxis.Normalize();
+
+        // pitch 회전 쿼터니언
+        Quaternion pitchRot = Quaternion.AngleAxis(currentY, pitchAxis);
+
+        // offset 에 pitch 적용
+        offset = pitchRot * offset;
+
+
+        // =========================
+        //  카메라 위치 및 회전 적용
+        // =========================
+        transform.position = cameraOffset.position + offset;
+
+        Vector3 newForward = (cameraOffset.position - transform.position).normalized;
+        Vector3 newRight = Vector3.Cross(gravityUp, newForward).normalized;
+        Vector3 newUp = Vector3.Cross(newRight, newForward).normalized;
+
+        transform.rotation = Quaternion.LookRotation(newForward, -newUp);
     }
 }
-
-
-// 인핸스드 인풋을 쓰지 않는 구 버전 코드
-// TODO : 인풋 구조 어떤것 사용할지 상의가 필요합니다.
-//public class PlayerTPCamera : MonoBehaviour
-//{
-//    private const float Y_ANGLE_MIN = 0.0f;
-//    private const float Y_ANGLE_MAX = 50.0f;
-
-//    public Transform playerMesh;
-
-//    public float distance = 5.0f;
-
-//    private float currentX = 0.0f;
-//    private float currentY = 45.0f;
-
-
-//    private GameObject player;
-//    private PlayerGravityController pgr;
-
-//    private void Start()
-//    {
-//        player = transform.parent.gameObject;
-//        pgr = FindFirstObjectByType<PlayerGravityController>();
-
-//    }
-
-//    private void Update()
-//    {
-//        currentX += Input.GetAxis("Mouse X");
-//        currentY += -Input.GetAxis("Mouse Y");
-
-//        currentY = Mathf.Clamp(currentY, Y_ANGLE_MIN, Y_ANGLE_MAX);
-//    }
-
-//    private void LateUpdate()
-//    {
-//        // 행성 중심을 향한 중력 방향 계산
-//        Vector3 gravityUp = (playerMesh.position - pgr.planet.transform.position).normalized;
-
-//        //// Vector3.up 벡터를 gravityUp으로 회전시키는데 필요한 쿼터니언을 생성
-//        Quaternion gravityRotation = Quaternion.FromToRotation(Vector3.up, gravityUp);
-
-//        //// 마우스 X 입력을 gravityUp 축으로 하는 회전 쿼터니언 생성
-//        Quaternion yaw = Quaternion.AngleAxis(currentX, gravityUp);
-
-//        //// 마우스 Y 입력을 gravityUp에 수직인 축(오른쪽 방향)으로 하는 회전 쿼터니언 생성
-//        Vector3 right = yaw * gravityRotation * Vector3.right;
-
-//        //// 위에서 생성한 right 벡터를 회전축으로 삼고, currentY(마우스 Y 입력)만큼 회전시키는 쿼터니언을 생성
-//        Quaternion pitch = Quaternion.AngleAxis(currentY, right);
-
-//        //// 최종 카메라 회전 쿼터니언 계산
-//        Quaternion finalRotation = pitch * yaw * gravityRotation;
-
-//        //// 카메라 위치 설정 및 회전
-//        Vector3 dir = finalRotation * Vector3.back * distance;
-//        this.transform.position = playerMesh.position + dir;
-//        this.transform.rotation = Quaternion.LookRotation(-dir, gravityUp);
-//    }
-//}

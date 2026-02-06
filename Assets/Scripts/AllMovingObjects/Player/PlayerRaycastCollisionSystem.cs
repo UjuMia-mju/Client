@@ -44,12 +44,25 @@ public class PlayerRaycastCollisionSystem : MonoBehaviour
         // 발이 땅에 닿았을 때를 감지
         if (Physics.Raycast(ray, out hit, 1.1f, groundMask))
         {
-            groundDir = hit.normal;
             isGrounded = true;
         }
         else
         {
             isGrounded = false;
+        }
+    }
+
+    public void GetGroundNormal(LayerMask groundMask)
+    {
+        Vector3 origin = transform.position + transform.up * 0.5f;
+        Ray ray = new Ray(origin, -transform.up);
+
+        RaycastHit hit;
+
+        // 계속 땅을 감지해 법선 벡터를 수집
+        if (Physics.Raycast(ray, out hit, 10f, groundMask))
+        {
+            groundDir = hit.normal;
         }
     }
 

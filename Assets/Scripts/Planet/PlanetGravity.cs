@@ -16,7 +16,7 @@ public class PlanetGravity : MonoBehaviour
         body.rb.AddForce(gravityUp * gravityMag);
 
         // 2. 지면에 항상 꼿꼿히 서게 함
-        // 또한 현재 접지중인 지면의 벡터로 쿼터니언을 생성해 극지점에 다다르지 못하게 함
+        // 또한 현재 접지중인 지면의 벡터로 쿼터니언을 생성해 극점에 다다르지 못하게 함
         Quaternion surfaceRotation = Quaternion.FromToRotation(body.transform.up, body.playerRaycastCollisionControl.groundDir) * body.transform.rotation;
 
         body.rb.MoveRotation(surfaceRotation);
