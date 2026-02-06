@@ -3,10 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class PlayerGravityController : MonoBehaviour
 {
+    // 중력의 주체
     public PlanetGravity planet;
 
+    // 플레이어
     private Player player;
 
+    // 중력 방향의 반대 벡터 (플레이어의 위쪽 방향 벡터)
     public Vector3 gravityUp { get; private set; }
 
     private void Start()
@@ -16,9 +19,11 @@ public class PlayerGravityController : MonoBehaviour
         player.rb.constraints = RigidbodyConstraints.FreezeRotation;	// 꼿꼿히 세울 것이므로 회전을 비활성화함
     }
 
+    // 중력을 적용
     private void FixedUpdate()
     {
-        gravityUp = planet.AttractPlayer(player);
+        planet.AttractPlayer(player);
+        gravityUp = planet.GetGravityUp(player.gameObject.transform);
         player.rb.useGravity = false;
     }
 }
