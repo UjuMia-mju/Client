@@ -23,8 +23,12 @@ public class PlayerTPCamera : MonoBehaviour
     public Transform cameraOffset;
     public Transform planet;
 
-    private Vector3 baseForwardRef; // "기준 forward" (월드 벡터)
+    private Vector3 baseForwardRef; // 기준 forward (월드 벡터)
     private bool inited;
+
+    // 
+    // 20260207 수정본
+    private float lastX = 0.0f;
 
     private void Awake()
     {
@@ -61,8 +65,26 @@ public class PlayerTPCamera : MonoBehaviour
             inited = true;
         }
 
+        // 수정본 추가, 이 코드 때문에 currentX같은 누적량을 쓰면 카메라가 빙글빙글 돕니다.
+        // 영벡터를 정사영하면 이 코드 어딘가에서 아마 부호가 뒤바뀌는 문제가 생깁니다. 영벡터는 normalized로 방향을 정의할수가 없어요.
+        // 아마 0에 엄청 가까운 단위벡터같은게 대신 값으로 들어가서, 그게 부호가 바뀌는 원흉이 되어서 카메라가 180도 뒤바뀌어버리는 문제였던것 같습니다.
+        // 초기 버전은 이 else문이 없었는데, 정사영을 실시간으로 계속 초기화시켜주는 코드를 추가했습니다.
+        // 20260207 수정본 
+        else
+        {
+            // 이전 카메라 forward를 중력 평면에 투영해서 기준으로 사용
+            Vector3 prevTangentFwd = Vector3.ProjectOnPlane(transform.forward, gravityUp);
+            if (prevTangentFwd.sqrMagnitude > 1e-6f)
+                baseForwardRef = prevTangentFwd.normalized;
+        }
+
+        // 실시간으로 baseFowardRef를 갱신하고 있는데, 여기에 누적값을 쓰면 카메라가 빙글빙글 계속 자동으로 돕니다.
+        // 변화량을 쓰면 안전합니다.
+        float deltaX = currentX - lastX;
+        lastX = currentX;
+
         // gravityUp을 기준으로 currentX 만큼 회전하는 쿼터니언 생성
-        Quaternion yawRot = Quaternion.AngleAxis(currentX, gravityUp);
+        Quaternion yawRot = Quaternion.AngleAxis(deltaX, gravityUp);
 
         // 기준 forward 벡터를 gravityUp에 정사영하여 평면상 벡터로 변환
         Vector3 baseForward = Vector3.ProjectOnPlane(baseForwardRef, gravityUp).normalized;
@@ -79,7 +101,6 @@ public class PlayerTPCamera : MonoBehaviour
 
         Vector3 offset = yawRot * (-forward * distance);
 
-
         //  Y축 연산
 
         // pitch 회전축 = yaw 적용 후의 right 축
@@ -92,7 +113,6 @@ public class PlayerTPCamera : MonoBehaviour
         // offset 에 pitch 적용
         offset = pitchRot * offset;
 
-
         //  카메라 위치 및 회전 적용
         transform.position = cameraOffset.position + offset;
 
@@ -101,5 +121,6 @@ public class PlayerTPCamera : MonoBehaviour
         Vector3 newUp = Vector3.Cross(newRight, newForward).normalized;
 
         transform.rotation = Quaternion.LookRotation(newForward, -newUp);
+
     }
 }

@@ -9,7 +9,7 @@ public class PlanetGravity : MonoBehaviour
     private float gravityMag = -10f;
 
     // 플레이어의 만유인력 로직
-    public void AttractPlayer(Player body)
+    public void AttractPlayer(MovingObject body)
     {
         // 1. 만유인력
         Vector3 gravityUp = (body.transform.position - transform.position).normalized;
@@ -21,13 +21,13 @@ public class PlanetGravity : MonoBehaviour
         // 여기서 groundDir이 필요합니다.
         // 원래 디코에 압축파일로 올렸던 코드에는 여기에 gravityUp을 넣었는데, 털뭉치 이론에 의해 극점에서 불안정해지는 현상이 발생했습니다.
         // 따라서 플레이어가 실제로 접지하고 있는 지면의 법선벡터로 쿼터니언을 생성했습니다.
-        Quaternion surfaceRotation = Quaternion.FromToRotation(body.transform.up, body.playerRaycastCollisionControl.groundDir) * body.transform.rotation;
+        Quaternion surfaceRotation = Quaternion.FromToRotation(body.transform.up, body.groundDir) * body.transform.rotation;
 
         body.rb.MoveRotation(surfaceRotation);
     }
 
     public Vector3 GetGravityUp(Transform t)
     {
-        return t.position - transform.position;
+        return (t.position - transform.position).normalized;
     }
 }

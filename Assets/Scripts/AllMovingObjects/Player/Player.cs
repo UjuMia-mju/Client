@@ -10,7 +10,7 @@ public class Player : MovingObject
     // 컴포넌트 참조 변수
     private PlayerInput playerInput;
     private PlayerAnimator playerAnimator;
-    public PlayerRaycastCollisionSystem playerRaycastCollisionControl { get; private set; }
+    //public PlayerRaycastCollisionSystem playerRaycastCollisionControl { get; private set; }
 
     // 초기화
     protected override void Awake()
@@ -19,7 +19,7 @@ public class Player : MovingObject
 
         playerInput = GetComponent<PlayerInput>();
         playerAnimator = GetComponent<PlayerAnimator>();
-        playerRaycastCollisionControl = GetComponent<PlayerRaycastCollisionSystem>();
+        //playerRaycastCollisionControl = GetComponent<PlayerRaycastCollisionSystem>();
 
         playerAnimator.Initialize();
     }
@@ -30,20 +30,20 @@ public class Player : MovingObject
         playerInput.InputProcess(); // 인풋, 충돌 감지는 Input이 되지 않으면 레이캐스트가 멈추므로 가장 먼저 처리합니다.
 
         // 충돌 감지
-        inputFreeze = playerRaycastCollisionControl.CollisionDetectWithRaycast(playerInput.axisResultDir, wallMask);
+        inputFreeze = CollisionDetectWithRaycast(playerInput.axisResultDir, wallMask);
 
         if (!inputFreeze)
         {
-            playerRaycastCollisionControl.GroundDetectingWithRaycast(groundMask);
+            GroundDetectingWithRaycast(groundMask);
 
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
-                playerRaycastCollisionControl.GetIsGrounded(), 
+                isGrounded, 
                 inputFreeze);
         }
 
         // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
-        playerRaycastCollisionControl.GetGroundNormal(groundMask);
+        GetGroundNormal(groundMask);
     }
 
     // 물리 작용 업데이트

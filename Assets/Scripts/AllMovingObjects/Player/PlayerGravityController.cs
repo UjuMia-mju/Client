@@ -17,6 +17,7 @@ public class PlayerGravityController : MonoBehaviour
         player = GetComponent<Player>();
         player.rb.useGravity = false;  // 리지드바디의 기본 중력은 필요 없으므로 비활성화
         player.rb.constraints = RigidbodyConstraints.FreezeRotation;	// 꼿꼿히 세울 것이므로 회전을 비활성화함
+        planet.AttractPlayer(player);
     }
 
     // 중력을 적용
