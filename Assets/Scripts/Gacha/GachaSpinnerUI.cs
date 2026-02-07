@@ -11,8 +11,8 @@ public class GachaSpinnerUI : MonoBehaviour
     public GachaManager gachaManager;   // 매니저 참조 (전체 아이템 목록 접근용)
 
     [Header("Animation Settings")]
-    public int totalSlots = 50;         // 릴에 보여줄 총 슬롯 개수 (많을수록 오래 돔)
-    public int winnerIndex = 45;        // 당첨 아이템이 위치할 인덱스 (뒤쪽일수록 좋음)
+    public int totalSlots = 50;         // 릴에 보여줄 총 슬롯 개수
+    public int winnerIndex = 45;        // 당첨 아이템이 위치할 인덱스
     public float spinDuration = 5f;     // 돌아가는 시간
     public AnimationCurve slowingCurve; // 감속 그래프 (에디터에서 설정)
 
