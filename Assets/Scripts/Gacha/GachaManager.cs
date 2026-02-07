@@ -17,7 +17,7 @@ public class GachaManager : MonoBehaviour
 
     void Start()
     {
-        // 게임 시작 시 초기화
+        // 게임 시작 시 초기화(테스트용으로 자동 리셋)
         ResetGacha();
     }
 

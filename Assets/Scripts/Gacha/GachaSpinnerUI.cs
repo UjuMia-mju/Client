@@ -79,13 +79,21 @@ public class GachaSpinnerUI : MonoBehaviour
         // 당첨 아이템(winnerIndex)이 뷰포트 중앙에 오도록 계산
         // Content는 왼쪽으로 이동하므로 x값은 음수
         float targetX = -1 * (winnerIndex * slotWidth);
+
+        // 랜덤 오차 범위 계산
+        // 슬롯 너비의 절반(0.5)까지 가면 옆 아이템으로 넘어가버리니까,
+        // 안전한 범위 내에서 랜덤 값을 뽑습니다.
+        float randomOffset = Random.Range(-slotWidth * 0.45f, slotWidth * 0.45f);
+
+        // 최종 목표 위치에 오차 적용
+        float finalTargetX = targetX + randomOffset;
         
         // 뷰포트 중앙 보정 (뷰포트 너비의 절반만큼 더해줌)
         float viewportHalfWidth = contentReel.parent.GetComponent<RectTransform>().rect.width / 2f;
         // 슬롯 자체의 중앙 보정 (슬롯 너비의 절반만큼 빼줌)
         float slotHalfWidth = slotWidth / 2f;
 
-        Vector2 endPosition = new Vector2(targetX + viewportHalfWidth - slotHalfWidth, contentReel.anchoredPosition.y);
+        Vector2 endPosition = new Vector2(finalTargetX + viewportHalfWidth - slotHalfWidth, contentReel.anchoredPosition.y);
         Vector2 startPosition = contentReel.anchoredPosition;
 
         // 4. 회전 애니메이션 (Lerp + Animation Curve)
