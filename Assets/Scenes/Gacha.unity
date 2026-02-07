@@ -934,7 +934,7 @@ MonoBehaviour:
   gachaManager: {fileID: 2009770080}
   totalSlots: 50
   winnerIndex: 45
-  spinDuration: 5
+  spinDuration: 7
   slowingCurve:
     serializedVersion: 2
     m_Curve:
@@ -948,14 +948,23 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.71287435
     - serializedVersion: 3
-      time: 0.4931698
-      value: 0.504323
-      inSlope: 1.8511431
-      outSlope: 1.8511431
+      time: 0.3178935
+      value: 0.29309496
+      inSlope: 1.2668527
+      outSlope: 1.2668527
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.26254377
-      outWeight: 0.11212867
+      inWeight: 0.5065267
+      outWeight: 0.71233785
+    - serializedVersion: 3
+      time: 0.62693095
+      value: 0.8137158
+      inSlope: 1.0366731
+      outSlope: 1.0366731
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.30286813
+      outWeight: 0.34697217
     - serializedVersion: 3
       time: 1
       value: 1
