@@ -10,7 +10,6 @@ public class Player : MovingObject
     // 컴포넌트 참조 변수
     private PlayerInput playerInput;
     private PlayerAnimator playerAnimator;
-    //public PlayerRaycastCollisionSystem playerRaycastCollisionControl { get; private set; }
 
     // 초기화
     protected override void Awake()
@@ -19,7 +18,6 @@ public class Player : MovingObject
 
         playerInput = GetComponent<PlayerInput>();
         playerAnimator = GetComponent<PlayerAnimator>();
-        //playerRaycastCollisionControl = GetComponent<PlayerRaycastCollisionSystem>();
 
         playerAnimator.Initialize();
     }
