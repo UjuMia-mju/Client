@@ -12,6 +12,9 @@ public class GachaManager : MonoBehaviour
     // 획득한 아이템 목록
     private List<GachaItem> obtainedItems;
 
+    [Header("UI Connection")]
+    public GachaSpinnerUI spinnerUI; // 인스펙터에서 연결
+
     void Start()
     {
         // 게임 시작 시 초기화
@@ -68,9 +71,14 @@ public class GachaManager : MonoBehaviour
         // 4. 결과 처리
         if (selectedItem != null)
         {
-            obtainedItems.Add(selectedItem);
-            Debug.Log($"획득: {selectedItem.itemName} (등급: {selectedItem.rarity})");
+            obtainedItems.Add(selectedItem); //<- 애니메이션 끝난 후로 미뤄도 됨
+
+            Debug.Log($"결과 결정됨: {selectedItem.itemName}. 애니메이션 시작...");
             
+            // UI 스피너 돌리기 시작
+            spinnerUI.StartSpinAnimation(selectedItem);
         }
     }
+
+    
 }
