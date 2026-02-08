@@ -14,7 +14,7 @@ public static class Define
 
     public static class Tag
     {
-        
+        public const string MAINBUTTON = "MainButton";
     }
 
     public static class Layer
