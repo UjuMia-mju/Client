@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: diamond
   m_EditorClassIdentifier: Assembly-CSharp::GachaItem
   itemName: diamond
-  icon: {fileID: -1299218945, guid: df2dfd66fc9a15a4194dd838968d6ad2, type: 3}
+  icon: {fileID: -830063711, guid: efb3ad43b82c0e44c848561ae128bba6, type: 3}
   rarity: Legendary
   weight: 10

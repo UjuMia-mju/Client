@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: poop
   m_EditorClassIdentifier: Assembly-CSharp::GachaItem
   itemName: poop
-  icon: {fileID: -1299218945, guid: df2dfd66fc9a15a4194dd838968d6ad2, type: 3}
+  icon: {fileID: -2008122158, guid: ceb0d183fc1c2ad4baed91371240dffb, type: 3}
   rarity: Common
   weight: 50

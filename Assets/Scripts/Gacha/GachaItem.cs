@@ -5,6 +5,6 @@ public class GachaItem : ScriptableObject
 {
     public string itemName;
     public Sprite icon;
-    public string rarity; // 예: "Common", "Rare", "Legendary"
+    public ItemRarity rarity;
     public int weight;    // 확률 가중치 (높을수록 잘 나옴) 모든 아이템의 가중치 합이 100이 될 필요는 없음.
 }

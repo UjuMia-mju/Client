@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: gold
   m_EditorClassIdentifier: Assembly-CSharp::GachaItem
   itemName: Gold
-  icon: {fileID: -1299218945, guid: df2dfd66fc9a15a4194dd838968d6ad2, type: 3}
+  icon: {fileID: 2018655688, guid: 508578b5e5e1b524b8d18f2bb5835ec6, type: 3}
   rarity: Epic
   weight: 50
