@@ -1,40 +1,63 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.Collections;
 
-/// <summary>
-/// 비동기 씬 로딩을 관리하는 싱글톤 클래스
-/// </summary>
 public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 {
-    /// <summary>
-    /// 외부 호출용 씬 전환 메서드
-    /// </summary>
-    /// <param name="sceneName">대상 씬 이름</param>
-    public void LoadScene(string sceneName)
-    {
-        StartCoroutine(LoadAsyncSequence(sceneName));
-    }
+    private float fadeDuration = 1.0f;
 
     /// <summary>
-    /// 비동기 로딩 및 활성화 제어 코루틴
+    /// 외부 호출용: 특정 CanvasGroup을 페이드하며 씬 전환
     /// </summary>
-    /// <param name="sceneName">대상 씬 이름</param>
-    private IEnumerator LoadAsyncSequence(string sceneName)
+    public void LoadScene(string sceneName, CanvasGroup targetCanvas)
     {
+        StartCoroutine(LoadAsyncSequence(sceneName, targetCanvas));
+    }
+
+    private IEnumerator LoadAsyncSequence(string sceneName, CanvasGroup targetCanvas)
+    {
+        // 1. 전달받은 캔버스를 Fade Out
+        yield return StartCoroutine(Fade(targetCanvas, 1.0f));
+
+        // 2. 비동기 로딩 시작
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         op.allowSceneActivation = false; 
         
         while (!op.isDone)
         {
-            // 0.9f는 유니티 엔진의 로딩 완료 시점
             if (op.progress >= 0.9f)
             {
-                // TODO: 서버 로딩
                 op.allowSceneActivation = true;
             }
-
             yield return null;
         }
+
+        // 3. 새 씬 로드 후 다시 Fade In
+        yield return StartCoroutine(Fade(targetCanvas, 0.0f));
+    }
+
+    /// <summary>
+    /// 인자로 받은 CanvasGroup의 알파값을 조절
+    /// </summary>
+    public IEnumerator Fade(CanvasGroup targetCanvas, float targetAlpha)
+    {
+        if (targetCanvas == null)
+        {
+            Debug.LogWarning("Fade를 수행할 CanvasGroup이 할당되지 않았습니다.");
+            yield break;
+        }
+
+        float startAlpha = targetCanvas.alpha;
+        float elapsed = 0f;
+
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            targetCanvas.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / fadeDuration);
+            yield return null;
+        }
+
+        targetCanvas.alpha = targetAlpha;
     }
 }

@@ -129,6 +129,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2014217}
   - component: {fileID: 2014219}
+  - component: {fileID: 2014220}
+  - component: {fileID: 2014221}
   m_Layer: 5
   m_Name: MenuPanel
   m_TagString: Untagged
@@ -168,6 +170,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2014216}
   m_CullTransparentMesh: 1
+--- !u!114 &2014220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2014216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a32e6a5e4ee564408c6cd6c41908e75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuPanelController
+--- !u!225 &2014221
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2014216}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &107272407
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,6 +489,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 410142170}
+  - component: {fileID: 410142171}
   m_Layer: 0
   m_Name: MainManager
   m_TagString: Untagged
@@ -485,6 +512,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &410142171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410142169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee0faf06659c5584c9de9034f38d2e4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainManager
+  introPanel: {fileID: 1951031237}
+  menuPanel: {fileID: 2014221}
 --- !u!1 &482373379
 GameObject:
   m_ObjectHideFlags: 0
@@ -2099,6 +2140,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1951031233}
   - component: {fileID: 1951031235}
+  - component: {fileID: 1951031236}
+  - component: {fileID: 1951031237}
   m_Layer: 5
   m_Name: IntroPanel
   m_TagString: Untagged
@@ -2135,6 +2178,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1951031232}
   m_CullTransparentMesh: 1
+--- !u!114 &1951031236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951031232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e68cc5ad4dabbcd4a997d20da6f62148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IntroPanelController
+  pressText: {fileID: 1132529721}
+  titleLogoImage: {fileID: 575907383}
+--- !u!225 &1951031237
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951031232}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2120376005
 GameObject:
   m_ObjectHideFlags: 0

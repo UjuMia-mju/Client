@@ -211,11 +211,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9c9934251f69ac43bb0ac9abfc02ab8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SplashController
+  splashCanvasGroup: {fileID: 472791195}
   logoCanvasGroup: {fileID: 1201466393}
-  fadeInTime: 1.2
-  stayTime: 2
-  fadeOutTime: 1
-  nextSceneName: MainScene
 --- !u!1 &472791190
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,8 +225,9 @@ GameObject:
   - component: {fileID: 472791193}
   - component: {fileID: 472791192}
   - component: {fileID: 472791191}
+  - component: {fileID: 472791195}
   m_Layer: 5
-  m_Name: SplashScreen
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -320,6 +318,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &472791195
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472791190}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &630716837
 GameObject:
   m_ObjectHideFlags: 0

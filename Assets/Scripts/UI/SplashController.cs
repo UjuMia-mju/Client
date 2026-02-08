@@ -6,6 +6,7 @@ using System.Collections;
 /// </summary>
 public class SplashController : MonoBehaviour
 {
+    public CanvasGroup splashCanvasGroup;
     public CanvasGroup logoCanvasGroup;
 
     private float fadeInTime = 1.2f;
@@ -38,7 +39,7 @@ public class SplashController : MonoBehaviour
         yield return StartCoroutine(Fade(1f, 0f, fadeOutTime));
 
         // 4. SceneLoader 호출
-        SceneLoader.Instance.LoadScene(nextSceneName);
+        SceneLoader.Instance.LoadScene(nextSceneName, splashCanvasGroup);
     }
 
     /// <summary>
