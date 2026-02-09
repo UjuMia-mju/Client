@@ -22,37 +22,48 @@ public class MenuPanelController : MonoBehaviour
 
     private Dictionary<Button, Vector3> _buttonOriginScales = new Dictionary<Button, Vector3>();
     private List<MenuSet> _allMenuSets = new List<MenuSet>();
+    private List<GameObject> _mainButtonObjects = new List<GameObject>(); // 꺼진 버튼 복구용 리스트
     private float _hoverScale = 1.1f;
 
     void Start()
     {
-        // 리스트에 담아 관리 편의성 확보
         _allMenuSets = new List<MenuSet> { singlePlay, multiPlay, settings, custom, store };
 
+        // 1. 시작 시점에 Tag가 달린 모든 오브젝트를 리스트에 미리 저장
+        GameObject[] mainButtons = GameObject.FindGameObjectsWithTag(Define.Tag.MAINBUTTON);
+        foreach (GameObject go in mainButtons)
+        {
+            _mainButtonObjects.Add(go);
+        }
+
+        // 2. 버튼별 이벤트 초기화
         foreach (var set in _allMenuSets)
         {
             if (set.button == null) continue;
 
             _buttonOriginScales[set.button] = set.button.transform.localScale;
-            InitButtonEvents(set);
+            InitButtonEvents(set); 
         }
     }
 
+    // 버튼 클릭, 호버 이벤트 등록
     private void InitButtonEvents(MenuSet set)
     {
-        // 클릭 시: 할당된 프리팹으로 줌인 연출 요청
+        // 클릭 시 연출 실행
         set.button.onClick.AddListener(() => {
             OnButtonClicked(set.button, set.panelPrefab);
         });
 
-        // 호버 효과
+        // 호버(마우스 올림/내림) 효과
         EventTrigger trigger = set.button.gameObject.GetComponent<EventTrigger>() ?? set.button.gameObject.AddComponent<EventTrigger>();
         
+        // PointerEnter (커짐)
         AddEvent(trigger, EventTriggerType.PointerEnter, () => {
             if (set.button.interactable) 
                 set.button.transform.localScale = _buttonOriginScales[set.button] * _hoverScale;
         });
 
+        // PointerExit (복구)
         AddEvent(trigger, EventTriggerType.PointerExit, () => {
             if (set.button.interactable) 
                 set.button.transform.localScale = _buttonOriginScales[set.button];
@@ -61,27 +72,53 @@ public class MenuPanelController : MonoBehaviour
 
     private void OnButtonClicked(Button clickedBtn, GameObject panelPrefab)
     {
-        // 1. 모든 Hover 상태 즉시 종료 및 잠금
         DisableAllHovers();
 
-        // 2. 다른 버튼들 페이드 아웃 (코루틴)
-        StartCoroutine(FadeOutOtherButtons(clickedBtn));
+        foreach (GameObject go in _mainButtonObjects)
+        {
+            if (go == null) continue;
 
-        // 3. MenuManager에게 줌인 연출 요청
+            if (go != clickedBtn.gameObject)
+            {
+                // 다른 버튼들은 통째로 비활성화
+                go.SetActive(false);
+            }
+            else
+            {
+                // MainButton(Tag) 외의 모든 자식개체 비활성화
+                foreach (Transform child in go.transform)
+                {
+                    child.gameObject.SetActive(false);
+                }
+            
+                // 버튼 자체의 이미지(배경)도 있다면 숨김
+                if (go.TryGetComponent<Image>(out var img)) img.enabled = false;
+            }
+        }
+
         MenuManager.Instance.StartZoomSequence(clickedBtn.transform, panelPrefab);
     }
 
     public void ResetAllButtons()
     {
-        foreach (var set in _allMenuSets)
+        foreach (GameObject go in _mainButtonObjects)
         {
-            if (set.button == null) continue;
+            if (go == null) continue;
 
-            CanvasGroup cg = set.button.GetComponent<CanvasGroup>() ?? set.button.gameObject.AddComponent<CanvasGroup>();
-            cg.alpha = 1f;
-            cg.blocksRaycasts = true;
-            set.button.interactable = true;
-            set.button.transform.localScale = _buttonOriginScales[set.button];
+            // 클릭 버튼 활성화
+            go.SetActive(true); 
+        
+            foreach (Transform child in go.transform)
+            {
+                child.gameObject.SetActive(true);
+            }
+
+            if (go.TryGetComponent<Button>(out var btn))
+            {
+                btn.interactable = true;
+                if (go.TryGetComponent<Image>(out var img)) img.enabled = true;
+                btn.transform.localScale = _buttonOriginScales[btn];
+            }
         }
     }
 
@@ -92,29 +129,6 @@ public class MenuPanelController : MonoBehaviour
             if (set.button == null) continue;
             set.button.interactable = false;
             set.button.transform.localScale = _buttonOriginScales[set.button];
-        }
-    }
-
-    private IEnumerator FadeOutOtherButtons(Button clickedBtn)
-    {
-        float duration = 0.4f;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
-
-            foreach (var set in _allMenuSets)
-            {
-                if (set.button != clickedBtn && set.button != null)
-                {
-                    CanvasGroup cg = set.button.GetComponent<CanvasGroup>() ?? set.button.gameObject.AddComponent<CanvasGroup>();
-                    cg.alpha = alpha;
-                    cg.blocksRaycasts = false;
-                }
-            }
-            yield return null;
         }
     }
 

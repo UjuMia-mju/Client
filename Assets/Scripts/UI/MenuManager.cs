@@ -10,7 +10,7 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
     private Vector3 originPos = new Vector3(0f, 1f, -900f);
     private Vector3 originRot = new Vector3(0f, 0f, 0f);
     private float zoomDuration = 0.8f;
-    private float targetDistance = 400f;
+    private float targetDistance = 600f;
     
 
     private GameObject _currentSubPanel;
@@ -39,22 +39,8 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
 
     private IEnumerator ZoomIn(Transform target, GameObject panelPrefab)
     {
-        // 1. MainButton이 아닌 모든 UI 숨기기
-        GameObject[] allMainButtons = GameObject.FindGameObjectsWithTag(Define.Tag.MAINBUTTON);
-        foreach (GameObject go in allMainButtons)
-        {
-            // 클릭한 버튼(target)은 남겨두고 나머지만 비활성화
-            if (go.transform != target) 
-            {
-                go.SetActive(false); 
-            }
-        }
-
-        // 2. 목표 위치 계산 (버튼의 위치에서 월드 좌표 기준 Z축 뒤로 후퇴)
-        Vector3 targetPos = target.position;
-        targetPos.z = target.position.z - targetDistance; // 버튼 위치에서 원하는 거리만큼 떨어진 곳
-    
-        // 버튼을 정면으로 바라보는 회전값
+        // 1. 카메라 이동 로직 (생략)
+        Vector3 targetPos = target.position - (mainCamera.transform.forward * targetDistance);
         Quaternion targetRot = Quaternion.LookRotation(target.position - targetPos);
 
         float elapsed = 0f;
@@ -62,17 +48,19 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
         {
             elapsed += Time.deltaTime;
             float t = Mathf.SmoothStep(0, 1, elapsed / zoomDuration);
-        
-            // originPos에서 targetPos로 이동
             mainCamera.transform.position = Vector3.Lerp(originPos, targetPos, t);
             mainCamera.transform.rotation = Quaternion.Slerp(Quaternion.Euler(originRot), targetRot, t);
             yield return null;
         }
 
-        // 3. 패널 생성 로직
+        // 2. 패널 생성 로직
         if (panelPrefab != null)
         {
             _currentSubPanel = Instantiate(panelPrefab, canvas.transform);
+            
+            _currentSubPanel.transform.localScale = new Vector3(0.005f, 0.005f, 1f);
+
+            // 3. 위치는 카메라 앞으로 지정 (이동 로직은 그대로 유지)
             float distanceInFrontOfCamera = 2.0f; 
             _currentSubPanel.transform.position = mainCamera.transform.position + (mainCamera.transform.forward * distanceInFrontOfCamera);
             _currentSubPanel.transform.rotation = mainCamera.transform.rotation;
