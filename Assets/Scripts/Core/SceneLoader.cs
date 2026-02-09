@@ -1,29 +1,50 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// 비동기 씬 로딩 및 전역 페이드 UI의 생명주기를 전담하는 매니저
+/// </summary>
 public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 {
-    private float fadeDuration = 1.0f;
+    [Header("페이드 설정")]
+    public GameObject fadePrefab; 
+    public float fadeDuration = 1.0f;
 
-    /// <summary>
-    /// 외부 호출용: 특정 CanvasGroup을 페이드하며 씬 전환
-    /// </summary>
-    public void LoadScene(string sceneName, CanvasGroup targetCanvas)
+    private CanvasGroup fadeCanvasGroup;
+    private GameObject fadeInstance;
+
+    private void InitFadeCanvas()
     {
-        StartCoroutine(LoadAsyncSequence(sceneName, targetCanvas));
+        if (fadeInstance == null && fadePrefab != null)
+        {
+            fadeInstance = Instantiate(fadePrefab);
+            DontDestroyOnLoad(fadeInstance);
+            fadeCanvasGroup = fadeInstance.GetComponent<CanvasGroup>();
+            fadeInstance.SetActive(false);
+        }
     }
 
-    private IEnumerator LoadAsyncSequence(string sceneName, CanvasGroup targetCanvas)
+    /// <summary>
+    /// 씬 전환의 모든 과정(페이드 인/로드/페이드 아웃/비활성화)을 관리
+    /// </summary>
+    public void LoadScene(string sceneName)
     {
-        // 1. 전달받은 캔버스를 Fade Out
-        yield return StartCoroutine(Fade(targetCanvas, 1.0f));
+        if (fadeInstance == null) InitFadeCanvas();
+        StartCoroutine(LoadAsyncSequence(sceneName));
+    }
 
-        // 2. 비동기 로딩 시작
+    private IEnumerator LoadAsyncSequence(string sceneName)
+    {
+        // 1. 페이드 오브젝트 활성화 및 암전(Fade Out)
+        fadeInstance.SetActive(true);
+        fadeCanvasGroup.blocksRaycasts = true;
+        yield return StartCoroutine(Fade(1.0f));
+
+        // 2. 비동기 씬 로딩
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
-        op.allowSceneActivation = false; 
-        
+        op.allowSceneActivation = false;
+
         while (!op.isDone)
         {
             if (op.progress >= 0.9f)
@@ -33,31 +54,28 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
             yield return null;
         }
 
-        // 3. 새 씬 로드 후 다시 Fade In
-        yield return StartCoroutine(Fade(targetCanvas, 0.0f));
+        // 3. 새로운 씬에서 화면 밝아짐(Fade In)
+        yield return StartCoroutine(Fade(0.0f));
+
+        // 4. 연출이 끝났으므로 스스로 비활성화
+        fadeCanvasGroup.blocksRaycasts = false;
+        fadeInstance.SetActive(false);
     }
 
-    /// <summary>
-    /// 인자로 받은 CanvasGroup의 알파값을 조절
-    /// </summary>
-    public IEnumerator Fade(CanvasGroup targetCanvas, float targetAlpha)
+    private IEnumerator Fade(float targetAlpha)
     {
-        if (targetCanvas == null)
-        {
-            Debug.LogWarning("Fade를 수행할 CanvasGroup이 할당되지 않았습니다.");
-            yield break;
-        }
+        if (fadeCanvasGroup == null) yield break;
 
-        float startAlpha = targetCanvas.alpha;
+        float startAlpha = fadeCanvasGroup.alpha;
         float elapsed = 0f;
 
         while (elapsed < fadeDuration)
         {
             elapsed += Time.deltaTime;
-            targetCanvas.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / fadeDuration);
+            fadeCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / fadeDuration);
             yield return null;
         }
 
-        targetCanvas.alpha = targetAlpha;
+        fadeCanvasGroup.alpha = targetAlpha;
     }
 }

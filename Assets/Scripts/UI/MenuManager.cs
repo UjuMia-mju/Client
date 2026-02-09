@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class MenuManager : MonoBehaviorSingleton<MenuManager>
 {
+    [Header("UI Elements")]
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Canvas canvas;
     

@@ -6,7 +6,7 @@ using System.Collections;
 /// </summary>
 public class SplashController : MonoBehaviour
 {
-    public CanvasGroup splashCanvasGroup;
+    [Header("CanvasGroup Of Logo")]
     public CanvasGroup logoCanvasGroup;
 
     private float fadeInTime = 1.2f;
@@ -24,22 +24,19 @@ public class SplashController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 로고 연출 재생 후 SceneLoader를 통해 씬 전환을 요청
-    /// </summary>
     private IEnumerator PlaySplashSequence()
     {
-        // 1. Fade In
+        // 1. 로고 나타남
         yield return StartCoroutine(Fade(0f, 1f, fadeInTime));
 
         // 2. 유지
         yield return new WaitForSeconds(stayTime);
 
-        // 3. Fade Out
+        // 3. 로고 사라짐
         yield return StartCoroutine(Fade(1f, 0f, fadeOutTime));
 
-        // 4. SceneLoader 호출
-        SceneLoader.Instance.LoadScene(nextSceneName, splashCanvasGroup);
+        // 4. 로고가 완전히 사라지면 SceneLoader에게 모든 권한 위임
+        SceneLoader.Instance.LoadScene(nextSceneName);
     }
 
     /// <summary>
