@@ -6,132 +6,115 @@ using System.Collections.Generic;
 
 public class MenuPanelController : MonoBehaviour
 {
-    // 버튼별 원래 크기를 저장할 딕셔너리
-    private Dictionary<GameObject, Vector3> _originScales = new Dictionary<GameObject, Vector3>();
+    [System.Serializable]
+    public class MenuSet
+    {
+        public Button button;
+        public GameObject panelPrefab;
+    }
+
+    [Header("Menu Assignments")]
+    [SerializeField] private MenuSet singlePlay;
+    [SerializeField] private MenuSet multiPlay;
+    [SerializeField] private MenuSet settings;
+    [SerializeField] private MenuSet custom;
+    [SerializeField] private MenuSet store;
+
+    private Dictionary<Button, Vector3> _buttonOriginScales = new Dictionary<Button, Vector3>();
+    private List<MenuSet> _allMenuSets = new List<MenuSet>();
     private float _hoverScale = 1.1f;
 
     void Start()
     {
-        // 게임 시작 시 MainButton 태그가 달린 모든 오브젝트를 찾아 초기화
-        GameObject[] mainButtons = GameObject.FindGameObjectsWithTag(Define.Tag.MAINBUTTON);
+        // 리스트에 담아 관리 편의성 확보
+        _allMenuSets = new List<MenuSet> { singlePlay, multiPlay, settings, custom, store };
 
-        foreach (GameObject obj in mainButtons)
+        foreach (var set in _allMenuSets)
         {
-            // 1. 초기 크기 저장
-            if (!_originScales.ContainsKey(obj))
-                _originScales[obj] = obj.transform.localScale;
+            if (set.button == null) continue;
 
-            // 2. 버튼 컴포넌트가 있다면 이벤트 연결
-            Button btn = obj.GetComponent<Button>();
-            if (btn != null)
-            {
-                InitButtonEvents(btn);
-            }
+            _buttonOriginScales[set.button] = set.button.transform.localScale;
+            InitButtonEvents(set);
         }
     }
 
-    private void InitButtonEvents(Button btn)
+    private void InitButtonEvents(MenuSet set)
     {
-        // 클릭 이벤트
-        btn.onClick.AddListener(() => {
-            // 버튼 이름으로 패널 프리팹 찾기 (예: SinglePlayButton -> SinglePlayPanel)
-            string panelPath = btn.gameObject.name.Replace("Button", "Panel");
-            
-            // 프리팹 로드 (Resources 폴더 기준) - *만약 인스펙터 할당 방식을 쓴다면 이 부분은 수정 필요
-            GameObject panelPrefab = Resources.Load<GameObject>($"Panels/{panelPath}");
-
-            OnButtonClicked(btn.gameObject, panelPrefab);
+        // 클릭 시: 할당된 프리팹으로 줌인 연출 요청
+        set.button.onClick.AddListener(() => {
+            OnButtonClicked(set.button, set.panelPrefab);
         });
 
-        // 호버 이벤트 (EventTrigger)
-        EventTrigger trigger = btn.gameObject.GetComponent<EventTrigger>() ?? btn.gameObject.AddComponent<EventTrigger>();
+        // 호버 효과
+        EventTrigger trigger = set.button.gameObject.GetComponent<EventTrigger>() ?? set.button.gameObject.AddComponent<EventTrigger>();
         
         AddEvent(trigger, EventTriggerType.PointerEnter, () => {
-            if (btn.interactable) 
-                btn.transform.localScale = _originScales[btn.gameObject] * _hoverScale;
+            if (set.button.interactable) 
+                set.button.transform.localScale = _buttonOriginScales[set.button] * _hoverScale;
         });
 
         AddEvent(trigger, EventTriggerType.PointerExit, () => {
-            if (btn.interactable) 
-                btn.transform.localScale = _originScales[btn.gameObject];
+            if (set.button.interactable) 
+                set.button.transform.localScale = _buttonOriginScales[set.button];
         });
     }
 
-    private void OnButtonClicked(GameObject clickedObj, GameObject panelPrefab)
+    private void OnButtonClicked(Button clickedBtn, GameObject panelPrefab)
     {
-        // 1. 태그로 모든 MainButton 찾기
-        GameObject[] allUi = GameObject.FindGameObjectsWithTag(Define.Tag.MAINBUTTON);
+        // 1. 모든 Hover 상태 즉시 종료 및 잠금
+        DisableAllHovers();
 
-        foreach (GameObject ui in allUi)
-        {
-            // 클릭한 버튼은 상호작용만 끄고(크기 원복), 나머지는 숨김
-            if (ui == clickedObj)
-            {
-                Button btn = ui.GetComponent<Button>();
-                if (btn != null) btn.interactable = false;
-                ui.transform.localScale = _originScales[ui];
-            }
-            else
-            {
-                // 나머지는 페이드 아웃으로 숨기기
-                StartCoroutine(FadeOutUI(ui));
-            }
-        }
+        // 2. 다른 버튼들 페이드 아웃 (코루틴)
+        StartCoroutine(FadeOutOtherButtons(clickedBtn));
 
-        // 2. 매니저에게 줌 연출 요청
-        if (panelPrefab != null)
+        // 3. MenuManager에게 줌인 연출 요청
+        MenuManager.Instance.StartZoomSequence(clickedBtn.transform, panelPrefab);
+    }
+
+    public void ResetAllButtons()
+    {
+        foreach (var set in _allMenuSets)
         {
-            MenuManager.Instance.StartZoomSequence(clickedObj.transform, panelPrefab);
+            if (set.button == null) continue;
+
+            CanvasGroup cg = set.button.GetComponent<CanvasGroup>() ?? set.button.gameObject.AddComponent<CanvasGroup>();
+            cg.alpha = 1f;
+            cg.blocksRaycasts = true;
+            set.button.interactable = true;
+            set.button.transform.localScale = _buttonOriginScales[set.button];
         }
     }
 
-    // UI 숨기기 (CanvasGroup 활용)
-    private IEnumerator FadeOutUI(GameObject ui)
+    private void DisableAllHovers()
     {
-        CanvasGroup cg = ui.GetComponent<CanvasGroup>();
+        foreach (var set in _allMenuSets)
+        {
+            if (set.button == null) continue;
+            set.button.interactable = false;
+            set.button.transform.localScale = _buttonOriginScales[set.button];
+        }
+    }
 
+    private IEnumerator FadeOutOtherButtons(Button clickedBtn)
+    {
         float duration = 0.4f;
         float elapsed = 0f;
-
-        // 클릭 방지
-        cg.blocksRaycasts = false;
-        Button btn = ui.GetComponent<Button>();
-        if(btn != null) btn.interactable = false;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            cg.alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+
+            foreach (var set in _allMenuSets)
+            {
+                if (set.button != clickedBtn && set.button != null)
+                {
+                    CanvasGroup cg = set.button.GetComponent<CanvasGroup>() ?? set.button.gameObject.AddComponent<CanvasGroup>();
+                    cg.alpha = alpha;
+                    cg.blocksRaycasts = false;
+                }
+            }
             yield return null;
-        }
-        cg.alpha = 0f;
-    }
-
-    // ESC 복구 시 호출
-    public void ResetAllButtons()
-    {
-        // 태그로 모든 UI 다시 찾아서 복구
-        GameObject[] allUi = GameObject.FindGameObjectsWithTag(Define.Tag.MAINBUTTON);
-
-        foreach (GameObject ui in allUi)
-        {
-            CanvasGroup cg = ui.GetComponent<CanvasGroup>();
-            if (cg != null)
-            {
-                cg.alpha = 1f;
-                cg.blocksRaycasts = true;
-            }
-
-            Button btn = ui.GetComponent<Button>();
-            if (btn != null)
-            {
-                btn.interactable = true;
-            }
-
-            if (_originScales.ContainsKey(ui))
-            {
-                ui.transform.localScale = _originScales[ui];
-            }
         }
     }
 
