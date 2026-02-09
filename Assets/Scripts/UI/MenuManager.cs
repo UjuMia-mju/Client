@@ -2,19 +2,29 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// - IntroPanel과 MenuPanel의 전환
+/// - MenuPanel에서 ZoomIn 연출
+/// </summary>
 public class MenuManager : MonoBehaviorSingleton<MenuManager>
 {
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Canvas canvas;
     
+    // key
+    private Key closeKey = Key.Escape;
+    
+    // Zoom In
     private Vector3 originPos = new Vector3(0f, 1f, -900f);
     private Vector3 originRot = new Vector3(0f, 0f, 0f);
     private float zoomDuration = 0.5f;
     private float targetDistance = 600f;
     
+    // Menu Panel
     private GameObject _currentSubPanel;
     private MenuPanelController _menuPanelController;
     
+    // Pop - Up
     private float popUpDuration = 0.2f;
     private Vector3 finalPanelScale = new Vector3(0.005f, 0.005f, 1f);
     
@@ -27,8 +37,8 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
 
     private void Update()
     {
-        // ESC 누르면 정해진 originPos로 복귀
-        if (Keyboard.current.escapeKey.wasPressedThisFrame && _currentSubPanel != null)
+        // 키를 누르면 정해진 originPos로 복귀
+        if (Keyboard.current[closeKey].wasPressedThisFrame && _currentSubPanel != null)
         {
             BackToMainMenu();
         }
@@ -60,16 +70,16 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
         {
             _currentSubPanel = Instantiate(panelPrefab, canvas.transform);
         
-            // [수정] 패널의 시작 스케일을 0으로 설정하여 작게 시작
-            // FinalScale 변수를 사용하여 최종 스케일을 지정 (인스펙터에서 조절 가능하게)
+            // 패널의 시작 스케일을 0으로 설정하여 작게 시작
+            // FinalScale 변수를 사용하여 최종 스케일을 지정
             _currentSubPanel.transform.localScale = Vector3.zero; 
 
-            // 위치 및 회전 설정 (고정)
+            // 위치 및 회전 고정
             float distanceInFrontOfCamera = 2.0f; 
             _currentSubPanel.transform.position = mainCamera.transform.position + (mainCamera.transform.forward * distanceInFrontOfCamera);
             _currentSubPanel.transform.rotation = mainCamera.transform.rotation;
 
-            // [변경] 다이내믹 팝업 효과 실행 (새로운 코루틴)
+            // 다이내믹 팝업 효과
             StartCoroutine(DynamicPopUpPanel(_currentSubPanel));
         }
     }
@@ -82,8 +92,11 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
             StartCoroutine(ClosePanelSequence());
         }
     }
-
-    // 패널을 닫는 일련의 과정 (Fade Out -> Destroy -> Camera Return)
+    
+    /// <summary>
+    /// 패널을 닫는 과정
+    /// 단계: Fade Out -> Destroy -> Camera Return
+    /// </summary>
     private IEnumerator ClosePanelSequence()
     {
         // 1. 패널 Fade Out 및 축소 연출 실행
@@ -96,32 +109,8 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
         // 3. 카메라 복귀 시작
         StartCoroutine(ReturnToOrigin());
     }
-
-    // 패널이 사라지는 다이내믹 연출 코루틴
-    private IEnumerator DynamicClosePanel(GameObject panel)
-    {
-        CanvasGroup cg = panel.GetComponent<CanvasGroup>();
-        if (cg == null) cg = panel.AddComponent<CanvasGroup>();
-
-        Vector3 startScale = panel.transform.localScale;
-        float elapsed = 0f;
-
-        while (elapsed < popUpDuration) // 동일한 popUpDuration 사용
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0, 1, elapsed / popUpDuration);
-
-            // 투명도 (1 -> 0)
-            cg.alpha = Mathf.Lerp(1f, 0f, t);
-            
-            yield return null;
-        }
-
-        cg.alpha = 0f;
-        panel.transform.localScale = Vector3.zero;
-    }
     
-    // ESC 후 원래대로 돌아감
+    // closeKey를 누르면 원래 화면으로 되돌아감
     private IEnumerator ReturnToOrigin()
     {
         Vector3 startPos = mainCamera.transform.position;
@@ -143,24 +132,9 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
         if (_menuPanelController != null) _menuPanelController.ResetAllButtons();
     }
     
-    // 패널 생성 시 Fade In / Out
-    private IEnumerator FadeInPanel(GameObject panel)
-    {
-        CanvasGroup cg = panel.GetComponent<CanvasGroup>();
-
-        cg.alpha = 0f; // 시작은 투명하게
-        float duration = 0.5f; // 페이드 시간 (취향껏 조절)
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            cg.alpha = Mathf.Lerp(0f, 1f, elapsed / duration);
-            yield return null;
-        }
-        cg.alpha = 1f;
-    }
-    
+    /// <summary>
+    /// 패널이 나타나는 다이내믹 연출 코루틴
+    /// </summary>
     private IEnumerator DynamicPopUpPanel(GameObject panel)
     {
         CanvasGroup cg = panel.GetComponent<CanvasGroup>();
@@ -185,5 +159,30 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
         // 연출 완료 후 최종 값으로 고정
         cg.alpha = 1f;
         panel.transform.localScale = finalPanelScale;
+    }
+    
+    /// <summary>
+    /// 패널이 사라지는 다이내믹 연출 코루틴
+    /// </summary>
+    private IEnumerator DynamicClosePanel(GameObject panel)
+    {
+        CanvasGroup cg = panel.GetComponent<CanvasGroup>();
+
+        Vector3 startScale = panel.transform.localScale;
+        float elapsed = 0f;
+
+        while (elapsed < popUpDuration) // Pop-Up과 동일한 popUpDuration 사용
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0, 1, elapsed / popUpDuration);
+
+            // 투명도 (1 -> 0)
+            cg.alpha = Mathf.Lerp(1f, 0f, t);
+            
+            yield return null;
+        }
+
+        cg.alpha = 0f;
+        panel.transform.localScale = Vector3.zero;
     }
 }

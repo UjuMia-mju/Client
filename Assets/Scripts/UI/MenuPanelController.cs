@@ -13,18 +13,21 @@ public class MenuPanelController : MonoBehaviour
         public GameObject panelPrefab;
     }
 
-    [Header("Menu Assignments")]
+    [Header("Menu Sets")]
     [SerializeField] private MenuSet singlePlay;
     [SerializeField] private MenuSet multiPlay;
     [SerializeField] private MenuSet settings;
     [SerializeField] private MenuSet custom;
     [SerializeField] private MenuSet store;
-
+    
+    // Hover
     private Dictionary<Button, Vector3> _buttonOriginScales = new Dictionary<Button, Vector3>();
-    private List<MenuSet> _allMenuSets = new List<MenuSet>();
-    private List<GameObject> _mainButtonObjects = new List<GameObject>(); // 꺼진 버튼 복구용 리스트
     private float _hoverScale = 1.1f;
-
+    
+    // Reset용 리스트
+    private List<MenuSet> _allMenuSets = new List<MenuSet>();
+    private List<GameObject> _mainButtonObjects = new List<GameObject>();
+    
     void Start()
     {
         _allMenuSets = new List<MenuSet> { singlePlay, multiPlay, settings, custom, store };
@@ -45,11 +48,13 @@ public class MenuPanelController : MonoBehaviour
             InitButtonEvents(set); 
         }
     }
-
-    // 버튼 클릭, 호버 이벤트 등록
+    
+    /// <summary>
+    /// 버튼 클릭, 호버 이벤트 등록
+    /// </summary>
     private void InitButtonEvents(MenuSet set)
     {
-        // 클릭 시 연출 실행
+        // 버튼 클릭 시 연출 실행
         set.button.onClick.AddListener(() => {
             OnButtonClicked(set.button, set.panelPrefab);
         });
@@ -70,6 +75,9 @@ public class MenuPanelController : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// 클릭 이벤트 시 대상 외 모든 버튼을 비활성화
+    /// </summary>
     private void OnButtonClicked(Button clickedBtn, GameObject panelPrefab)
     {
         DisableAllHovers();
@@ -99,6 +107,9 @@ public class MenuPanelController : MonoBehaviour
         MenuManager.Instance.StartZoomSequence(clickedBtn.transform, panelPrefab);
     }
 
+    /// <summary>
+    /// 모든 버튼 활성화
+    /// </summary>
     public void ResetAllButtons()
     {
         foreach (GameObject go in _mainButtonObjects)
@@ -122,6 +133,9 @@ public class MenuPanelController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Hover 기능 해제
+    /// </summary>
     private void DisableAllHovers()
     {
         foreach (var set in _allMenuSets)

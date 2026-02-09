@@ -2,32 +2,30 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.InputSystem; // Input System 활용
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// IntroPanel 애니메이션 제어, 유저 입력을 감지하여 MainManager를 통해 패널을 전환
 /// </summary>
 public class IntroPanelController : MonoBehaviour
 {
-    [Header("UI References")]
     public TextMeshProUGUI pressText;
     public Image titleLogoImage;
 
-    [Header("Input Settings")]
     private InputAction _anyKeyAction;
-
+    
     private bool _canInteract = false;
 
     void Awake()
     {
-        // 모든 장치의 '버튼' 입력을 감지하기 위한 설정
+        // 모든 장치의 버튼 입력을 감지하기 위한 설정
         _anyKeyAction = new InputAction(binding: "/*/<button>");
         _anyKeyAction.performed += ctx => OnAnyKeyPressed();
     }
 
     void Start()
     {
-        // 초기 상태: 투명
+        // 연출을 위해 IntroPanel을 투명하게 함
         SetUIAlpha(titleLogoImage, 0);
         SetUIAlpha(pressText, 0);
         
@@ -38,6 +36,9 @@ public class IntroPanelController : MonoBehaviour
     private void OnEnable() => _anyKeyAction.Enable();
     private void OnDisable() => _anyKeyAction.Disable();
 
+    /// <summary>
+    /// 모든 장치의 버튼 입력을 감지하기 위한 설정
+    /// </summary>
     private void OnAnyKeyPressed()
     {
         // 연출 중이거나 이미 눌렀다면 무시
@@ -89,8 +90,8 @@ public class IntroPanelController : MonoBehaviour
         // 루프 애니메이션 (MainManager에 의해 패널이 비활성화될 때까지)
         while (_canInteract)
         {
-            float alpha = (Mathf.Sin(Time.time * 2.5f) + 1.0f) / 2.0f;
-            SetUIAlpha(pressText, Mathf.Clamp(alpha, 0.3f, 1.0f));
+            float alpha = (Mathf.Sin(Time.time) + 1.0f) / 2.0f;
+            SetUIAlpha(pressText, Mathf.Clamp(alpha, 0f, 1.0f));
             yield return null;
         }
     }
