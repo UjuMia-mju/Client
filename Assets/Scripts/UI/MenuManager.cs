@@ -3,8 +3,7 @@ using System.Collections;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// - IntroPanel과 MenuPanel의 전환
-/// - MenuPanel에서 ZoomIn 연출
+/// MenuPanel에서의 다양한 UI 연출
 /// </summary>
 public class MenuManager : MonoBehaviour
 {
