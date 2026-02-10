@@ -20,6 +20,8 @@ public class MenuPanelController : MonoBehaviour
     [SerializeField] private MenuSet custom;
     [SerializeField] private MenuSet store;
     
+    [Header(" ")]
+    [SerializeField] private MenuManager menuManager;
     // Hover
     private Dictionary<Button, Vector3> _buttonOriginScales = new Dictionary<Button, Vector3>();
     private float _hoverScale = 1.1f;
@@ -104,7 +106,7 @@ public class MenuPanelController : MonoBehaviour
             }
         }
 
-        MenuManager.Instance.StartZoomSequence(clickedBtn.transform, panelPrefab);
+        menuManager.StartZoomSequence(clickedBtn.transform, panelPrefab);
     }
 
     /// <summary>

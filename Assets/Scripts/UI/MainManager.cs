@@ -2,21 +2,15 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// 이미 구현된 MonoBehaviorSingleton을 상속받아 패널 전환을 관리
+/// IntroPanel과 MenuPanel의 전환
 /// </summary>
-public class MainManager : MonoBehaviorSingleton<MainManager>
+public class MainManager : MonoBehaviour
 {
     [Header("Panel References")]
     [SerializeField] private CanvasGroup introPanel;
     [SerializeField] private CanvasGroup menuPanel;
     
     private float fadeDuration = 0.5f;
-
-    protected override void Awake()
-    {
-        // 부모 클래스의 Awake(싱글톤 설정 및 DontDestroyOnLoad) 호출
-        base.Awake();
-    }
 
     private void Start()
     {

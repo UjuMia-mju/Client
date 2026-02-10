@@ -9,6 +9,9 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class IntroPanelController : MonoBehaviour
 {
+    [SerializeField] private MainManager mainManager;
+    
+    [Header("")]
     public TextMeshProUGUI pressText;
     public Image titleLogoImage;
 
@@ -48,9 +51,9 @@ public class IntroPanelController : MonoBehaviour
         _anyKeyAction.Disable(); // 추가 입력 방지
 
         // MainManager를 통해 로비 패널로 전환
-        if (MainManager.Instance != null)
+        if (mainManager != null)
         {
-            MainManager.Instance.ChangeFromIntroToMenu();
+            mainManager.ChangeFromIntroToMenu();
         }
     }
 

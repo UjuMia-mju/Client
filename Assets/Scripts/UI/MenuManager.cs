@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 /// - IntroPanel과 MenuPanel의 전환
 /// - MenuPanel에서 ZoomIn 연출
 /// </summary>
-public class MenuManager : MonoBehaviorSingleton<MenuManager>
+public class MenuManager : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private Camera mainCamera;
@@ -29,9 +29,8 @@ public class MenuManager : MonoBehaviorSingleton<MenuManager>
     private float popUpDuration = 0.2f;
     private Vector3 finalPanelScale = new Vector3(0.005f, 0.005f, 1f);
     
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
         if (mainCamera == null) mainCamera = Camera.main;
         _menuPanelController = Object.FindFirstObjectByType<MenuPanelController>();
     }

@@ -197,6 +197,7 @@ MonoBehaviour:
   store:
     button: {fileID: 1419675343}
     panelPrefab: {fileID: 90857599718438145, guid: ac47f604995b61b4b8a5178f3e74f91f, type: 3}
+  menuManager: {fileID: 384519034}
 --- !u!225 &2014221
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4218,6 +4219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e68cc5ad4dabbcd4a997d20da6f62148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntroPanelController
+  mainManager: {fileID: 410142171}
   pressText: {fileID: 1132529721}
   titleLogoImage: {fileID: 575907383}
 --- !u!225 &1951031237
