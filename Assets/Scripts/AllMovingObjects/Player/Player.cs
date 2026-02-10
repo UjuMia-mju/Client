@@ -10,6 +10,8 @@ public class Player : MovingObject
     // 컴포넌트 참조 변수
     private PlayerInput playerInput;
     private PlayerAnimator playerAnimator;
+    private PlayerItemSystem playerItemSystem;
+    //private OxygenSystem oxygenSystem;
 
     // 초기화
     protected override void Awake()
@@ -18,8 +20,16 @@ public class Player : MovingObject
 
         playerInput = GetComponent<PlayerInput>();
         playerAnimator = GetComponent<PlayerAnimator>();
+        playerItemSystem = GetComponent<PlayerItemSystem>();
+        //oxygenSystem = GetComponent<OxygenSystem>();
 
         playerAnimator.Initialize();
+    }
+
+    private void Start()
+    {
+        // 산소가 줄어들기 시작함
+        //StartCoroutine(oxygenSystem.OxygenDecrease());
     }
 
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
@@ -38,6 +48,18 @@ public class Player : MovingObject
                 playerInput.GetIsJumping(),
                 isGrounded, 
                 inputFreeze);
+
+            if (playerInput.GetIsInteract())
+            {
+                Debug.Log("상호작용 입력 받음");
+                playerInput.MakeIsInteractFalse();
+            }
+
+            if (playerInput.GetIsThrowOrCancel())
+            {
+                Debug.Log("던지기 또는 취소 입력 받음");
+                playerInput.MakeIsThrowOrCancelFalse();
+            }
         }
 
         // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
@@ -58,6 +80,7 @@ public class Player : MovingObject
                 playerInput.MakeIsJumpingFalse();
             }
         }
+
         else
         {
             rb.Sleep();
