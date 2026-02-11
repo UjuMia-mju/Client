@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Drawing;
 
 public class GachaSpinnerUI : MonoBehaviour
 {
@@ -22,7 +23,6 @@ public class GachaSpinnerUI : MonoBehaviour
     public Image resultIconImage;       // 결과 아이콘
     public TextMeshProUGUI resultNameText;   // 결과 이름
     public TextMeshProUGUI resultRarityText; // 결과 등급
-    public TextMeshProUGUI resultProbabilityText; // 결과 확률
     public Button closeButton;          // 닫기 버튼
 
     private List<GameObject> spawnedSlots = new List<GameObject>();
@@ -41,6 +41,10 @@ public class GachaSpinnerUI : MonoBehaviour
         {
             slowingCurve = AnimationCurve.Linear(0, 0, 1, 1);
         }
+
+        // 닫기 버튼을 누르면 CloseResultPopup 함수 실행
+        if(closeButton != null)
+            closeButton.onClick.AddListener(CloseResultPopup);
     }
 
     // 외부(GachaManager)에서 이 함수를 호출하여 연출 시작
@@ -124,7 +128,7 @@ public class GachaSpinnerUI : MonoBehaviour
             elapsedTime += Time.deltaTime;
             // 0~1 사이 진행률
             float percentage = elapsedTime / spinDuration;
-            // 커브를 적용하여 '빠르다가 느려지는' 진행률로 변환
+            // 커브를 적용하여 빠르다가 느려지는 진행률로 변환
             float curvePercent = slowingCurve.Evaluate(percentage);
 
             contentReel.anchoredPosition = Vector2.Lerp(startPosition, endPosition, curvePercent);
@@ -135,6 +139,31 @@ public class GachaSpinnerUI : MonoBehaviour
         // 5. 최종 위치 보정 및 결과 발표
         contentReel.anchoredPosition = endPosition;
         Debug.Log("애니메이션 종료! 최종 획득: " + winner.itemName);
-        // 여기서 결과창 팝업 등을 띄우면 됨
+
+        // 스핀이 멈추고 0.5초 후에 결과창 띄우기
+        yield return new WaitForSeconds(0.5f);
+        ShowResultPopup(winner);
+    }
+
+    // 결과창 내용을 채우고 보여주는 함수
+    void ShowResultPopup(GachaItem item)
+    {
+        if (resultPanel == null) return;
+
+        // 아이콘, 이름, 등급, 확률 등 정보 채우기
+        resultIconImage.sprite = item.icon;
+        resultNameText.text = item.itemName;
+        resultRarityText.text = item.rarity.ToString();
+
+        // 결과창 활성화
+        resultPanel.SetActive(true);
+
+        // 여기에 결과창 활성화 시 소리 효과음 추가
+    }
+
+    // 닫기 버튼을 누르면 실행될 함수
+    public void CloseResultPopup()
+    {
+        resultPanel.SetActive(false);
     }
 }
