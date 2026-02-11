@@ -25,6 +25,11 @@ public class GachaSpinnerUI : MonoBehaviour
     public TextMeshProUGUI resultRarityText; // 결과 등급
     public Button closeButton;          // 닫기 버튼
 
+    [Header("Audio Settings")]
+    public AudioSource audioSource; // 오디오 소스 컴포넌트 연결
+    public AudioClip tickSound;     // 스핀 틱 사운드
+    public AudioClip winSound;      // 당첨 사운드
+
     private List<GameObject> spawnedSlots = new List<GameObject>();
     private float slotWidth;
 
@@ -122,6 +127,9 @@ public class GachaSpinnerUI : MonoBehaviour
         Vector2 startPosition = contentReel.anchoredPosition;
 
         // 4. 회전 애니메이션 (Lerp + Animation Curve)
+        // 소리 재생을 위한 변수
+        int lastIndex = 0;
+
         float elapsedTime = 0f;
         while (elapsedTime < spinDuration)
         {
@@ -133,12 +141,35 @@ public class GachaSpinnerUI : MonoBehaviour
 
             contentReel.anchoredPosition = Vector2.Lerp(startPosition, endPosition, curvePercent);
 
+            // 틱 사운드 재생
+            // 현재 Content가 얼마나 이동했는지 계산 (왼쪽으로 가니까 음수를 양수로 변환)
+            float currentAbsX = Mathf.Abs(contentReel.anchoredPosition.x);
+            // 지금 몇 번째 아이템이 지나가고 있는지 계산 (전체 이동 거리 / 아이템 하나 크기)
+            int currentIndex = (int)(currentAbsX / slotWidth);
+            // 아이템 번호가 바뀌었다면(=하나가 지나가면)
+            if (currentIndex != lastIndex)
+            {
+                // 소리가 너무 인위적이지 않게 피치에 약간 랜덤성 추가
+                audioSource.pitch = Random.Range(0.95f, 1.05f);
+                // 소리 재생
+                audioSource.PlayOneShot(tickSound);
+                // 마지막 인덱스 업데이트
+                lastIndex = currentIndex;
+            }
+
             yield return null;
         }
 
         // 5. 최종 위치 보정 및 결과 발표
         contentReel.anchoredPosition = endPosition;
         Debug.Log("애니메이션 종료! 최종 획득: " + winner.itemName);
+
+        // 당첨 사운드 재생
+        if (winSound != null)
+        {
+            audioSource.pitch = 1f; // 당첨 사운드는 피치 고정
+            audioSource.PlayOneShot(winSound);
+        }
 
         // 스핀이 멈추고 0.5초 후에 결과창 띄우기
         yield return new WaitForSeconds(0.5f);
