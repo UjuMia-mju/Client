@@ -50,6 +50,9 @@ public class GachaSpinnerUI : MonoBehaviour
 
         // 2. 가짜 릴 채우기
         // winnerIndex 위치에만 진짜 당첨 아이템을 넣고, 나머지는 랜덤한 '필러'로 채움
+
+        // 루프 밖에서 Near Miss 여부 결정 (50% 확률)
+        bool triggerNearMiss = Random.value < 0.5f; 
         for (int i = 0; i < totalSlots; i++)
         {
             GameObject newSlot = Instantiate(itemSlotPrefab, contentReel);
@@ -59,7 +62,15 @@ public class GachaSpinnerUI : MonoBehaviour
             GachaItem itemData;
             if (i == winnerIndex)
             {
-                itemData = winner; // 여기가 진짜 당첨!
+                itemData = winner; // 진짜 당첨아이템
+            }
+            else if (triggerNearMiss && i == winnerIndex + 1)
+            {
+                // Near Miss (50%)
+                // 당첨 아이템 바로 옆에 높은 등급의 아이템 배치
+                itemData = gachaManager.GetRandomLegendaryItem();
+
+                Debug.Log("Near Miss 실행");
             }
             else
             {
