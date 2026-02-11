@@ -144,8 +144,12 @@ public class GachaSpinnerUI : MonoBehaviour
             // 틱 사운드 재생
             // 현재 Content가 얼마나 이동했는지 계산 (왼쪽으로 가니까 음수를 양수로 변환)
             float currentAbsX = Mathf.Abs(contentReel.anchoredPosition.x);
-            // 지금 몇 번째 아이템이 지나가고 있는지 계산 (전체 이동 거리 / 아이템 하나 크기)
-            int currentIndex = (int)(currentAbsX / slotWidth);
+            // 경계선(왼쪽 모서리) 인식 보정
+            // 원래 위치에 '슬롯 너비의 절반'을 더함.
+            // 시작 부분(왼쪽 선)이 닿을 때 인덱스가 바뀜.
+            float adjustedX = currentAbsX + (slotWidth / 2f);
+            // 인덱스 계산
+            int currentIndex = (int)(adjustedX / slotWidth);
             // 아이템 번호가 바뀌었다면(=하나가 지나가면)
             if (currentIndex != lastIndex)
             {
@@ -164,15 +168,16 @@ public class GachaSpinnerUI : MonoBehaviour
         contentReel.anchoredPosition = endPosition;
         Debug.Log("애니메이션 종료! 최종 획득: " + winner.itemName);
 
+
+        // 스핀이 멈추고 0.5초 후에 결과창 띄우며 당첨 사운드 재생
+        yield return new WaitForSeconds(0.5f);
+
         // 당첨 사운드 재생
         if (winSound != null)
         {
             audioSource.pitch = 1f; // 당첨 사운드는 피치 고정
             audioSource.PlayOneShot(winSound);
         }
-
-        // 스핀이 멈추고 0.5초 후에 결과창 띄우기
-        yield return new WaitForSeconds(0.5f);
         ShowResultPopup(winner);
     }
 
