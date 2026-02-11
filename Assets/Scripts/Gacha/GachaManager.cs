@@ -127,4 +127,19 @@ public class GachaManager : MonoBehaviour
         }
         Debug.Log(sb.ToString());
     }
+
+    // Near Miss
+    // 눈속임을 위해 전설 아이템 하나를 랜덤으로 가져오는 함수
+    public GachaItem GetRandomLegendaryItem()
+    {
+        // 1. 전체 아이템 중에서 "Legendary" 등급 아이템만 필터링해서 리스트로 만듦
+        List<GachaItem> legendaryItems = allItems.FindAll(item => item.rarity == ItemRarity.Legendary);
+
+        // 2. 만약 리스트에 아이템이 없다면 아무거나 반환
+        if (legendaryItems.Count == 0)
+            return allItems[Random.Range(0, allItems.Count)];
+
+        // 3. 리스트중 하나 랜덤 반환
+        return legendaryItems[Random.Range(0, legendaryItems.Count)];
+    }
 }
