@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class GachaManager : MonoBehaviour
@@ -80,5 +81,50 @@ public class GachaManager : MonoBehaviour
         }
     }
 
-    
+    // 확률 정보
+    // 디버그용으로 콘솔에 출력되게 구현해뒀음.
+    public void DisplayProbabilities()
+    {
+        // 1. 예외처리 - 남은 아이템이 없으면 계산 불가
+        if (currentPool.Count == 0 || currentPool == null)
+        {
+            Debug.Log("남은 아이템이 없습니다.");
+            return;
+        }
+
+        // 2. 전체 가중치 합 계산 (남은 아이템들만)
+        float totalWeight = 0;
+        foreach (var item in currentPool)
+        {
+            totalWeight += item.weight;
+        }
+
+        // 3. 등급별 가중치 집계
+        Dictionary<ItemRarity, int> rarityWeightMap = new Dictionary<ItemRarity, int>();
+        foreach (var item in currentPool)
+        {
+            if (rarityWeightMap.ContainsKey(item.rarity))
+            {
+                rarityWeightMap[item.rarity] += item.weight;
+            }
+            else
+            {
+                rarityWeightMap.Add(item.rarity, item.weight);
+            }
+        }
+
+        // 4. 로그 메시지 생성하기
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("<color=yellow>=== 현재 뽑기 확률표 (남은 아이템 기준) ===</color>");
+
+        foreach(var pair in rarityWeightMap)
+        {
+            // 확률 공식: (해당 등급 가중치 합 / 전체 가중치) *100
+            float probability = (pair.Value / totalWeight) * 100f;
+
+
+            sb.AppendLine($"- <b>{pair.Key}</b>: {probability:F2}% (가중치: {pair.Value}/{totalWeight})");
+        }
+        Debug.Log(sb.ToString());
+    }
 }
