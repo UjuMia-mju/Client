@@ -16,7 +16,7 @@ public class PlanetGravity : MonoBehaviour
 
         body.rb.AddForce(gravityUp * gravityMag);
 
-        if (body.CompareTag("Player"))
+        if (body.CompareTag(Define.Tag.PLAYER))
         {
             // 2. 지면에 항상 꼿꼿히 서게 함
             // 또한 현재 접지중인 지면의 벡터로 쿼터니언을 생성해 극점에 다다르지 못하게 함
@@ -28,7 +28,7 @@ public class PlanetGravity : MonoBehaviour
             body.rb.MoveRotation(surfaceRotation);
         }
 
-        else if(body.CompareTag("Item"))
+        else if(body.CompareTag(Define.Tag.ITEM))
         {
 
         }

@@ -25,5 +25,4 @@ public class ObjectsGravityController : MonoBehaviour
         gravityUp = planet.GetGravityUp(objects.gameObject.transform);
         objects.rb.useGravity = false;
     }
-
 }

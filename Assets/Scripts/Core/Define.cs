@@ -1,4 +1,4 @@
-/// <summary>
+﻿/// <summary>
 /// 유니티의 고유 시스템(Scene, Tag, Layer 등) 이름 관리
 /// </summary>
 public static class Define
@@ -14,11 +14,13 @@ public static class Define
 
     public static class Tag
     {
-        
+        public const string PLAYER = "Player";
+        public const string ITEM = "Item";
     }
 
     public static class Layer
     {
-        
+        public const string GROUND = "Ground";
+        public const string WALL = "Wall";
     }
 }
