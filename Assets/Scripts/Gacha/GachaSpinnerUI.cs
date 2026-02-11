@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GachaSpinnerUI : MonoBehaviour
 {
@@ -15,6 +16,14 @@ public class GachaSpinnerUI : MonoBehaviour
     public int winnerIndex = 45;        // 당첨 아이템이 위치할 인덱스
     public float spinDuration = 5f;     // 돌아가는 시간
     public AnimationCurve slowingCurve; // 감속 그래프 (에디터에서 설정)
+
+    [Header("Result Popup Settings")]
+    public GameObject resultPanel;      // 결과창 패널
+    public Image resultIconImage;       // 결과 아이콘
+    public TextMeshProUGUI resultNameText;   // 결과 이름
+    public TextMeshProUGUI resultRarityText; // 결과 등급
+    public TextMeshProUGUI resultProbabilityText; // 결과 확률
+    public Button closeButton;          // 닫기 버튼
 
     private List<GameObject> spawnedSlots = new List<GameObject>();
     private float slotWidth;
@@ -53,6 +62,7 @@ public class GachaSpinnerUI : MonoBehaviour
 
         // 루프 밖에서 Near Miss 여부 결정 (50% 확률)
         bool triggerNearMiss = Random.value < 0.5f; 
+
         for (int i = 0; i < totalSlots; i++)
         {
             GameObject newSlot = Instantiate(itemSlotPrefab, contentReel);
