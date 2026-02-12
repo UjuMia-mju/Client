@@ -6,7 +6,8 @@ import "Struct.proto";
 
 message C_LOGIN
 {
-
+	string userId = 1;
+	string psw = 2;
 }
 
 message S_LOGIN

@@ -25,15 +25,16 @@ namespace Protocol {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg5Qcm90b2NvbC5wcm90bxIIUHJvdG9jb2waCkVudW0ucHJvdG8aDFN0cnVj",
-            "dC5wcm90byIJCgdDX0xPR0lOIjwKB1NfTE9HSU4SDwoHc3VjY2VzcxgBIAEo",
-            "CBIgCgZwbGF5ZXIYAiABKAsyEC5Qcm90b2NvbC5QbGF5ZXIiIwoMQ19FTlRF",
-            "Ul9HQU1FEhMKC3BsYXllckluZGV4GAEgASgEIh8KDFNfRU5URVJfR0FNRRIP",
-            "CgdzdWNjZXNzGAEgASgIIhUKBkNfQ0hBVBILCgNtc2cYASABKAkiJwoGU19D",
-            "SEFUEhAKCHBsYXllcklkGAEgASgEEgsKA21zZxgCIAEoCWIGcHJvdG8z"));
+            "dC5wcm90byImCgdDX0xPR0lOEg4KBnVzZXJJZBgBIAEoCRILCgNwc3cYAiAB",
+            "KAkiPAoHU19MT0dJThIPCgdzdWNjZXNzGAEgASgIEiAKBnBsYXllchgCIAEo",
+            "CzIQLlByb3RvY29sLlBsYXllciIjCgxDX0VOVEVSX0dBTUUSEwoLcGxheWVy",
+            "SW5kZXgYASABKAQiHwoMU19FTlRFUl9HQU1FEg8KB3N1Y2Nlc3MYASABKAgi",
+            "FQoGQ19DSEFUEgsKA21zZxgBIAEoCSInCgZTX0NIQVQSEAoIcGxheWVySWQY",
+            "ASABKAQSCwoDbXNnGAIgASgJYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Protocol.EnumReflection.Descriptor, global::Protocol.StructReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.C_LOGIN), global::Protocol.C_LOGIN.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.C_LOGIN), global::Protocol.C_LOGIN.Parser, new[]{ "UserId", "Psw" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.S_LOGIN), global::Protocol.S_LOGIN.Parser, new[]{ "Success", "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.C_ENTER_GAME), global::Protocol.C_ENTER_GAME.Parser, new[]{ "PlayerIndex" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.S_ENTER_GAME), global::Protocol.S_ENTER_GAME.Parser, new[]{ "Success" }, null, null, null, null),
@@ -79,6 +80,8 @@ namespace Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public C_LOGIN(C_LOGIN other) : this() {
+      userId_ = other.userId_;
+      psw_ = other.psw_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -86,6 +89,30 @@ namespace Protocol {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public C_LOGIN Clone() {
       return new C_LOGIN(this);
+    }
+
+    /// <summary>Field number for the "userId" field.</summary>
+    public const int UserIdFieldNumber = 1;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "psw" field.</summary>
+    public const int PswFieldNumber = 2;
+    private string psw_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Psw {
+      get { return psw_; }
+      set {
+        psw_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -103,6 +130,8 @@ namespace Protocol {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (UserId != other.UserId) return false;
+      if (Psw != other.Psw) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -110,6 +139,8 @@ namespace Protocol {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (Psw.Length != 0) hash ^= Psw.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -128,6 +159,14 @@ namespace Protocol {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (UserId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(UserId);
+      }
+      if (Psw.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Psw);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -138,6 +177,14 @@ namespace Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (UserId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(UserId);
+      }
+      if (Psw.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Psw);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -148,6 +195,12 @@ namespace Protocol {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      }
+      if (Psw.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Psw);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -159,6 +212,12 @@ namespace Protocol {
     public void MergeFrom(C_LOGIN other) {
       if (other == null) {
         return;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
+      }
+      if (other.Psw.Length != 0) {
+        Psw = other.Psw;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -175,6 +234,14 @@ namespace Protocol {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 10: {
+            UserId = input.ReadString();
+            break;
+          }
+          case 18: {
+            Psw = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -190,6 +257,14 @@ namespace Protocol {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
+          case 10: {
+            UserId = input.ReadString();
+            break;
+          }
+          case 18: {
+            Psw = input.ReadString();
+            break;
+          }
         }
       }
     }

@@ -1,17 +1,25 @@
 @echo off
 setlocal
-pushd %~dp0protoc-21.12-win64\bin
+cd /d %~dp0protoc-21.12-win64\bin
 
-REM C# 코드 생성 (--csharp_out 옵션)
-protoc.exe -I=./ --csharp_out=../../Assets/Scripts/Server/Proto ./Enum.proto
-protoc.exe -I=./ --csharp_out=../../Assets/Scripts/Server/Proto ./Struct.proto
-protoc.exe -I=./ --csharp_out=../../Assets/Scripts/Server/Proto ./Protocol.proto
+REM 현재 디렉토리가 proto 파일들이 있는 위치
+REM 출력 디렉토리 설정
+set OUTPUT_DIR=..\..\Assets\Scripts\Server\Proto
 
-REM GenPackets는 C# 옵션 추가 (만약 지원한다면)
-REM GenPackets.exe --path=./Protocol.proto --output=PacketHandler --recv=C_ --send=S_ --csharp_out=../../Assets/Scripts/Server/Proto
+REM 출력 디렉토리 없으면 생성
+if not exist %OUTPUT_DIR% mkdir %OUTPUT_DIR%
+
+REM C# 코드 생성 (protoc 사용)
+echo Generating C# files from proto...
+protoc.exe -I=. --csharp_out=%OUTPUT_DIR% Enum.proto
+protoc.exe -I=. --csharp_out=%OUTPUT_DIR% Struct.proto
+protoc.exe -I=. --csharp_out=%OUTPUT_DIR% Protocol.proto
 
 echo.
 echo ==========================================
-echo C# Proto files generated successfully!
-echo ==========================================
-pause
+echo Generated files:
+echo - Enum.cs
+echo - Struct.cs
+echo - Protocol.cs
+echo Output: %OUTPUT_DIR%
+echo ===========

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Google.Protobuf;
+using Protocol;
 using UnityEngine;
 
 public class NetManager : Singleton<NetManager>
@@ -247,6 +249,71 @@ public class NetManager : Singleton<NetManager>
         {
             Debug.LogError($"OnSend failed: {ex.Message}");
             Disconnect("Send callback error");
+        }
+    }
+
+    //----------------
+    // ==================== 높은 수준의 전송 메서드들 ====================
+
+    public void SendLogin(string userId, string password)
+    {
+        C_LOGIN loginPacket = new C_LOGIN
+        {
+            UserId = userId,
+            Psw = password
+        };
+
+        SendPacket(PacketId.PKT_C_LOGIN, loginPacket);
+    }
+
+    public void SendEnterGame(ulong playerIndex)
+    {
+        C_ENTER_GAME enterGamePacket = new C_ENTER_GAME
+        {
+            PlayerIndex = playerIndex
+        };
+
+        SendPacket(PacketId.PKT_C_ENTER_GAME, enterGamePacket);
+    }
+
+    public void SendChat(string message)
+    {
+        C_CHAT chatPacket = new C_CHAT
+        {
+            Msg = message
+        };
+
+        SendPacket(PacketId.PKT_C_CHAT, chatPacket);
+    }
+
+    /// <summary>
+    /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출
+    /// </summary>
+    private void SendPacket<T>(PacketId packetId, T packet) where T : IMessage
+    {
+        try
+        {
+            byte[] packetData = packet.ToByteArray();
+            byte[] sendBuffer = new byte[4 + packetData.Length];
+
+            // 패킷 크기
+            Array.Copy(BitConverter.GetBytes((ushort)(4 + packetData.Length)), 0, sendBuffer, 0, 2);
+
+            // 패킷 ID
+            Array.Copy(BitConverter.GetBytes((ushort)packetId), 0, sendBuffer, 2, 2);
+
+            // 패킷 데이터
+            Array.Copy(packetData, 0, sendBuffer, 4, packetData.Length);
+
+            // 🔑 핵심: ArraySegment로 변환해서 Send 호출
+            ArraySegment<byte> packet_segment = new ArraySegment<byte>(sendBuffer);
+            Send(packet_segment);
+
+            Debug.Log($"Sent packet: {packetId}");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"SendPacket Error: {ex.Message}");
         }
     }
 
