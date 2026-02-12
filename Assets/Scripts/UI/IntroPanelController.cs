@@ -93,7 +93,7 @@ public class IntroPanelController : MonoBehaviour
         // 루프 애니메이션 (MainManager에 의해 패널이 비활성화될 때까지)
         while (_canInteract)
         {
-            float alpha = (Mathf.Sin(Time.time) + 1.0f) / 2.0f;
+            float alpha = (Mathf.Sin(Time.time * 3f) + 1.0f) / 2.0f;
             SetUIAlpha(pressText, Mathf.Clamp(alpha, 0f, 1.0f));
             yield return null;
         }
