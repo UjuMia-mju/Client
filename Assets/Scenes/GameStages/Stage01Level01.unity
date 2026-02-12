@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 8006659}
   - component: {fileID: 8006658}
   - component: {fileID: 8006661}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -550,7 +550,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.23, y: 6.41, z: 8.2}
+  m_Size: {x: 12.66, y: 11.64, z: 13.05}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1041090621
 MonoBehaviour:

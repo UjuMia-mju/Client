@@ -52,12 +52,20 @@ public class Player : MovingObject
                 playerInput.GetIsJumping(),
                 isGrounded, 
                 inputFreeze);
-
-
         }
 
         // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
         GetGroundNormal(groundMask);
+    }
+
+    // 아이템 던지기는 LateUpdate에서 처리해야 정상동작합니다.
+    // 이유는 조합대에서 아이템 빼내기 감지를 OnTriggerStay에서 처리하는데, Update에서 처리할 경우 Throw가 먼저 실행되고 RemoveAllItemsFromCraftTable에서 FALSE만을 받게 되기 때문입니다.
+    private void LateUpdate()
+    {
+        if (!inputFreeze)
+        {
+            Throw();
+        }
     }
 
     // 물리 작용 업데이트
@@ -88,20 +96,6 @@ public class Player : MovingObject
         if (playerInput.GetIsInteract())
         {
             playerInput.MakeIsInteractFalse();
-            
-            // 플레이어의 손에 잡힐 때 문제가 되는 요소들을 모두 비활성화
-            Rigidbody rb = item.GetComponent<Rigidbody>();
-            rb.isKinematic = true;
-
-            // 해당 오브젝트의 중력 제어 비활성화
-            ObjectsGravityController objectGravityController = item.GetComponent<ObjectsGravityController>();
-            objectGravityController.enabled = false;
-
-            BoxCollider[] colliders = item.GetComponentsInChildren<BoxCollider>();
-            foreach (var col in colliders)
-            {
-                col.enabled = false;
-            }
 
             // 아이템 시스템에 아이템 장착
             playerItemSystem.AttachItem(item);
@@ -123,30 +117,35 @@ public class Player : MovingObject
             {
                 isGetItem = false;
                 craftTable.AddCraftItems(playerItemSystem.item);
-                Destroy(playerItemSystem.item);
                 Debug.Log("아이템 투입 완료!");
-                
             }
         }
     }
 
-    // 미구현
+    // 아이템을 던짐
     public void Throw()
     {
         if (playerInput.GetIsThrowOrCancel())
         {
-            Debug.Log("던지기 또는 취소 입력 받음");
             playerInput.MakeIsThrowOrCancelFalse();
+            if (isGetItem)
+            {
+                isGetItem = false;
+                playerItemSystem.ThrowItem();
+                Debug.Log("아이템 던지기 완료!");
+
+            }
         }
     }
 
-    // 미구현
-    public void Cancel()
+    // 조합대에 있는 아이템을 꺼냄
+    public void RemoveAllItemsFromCraftTable(Crafting craftTable)
     {
         if (playerInput.GetIsThrowOrCancel())
         {
-            Debug.Log("던지기 또는 취소 입력 받음");
             playerInput.MakeIsThrowOrCancelFalse();
+
+            craftTable.RemoveAllItems();
         }
     }
 }

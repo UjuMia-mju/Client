@@ -6,6 +6,9 @@ public class PlayerItemSystem : MonoBehaviour
 
     public GameObject item { get; private set; }
 
+    private const float THROW_OFFSET_HEIGHT = 3.5f;
+    private const float THROW_FORCE = 200f;
+
     private void Start()
     {
         foreach (Transform child in this.transform.GetComponentsInChildren<Transform>(true))
@@ -20,10 +23,48 @@ public class PlayerItemSystem : MonoBehaviour
 
     public void AttachItem(GameObject item)
     {
+        // 플레이어의 손에 잡힐 때 문제가 되는 요소들을 모두 비활성화
+        Rigidbody rb = item.GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+
+        // 해당 오브젝트의 중력 제어 비활성화
+        ObjectsGravityController objectGravityController = item.GetComponent<ObjectsGravityController>();
+        objectGravityController.enabled = false;
+
+        BoxCollider[] colliders = item.GetComponentsInChildren<BoxCollider>();
+        foreach (var col in colliders)
+        {
+            col.enabled = false;
+        }
+
         item.transform.SetParent(itemSocket.transform);
         item.transform.localPosition = Vector3.zero;
         item.transform.localRotation = Quaternion.identity;
 
         this.item = item;
+    }
+
+    public void ThrowItem()
+    {
+        // 비활성화된 요소들을 활성화
+        Rigidbody rb = item.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+
+        ObjectsGravityController objectGravityController = item.GetComponent<ObjectsGravityController>();
+        objectGravityController.enabled = true;
+
+        BoxCollider[] colliders = item.GetComponentsInChildren<BoxCollider>();
+        foreach (var col in colliders)
+        {
+            col.enabled = true;
+        }
+
+        this.item.transform.SetParent(null);
+
+        this.item.transform.position = this.transform.position + this.transform.up * THROW_OFFSET_HEIGHT;
+        rb.AddForce((this.transform.up + this.transform.forward) * THROW_FORCE);
+
+        // 참조 끊기
+        this.item = null;
     }
 }
