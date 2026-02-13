@@ -85,7 +85,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5958699419363030410}
   - component: {fileID: 3563584288983689877}
-  - component: {fileID: 7352695925507634514}
   - component: {fileID: 5533484033415629696}
   - component: {fileID: 7775035754535990155}
   m_Layer: 5
@@ -126,36 +125,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90857599718438145}
   m_CullTransparentMesh: 1
---- !u!114 &7352695925507634514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 90857599718438145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: -1262745714, guid: a4f84feb3470e304cac412d4bf021f0f, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!225 &5533484033415629696
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -180,12 +149,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627f5c5f85e64464a88017d505a9f2f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  transitionTime: 0.3
+  slideDistance: 1000
   panels:
   - {fileID: 866068234990107961}
   - {fileID: 2343124729763495855}
   - {fileID: 8584229887843184133}
-  leftButton: {fileID: 9078506503433937096}
-  rightButton: {fileID: 7479178603360976908}
+  buttonContainer: {fileID: 1449275519385211555}
 --- !u!1 &710546375947551318
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,8 +313,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC870\uC791 \uC124\uC815"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1d7a43fb382d852478312e7c0ed2d8ff, type: 2}
-  m_sharedMaterial: {fileID: 1440945473178108944, guid: 1d7a43fb382d852478312e7c0ed2d8ff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f084203953e55eb4682707fa8433423d, type: 2}
+  m_sharedMaterial: {fileID: 1440945473178108944, guid: f084203953e55eb4682707fa8433423d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -409,7 +379,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &866068234990107961
@@ -423,6 +393,7 @@ GameObject:
   - component: {fileID: 1478203458112549838}
   - component: {fileID: 3531213272089439407}
   - component: {fileID: 869946976537455973}
+  - component: {fileID: 318019423752183926}
   m_Layer: 5
   m_Name: WindowPanel
   m_TagString: Untagged
@@ -472,15 +443,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7137255, g: 0.7137255, b: 0.7137255, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -1262745714, guid: a4f84feb3470e304cac412d4bf021f0f, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -489,6 +460,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &318019423752183926
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866068234990107961}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &980740018269577112
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,7 +612,7 @@ GameObject:
   - component: {fileID: 5001002942222994029}
   - component: {fileID: 2553928862977791649}
   m_Layer: 5
-  m_Name: "\uD0A4\uBCF4\uB4DC"
+  m_Name: Topic1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -705,7 +688,7 @@ GameObject:
   - component: {fileID: 1095548649892753022}
   - component: {fileID: 4922736482823890813}
   m_Layer: 5
-  m_Name: "\uD6A8\uACFC\uC74C"
+  m_Name: Topic2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1553,6 +1536,7 @@ GameObject:
   - component: {fileID: 8701629285042843164}
   - component: {fileID: 5009758821058945794}
   - component: {fileID: 3503073147137921014}
+  - component: {fileID: 4265045090688916021}
   m_Layer: 5
   m_Name: SoundPanel
   m_TagString: Untagged
@@ -1602,15 +1586,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7137255, g: 0.7137255, b: 0.7137255, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -1262745714, guid: a4f84feb3470e304cac412d4bf021f0f, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1619,6 +1603,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &4265045090688916021
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2343124729763495855}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2385890777682293830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1631,7 +1627,7 @@ GameObject:
   - component: {fileID: 3485061964348550957}
   - component: {fileID: 6411854331366275}
   m_Layer: 5
-  m_Name: "\uD574\uC0C1\uB3C4"
+  m_Name: Topic1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3116,8 +3112,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC18C\uB9AC \uC124\uC815"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1d7a43fb382d852478312e7c0ed2d8ff, type: 2}
-  m_sharedMaterial: {fileID: 1440945473178108944, guid: 1d7a43fb382d852478312e7c0ed2d8ff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f084203953e55eb4682707fa8433423d, type: 2}
+  m_sharedMaterial: {fileID: 1440945473178108944, guid: f084203953e55eb4682707fa8433423d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3182,7 +3178,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &6541890913112646435
@@ -3842,10 +3838,10 @@ MonoBehaviour:
       - m_Target: {fileID: 7775035754535990155}
         m_TargetAssemblyTypeName: SettingsPanelController, Assembly-CSharp
         m_MethodName: OnRightButtonClicked
-        m_Mode: 1
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 7479178603360976908}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4220,8 +4216,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uADF8\uB798\uD53D \uC124\uC815"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1d7a43fb382d852478312e7c0ed2d8ff, type: 2}
-  m_sharedMaterial: {fileID: 1440945473178108944, guid: 1d7a43fb382d852478312e7c0ed2d8ff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f084203953e55eb4682707fa8433423d, type: 2}
+  m_sharedMaterial: {fileID: 1440945473178108944, guid: f084203953e55eb4682707fa8433423d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4400,7 +4396,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -162, y: 88}
-  m_SizeDelta: {x: 145, y: 55.8}
+  m_SizeDelta: {x: 158.4, y: 55.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5549108294074408900
 CanvasRenderer:
@@ -4452,7 +4448,7 @@ GameObject:
   - component: {fileID: 6869775876557551706}
   - component: {fileID: 550170141540838184}
   m_Layer: 5
-  m_Name: "\uD654\uBA74 \uBAA8\uB4DC"
+  m_Name: Topic2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4529,7 +4525,7 @@ GameObject:
   - component: {fileID: 7849518631265469875}
   - component: {fileID: 4672394988025320618}
   m_Layer: 5
-  m_Name: "\uBC30\uACBD\uC74C"
+  m_Name: Topic1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5018,6 +5014,7 @@ GameObject:
   - component: {fileID: 7323054438983668581}
   - component: {fileID: 8599834798731659207}
   - component: {fileID: 6991989985178111399}
+  - component: {fileID: 7425746888418209332}
   m_Layer: 5
   m_Name: ControlPanel
   m_TagString: Untagged
@@ -5067,15 +5064,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7137255, g: 0.7137255, b: 0.7137255, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -1262745714, guid: a4f84feb3470e304cac412d4bf021f0f, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -5084,6 +5081,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &7425746888418209332
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8584229887843184133}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8611503878236194694
 GameObject:
   m_ObjectHideFlags: 0
@@ -5741,10 +5750,10 @@ MonoBehaviour:
       - m_Target: {fileID: 7775035754535990155}
         m_TargetAssemblyTypeName: SettingsPanelController, Assembly-CSharp
         m_MethodName: OnLeftButtonClicked
-        m_Mode: 1
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 9078506503433937096}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5762,7 +5771,7 @@ GameObject:
   - component: {fileID: 5771914167362807470}
   - component: {fileID: 1741365754830439775}
   m_Layer: 5
-  m_Name: "\uB9C8\uC6B0\uC2A4"
+  m_Name: Topic2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
