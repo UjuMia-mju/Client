@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Item
+  - CraftTable
   layers:
   - Default
   - TransparentFX

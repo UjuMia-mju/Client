@@ -2,9 +2,9 @@
 
 public class PlayerItemSystem : MonoBehaviour
 {
-    public GameObject itemSocket {  get; private set; }
+    public GameObject itemSocket {get; private set;}
 
-    public GameObject item { get; private set; }
+    public GameObject currentEquipItem { get; private set; }
 
     private const float THROW_OFFSET_HEIGHT = 3.5f;
     private const float THROW_FORCE = 200f;
@@ -21,6 +21,14 @@ public class PlayerItemSystem : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (currentEquipItem != null)
+        {
+            currentEquipItem.transform.position = itemSocket.transform.position;
+        }
+    }
+
     public void AttachItem(GameObject item)
     {
         // 플레이어의 손에 잡힐 때 문제가 되는 요소들을 모두 비활성화
@@ -31,40 +39,39 @@ public class PlayerItemSystem : MonoBehaviour
         ObjectsGravityController objectGravityController = item.GetComponent<ObjectsGravityController>();
         objectGravityController.enabled = false;
 
-        BoxCollider[] colliders = item.GetComponentsInChildren<BoxCollider>();
-        foreach (var col in colliders)
-        {
-            col.enabled = false;
-        }
+        BoxCollider boxCollider = item.GetComponent<BoxCollider>();
+        boxCollider.enabled = false;
 
         item.transform.SetParent(itemSocket.transform);
         item.transform.localPosition = Vector3.zero;
         item.transform.localRotation = Quaternion.identity;
 
-        this.item = item;
+        this.currentEquipItem = item;
     }
 
     public void ThrowItem()
     {
         // 비활성화된 요소들을 활성화
-        Rigidbody rb = item.GetComponent<Rigidbody>();
+        Rigidbody rb = currentEquipItem.GetComponent<Rigidbody>();
         rb.isKinematic = false;
 
-        ObjectsGravityController objectGravityController = item.GetComponent<ObjectsGravityController>();
+        ObjectsGravityController objectGravityController = currentEquipItem.GetComponent<ObjectsGravityController>();
         objectGravityController.enabled = true;
 
-        BoxCollider[] colliders = item.GetComponentsInChildren<BoxCollider>();
-        foreach (var col in colliders)
-        {
-            col.enabled = true;
-        }
+        BoxCollider boxCollider = currentEquipItem.GetComponent<BoxCollider>();
+        boxCollider.enabled = true;
 
-        this.item.transform.SetParent(null);
+        this.currentEquipItem.transform.SetParent(null);
 
-        this.item.transform.position = this.transform.position + this.transform.up * THROW_OFFSET_HEIGHT;
+        this.currentEquipItem.transform.position = this.transform.position + this.transform.up * THROW_OFFSET_HEIGHT;
         rb.AddForce((this.transform.up + this.transform.forward) * THROW_FORCE);
 
         // 참조 끊기
-        this.item = null;
+        DetachItem();
+    }
+
+    public void DetachItem()
+    {
+        this.currentEquipItem = null;
     }
 }

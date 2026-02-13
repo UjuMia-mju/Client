@@ -1,6 +1,14 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Animations;
+using static UnityEditor.Progress;
+
+enum PlayerTriggetDetectedState
+{
+    Item,
+    CraftTable,
+    None
+}
 
 public class Player : MovingObject
 {
@@ -12,10 +20,16 @@ public class Player : MovingObject
     private PlayerAnimator playerAnimator;
     public PlayerItemSystem playerItemSystem { get; private set; }
 
+    public GameObject nearestObject { get; private set; } // 플레이어에게서 가장 가까운 오브젝트
+    private PlayerTriggetDetectedState playerTriggetDetectedState = PlayerTriggetDetectedState.None; // 플레이어가 트리거로 무엇을 발견했는지 상태
+
+    private const float DETECT_RADIUS = 5.5f; // 구형 트리거 반지름 
+
+
     public bool isGetItem { get; private set; } = false;
 
-    // TODO : 기초 플레이어 능력치 시스템 구현 - UI담당과 상의 필요
-    private PlayerStat playerStat;
+    // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
+    //private PlayerStat playerStat;
 
     // 초기화
     protected override void Awake()
@@ -25,7 +39,7 @@ public class Player : MovingObject
         playerInput = GetComponent<PlayerInput>();
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
-        playerStat = GetComponent<PlayerStat>();
+        //playerStat = GetComponent<PlayerStat>();
 
         playerAnimator.Initialize();
     }
@@ -33,7 +47,7 @@ public class Player : MovingObject
     private void Start()
     {
         // 산소가 줄어들기 시작함
-        StartCoroutine(playerStat.OxygenDecrease());
+        //StartCoroutine(playerStat.OxygenDecrease());
     }
 
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
@@ -52,20 +66,16 @@ public class Player : MovingObject
                 playerInput.GetIsJumping(),
                 isGrounded, 
                 inputFreeze);
+
+            KeyEInteract();
+            KeyFInteract();
         }
 
         // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
         GetGroundNormal(groundMask);
-    }
 
-    // 아이템 던지기는 LateUpdate에서 처리해야 정상동작합니다.
-    // 이유는 조합대에서 아이템 빼내기 감지를 OnTriggerStay에서 처리하는데, Update에서 처리할 경우 Throw가 먼저 실행되고 RemoveAllItemsFromCraftTable에서 FALSE만을 받게 되기 때문입니다.
-    private void LateUpdate()
-    {
-        if (!inputFreeze)
-        {
-            Throw();
-        }
+        // 구형 트리거
+        SphereTriggerFunc();
     }
 
     // 물리 작용 업데이트
@@ -89,65 +99,89 @@ public class Player : MovingObject
         }
     }
 
-    // TODO : 이하 4개의 함수 모두 구현해야 함
-    // 아이템 획득에 대한 함수
-    public void GetItem(GameObject item)
+    // E키 상호작용
+    private void KeyEInteract()
     {
         if (playerInput.GetIsInteract())
         {
             playerInput.MakeIsInteractFalse();
 
-            // 아이템 시스템에 아이템 장착
-            playerItemSystem.AttachItem(item);
-            isGetItem = true;
-
-            Debug.Log("아이템 획득! 이 아이템의 이름은 : " + item);
-        }
-    }
-
-    // 아이템을 들고 있는지 검사하고, 들어 있다면 소켓에 있는 아이템을 Destroy 하고 isGetItem을 false로 변경
-    public void Crafting(Crafting craftTable)
-    {
-        if (playerInput.GetIsInteract())
-        {
-            Debug.Log("상호작용 입력 받음");
-            playerInput.MakeIsInteractFalse();
-
-            if (isGetItem)
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 아이템이며, 빈 손일 때
+            if (nearestObject.CompareTag(Define.Tag.ITEM) && !isGetItem)
             {
+                playerItemSystem.AttachItem(nearestObject);
+                isGetItem = true;
+            }
+
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 조합대이며, 아이템을 들고 있을 때
+            // 또한 투입할 때 플레이어의 손에서 Detach
+            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isGetItem)
+            {
+                Debug.Log("조합대 상호작용 입력받았습니다");
+                Crafting craftTable = nearestObject.GetComponent<Crafting>();
                 isGetItem = false;
-                craftTable.AddCraftItems(playerItemSystem.item);
+                craftTable.AddCraftItems(playerItemSystem.currentEquipItem);
+                playerItemSystem.DetachItem();
                 Debug.Log("아이템 투입 완료!");
             }
+
+            // 그 외에는 처리하지 않음
+
         }
     }
 
-    // 아이템을 던짐
-    public void Throw()
+    // F키 상호작용
+    private void KeyFInteract()
     {
         if (playerInput.GetIsThrowOrCancel())
         {
             playerInput.MakeIsThrowOrCancelFalse();
-            if (isGetItem)
+
+            if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
+            {
+                Crafting craftTable = nearestObject.GetComponent<Crafting>();
+                craftTable.RemoveAllItems();
+                Debug.Log("조합대에서 아이템 빼내기");
+            }
+
+            // 아이템을 던지고, 플레이어의 손에서 Detach
+            else if (isGetItem)
             {
                 isGetItem = false;
                 playerItemSystem.ThrowItem();
-                Debug.Log("아이템 던지기 완료!");
 
+                playerItemSystem.DetachItem();
+                Debug.Log("아이템 던지기 완료!");
             }
         }
     }
 
-    // 조합대에 있는 아이템을 꺼냄
-    public void RemoveAllItemsFromCraftTable(Crafting craftTable)
+    // 구형 트리거를 생성해 감지합니다.
+    // OnTrigger는 리스트 반환이 불가능해 OverlapSphere를 사용합니다.
+    private void SphereTriggerFunc()
     {
-        if (playerInput.GetIsThrowOrCancel())
-        {
-            playerInput.MakeIsThrowOrCancelFalse();
+        Collider[] colliders = Physics.OverlapSphere(this.transform.position, DETECT_RADIUS);
+        float nearestDist = Mathf.Infinity;
 
-            craftTable.RemoveAllItems();
+        foreach (Collider col in colliders)
+        {
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE))
+            {
+                float dist = Vector3.Distance(transform.position, col.transform.position);
+                if (dist < nearestDist)
+                {
+                    nearestDist = dist;
+                    nearestObject = col.gameObject;
+                }
+            }
         }
     }
-
+    
+    // 현재 콜라이더 탐지 범위를 시각화해 디버깅합니다.
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, DETECT_RADIUS);
+    }
 
 }

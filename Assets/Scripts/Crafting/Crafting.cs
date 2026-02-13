@@ -10,16 +10,6 @@ public class Crafting : MonoBehaviour
     private const float ITEM_THROW_HEIGHT = 3.5f; 
     private const float ITEM_THROW_FORCE = 200f;
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag(Define.Tag.PLAYER))
-        {
-            Player player = other.GetComponent<Player>();
-            player.Crafting(this);
-            player.RemoveAllItemsFromCraftTable(this);
-        }
-    }
-
     public void AddCraftItems(GameObject data)
     {
         data.transform.SetParent(this.transform);
