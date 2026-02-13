@@ -37,7 +37,6 @@ public class WindowPanelController : MonoBehaviour
 
     public void OnWindowModeChanged()
     {
-        // 0번: 전체 화면, 1번: 창 모드
         int index = windowModeDropdown.value;
 
         switch (index)

@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
   fadePrefab: {fileID: 8091633504527073339, guid: 9e0286a86c8b5bb4a9aef7e2a338d91d, type: 3}
+  fadeDuration: 1
 --- !u!4 &133576910
 Transform:
   m_ObjectHideFlags: 0
@@ -365,7 +366,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 300}
+  m_SizeDelta: {x: 450, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1201466391
 MonoBehaviour:
