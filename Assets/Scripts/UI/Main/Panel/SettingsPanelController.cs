@@ -1,144 +1,146 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class SettingsPanelController : MonoBehaviour
+namespace Main.Panel
 {
-    [Header("Settings")]
-    [SerializeField] private float transitionDuration = 0.25f; // 전환 속도
-    [SerializeField] private float slideOffset = 1920f;       // 패널이 이동할 거리 (화면 해상도 너비 추천)
-    [SerializeField] private AnimationCurve easeCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 부드러운 움직임 커브
-
-    [Header("References")]
-    [SerializeField] private List<GameObject> panels;
-
-    private int currentIndex = 0;
-    private bool isAnimating = false;
-
-    private void Start()
+    public class SettingsPanelController : MonoBehaviour
     {
-        // 초기화: 첫 번째만 켜고 나머지는 끄기
-        for (int i = 0; i < panels.Count; i++)
-        {
-            var cg = panels[i].GetComponent<CanvasGroup>();
-            var rect = panels[i].GetComponent<RectTransform>();
+        [Header("Settings")]
+        [SerializeField] private float transitionDuration = 0.25f; // 전환 속도
+        [SerializeField] private float slideOffset = 1920f;       // 패널이 이동할 거리 (화면 해상도 너비 추천)
+        [SerializeField] private AnimationCurve easeCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 부드러운 움직임 커브
 
-            if (i == currentIndex)
+        [Header("References")]
+        [SerializeField] private List<GameObject> panels;
+
+        private int currentIndex = 0;
+        private bool isAnimating = false;
+
+        private void Start()
+        {
+            // 초기화: 첫 번째만 켜고 나머지는 끄기
+            for (int i = 0; i < panels.Count; i++)
             {
-                panels[i].SetActive(true);
-                cg.alpha = 1;
-                rect.anchoredPosition = Vector2.zero;
+                var cg = panels[i].GetComponent<CanvasGroup>();
+                var rect = panels[i].GetComponent<RectTransform>();
+
+                if (i == currentIndex)
+                {
+                    panels[i].SetActive(true);
+                    cg.alpha = 1;
+                    rect.anchoredPosition = Vector2.zero;
+                }
+                else
+                {
+                    panels[i].SetActive(false);
+                    cg.alpha = 0;
+                }
             }
-            else
+        }
+
+        // 왼쪽 버튼 (이전)
+        public void OnLeftButtonClicked(GameObject btnObj)
+        {
+            if (isAnimating) return;
+        
+            StartCoroutine(AnimateButton(btnObj.transform));
+
+            int prevIndex = (currentIndex - 1 < 0) ? panels.Count - 1 : currentIndex - 1;
+        
+            // 왼쪽으로 이동: 현재 패널은 오른쪽으로 나가고, 새 패널은 왼쪽에서 들어옴
+            StartCoroutine(SlideRoutine(currentIndex, prevIndex, -1));
+        
+            currentIndex = prevIndex;
+        }
+
+        // 오른쪽 버튼 (다음)
+        public void OnRightButtonClicked(GameObject btnObj)
+        {
+            if (isAnimating) return;
+
+            StartCoroutine(AnimateButton(btnObj.transform));
+
+            int nextIndex = (currentIndex + 1 >= panels.Count) ? 0 : currentIndex + 1;
+
+            // 오른쪽으로 이동: 현재 패널은 왼쪽으로 나가고, 새 패널은 오른쪽에서 들어옴
+            StartCoroutine(SlideRoutine(currentIndex, nextIndex, 1));
+
+            currentIndex = nextIndex;
+        }
+
+        // 슬라이드 애니메이션 (검증 로직 제거됨)
+        private IEnumerator SlideRoutine(int outIndex, int inIndex, int direction)
+        {
+            isAnimating = true;
+
+            // 자주 쓰는 컴포넌트 캐싱
+            RectTransform outRect = panels[outIndex].GetComponent<RectTransform>();
+            CanvasGroup outCG = panels[outIndex].GetComponent<CanvasGroup>();
+        
+            RectTransform inRect = panels[inIndex].GetComponent<RectTransform>();
+            CanvasGroup inCG = panels[inIndex].GetComponent<CanvasGroup>();
+
+            // 들어올 패널 준비
+            panels[inIndex].SetActive(true);
+            float startX = slideOffset * direction; // 1이면 오른쪽(1920), -1이면 왼쪽(-1920)
+        
+            inRect.anchoredPosition = new Vector2(startX, 0);
+            inCG.alpha = 0;
+
+            float timer = 0f;
+
+            while (timer < transitionDuration)
             {
-                panels[i].SetActive(false);
-                cg.alpha = 0;
+                timer += Time.deltaTime;
+                float t = timer / transitionDuration;
+                float curveValue = easeCurve.Evaluate(t); // 커브 적용으로 고급스러운 느낌
+
+                // 나가는 패널 이동 (0 -> 반대편)
+                outRect.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2(-startX, 0), curveValue);
+                outCG.alpha = 1 - curveValue;
+
+                // 들어오는 패널 이동 (시작점 -> 0)
+                inRect.anchoredPosition = Vector2.Lerp(new Vector2(startX, 0), Vector2.zero, curveValue);
+                inCG.alpha = curveValue;
+
+                yield return null;
             }
+
+            // 애니메이션 종료 후 확실하게 값 고정
+            panels[outIndex].SetActive(false);
+            outRect.anchoredPosition = Vector2.zero; // 다음을 위해 원위치 복구
+        
+            inRect.anchoredPosition = Vector2.zero;
+            inCG.alpha = 1;
+
+            isAnimating = false;
         }
-    }
 
-    // 왼쪽 버튼 (이전)
-    public void OnLeftButtonClicked(GameObject btnObj)
-    {
-        if (isAnimating) return;
-        
-        StartCoroutine(AnimateButton(btnObj.transform));
-
-        int prevIndex = (currentIndex - 1 < 0) ? panels.Count - 1 : currentIndex - 1;
-        
-        // 왼쪽으로 이동: 현재 패널은 오른쪽으로 나가고, 새 패널은 왼쪽에서 들어옴
-        StartCoroutine(SlideRoutine(currentIndex, prevIndex, -1));
-        
-        currentIndex = prevIndex;
-    }
-
-    // 오른쪽 버튼 (다음)
-    public void OnRightButtonClicked(GameObject btnObj)
-    {
-        if (isAnimating) return;
-
-        StartCoroutine(AnimateButton(btnObj.transform));
-
-        int nextIndex = (currentIndex + 1 >= panels.Count) ? 0 : currentIndex + 1;
-
-        // 오른쪽으로 이동: 현재 패널은 왼쪽으로 나가고, 새 패널은 오른쪽에서 들어옴
-        StartCoroutine(SlideRoutine(currentIndex, nextIndex, 1));
-
-        currentIndex = nextIndex;
-    }
-
-    // 슬라이드 애니메이션 (검증 로직 제거됨)
-    private IEnumerator SlideRoutine(int outIndex, int inIndex, int direction)
-    {
-        isAnimating = true;
-
-        // 자주 쓰는 컴포넌트 캐싱
-        RectTransform outRect = panels[outIndex].GetComponent<RectTransform>();
-        CanvasGroup outCG = panels[outIndex].GetComponent<CanvasGroup>();
-        
-        RectTransform inRect = panels[inIndex].GetComponent<RectTransform>();
-        CanvasGroup inCG = panels[inIndex].GetComponent<CanvasGroup>();
-
-        // 들어올 패널 준비
-        panels[inIndex].SetActive(true);
-        float startX = slideOffset * direction; // 1이면 오른쪽(1920), -1이면 왼쪽(-1920)
-        
-        inRect.anchoredPosition = new Vector2(startX, 0);
-        inCG.alpha = 0;
-
-        float timer = 0f;
-
-        while (timer < transitionDuration)
+        // 버튼 펀치 효과 (작아졌다 커짐)
+        private IEnumerator AnimateButton(Transform btnInfo)
         {
-            timer += Time.deltaTime;
-            float t = timer / transitionDuration;
-            float curveValue = easeCurve.Evaluate(t); // 커브 적용으로 고급스러운 느낌
+            Vector3 defaultScale = Vector3.one;
+            Vector3 pressedScale = new Vector3(0.9f, 0.9f, 1f);
 
-            // 나가는 패널 이동 (0 -> 반대편)
-            outRect.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2(-startX, 0), curveValue);
-            outCG.alpha = 1 - curveValue;
+            float duration = 0.1f;
+            float time = 0f;
 
-            // 들어오는 패널 이동 (시작점 -> 0)
-            inRect.anchoredPosition = Vector2.Lerp(new Vector2(startX, 0), Vector2.zero, curveValue);
-            inCG.alpha = curveValue;
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                btnInfo.localScale = Vector3.Lerp(defaultScale, pressedScale, time / duration);
+                yield return null;
+            }
 
-            yield return null;
+            time = 0f;
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                btnInfo.localScale = Vector3.Lerp(pressedScale, defaultScale, time / duration);
+                yield return null;
+            }
+            btnInfo.localScale = defaultScale;
         }
-
-        // 애니메이션 종료 후 확실하게 값 고정
-        panels[outIndex].SetActive(false);
-        outRect.anchoredPosition = Vector2.zero; // 다음을 위해 원위치 복구
-        
-        inRect.anchoredPosition = Vector2.zero;
-        inCG.alpha = 1;
-
-        isAnimating = false;
-    }
-
-    // 버튼 펀치 효과 (작아졌다 커짐)
-    private IEnumerator AnimateButton(Transform btnInfo)
-    {
-        Vector3 defaultScale = Vector3.one;
-        Vector3 pressedScale = new Vector3(0.9f, 0.9f, 1f);
-
-        float duration = 0.1f;
-        float time = 0f;
-
-        while (time < duration)
-        {
-            time += Time.deltaTime;
-            btnInfo.localScale = Vector3.Lerp(defaultScale, pressedScale, time / duration);
-            yield return null;
-        }
-
-        time = 0f;
-        while (time < duration)
-        {
-            time += Time.deltaTime;
-            btnInfo.localScale = Vector3.Lerp(pressedScale, defaultScale, time / duration);
-            yield return null;
-        }
-        btnInfo.localScale = defaultScale;
     }
 }

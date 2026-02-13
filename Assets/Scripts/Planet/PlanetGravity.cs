@@ -1,7 +1,4 @@
-﻿using UnityEditor.Overlays;
-using UnityEditor.ShaderGraph;
-using UnityEngine;
-using UnityEngine.Rendering.Universal;
+﻿using UnityEngine;
 
 // 행성의 만유인력을 처리하는 클래스
 public class PlanetGravity : MonoBehaviour

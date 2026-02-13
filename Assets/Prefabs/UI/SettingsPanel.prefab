@@ -149,13 +149,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627f5c5f85e64464a88017d505a9f2f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  transitionTime: 0.3
-  slideDistance: 1000
+  transitionDuration: 0.25
+  slideOffset: 1920
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   panels:
   - {fileID: 866068234990107961}
   - {fileID: 2343124729763495855}
   - {fileID: 8584229887843184133}
-  buttonContainer: {fileID: 1449275519385211555}
 --- !u!1 &710546375947551318
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,13 +417,14 @@ GameObject:
   - component: {fileID: 3531213272089439407}
   - component: {fileID: 869946976537455973}
   - component: {fileID: 318019423752183926}
+  - component: {fileID: 9190119154390028124}
   m_Layer: 5
   m_Name: WindowPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1478203458112549838
 RectTransform:
   m_ObjectHideFlags: 0
@@ -472,6 +496,24 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &9190119154390028124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866068234990107961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d89ec01e4cfcc1d49b6c053558f25c5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  resolutionDropdown: {fileID: 8919450029701686190}
+  windowModeDropdown: {fileID: 3614044885392990396}
+  resolutions:
+  - {x: 1920, y: 1080}
+  - {x: 2560, y: 1440}
+  - {x: 3840, y: 2160}
 --- !u!1 &980740018269577112
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,9 +1691,9 @@ RectTransform:
   - {fileID: 6348876767452043807}
   m_Father: {fileID: 865413496150505871}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -18.36}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 36.72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3485061964348550957
@@ -3035,15 +3077,30 @@ MonoBehaviour:
   m_MultiSelect: 0
   m_Options:
     m_Options:
-    - m_Text: 1920 x 1080 (FHD)
+    - m_Text: 1920 X 1080 (FHD)
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: 2560 x 1440 (UHD)
+    - m_Text: 2560 X 1440 (QHD)
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: 3840 X 2160 (UHD)
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9190119154390028124}
+        m_TargetAssemblyTypeName: Main.Panel.WindowPanelController, Assembly-CSharp
+        m_MethodName: OnResolutionChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!1 &6396156596511363992
 GameObject:
@@ -4470,9 +4527,9 @@ RectTransform:
   - {fileID: 5015656640234835843}
   m_Father: {fileID: 865413496150505871}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -70.380005}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 36.72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6869775876557551706
@@ -5409,12 +5466,27 @@ MonoBehaviour:
     - m_Text: "\uC804\uCCB4 \uD654\uBA74"
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: "\uCC3D \uD654\uBA74 (\uD14C\uB450\uB9AC \uC5C6\uC74C)"
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: "\uCC3D \uD654\uBA74"
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9190119154390028124}
+        m_TargetAssemblyTypeName: Main.Panel.WindowPanelController, Assembly-CSharp
+        m_MethodName: OnWindowModeChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!1 &8905087177555792732
 GameObject:
@@ -5900,7 +5972,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1920 x 1080 (FHD)
+  m_text: 1920 X 1080 (FHD)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
