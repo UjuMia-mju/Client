@@ -36,3 +36,33 @@ message S_CHAT
 	uint64 playerId = 1;
 	string msg = 2;
 }
+
+// 플레이어 움직임
+message C_MOVE
+{
+	PosInfo pos = 1;
+	RotInfo rot = 2;
+}
+
+message S_MOVE
+{
+	uint64 playerId = 1;
+	PosInfo pos = 2;
+	RotInfo rot = 3;
+}
+
+// 플레이어 정보
+message S_PLAYER_LIST
+{
+	repeated PlayerInfo players = 1;
+}
+
+message S_PLAYER_ENTER
+{
+	PlayerInfo player = 1;
+}
+
+message S_PLAYER_LEAVE
+{
+	PlayerInfo player = 1;
+}

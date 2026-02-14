@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameStages/Stage01Level01.unity
     guid: 002c9d64a9a79ae4099485a459d388b8
+  - enabled: 1
+    path: Assets/Scenes/TestLoginScene.unity
+    guid: 4b6bf4fa7b294cc409ef52dfef3b4595
+  - enabled: 1
+    path: Assets/Scenes/TestMoveScene.unity
+    guid: f92c37ec4883f1b46bf63fc7595be2e5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

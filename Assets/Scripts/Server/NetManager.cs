@@ -24,6 +24,9 @@ public class NetManager : Singleton<NetManager>
     public bool IsConnected => _isConnected;
 
 
+    // 임시로 정보 저장 (실제 게임에서는 별도의 로그인 관리 필요)
+    public int _playerId;
+
     #region Connect
     public void Connect(string ip, int port)
     {
@@ -289,6 +292,31 @@ public class NetManager : Singleton<NetManager>
         };
 
         SendPacket(PacketId.PKT_C_CHAT, chatPacket);
+    }
+
+    public void SendMove(Vector3 position, Quaternion rotation)
+    {
+        PosInfo posInfo = new PosInfo
+        {
+            X = position.x,
+            Y = position.y,
+            Z = position.z
+        };
+
+        RotInfo rotInfo = new RotInfo
+        {
+            X = rotation.eulerAngles.x,
+            Y = rotation.eulerAngles.y,
+            Z = rotation.eulerAngles.z
+        };
+
+        C_MOVE movePacket = new C_MOVE
+        {
+            Pos = posInfo,
+            Rot = rotInfo
+        };
+
+        SendPacket(PacketId.PKT_C_MOVE, movePacket);
     }
 
     /// <summary>
