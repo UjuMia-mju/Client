@@ -46,6 +46,8 @@ public class IntroPanelController : MonoBehaviour
     {
         // 연출 중이거나 이미 눌렀다면 무시
         if (!_canInteract) return;
+        
+        SoundManager.Instance.PlaySFX("Click1");
 
         _canInteract = false; 
         _anyKeyAction.Disable(); // 추가 입력 방지

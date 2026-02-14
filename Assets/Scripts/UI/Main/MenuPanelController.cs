@@ -58,6 +58,7 @@ public class MenuPanelController : MonoBehaviour
     {
         // 버튼 클릭 시 연출 실행
         set.button.onClick.AddListener(() => {
+            SoundManager.Instance.PlaySFX("Click2");
             OnButtonClicked(set.button, set.panelPrefab);
         });
 
@@ -66,6 +67,7 @@ public class MenuPanelController : MonoBehaviour
         
         // PointerEnter (커짐)
         AddEvent(trigger, EventTriggerType.PointerEnter, () => {
+            SoundManager.Instance.PlaySFX("Hover");
             if (set.button.interactable) 
                 set.button.transform.localScale = _buttonOriginScales[set.button] * _hoverScale;
         });
@@ -83,7 +85,7 @@ public class MenuPanelController : MonoBehaviour
     private void OnButtonClicked(Button clickedBtn, GameObject panelPrefab)
     {
         DisableAllHovers();
-
+        
         foreach (GameObject go in _mainButtonObjects)
         {
             if (go == null) continue;

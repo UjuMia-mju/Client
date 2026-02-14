@@ -42,6 +42,8 @@ namespace Main.Panel
         // 왼쪽 버튼 (이전)
         public void OnLeftButtonClicked(GameObject btnObj)
         {
+            SoundManager.Instance.PlaySFX("Click4");
+            
             if (isAnimating) return;
         
             StartCoroutine(AnimateButton(btnObj.transform));
@@ -57,6 +59,8 @@ namespace Main.Panel
         // 오른쪽 버튼 (다음)
         public void OnRightButtonClicked(GameObject btnObj)
         {
+            SoundManager.Instance.PlaySFX("Click4");
+            
             if (isAnimating) return;
 
             StartCoroutine(AnimateButton(btnObj.transform));
