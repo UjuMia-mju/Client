@@ -90,6 +90,7 @@ public class NetManager : Singleton<NetManager>
         try
         {
             int bytesRead = _socket.EndReceive(ar);
+            Debug.Log($"Received {bytesRead} bytes from server");  // 로그
 
             if (bytesRead == 0)
             {
@@ -134,6 +135,7 @@ public class NetManager : Singleton<NetManager>
     // 패킷 파싱 (C++ PacketSession::OnRecv 로직)
     private int ProcessPackets()
     {
+        Debug.Log($"Processing packets in buffer. DataSize: {_recvBuffer.DataSize} bytes");  // 로그
         int processedBytes = 0;
 
         while (true)
@@ -154,19 +156,21 @@ public class NetManager : Singleton<NetManager>
                 break;
 
             // Unity 메인 스레드에서 패킷 처리
-            byte[] packetData = new byte[header.size];
-            Array.Copy(buffer.Array, buffer.Offset + processedBytes, packetData, 0, header.size);
+            byte[] packetData = new byte[header.size - PacketHeader.HeaderSize];
+            Array.Copy(buffer.Array, buffer.Offset + processedBytes + PacketHeader.HeaderSize, packetData, 0, packetData.Length);
 
-            // MainThreadDispatcher.Enqueue(() =>
-            // {
-            //     PacketManager.Instance.HandlePacket(packetData);
-            // });
+            MainThreadDispatcher.Enqueue(() =>
+            {
+                PacketManager.Instance.HandlePacket((PacketId)header.id, packetData);
+            });
 
             processedBytes += header.size;
         }
 
         return processedBytes;
     }
+
+    // ==================== 높은 수준의 Recv 메서드들 ====================
 
     #endregion
     // ------------------- Send -------------------
@@ -252,7 +256,8 @@ public class NetManager : Singleton<NetManager>
         }
     }
 
-    //----------------
+    //---------------
+
     // ==================== 높은 수준의 전송 메서드들 ====================
 
     public void SendLogin(string userId, string password)
