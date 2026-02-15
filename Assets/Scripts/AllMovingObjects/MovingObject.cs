@@ -21,6 +21,7 @@ public class MovingObject : MonoBehaviour
     public Vector3 groundDir {get; protected set; }
 
     private const float RAY_LENGTH = 2.1f;
+    private const float VELOCITY_HUNDRED = 100f;
 
     protected bool isGrounded = true;
 
@@ -126,5 +127,10 @@ public class MovingObject : MonoBehaviour
         {
             groundDir = hit.normal;
         }
+    }
+
+    protected float GetMovingAmount()
+    {
+        return rb.linearVelocity.magnitude * VELOCITY_HUNDRED;
     }
 }

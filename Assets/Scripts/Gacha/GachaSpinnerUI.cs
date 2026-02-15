@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Drawing;
 
 public class GachaSpinnerUI : MonoBehaviour
 {
@@ -15,6 +17,18 @@ public class GachaSpinnerUI : MonoBehaviour
     public int winnerIndex = 45;        // 당첨 아이템이 위치할 인덱스
     public float spinDuration = 5f;     // 돌아가는 시간
     public AnimationCurve slowingCurve; // 감속 그래프 (에디터에서 설정)
+
+    [Header("Result Popup Settings")]
+    public GameObject resultPanel;      // 결과창 패널
+    public Image resultIconImage;       // 결과 아이콘
+    public TextMeshProUGUI resultNameText;   // 결과 이름
+    public TextMeshProUGUI resultRarityText; // 결과 등급
+    public Button closeButton;          // 닫기 버튼
+
+    [Header("Audio Settings")]
+    public AudioSource audioSource; // 오디오 소스 컴포넌트 연결
+    public AudioClip tickSound;     // 스핀 틱 사운드
+    public AudioClip winSound;      // 당첨 사운드
 
     private List<GameObject> spawnedSlots = new List<GameObject>();
     private float slotWidth;
@@ -32,6 +46,10 @@ public class GachaSpinnerUI : MonoBehaviour
         {
             slowingCurve = AnimationCurve.Linear(0, 0, 1, 1);
         }
+
+        // 닫기 버튼을 누르면 CloseResultPopup 함수 실행
+        if(closeButton != null)
+            closeButton.onClick.AddListener(CloseResultPopup);
     }
 
     // 외부(GachaManager)에서 이 함수를 호출하여 연출 시작
@@ -50,6 +68,10 @@ public class GachaSpinnerUI : MonoBehaviour
 
         // 2. 가짜 릴 채우기
         // winnerIndex 위치에만 진짜 당첨 아이템을 넣고, 나머지는 랜덤한 '필러'로 채움
+
+        // 루프 밖에서 Near Miss 여부 결정 (50% 확률)
+        bool triggerNearMiss = Random.value < 0.5f; 
+
         for (int i = 0; i < totalSlots; i++)
         {
             GameObject newSlot = Instantiate(itemSlotPrefab, contentReel);
@@ -59,7 +81,15 @@ public class GachaSpinnerUI : MonoBehaviour
             GachaItem itemData;
             if (i == winnerIndex)
             {
-                itemData = winner; // 여기가 진짜 당첨!
+                itemData = winner; // 진짜 당첨아이템
+            }
+            else if (triggerNearMiss && i == winnerIndex + 1)
+            {
+                // Near Miss (50%)
+                // 당첨 아이템 바로 옆에 높은 등급의 아이템 배치
+                itemData = gachaManager.GetRandomLegendaryItem();
+
+                Debug.Log("Near Miss 실행");
             }
             else
             {
@@ -97,16 +127,39 @@ public class GachaSpinnerUI : MonoBehaviour
         Vector2 startPosition = contentReel.anchoredPosition;
 
         // 4. 회전 애니메이션 (Lerp + Animation Curve)
+        // 소리 재생을 위한 변수
+        int lastIndex = 0;
+
         float elapsedTime = 0f;
         while (elapsedTime < spinDuration)
         {
             elapsedTime += Time.deltaTime;
             // 0~1 사이 진행률
             float percentage = elapsedTime / spinDuration;
-            // 커브를 적용하여 '빠르다가 느려지는' 진행률로 변환
+            // 커브를 적용하여 빠르다가 느려지는 진행률로 변환
             float curvePercent = slowingCurve.Evaluate(percentage);
 
             contentReel.anchoredPosition = Vector2.Lerp(startPosition, endPosition, curvePercent);
+
+            // 틱 사운드 재생
+            // 현재 Content가 얼마나 이동했는지 계산 (왼쪽으로 가니까 음수를 양수로 변환)
+            float currentAbsX = Mathf.Abs(contentReel.anchoredPosition.x);
+            // 경계선(왼쪽 모서리) 인식 보정
+            // 원래 위치에 '슬롯 너비의 절반'을 더함.
+            // 시작 부분(왼쪽 선)이 닿을 때 인덱스가 바뀜.
+            float adjustedX = currentAbsX + (slotWidth / 2f);
+            // 인덱스 계산
+            int currentIndex = (int)(adjustedX / slotWidth);
+            // 아이템 번호가 바뀌었다면(=하나가 지나가면)
+            if (currentIndex != lastIndex)
+            {
+                // 소리가 너무 인위적이지 않게 피치에 약간 랜덤성 추가
+                audioSource.pitch = Random.Range(0.95f, 1.05f);
+                // 소리 재생
+                audioSource.PlayOneShot(tickSound);
+                // 마지막 인덱스 업데이트
+                lastIndex = currentIndex;
+            }
 
             yield return null;
         }
@@ -114,6 +167,39 @@ public class GachaSpinnerUI : MonoBehaviour
         // 5. 최종 위치 보정 및 결과 발표
         contentReel.anchoredPosition = endPosition;
         Debug.Log("애니메이션 종료! 최종 획득: " + winner.itemName);
-        // 여기서 결과창 팝업 등을 띄우면 됨
+
+
+        // 스핀이 멈추고 0.5초 후에 결과창 띄우며 당첨 사운드 재생
+        yield return new WaitForSeconds(0.5f);
+
+        // 당첨 사운드 재생
+        if (winSound != null)
+        {
+            audioSource.pitch = 1f; // 당첨 사운드는 피치 고정
+            audioSource.PlayOneShot(winSound);
+        }
+        ShowResultPopup(winner);
+    }
+
+    // 결과창 내용을 채우고 보여주는 함수
+    void ShowResultPopup(GachaItem item)
+    {
+        if (resultPanel == null) return;
+
+        // 아이콘, 이름, 등급, 확률 등 정보 채우기
+        resultIconImage.sprite = item.icon;
+        resultNameText.text = item.itemName;
+        resultRarityText.text = item.rarity.ToString();
+
+        // 결과창 활성화
+        resultPanel.SetActive(true);
+
+        // 여기에 결과창 활성화 시 소리 효과음 추가
+    }
+
+    // 닫기 버튼을 누르면 실행될 함수
+    public void CloseResultPopup()
+    {
+        resultPanel.SetActive(false);
     }
 }

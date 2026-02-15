@@ -1,0 +1,34 @@
+syntax = "proto3";
+package Protocol;
+
+import "Enum.proto";
+
+message Player
+{
+	uint64 id = 1;
+	string name = 2;
+	PlayerType playerType = 3;
+}
+
+message PosInfo
+{
+	float x = 1;
+	float y = 2;
+	float z = 3;
+}
+
+message RotInfo
+{
+	float x = 1;
+	float y = 2;
+	float z = 3;
+	float w = 4;
+}
+
+message PlayerInfo
+{
+    uint64 player_id = 1;
+    string name = 2;
+    PosInfo pos = 3;
+    RotInfo rot = 4;
+}
