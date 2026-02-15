@@ -1,10 +1,7 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviorSingleton<SoundManager>
 {
-    public float MASTER_SCALE = 0.5f; 
-
     [Header("Data Asset")]
     [SerializeField] private SoundData soundData;
 
@@ -19,43 +16,26 @@ public class SoundManager : MonoBehaviorSingleton<SoundManager>
     protected override void Awake()
     {
         base.Awake();
-        
-        ApplyVolumes();
-    }
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        StopAllSound();
+        bgmPlayer.volume = bgmVolume;
+        sfxPlayer.volume = sfxVolume;
     }
 
     public void StopAllSound()
     {
         bgmPlayer.Stop();
-        sfxPlayer.Stop();
+        sfxPlayer.Stop(); // PlayOneShot으로 재생 중인 소리도 멈춥니다.
     }
-    
-    // 재생 로직
+
+    // 재생 로직 (이전과 동일)
     public void PlayBGM(string bgmName)
     {
         AudioClip clip = soundData.GetBGM(bgmName); 
         if (clip != null)
         {
             if (bgmPlayer.clip == clip && bgmPlayer.isPlaying) return;
-            
             bgmPlayer.clip = clip;
             bgmPlayer.loop = true;
-            // 재생 시 MASTER_SCALE 곱하기
-            bgmPlayer.volume = bgmVolume * MASTER_SCALE; 
+            bgmPlayer.volume = bgmVolume;
             bgmPlayer.Play();
         }
     }
@@ -65,30 +45,21 @@ public class SoundManager : MonoBehaviorSingleton<SoundManager>
         AudioClip clip = soundData.GetSFX(sfxName);
         if (clip != null)
         {
-            // sfxPlayer.volume이 이미 줄어들어 있으므로 1f로 재생
-            sfxPlayer.PlayOneShot(clip); 
+            sfxPlayer.PlayOneShot(clip, 1f); 
         }
     }
-    
-    // 볼륨 조절 (내부 적용)
-    private void ApplyVolumes()
-    {
-        bgmPlayer.volume = bgmVolume * MASTER_SCALE;
-        sfxPlayer.volume = sfxVolume * MASTER_SCALE;
-    }
 
+    // 볼륨 조절 및 Getter
     public void SetBGMVolume(float volume) 
     { 
         bgmVolume = volume; 
-        ApplyVolumes(); // 즉시 적용
+        bgmPlayer.volume = volume; 
     }
-
     public void SetSFXVolume(float volume) 
     { 
         sfxVolume = volume; 
-        ApplyVolumes(); // 즉시 적용
+        sfxPlayer.volume = volume; 
     }
-    
     public float GetBGMVolume() => bgmVolume;
     public float GetSFXVolume() => sfxVolume;
 }
