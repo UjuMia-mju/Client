@@ -30,6 +30,8 @@ public class PlayerTPCamera : MonoBehaviour
     // 20260207 수정본
     private float lastX = 0.0f;
 
+    private const float MIN_LIMIT = 0.01f;
+
     private void Awake()
     {
         inputActions = new PlayerInputSystem();
@@ -59,7 +61,7 @@ public class PlayerTPCamera : MonoBehaviour
             Vector3 toTarget = (cameraOffset.position - transform.position).normalized;
 
             baseForwardRef = Vector3.ProjectOnPlane(toTarget, gravityUp).normalized;
-            if (baseForwardRef.sqrMagnitude < 0.01f)
+            if (baseForwardRef.sqrMagnitude < MIN_LIMIT)
                 baseForwardRef = Vector3.ProjectOnPlane(Vector3.forward, gravityUp).normalized;
 
             inited = true;
@@ -74,7 +76,7 @@ public class PlayerTPCamera : MonoBehaviour
         {
             // 이전 카메라 forward를 중력 평면에 투영해서 기준으로 사용
             Vector3 prevTangentFwd = Vector3.ProjectOnPlane(transform.forward, gravityUp);
-            if (prevTangentFwd.sqrMagnitude > 1e-6f)
+            if (prevTangentFwd.sqrMagnitude > MIN_LIMIT)
                 baseForwardRef = prevTangentFwd.normalized;
         }
 
@@ -90,9 +92,9 @@ public class PlayerTPCamera : MonoBehaviour
         Vector3 baseForward = Vector3.ProjectOnPlane(baseForwardRef, gravityUp).normalized;
 
         // 정사영 결과가 너무 작은 경우 예비값 사용
-        if (baseForward.sqrMagnitude < 0.01f)
+        if (baseForward.sqrMagnitude < MIN_LIMIT)
             baseForward = Vector3.ProjectOnPlane(transform.forward, gravityUp).normalized;
-        if (baseForward.sqrMagnitude < 0.01f)
+        if (baseForward.sqrMagnitude < MIN_LIMIT)
             baseForward = Vector3.ProjectOnPlane(Vector3.forward, gravityUp).normalized;
 
         // right, forward 벡터를 외적을 연산해 수직인 벡터를 구함

@@ -3,13 +3,6 @@ using UnityEngine;
 using UnityEngine.Animations;
 using static UnityEditor.Progress;
 
-enum PlayerTriggetDetectedState
-{
-    Item,
-    CraftTable,
-    None
-}
-
 public class Player : MovingObject
 {
     // 입력 동결 플래그 (충돌 시 입력 무시용이며 최종 판단을 내리는 클래스라 판단해 이곳에 선언했습니다.)
@@ -21,7 +14,6 @@ public class Player : MovingObject
     public PlayerItemSystem playerItemSystem { get; private set; }
 
     public GameObject nearestObject { get; private set; } // 플레이어에게서 가장 가까운 오브젝트
-    private PlayerTriggetDetectedState playerTriggetDetectedState = PlayerTriggetDetectedState.None; // 플레이어가 트리거로 무엇을 발견했는지 상태
 
     private const float DETECT_RADIUS = 5.5f; // 구형 트리거 반지름 
 
@@ -105,9 +97,14 @@ public class Player : MovingObject
         if (playerInput.GetIsInteract())
         {
             playerInput.MakeIsInteractFalse();
+            
+            if (nearestObject == null)
+            {
+                return;
+            }
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 아이템이며, 빈 손일 때
-            if (nearestObject.CompareTag(Define.Tag.ITEM) && !isGetItem)
+            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isGetItem)
             {
                 playerItemSystem.AttachItem(nearestObject);
                 isGetItem = true;
@@ -117,12 +114,10 @@ public class Player : MovingObject
             // 또한 투입할 때 플레이어의 손에서 Detach
             else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isGetItem)
             {
-                Debug.Log("조합대 상호작용 입력받았습니다");
                 Crafting craftTable = nearestObject.GetComponent<Crafting>();
                 isGetItem = false;
                 craftTable.AddCraftItems(playerItemSystem.currentEquipItem);
                 playerItemSystem.DetachItem();
-                Debug.Log("아이템 투입 완료!");
             }
 
             // 그 외에는 처리하지 않음
@@ -137,21 +132,22 @@ public class Player : MovingObject
         {
             playerInput.MakeIsThrowOrCancelFalse();
 
-            if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
+            if (nearestObject == null || nearestObject != null && !nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
+            {
+                // 아이템을 던지고, 플레이어의 손에서 Detach
+                if (isGetItem)
+                {
+                    isGetItem = false;
+                    playerItemSystem.ThrowItem(GetMovingAmount());
+                    playerItemSystem.DetachItem();
+                }
+                return;
+            }
+
+            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
             {
                 Crafting craftTable = nearestObject.GetComponent<Crafting>();
                 craftTable.RemoveAllItems();
-                Debug.Log("조합대에서 아이템 빼내기");
-            }
-
-            // 아이템을 던지고, 플레이어의 손에서 Detach
-            else if (isGetItem)
-            {
-                isGetItem = false;
-                playerItemSystem.ThrowItem();
-
-                playerItemSystem.DetachItem();
-                Debug.Log("아이템 던지기 완료!");
             }
         }
     }
@@ -162,6 +158,7 @@ public class Player : MovingObject
     {
         Collider[] colliders = Physics.OverlapSphere(this.transform.position, DETECT_RADIUS);
         float nearestDist = Mathf.Infinity;
+        GameObject foundObject = null;
 
         foreach (Collider col in colliders)
         {
@@ -171,10 +168,12 @@ public class Player : MovingObject
                 if (dist < nearestDist)
                 {
                     nearestDist = dist;
-                    nearestObject = col.gameObject;
+                    foundObject = col.gameObject;
                 }
             }
         }
+
+        nearestObject = foundObject;
     }
     
     // 현재 콜라이더 탐지 범위를 시각화해 디버깅합니다.

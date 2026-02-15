@@ -2023,7 +2023,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   walkSpeed: 10
   jumpForce: 5
-  rotationSpeed: 10
+  rotationSpeed: 4
 --- !u!114 &130923350922639491
 MonoBehaviour:
   m_ObjectHideFlags: 0

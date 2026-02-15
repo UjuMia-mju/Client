@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerItemSystem : MonoBehaviour
 {
@@ -6,8 +7,9 @@ public class PlayerItemSystem : MonoBehaviour
 
     public GameObject currentEquipItem { get; private set; }
 
-    private const float THROW_OFFSET_HEIGHT = 3.5f;
     private const float THROW_FORCE = 200f;
+    private const float CONTROL_RUNNINGAMOUNT = 0.15f;
+    private const float MIN_RUNNINGAMOUNT = 0.01f;
 
     private void Start()
     {
@@ -49,7 +51,7 @@ public class PlayerItemSystem : MonoBehaviour
         this.currentEquipItem = item;
     }
 
-    public void ThrowItem()
+    public void ThrowItem(float runningAmount)
     {
         // 비활성화된 요소들을 활성화
         Rigidbody rb = currentEquipItem.GetComponent<Rigidbody>();
@@ -63,8 +65,19 @@ public class PlayerItemSystem : MonoBehaviour
 
         this.currentEquipItem.transform.SetParent(null);
 
-        this.currentEquipItem.transform.position = this.transform.position + this.transform.up * THROW_OFFSET_HEIGHT;
-        rb.AddForce((this.transform.up + this.transform.forward) * THROW_FORCE);
+
+        Vector3 forwardVec;
+
+        if (runningAmount < MIN_RUNNINGAMOUNT)
+        {
+            forwardVec = transform.forward;
+        }
+        else
+        {
+            forwardVec = transform.forward * runningAmount * CONTROL_RUNNINGAMOUNT;
+        }
+
+        rb.AddForce((this.transform.up + forwardVec) * THROW_FORCE);
 
         // 참조 끊기
         DetachItem();
