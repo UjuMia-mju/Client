@@ -65,7 +65,6 @@ public class PlayerItemSystem : MonoBehaviour
 
         this.currentEquipItem.transform.SetParent(null);
 
-
         Vector3 forwardVec;
 
         if (runningAmount < MIN_RUNNINGAMOUNT)

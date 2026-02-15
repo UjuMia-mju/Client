@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.XR;
+using static UnityEngine.Analytics.IAnalytic;
 
 // 모든 움직이는 오브젝트의 기본 클래스
 public class MovingObject : MonoBehaviour
@@ -37,9 +40,11 @@ public class MovingObject : MonoBehaviour
     // 이동 처리
     protected virtual void Moving(Vector3 movDir)
     {
-        Vector3 targetMoveAmount = movDir * walkSpeed;
-        moveAmount = Vector3.MoveTowards(moveAmount, targetMoveAmount, walkSpeed);
-        rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+        if (movDir.sqrMagnitude < 0.0001f) return;
+        movDir.Normalize();
+
+        movDir = Vector3.ProjectOnPlane(movDir, this.transform.up);
+        rb.MovePosition(rb.position + movDir * walkSpeed * Time.fixedDeltaTime);
     }
 
     // 점프 처리
@@ -48,22 +53,24 @@ public class MovingObject : MonoBehaviour
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
-    // 캐릭터가 바라보는 방향을 입력 방향으로 회전시킴
-    protected virtual void RotateToDirection(Transform t, float h, float v)
+    // 캐릭터가 바라보는 방향을 트랜스폼 t 기준으로 입력이 있을 때만 한번 회전시킴
+    protected virtual void RotateToDirection(Transform t, Vector3 movDir)
     {
-        if (v < 0) { return; }
-        Vector3 localInput = new Vector3(h, 0f, v);
-        if (localInput.sqrMagnitude < 0.0001f) return;
+        if (movDir == Vector3.zero)
+        {
+            return;
+        }
+        else
+        {
+            Vector3 worldDir = t.TransformDirection(movDir);
+            worldDir = Vector3.ProjectOnPlane(worldDir, t.up);
+            if (worldDir.sqrMagnitude < 0.0001f) return;
+            worldDir.Normalize();
 
-        Vector3 worldDir = t.TransformDirection(localInput);
+            Quaternion targetRot = Quaternion.LookRotation(worldDir, t.up);
 
-        Vector3 up = t.up;
-        worldDir = Vector3.ProjectOnPlane(worldDir, up);
-        if (worldDir.sqrMagnitude < 0.0001f) return;
-        worldDir.Normalize();
-
-        Quaternion targetRot = Quaternion.LookRotation(worldDir, up);
-        rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed*Time.fixedDeltaTime));
+        }
     }
 
     // 벽 충돌을 레이캐스트로 감지
@@ -78,7 +85,7 @@ public class MovingObject : MonoBehaviour
         RaycastHit hit;
 
 
-        Debug.DrawLine(ray.origin, ray.origin + ray.direction * (RAY_LENGTH), Color.blue);
+        //Debug.DrawLine(ray.origin, ray.origin + ray.direction * (RAY_LENGTH), Color.blue);
 
         if (Physics.Raycast(ray, out hit, RAY_LENGTH, wallMask))
         {
@@ -133,4 +140,5 @@ public class MovingObject : MonoBehaviour
     {
         return rb.linearVelocity.magnitude * VELOCITY_HUNDRED;
     }
+
 }
