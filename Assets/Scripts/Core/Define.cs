@@ -17,6 +17,7 @@ public static class Define
         public const string PLAYER = "Player";
         public const string ITEM = "Item";
         public const string CRAFT_TABLE = "CraftTable";
+        public const string MAINBUTTON = "MainButton";
     }
 
     public static class Layer
