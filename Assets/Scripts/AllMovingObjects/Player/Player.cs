@@ -69,7 +69,7 @@ public class Player : MovingObject
         // 구형 트리거
         SphereTriggerFunc();
     }
-
+    //
     // 물리 작용 업데이트
     private void FixedUpdate()
     {
