@@ -11,6 +11,8 @@ public class PlayerInput : MonoBehaviour
     public Vector3 axisResultDir { get; private set; } = Vector3.zero;
 
     private bool isJumping = false;
+    private bool isInteract = false;
+    private bool isThrowOrCancel = false;
 
     private PlayerInputSystem inputActions; 
 
@@ -24,17 +26,31 @@ public class PlayerInput : MonoBehaviour
     {
         inputActions.Player.Enable();
         inputActions.Player.Jump.performed += OnJump;
+        inputActions.Player.Interact.performed += OnInteract;
+        inputActions.Player.ThrowOrCancel.performed += OnThrowOrCancel;
     }
 
     private void OnDisable()
     {
         inputActions.Player.Jump.performed -= OnJump;
+        inputActions.Player.Interact.performed -= OnInteract;
+        inputActions.Player.ThrowOrCancel.performed -= OnThrowOrCancel;
         inputActions.Player.Disable();
     }
 
     private void OnJump(InputAction.CallbackContext ctx)
     {
         isJumping = true;
+    }
+
+    private void OnInteract(InputAction.CallbackContext ctx)
+    {
+        isInteract = true;
+    }
+
+    private void OnThrowOrCancel(InputAction.CallbackContext ctx)
+    {
+        isThrowOrCancel = true;
     }
 
     // 입력받은 값으로 초기화
@@ -48,15 +64,33 @@ public class PlayerInput : MonoBehaviour
         axisResultDir = new Vector3(axisX, 0, axisY).normalized;
     }
 
-    // 현재 점프 상태 반환
     public bool GetIsJumping()
     {
         return isJumping;
     }
 
-    // 점프는 외부에서 false로만 전환시킵니다. 그외 외부에서의 수정은 허락하지 않습니다. (OnJump 함수로 발동되는 점프만 제외)
     public void MakeIsJumpingFalse()
     {
         isJumping = false;
+    }
+
+    public bool GetIsInteract()
+    {
+        return isInteract;
+    }
+
+    public void MakeIsInteractFalse()
+    {
+        isInteract = false;
+    }
+
+    public bool GetIsThrowOrCancel()
+    {
+        return isThrowOrCancel;
+    }
+
+    public void MakeIsThrowOrCancelFalse()
+    {
+        isThrowOrCancel = false;
     }
 }
