@@ -17,6 +17,8 @@ public class SplashController : MonoBehaviour
 
     private void Start()
     {
+        SoundManager.Instance.PlayBGM("Splash");
+        
         if (logoCanvasGroup != null)
         {
             logoCanvasGroup.alpha = 0f;

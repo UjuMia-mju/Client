@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d7073e1c60a9f8b4eb03fb7de17b5812
+guid: 09f5caa47ff0c254eb797389142b46a5
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -100,30 +100,8 @@ TextureImporter:
       name: TextButton_0
       rect:
         serializedVersion: 2
-        x: 86
-        y: 84
-        width: 424
-        height: 404
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 608e64c9f107dd04b97a9d0909a13984
-      internalID: -1863669538
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: TextButton_1
-      rect:
-        serializedVersion: 2
-        x: 551
-        y: 402
+        x: 11
+        y: 267
         width: 353
         height: 40
       alignment: 0
@@ -134,18 +112,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f7540d5c1e926f44896ffa2d9857ed99
-      internalID: 200009795
+      spriteID: 5e4a4cbdc57c9d74f859db1340845b3c
+      internalID: 568217946
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TextButton_2
+      name: TextButton_1
       rect:
         serializedVersion: 2
-        x: 624
-        y: 313
+        x: 84
+        y: 178
         width: 209
         height: 70
       alignment: 0
@@ -156,18 +134,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cac37cfb8c3d2ec4aaee03a54576c09d
-      internalID: 1836314018
+      spriteID: 01d2d53fbd2af2e4496b79214f0fda05
+      internalID: 568137387
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TextButton_3
+      name: TextButton_2
       rect:
         serializedVersion: 2
-        x: 553
-        y: 236
+        x: 13
+        y: 101
         width: 65
         height: 66
       alignment: 0
@@ -178,18 +156,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ddbbe2ff079608f47a6e3ada2357e767
-      internalID: -136214056
+      spriteID: fc4214f96f86a014597ea6bab2e349a3
+      internalID: 819137599
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TextButton_4
+      name: TextButton_3
       rect:
         serializedVersion: 2
-        x: 625
-        y: 235
+        x: 85
+        y: 100
         width: 207
         height: 69
       alignment: 0
@@ -200,18 +178,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e329e672716789642bba9b5a306623bc
-      internalID: 1417715840
+      spriteID: 253bddd3d149ab64c9502ae848c6119f
+      internalID: -432716817
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TextButton_5
+      name: TextButton_4
       rect:
         serializedVersion: 2
-        x: 839
-        y: 235
+        x: 299
+        y: 100
         width: 65
         height: 67
       alignment: 0
@@ -222,18 +200,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f2495750a970f0d4b9d8c7c7326ef0bc
-      internalID: 555277573
+      spriteID: 6c2faa18b08fee1458bc016e32233616
+      internalID: -723082665
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TextButton_6
+      name: TextButton_5
       rect:
         serializedVersion: 2
-        x: 653
-        y: 157
+        x: 113
+        y: 22
         width: 151
         height: 69
       alignment: 0
@@ -244,8 +222,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 28eec9a3409735d4895a263f5b82db8c
-      internalID: -1795478605
+      spriteID: b1a9a20f6f4c79b4dae808fc222214f3
+      internalID: -1114799878
       vertices: []
       indices: 
       edges: []
@@ -254,7 +232,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d828f177dcd5b194f9da002a247166e2
+    spriteID: ca1ec09e13156954da943124ab9a480d
     internalID: 0
     vertices: []
     indices: 
@@ -266,13 +244,12 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      TextButton_0: -1863669538
-      TextButton_1: 200009795
-      TextButton_2: 1836314018
-      TextButton_3: -136214056
-      TextButton_4: 1417715840
-      TextButton_5: 555277573
-      TextButton_6: -1795478605
+      TextButton_0: 568217946
+      TextButton_1: 568137387
+      TextButton_2: 819137599
+      TextButton_3: -432716817
+      TextButton_4: -723082665
+      TextButton_5: -1114799878
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

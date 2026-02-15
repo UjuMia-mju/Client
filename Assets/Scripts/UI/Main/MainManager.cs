@@ -14,6 +14,8 @@ public class MainManager : MonoBehaviour
 
     private void Start()
     {
+        SoundManager.Instance.PlayBGM("Intro");
+        
         // 초기 UI 상태 설정 (introPanel: On / menuPanel: Off)
         if (introPanel != null) { introPanel.alpha = 1; introPanel.gameObject.SetActive(true); }
         if (menuPanel != null) { menuPanel.alpha = 0; menuPanel.gameObject.SetActive(false); }
@@ -41,6 +43,8 @@ public class MainManager : MonoBehaviour
         {
             to.gameObject.SetActive(true);
             yield return StartCoroutine(FadeCanvas(to, 0, 1));
+            
+            SoundManager.Instance.PlayBGM("Menu");
         }
     }
 

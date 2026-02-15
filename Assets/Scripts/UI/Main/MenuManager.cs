@@ -98,6 +98,8 @@ public class MenuManager : MonoBehaviour
     /// </summary>
     private IEnumerator ClosePanelSequence()
     {
+        SoundManager.Instance.PlaySFX("Click3");
+        
         // 1. 패널 Fade Out 및 축소 연출 실행
         yield return StartCoroutine(DynamicClosePanel(_currentSubPanel));
 
