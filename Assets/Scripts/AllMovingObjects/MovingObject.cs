@@ -40,10 +40,12 @@ public class MovingObject : MonoBehaviour
     // 이동 처리
     protected virtual void Moving(Vector3 movDir)
     {
-        if (movDir.sqrMagnitude < 0.0001f) return;
-        movDir.Normalize();
+        if (movDir == Vector3.zero)
+        {
+            return;
+        }
 
-        movDir = Vector3.ProjectOnPlane(movDir, this.transform.up);
+        movDir.Normalize();
         rb.MovePosition(rb.position + movDir * walkSpeed * Time.fixedDeltaTime);
     }
 
@@ -54,7 +56,7 @@ public class MovingObject : MonoBehaviour
     }
 
     // 캐릭터가 바라보는 방향을 트랜스폼 t 기준으로 입력이 있을 때만 한번 회전시킴
-    protected virtual void RotateToDirection(Transform t, Vector3 movDir)
+    protected virtual void RotateToDirection(Vector3 movDir)
     {
         if (movDir == Vector3.zero)
         {
@@ -62,13 +64,13 @@ public class MovingObject : MonoBehaviour
         }
         else
         {
-            Vector3 worldDir = t.TransformDirection(movDir);
-            worldDir = Vector3.ProjectOnPlane(worldDir, t.up);
-            if (worldDir.sqrMagnitude < 0.0001f) return;
-            worldDir.Normalize();
+            if (movDir == Vector3.zero)
+            {
+                return;
+            }
 
-            Quaternion targetRot = Quaternion.LookRotation(worldDir, t.up);
-
+            movDir.Normalize();
+            Quaternion targetRot = Quaternion.LookRotation(movDir, this.transform.position);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed*Time.fixedDeltaTime));
         }
     }
@@ -83,9 +85,6 @@ public class MovingObject : MonoBehaviour
 
         Ray ray = new Ray(this.transform.position, rayTargetDir);
         RaycastHit hit;
-
-
-        //Debug.DrawLine(ray.origin, ray.origin + ray.direction * (RAY_LENGTH), Color.blue);
 
         if (Physics.Raycast(ray, out hit, RAY_LENGTH, wallMask))
         {

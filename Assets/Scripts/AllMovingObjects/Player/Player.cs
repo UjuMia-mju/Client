@@ -76,7 +76,7 @@ public class Player : MovingObject
         if (!inputFreeze)
         {
             Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
-            RotateToDirection(playerTPCamera.GetPlayerMovingOffset(), playerInput.axisResultDir);
+            RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
 
             if (playerInput.GetIsJumping())
             {

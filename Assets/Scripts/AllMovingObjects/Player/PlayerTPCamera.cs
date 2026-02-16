@@ -69,7 +69,6 @@ public class PlayerTPCamera : MonoBehaviour
         {
             // 카메라가 타겟을 바라보는 방향을 기준으로 잡기 (처음 1회)
             Vector3 toTarget = (cameraOffset.position - transform.position).normalized;
-
             baseForwardRef = Vector3.ProjectOnPlane(toTarget, gravityUp).normalized;
             if (baseForwardRef.sqrMagnitude < MIN_LIMIT)
                 baseForwardRef = Vector3.ProjectOnPlane(Vector3.forward, gravityUp).normalized;
