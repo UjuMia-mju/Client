@@ -86,7 +86,6 @@ public class WindowPanelController : MonoBehaviour
         int height = resolutions[index].y;
 
         Screen.SetResolution(width, height, Screen.fullScreenMode);
-        Debug.Log($"해상도 변경: {width} x {height}");
     }
 
     private void ApplyWindowMode(int index)
@@ -103,6 +102,5 @@ public class WindowPanelController : MonoBehaviour
                 Screen.SetResolution(1280, 720, FullScreenMode.Windowed);
                 break;
         }
-        Debug.Log($"화면 모드 변경: {Screen.fullScreenMode}");
     }
 }

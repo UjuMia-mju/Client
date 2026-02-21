@@ -14,10 +14,12 @@ public class ControlPanelController : MonoBehaviour
     [SerializeField] private Slider sensitivitySlider;
     [SerializeField] private TextMeshProUGUI sensitivityText;
     
-    [Header("UI Message")]
-    [SerializeField] private GameObject warningObject;
-    
-    private Coroutine _warningCoroutine; // 코루틴 제어용 변수
+    [Header("UI Popup (Prefab)")]
+    [SerializeField] private GameObject warningPrefab; 
+    [SerializeField] private Transform warningParent;
+
+    private GameObject _currentWarningPopup; 
+    private Coroutine _warningCoroutine;
     
     // 플레이어 이동 스크립트 등에서 참조할 static 변수
     public static float MouseSensitivity = 1.0f;
@@ -38,7 +40,6 @@ public class ControlPanelController : MonoBehaviour
     private void Start()
     {
         // 1. 감도 불러오기 (DataManager에 저장된 값 사용)
-        // DataManager가 Awake에서 이미 Load를 끝냈으므로 바로 가져오면 됩니다.
         float savedSensitivity = DataManager.Instance.data.mouseSensitivity;
         
         MouseSensitivity = savedSensitivity; // Static 변수 갱신
@@ -52,11 +53,6 @@ public class ControlPanelController : MonoBehaviour
 
         // 2. 키 바인딩 UI 갱신 (DataManager가 이미 로드해둔 InputAsset 상태를 화면에 표시)
         RefreshKeyBindingsUI();
-        
-        if (warningObject != null)
-        {
-            warningObject.SetActive(false);
-        }
     }
 
     /// <summary>
@@ -131,23 +127,23 @@ public class ControlPanelController : MonoBehaviour
         }
         return false; // 중복 없음
     }
-    
+
+    /// <summary>
+    /// Button OnClick 이벤트
+    /// </summary>
     public void StartRebinding(int listIndex)
     {
         if (listIndex < 0 || listIndex >= keyBindings.Count) return;
 
         KeyBindingItem item = keyBindings[listIndex];
         InputAction action = DataManager.Instance.InputAsset.FindAction(item.actionName);
-        
         if (action == null) return;
 
-        // 리바인딩 시작할 때 혹시 켜져있던 경고창 끄기
-        if(warningObject != null) warningObject.SetActive(false);
+        // ★ 변경: 시작할 때 떠있던 복제본 즉시 삭제
+        HideWarningPopup();
 
         _rebindOperation?.Dispose();
         action.Disable();
-
-        item.buttonText.text = "Waiting...";
 
         _rebindOperation = action.PerformInteractiveRebinding(item.bindingIndex)
             .WithControlsExcluding("Mouse")
@@ -156,25 +152,23 @@ public class ControlPanelController : MonoBehaviour
             {
                 string newPath = action.bindings[item.bindingIndex].effectivePath;
 
-                // 중복 검사
                 if (IsDuplicateKey(action, item.bindingIndex, newPath))
                 {
-                    // 1. 중복 시 키 설정 취소 (복구)
                     action.RemoveBindingOverride(item.bindingIndex);
-                    
-                    // 2. 버튼 텍스트에 "DUPLICATE" 표시
-                    item.buttonText.text = "DUPLICATE!";
-                    
-                    // 3. ★ 경고 오브젝트(패널) 띄우기
+
+                    // 프리팹 띄우기
                     ShowWarningPopup();
 
                     action.Enable();
                     operation.Dispose();
-                    
-                    // 1초 뒤 버튼 텍스트 원상복구
+
+                    // (유지) 버튼 텍스트 원상복구
                     StartCoroutine(ResetButtonTextRoutine(item, action));
                     return;
                 }
+
+                // 성공 시에도 떠있던 팝업 확실히 지우기
+                HideWarningPopup();
 
                 RebindComplete(action, item);
                 operation.Dispose();
@@ -184,37 +178,48 @@ public class ControlPanelController : MonoBehaviour
                 action.Enable();
                 operation.Dispose();
                 item.buttonText.text = GetKeyName(action, item.bindingIndex);
-                
-                // 취소 시 경고창 끄기
-                if(warningObject != null) warningObject.SetActive(false);
+
+                // ★ 변경: 취소 시 떠있던 복제본 즉시 삭제
+                HideWarningPopup();
             })
             .Start();
     }
 
-    // =================================================================
-    // 💡 경고 팝업 제어 (GameObject)
-    // =================================================================
+    // 경고 팝업 제어 (GameObject)
+    // 화면에 떠있는 팝업을 즉시 삭제하는 함수
+    private void HideWarningPopup()
+    {
+        if (_warningCoroutine != null) StopCoroutine(_warningCoroutine);
+        
+        if (_currentWarningPopup != null)
+        {
+            Destroy(_currentWarningPopup); // 생성된 복제본만 파괴
+        }
+    }
 
     private void ShowWarningPopup()
     {
-        if (warningObject == null) return;
+        // 부모나 프리팹이 연결 안되어있으면 실행 안함
+        if (warningPrefab == null || warningParent == null) return; 
 
-        // 이미 켜져있는 코루틴이 있다면 끄고 다시 시작 (시간 리셋)
-        if (_warningCoroutine != null) StopCoroutine(_warningCoroutine);
+        HideWarningPopup(); // 기존 거 지우고
+
+        // ★ 변경: 부모(Canvas) 안에 생성하고, 확실하게 켜주기(SetActive)
+        _currentWarningPopup = Instantiate(warningPrefab, warningParent);
+        _currentWarningPopup.SetActive(true); 
         
-        warningObject.SetActive(true); // ★ 오브젝트 켜기
-        
-        _warningCoroutine = StartCoroutine(HideWarningRoutine());
+        _warningCoroutine = StartCoroutine(DestroyWarningRoutine(_currentWarningPopup));
     }
-
-    // 2초 뒤에 자동으로 꺼지는 코루틴
-    private IEnumerator HideWarningRoutine()
+    
+    // 2초 뒤에 삭제하는 코루틴
+    private IEnumerator DestroyWarningRoutine(GameObject targetPopup)
     {
         yield return new WaitForSeconds(2.0f); // 2초 대기
         
-        if (warningObject != null)
+        // 시간이 다 되면 오브젝트 파괴
+        if (targetPopup != null)
         {
-            warningObject.SetActive(false); // ★ 오브젝트 끄기
+            Destroy(targetPopup);
         }
     }
 
@@ -262,8 +267,9 @@ public class ControlPanelController : MonoBehaviour
             case "Down Arrow": return "DN";
             case "Left Arrow": return "LT";
             case "Right Arrow": return "RT";
-            case "Left Button": return "LB"; // 마우스
-            case "Right Button": return "RB"; // 마우스
+            // 마우스
+            case "Left Button": return "LB"; 
+            case "Right Button": return "RB";
         }
 
         // 4. 그 외의 키가 2글자를 넘으면 앞 2글자만 자르기

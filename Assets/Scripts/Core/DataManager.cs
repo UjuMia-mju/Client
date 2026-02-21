@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.IO;
 using UnityEngine.InputSystem;
-using System.Collections.Generic; // List 사용을 위해 추가
+using System.Collections.Generic;
 
 public class DataManager : MonoBehaviorSingleton<DataManager>
 {
@@ -84,7 +84,7 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
         // [마우스 감도 적용]
         ControlPanelController.MouseSensitivity = data.mouseSensitivity;
 
-        // [해상도 및 화면 모드 적용] ★ 추가된 부분
+        // [해상도 및 화면 모드 적용]
         ApplyGraphicsSettings();
     }
 
@@ -107,16 +107,13 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
 
         int width = Resolutions[safeIndex].x;
         int height = Resolutions[safeIndex].y;
-
-        // 창모드일 경우 강제로 1280x720으로 할지, 선택된 해상도로 할지 결정 (여기선 선택된 해상도 사용)
+        
         if (mode == FullScreenMode.Windowed)
         {
-            // 만약 창모드는 무조건 1280x720으로 하고 싶다면 아래 주석 해제
-            // width = 1280; height = 720;
+            width = 1280; height = 720; // 창모드 시 크기 지정
         }
 
         // 3. 최종 적용
         Screen.SetResolution(width, height, mode);
-        Debug.Log($"그래픽 설정 적용됨: {width}x{height}, {mode}");
     }
 }
