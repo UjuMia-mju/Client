@@ -551,7 +551,7 @@ GameObject:
   - component: {fileID: 8294529069360187301}
   m_Layer: 0
   m_Name: LobbyAstronut
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
