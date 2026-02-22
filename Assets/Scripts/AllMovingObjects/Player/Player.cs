@@ -78,7 +78,7 @@ public class Player : MovingObject
             Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
             RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
 
-            if (playerInput.GetIsJumping())
+            if (playerInput.GetIsJumping() && isGrounded)
             {
                 Jump();
                 playerInput.MakeIsJumpingFalse();
