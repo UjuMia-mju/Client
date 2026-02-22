@@ -25,6 +25,7 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
     {
         base.Awake();
         
+        // NOTE: 추후 스크립트 분리
         settingsPath = Path.Combine(Application.persistentDataPath, "settings.json");
         keybindPath = Path.Combine(Application.persistentDataPath, "keybindings.json");
 
