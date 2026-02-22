@@ -24,5 +24,6 @@ public static class Define
     {
         public const string GROUND = "Ground";
         public const string WALL = "Wall";
+        public const string WALKABLE_COLLIDER = "WalkableCollider";
     }
 }

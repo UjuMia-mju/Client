@@ -52,7 +52,7 @@ public class Player : MovingObject
 
         if (!inputFreeze)
         {
-            GroundDetectingWithRaycast(groundMask);
+            GroundDetectingWithRaycast(groundMask | walkable);
 
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
@@ -83,11 +83,6 @@ public class Player : MovingObject
                 Jump();
                 playerInput.MakeIsJumpingFalse();
             }
-        }
-
-        else
-        {
-            rb.Sleep();
         }
     }
 

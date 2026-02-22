@@ -1,8 +1,4 @@
-﻿using JetBrains.Annotations;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.XR;
-using static UnityEngine.Analytics.IAnalytic;
+﻿using UnityEngine;
 
 // 모든 움직이는 오브젝트의 기본 클래스
 public class MovingObject : MonoBehaviour
@@ -20,6 +16,7 @@ public class MovingObject : MonoBehaviour
     // 레이어마스크
     protected LayerMask groundMask;
     protected LayerMask wallMask;
+    protected LayerMask walkable;
 
     public Vector3 groundDir {get; protected set; }
 
@@ -33,8 +30,9 @@ public class MovingObject : MonoBehaviour
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        groundMask = LayerMask.GetMask("Ground");
-        wallMask = LayerMask.GetMask("Wall");
+        groundMask = LayerMask.GetMask(Define.Layer.GROUND);
+        wallMask = LayerMask.GetMask(Define.Layer.WALL);
+        walkable = LayerMask.GetMask(Define.Layer.WALKABLE_COLLIDER);
     }
 
     // 이동 처리
@@ -76,7 +74,7 @@ public class MovingObject : MonoBehaviour
     }
 
     // 벽 충돌을 레이캐스트로 감지
-    protected bool CollisionDetectWithRaycast(Vector3 dirData, LayerMask wallMask)
+    protected bool CollisionDetectWithRaycast(Vector3 dirData, LayerMask maskData)
     {
         if (dirData.sqrMagnitude < 0.01f)
             return false;
@@ -86,7 +84,7 @@ public class MovingObject : MonoBehaviour
         Ray ray = new Ray(this.transform.position, rayTargetDir);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, RAY_LENGTH, wallMask))
+        if (Physics.Raycast(ray, out hit, RAY_LENGTH, maskData))
         {
             return true;
         }
@@ -97,7 +95,7 @@ public class MovingObject : MonoBehaviour
     }
 
     // 땅에 닿았는지 레이캐스트로 감지
-    protected void GroundDetectingWithRaycast(LayerMask groundMask)
+    protected void GroundDetectingWithRaycast(LayerMask maskData)
     {
         // 행성 방향으로 레이캐스트 발사 - 레이캐스트
         Vector3 origin = transform.position + transform.up * 0.5f;
@@ -108,7 +106,7 @@ public class MovingObject : MonoBehaviour
         Debug.DrawLine(ray.origin, ray.origin + ray.direction * (1.1f), Color.red);
 
         // 발이 땅에 닿았을 때를 감지
-        if (Physics.Raycast(ray, out hit, 1.1f, groundMask))
+        if (Physics.Raycast(ray, out hit, 1.1f, maskData))
         {
             isGrounded = true;
         }
@@ -121,7 +119,7 @@ public class MovingObject : MonoBehaviour
     // 땅에 닿았는지와는 무관하게 땅의 법선 벡터를 구함
     // 이 함수가 필요한 이유는 이 함수 참조중인 PlanetGravity 클래스에서 땅의 법선 벡터를 필요로 하기 때문입니다.
     // 해당 참조로 이동해 확인바랍니다.
-    protected void GetGroundNormal(LayerMask groundMask)
+    protected void GetGroundNormal(LayerMask maskData)
     {
         Vector3 origin = transform.position + transform.up * 0.5f;
         Ray ray = new Ray(origin, -transform.up);
@@ -129,7 +127,7 @@ public class MovingObject : MonoBehaviour
         RaycastHit hit;
 
         // 계속 땅을 감지해 법선 벡터를 수집
-        if (Physics.Raycast(ray, out hit, 10f, groundMask))
+        if (Physics.Raycast(ray, out hit, 10f, maskData))
         {
             groundDir = hit.normal;
         }
