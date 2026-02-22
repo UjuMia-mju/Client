@@ -4,6 +4,9 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// MenuPanel의 버튼들의 Hover 및 Click 이벤트 관리
+/// </summary>
 public class MenuPanelController : MonoBehaviour
 {
     [System.Serializable]
@@ -42,7 +45,7 @@ public class MenuPanelController : MonoBehaviour
             _mainButtonObjects.Add(go);
         }
 
-        // 2. [수정] 씬 이동 버튼 개별 초기화
+        // 2. 씬 이동 버튼 개별 초기화
         if (singlePlayButton != null)
         {
             _buttonOriginScales[singlePlayButton] = singlePlayButton.transform.localScale;
@@ -92,7 +95,7 @@ public class MenuPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// [추가] 중복되는 호버(Hover) 이벤트를 하나로 묶음
+    /// 호버(Hover) 이벤트 관리
     /// </summary>
     private void AddHoverEvents(Button btn)
     {
@@ -110,6 +113,9 @@ public class MenuPanelController : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// 클릭 이벤트
+    /// </summary>
     private void OnButtonClicked(Button clickedBtn, GameObject panelPrefab)
     {
         DisableAllHovers();
@@ -154,11 +160,10 @@ public class MenuPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// [핵심 수정] 모든 버튼의 호버 해제
+    /// 모든 버튼의 호버 해제
     /// </summary>
     private void DisableAllHovers()
     {
-        // _allMenuSets만 순회하면 Single/Multi 버튼이 무시되므로, 
         // 딕셔너리에 등록된 '모든' 버튼을 순회하며 비활성화합니다.
         foreach (var btn in _buttonOriginScales.Keys)
         {

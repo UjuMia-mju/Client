@@ -8,18 +8,30 @@ public class WindowPanelController : MonoBehaviour
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private TMP_Dropdown windowModeDropdown;
 
-    [Header("Settings")]
-    [SerializeField] private List<Vector2Int> resolutions = new List<Vector2Int>()
-    {
-        new Vector2Int(1920, 1080), // Index 0
-        new Vector2Int(2560, 1440), // Index 1
-        new Vector2Int(3840, 2160)  // Index 2
-    };
-
     private void Start()
     {
-        // 게임 시작 시, 저장된 설정(SettingsData)을 불러와서 적용
+        // 1. Define.Resolution을 바탕으로 드롭다운 옵션을 자동 생성
+        InitDropdownOptions();
+
+        // 2. 게임 시작 시, 저장된 설정(SettingsData)을 불러와서 적용
         InitSettings();
+    }
+
+    // 해상도 드롭다운 목록 자동 세팅
+    private void InitDropdownOptions()
+    {
+        if (resolutionDropdown == null) return;
+
+        resolutionDropdown.ClearOptions();
+        List<string> options = new List<string>();
+
+        // Define.cs에 있는 해상도 리스트를 텍스트로 변환해서 드롭다운에 추가
+        foreach (Vector2Int res in Define.Resolution)
+        {
+            options.Add($"{res.x} x {res.y}");
+        }
+
+        resolutionDropdown.AddOptions(options);
     }
 
     // 초기화 함수
@@ -29,17 +41,17 @@ public class WindowPanelController : MonoBehaviour
         int savedResIndex = DataManager.Instance.data.resolutionIndex;
         int savedModeIndex = DataManager.Instance.data.windowModeIndex;
 
-        // 2. 인덱스 유효성 체크 (혹시 해상도 목록이 바뀌었을 때 에러 방지)
-        if (savedResIndex < 0 || savedResIndex >= resolutions.Count)
+        // 2. 인덱스 유효성 체크 (Define.Resolution 사용)
+        if (savedResIndex < 0 || savedResIndex >= Define.Resolution.Count)
             savedResIndex = 0;
 
         // 3. 드롭다운 UI 값을 저장된 값으로 변경
-        resolutionDropdown.value = savedResIndex;
-        windowModeDropdown.value = savedModeIndex;
+        if (resolutionDropdown != null) resolutionDropdown.value = savedResIndex;
+        if (windowModeDropdown != null) windowModeDropdown.value = savedModeIndex;
         
         // 4. UI 갱신 (드롭다운 텍스트 업데이트)
-        resolutionDropdown.RefreshShownValue();
-        windowModeDropdown.RefreshShownValue();
+        if (resolutionDropdown != null) resolutionDropdown.RefreshShownValue();
+        if (windowModeDropdown != null) windowModeDropdown.RefreshShownValue();
 
         // 5. 실제 화면 해상도 및 모드 적용
         ApplyResolution(savedResIndex);
@@ -80,10 +92,12 @@ public class WindowPanelController : MonoBehaviour
 
     private void ApplyResolution(int index)
     {
-        if (index < 0 || index >= resolutions.Count) return;
+        // [수정] Define.Resolution 리스트 갯수와 인덱스 비교
+        if (index < 0 || index >= Define.Resolution.Count) return;
 
-        int width = resolutions[index].x;
-        int height = resolutions[index].y;
+        // [수정] Define.Resolution에서 직접 width, height 값 가져오기
+        int width = Define.Resolution[index].x;
+        int height = Define.Resolution[index].y;
 
         Screen.SetResolution(width, height, Screen.fullScreenMode);
     }

@@ -3,6 +3,9 @@ using System.IO;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
+/// <summary>
+/// UI 데이터를 json 파일로 저장 / 불러오기
+/// </summary>
 public class DataManager : MonoBehaviorSingleton<DataManager>
 {
     [Header("Input System")]
@@ -17,13 +20,6 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
     // 파일 경로
     private string settingsPath;
     private string keybindPath;
-    
-    public readonly List<Vector2Int> Resolutions = new List<Vector2Int>()
-    {
-        new Vector2Int(1920, 1080), // Index 0 (FHD)
-        new Vector2Int(2560, 1440), // Index 1 (QHD)
-        new Vector2Int(3840, 2160)  // Index 2 (UHD)
-    };
 
     protected override void Awake()
     {
@@ -39,12 +35,9 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
     {
         string json = JsonUtility.ToJson(data, true); 
         File.WriteAllText(settingsPath, json);
-
-        // InputActionAsset에는 SaveBindingOverridesAsJson 확장 메서드가 있습니다.
+        
         string keyJson = playerInput.SaveBindingOverridesAsJson();
         File.WriteAllText(keybindPath, keyJson);
-
-        Debug.Log("모든 데이터 저장 완료");
     }
 
     public void Load()
@@ -81,10 +74,10 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
             SoundManager.Instance.SetSFXVolume(data.sfxVolume);
         }
 
-        // [마우스 감도 적용]
+        // 마우스 감도 적용
         ControlPanelController.MouseSensitivity = data.mouseSensitivity;
 
-        // [해상도 및 화면 모드 적용]
+        // 해상도 및 화면 모드 적용
         ApplyGraphicsSettings();
     }
 
@@ -101,12 +94,17 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
         }
 
         // 2. 해상도 결정
-        // 저장된 인덱스가 리스트 범위를 벗어나면 0번(기본)으로 안전하게 처리
         int safeIndex = data.resolutionIndex;
-        if (safeIndex < 0 || safeIndex >= Resolutions.Count) safeIndex = 0;
+        
+        // Define.Resolution을 직접 호출하여 안전하게 인덱스 검사
+        if (safeIndex < 0 || safeIndex >= Define.Resolution.Count) 
+        {
+            safeIndex = 0;
+        }
 
-        int width = Resolutions[safeIndex].x;
-        int height = Resolutions[safeIndex].y;
+        // Define.Resolution에서 직접 width, height 값 꺼내오기
+        int width = Define.Resolution[safeIndex].x;
+        int height = Define.Resolution[safeIndex].y;
         
         if (mode == FullScreenMode.Windowed)
         {

@@ -1,4 +1,7 @@
-﻿/// <summary>
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
 /// 유니티의 고유 시스템(Scene, Tag, Layer 등) 이름 관리
 /// </summary>
 public static class Define
@@ -26,4 +29,11 @@ public static class Define
         public const string GROUND = "Ground";
         public const string WALL = "Wall";
     }
+
+    public static readonly List<Vector2Int> Resolution = new List<Vector2Int>()
+    {
+        new Vector2Int(1920, 1080), // Index 0 (FHD)
+        new Vector2Int(2560, 1440), // Index 1 (QHD)
+        new Vector2Int(3840, 2160)  // Index 2 (UHD)
+    };
 }
