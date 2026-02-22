@@ -3,6 +3,9 @@ using UnityEngine;
 public class Floater : MonoBehaviour
 {
     private Rigidbody rb;
+    
+    [SerializeField]
+    private bool bTorque = true;
 
     void Start()
     {
@@ -16,7 +19,11 @@ public class Floater : MonoBehaviour
         rb.AddForce(randomDirection.normalized * speed, ForceMode.VelocityChange);
 
         // 2. 빙글빙글 도는 회전력 주기
-        Vector3 randomTorque = Random.onUnitSphere;
-        rb.AddTorque(randomTorque * Random.Range(0.5f, 2f), ForceMode.VelocityChange);
+        if (bTorque)
+        {
+            Vector3 randomTorque = Random.onUnitSphere;
+            rb.AddTorque(randomTorque * Random.Range(0.5f, 2f), ForceMode.VelocityChange);
+        }
+        
     }
 }
