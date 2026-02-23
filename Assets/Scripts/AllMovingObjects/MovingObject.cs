@@ -20,7 +20,7 @@ public class MovingObject : MonoBehaviour
 
     public Vector3 groundDir {get; protected set; }
 
-    private const float RAY_LENGTH = 2.1f;
+    private const float RAY_LENGTH = 0.6f;
     private const float VELOCITY_HUNDRED = 100f;
 
     protected bool isGrounded = true;
@@ -50,6 +50,7 @@ public class MovingObject : MonoBehaviour
     // 점프 처리
     protected virtual void Jump()
     {
+        rb.linearVelocity = Vector3.zero;
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
@@ -79,10 +80,11 @@ public class MovingObject : MonoBehaviour
         if (dirData.sqrMagnitude < 0.01f)
             return false;
 
-        Vector3 rayTargetDir = transform.TransformDirection(dirData);
 
-        Ray ray = new Ray(this.transform.position, rayTargetDir);
+        Ray ray = new Ray(this.transform.position, dirData.normalized);
         RaycastHit hit;
+
+        Debug.DrawLine(ray.origin, ray.origin + dirData.normalized * (2.1f), Color.red);
 
         if (Physics.Raycast(ray, out hit, RAY_LENGTH, maskData))
         {
@@ -103,10 +105,10 @@ public class MovingObject : MonoBehaviour
 
         RaycastHit hit;
 
-        Debug.DrawLine(ray.origin, ray.origin + ray.direction * (1.1f), Color.red);
+        Debug.DrawLine(ray.origin, ray.origin + ray.direction * (RAY_LENGTH), Color.red);
 
         // 발이 땅에 닿았을 때를 감지
-        if (Physics.Raycast(ray, out hit, 1.1f, maskData))
+        if (Physics.Raycast(ray, out hit, RAY_LENGTH, maskData))
         {
             isGrounded = true;
         }

@@ -6,7 +6,9 @@ public class PlayerItemSystem : MonoBehaviour
 
     public GameObject currentEquipItem { get; private set; }
 
-    private const float THROW_FORCE = 200f;
+    private const float THROW_FORCE = 0.02f;
+    private const float MAX_THROW_FORCE = 20f;
+    private const float MIN_THROW_FORCE = 5f;
     private const float CONTROL_RUNNINGAMOUNT = 0.15f;
     private const float MIN_RUNNINGAMOUNT = 0.01f;
 
@@ -75,7 +77,14 @@ public class PlayerItemSystem : MonoBehaviour
             forwardVec = transform.forward * runningAmount * CONTROL_RUNNINGAMOUNT;
         }
 
-        rb.AddForce((this.transform.up + forwardVec) * THROW_FORCE);
+
+        Vector3 force = (this.transform.up + forwardVec) * THROW_FORCE;
+
+        float clampedMagnitude = Mathf.Clamp(force.magnitude, MIN_THROW_FORCE, MAX_THROW_FORCE);
+
+        force = force.normalized * clampedMagnitude;
+
+        rb.AddForce(force, ForceMode.Impulse);
 
         // 참조 끊기
         DetachItem();
