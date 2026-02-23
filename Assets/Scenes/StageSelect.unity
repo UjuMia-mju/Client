@@ -150,7 +150,7 @@ Transform:
   m_GameObject: {fileID: 124221694}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: 0}
+  m_LocalPosition: {x: 3, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -170,10 +170,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  orbitSpeed: 20
+  orbitSpeed: 10
   spinAxis: {x: 0, y: 1, z: 0}
-  spinSpeed: 50
-  hoverScaleMultiplier: 1.2
+  spinSpeed: 10
+  randomizeStartPosition: 1
+  hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
   stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!135 &124221697
@@ -377,7 +378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  segments: 200
+  segments: 60
   lineWidth: 0.05
 --- !u!1 &213756895
 GameObject:
@@ -410,7 +411,7 @@ Transform:
   m_GameObject: {fileID: 213756895}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5, y: 0, z: 0}
+  m_LocalPosition: {x: 6, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -430,10 +431,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  orbitSpeed: 10
+  orbitSpeed: 14
   spinAxis: {x: 0, y: 1, z: 0}
-  spinSpeed: 50
-  hoverScaleMultiplier: 1.2
+  spinSpeed: 10
+  randomizeStartPosition: 1
+  hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
   stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!135 &213756898
@@ -637,7 +639,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  segments: 200
+  segments: 60
   lineWidth: 0.05
 --- !u!1 &243413792
 GameObject:
@@ -771,6 +773,8 @@ MonoBehaviour:
   - {fileID: 1555946057}
   - {fileID: 213756897}
   isMovementPaused: 0
+  popUpDuration: 0.2
+  finalPanelScale: {x: 0.005, y: 0.005, z: 1}
 --- !u!4 &1212711538
 Transform:
   m_ObjectHideFlags: 0
@@ -896,7 +900,7 @@ Transform:
   m_GameObject: {fileID: 1555946055}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4, y: 0, z: 0}
+  m_LocalPosition: {x: 5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -916,10 +920,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  orbitSpeed: 40
+  orbitSpeed: 12
   spinAxis: {x: 0, y: 1, z: 0}
-  spinSpeed: 50
-  hoverScaleMultiplier: 1.2
+  spinSpeed: 10
+  randomizeStartPosition: 1
+  hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
   stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!135 &1555946058
@@ -1123,7 +1128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  segments: 200
+  segments: 60
   lineWidth: 0.05
 --- !u!1 &1759565805
 GameObject:
@@ -1150,7 +1155,7 @@ Transform:
   m_GameObject: {fileID: 1759565805}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1192,7 +1197,7 @@ Transform:
   m_GameObject: {fileID: 1767277958}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3, y: 0, z: 0}
+  m_LocalPosition: {x: 4, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1212,10 +1217,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  orbitSpeed: 30
+  orbitSpeed: 15
   spinAxis: {x: 0, y: 1, z: 0}
-  spinSpeed: 50
-  hoverScaleMultiplier: 1.2
+  spinSpeed: 10
+  randomizeStartPosition: 1
+  hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
   stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!135 &1767277961
@@ -1419,7 +1425,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  segments: 200
+  segments: 60
   lineWidth: 0.05
 --- !u!1 &1922309641
 GameObject:
@@ -1532,47 +1538,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922309641}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &2064139550
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2064139552}
-  - component: {fileID: 2064139551}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!45 &2064139551
-Skybox:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064139550}
-  m_Enabled: 1
-  m_CustomSkybox: {fileID: 0}
---- !u!4 &2064139552
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064139550}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.02864, y: 3.08312, z: 21.02576}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2065787272
 GameObject:
   m_ObjectHideFlags: 0
@@ -1585,7 +1550,6 @@ GameObject:
   - component: {fileID: 2065787274}
   - component: {fileID: 2065787273}
   - component: {fileID: 2065787276}
-  - component: {fileID: 2065787277}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1683,15 +1647,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_MaxRayIntersections: 0
---- !u!45 &2065787277
-Skybox:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065787272}
-  m_Enabled: 1
-  m_CustomSkybox: {fileID: 2100000, guid: ed1387202b1349540a5d6464f0f27488, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1701,4 +1656,3 @@ SceneRoots:
   - {fileID: 1759565806}
   - {fileID: 1304938570}
   - {fileID: 1212711538}
-  - {fileID: 2064139552}
