@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Protocol;
 using UnityEngine;
 
@@ -75,6 +75,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     }
 
     // 플레이어 이동
+
     private void OnPlayerMove(S_MOVE packet)
     {
         if (PlayManager.Instance == null)
