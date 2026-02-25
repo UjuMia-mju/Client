@@ -36,4 +36,17 @@ public static class Define
         new Vector2Int(2560, 1440), // Index 1 (QHD)
         new Vector2Int(3840, 2160)  // Index 2 (UHD)
     };
+    
+    public static class KeyName
+    {
+        public const string up = "위쪽 이동";
+        public const string down = "아래쪽 이동";
+        public const string left = "왼쪽 이동";
+        public const string right = "오른쪽 이동";
+        public const string move = "이동";
+        
+        public const string jump = "점프";
+        public const string @throw = "던지기"; // throw는 C# 예약어이므로 @를 붙여서 사용
+        public const string interact = "상호작용";
+    }
 }

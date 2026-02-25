@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC774\uB3D9 (LB)"
+  m_text: "\uC67C\uCABD \uC774\uB3D9 (LB)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d80b4caaefc29cb4d9793cd7fe949019, type: 2}
   m_sharedMaterial: {fileID: 1440945473178108944, guid: d80b4caaefc29cb4d9793cd7fe949019, type: 2}
@@ -92,8 +92,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -429,8 +429,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -593,7 +593,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4359663835933194921}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -5082775082180953856}
+        m_TargetAssemblyTypeName: WarningMessageController, Assembly-CSharp
+        m_MethodName: OnLeftButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5552698441018575091
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,6 +616,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5746382742901277194}
   - component: {fileID: 453548619474192102}
+  - component: {fileID: -5082775082180953856}
   m_Layer: 5
   m_Name: WarningMessage
   m_TagString: Untagged
@@ -641,6 +654,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5552698441018575091}
   m_CullTransparentMesh: 1
+--- !u!114 &-5082775082180953856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5552698441018575091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53cc997ab5ee5384db6ec08d4f0e91fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WarningMessageController
+  leftText: {fileID: 2395409296812149477}
+  rightText: {fileID: 65986594363300037}
 --- !u!1 &5755838518699325895
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,4 +863,16 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5053370021021483179}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -5082775082180953856}
+        m_TargetAssemblyTypeName: WarningMessageController, Assembly-CSharp
+        m_MethodName: OnRightButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.InputSystem;
+using System;
 
 /// <summary>
-/// 조작키 및 마우스 감도 설정
+/// 키 변경 및 마우스 감도 조절
 /// </summary>
 public class ControlPanelController : MonoBehaviour
 {
@@ -17,11 +18,8 @@ public class ControlPanelController : MonoBehaviour
     [Header("UI Popup (Prefab)")]
     [SerializeField] private GameObject warningPrefab; 
     [SerializeField] private Transform warningParent;
-
-    private GameObject _currentWarningPopup; 
-    private Coroutine _warningCoroutine;
     
-    // 플레이어 이동 스크립트 등에서 참조할 static 변수
+    // TODO: 마우스 감도 게임 씬에 적용해야 함
     public static float MouseSensitivity = 1.0f;
 
     [System.Serializable]
@@ -39,10 +37,8 @@ public class ControlPanelController : MonoBehaviour
     
     private void Start()
     {
-        // 1. 감도 불러오기 (DataManager에 저장된 값 사용)
         float savedSensitivity = DataManager.Instance.data.mouseSensitivity;
-        
-        MouseSensitivity = savedSensitivity; // Static 변수 갱신
+        MouseSensitivity = savedSensitivity; 
 
         if (sensitivitySlider != null)
         {
@@ -51,28 +47,23 @@ public class ControlPanelController : MonoBehaviour
             sensitivitySlider.onValueChanged.AddListener(OnSensitivityChanged);
         }
 
-        // 2. 키 바인딩 UI 갱신 (DataManager가 이미 로드해둔 InputAsset 상태를 화면에 표시)
         RefreshKeyBindingsUI();
     }
 
     /// <summary>
-    /// 마우스 감도 변경
+    /// 마우스 감도 슬라이더 이벤트
     /// </summary>
     public void OnSensitivityChanged(float value)
     {
-        // 1. DataManager 데이터 갱신
         DataManager.Instance.data.mouseSensitivity = value;
-    
-        // 2. static 변수 갱신 (인게임 적용용)
         ControlPanelController.MouseSensitivity = value;
-
-        // 3. 저장 요청
         DataManager.Instance.Save();
-        
-        // 텍스트 갱신
         UpdateSensitivityText(value);
     }
 
+    /// <summary>
+    /// 마우스 감도 텍스트 업데이트
+    /// </summary>
     private void UpdateSensitivityText(float value)
     {
         if (sensitivityText != null)
@@ -80,14 +71,13 @@ public class ControlPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// 키 바인딩 UI 갱신
+    /// 키 설정 UI 새로고침
     /// </summary>
     public void RefreshKeyBindingsUI()
     {
         foreach (var item in keyBindings)
         {
             InputAction action = DataManager.Instance.InputAsset.FindAction(item.actionName);
-            
             if (action != null)
             {
                 item.buttonText.text = GetKeyName(action, item.bindingIndex);
@@ -96,40 +86,33 @@ public class ControlPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// 중복 키 검사
+    /// 키 중복 검사 로직
     /// </summary>
-    private bool IsDuplicateKey(InputAction targetAction, int targetIndex, string newPath)
+    private (bool isDuplicate, InputAction duplicateAction, int duplicateIndex) CheckDuplicateKey(InputAction targetAction, int targetIndex, string newPath)
     {
         var actionMap = targetAction.actionMap; 
 
         foreach (var action in actionMap.actions)
         {
-            // 액션의 모든 바인딩(키 설정)을 순회
             for (int i = 0; i < action.bindings.Count; i++)
             {
-                // 1. 자기 자신(지금 바꾸고 있는 키)은 비교 대상에서 제외
                 if (action == targetAction && i == targetIndex) continue;
-
-                // 2. Composite(Vector2 껍데기 등)은 실제 키가 아니므로 제외
                 if (action.bindings[i].isComposite) continue;
 
-                // 3. 단순 문자열 비교 사용
                 string pathToCheck = action.bindings[i].effectivePath;
-                
                 if (string.IsNullOrEmpty(pathToCheck)) continue;
 
                 if (newPath == pathToCheck)
                 {
-                    Debug.LogWarning($"중복 발견! '{action.name}' 액션에서 이미 사용 중입니다.");
-                    return true; // 중복됨!
+                    return (true, action, i); 
                 }
             }
         }
-        return false; // 중복 없음
+        return (false, null, -1); 
     }
 
     /// <summary>
-    /// Button OnClick 이벤트
+    /// 키 변경 로직
     /// </summary>
     public void StartRebinding(int listIndex)
     {
@@ -139,8 +122,8 @@ public class ControlPanelController : MonoBehaviour
         InputAction action = DataManager.Instance.InputAsset.FindAction(item.actionName);
         if (action == null) return;
 
-        // 시작할 때 떠있던 복제본 즉시 삭제
-        HideWarningPopup();
+        string oldOverridePath = action.bindings[item.bindingIndex].overridePath;
+        string oldEffectivePath = action.bindings[item.bindingIndex].effectivePath;
 
         _rebindOperation?.Dispose();
         action.Disable();
@@ -151,24 +134,15 @@ public class ControlPanelController : MonoBehaviour
             .OnComplete(operation =>
             {
                 string newPath = action.bindings[item.bindingIndex].effectivePath;
+                var duplicateResult = CheckDuplicateKey(action, item.bindingIndex, newPath);
 
-                if (IsDuplicateKey(action, item.bindingIndex, newPath))
+                if (duplicateResult.isDuplicate)
                 {
-                    action.RemoveBindingOverride(item.bindingIndex);
-
-                    // 프리팹 띄우기
-                    ShowWarningPopup();
-
-                    action.Enable();
+                    ShowWarningMessage(action, item, oldOverridePath, oldEffectivePath, newPath, 
+                        duplicateResult.duplicateAction, duplicateResult.duplicateIndex);
                     operation.Dispose();
-
-                    // 버튼 텍스트 원상복구
-                    StartCoroutine(ResetButtonTextRoutine(item, action));
                     return;
                 }
-
-                // 성공 시에도 떠있던 팝업 확실히 지우기
-                HideWarningPopup();
 
                 RebindComplete(action, item);
                 operation.Dispose();
@@ -178,78 +152,131 @@ public class ControlPanelController : MonoBehaviour
                 action.Enable();
                 operation.Dispose();
                 item.buttonText.text = GetKeyName(action, item.bindingIndex);
-
-                // 취소 시 떠있던 복제본 삭제
-                HideWarningPopup();
             })
             .Start();
     }
 
-    // 경고 팝업 제어 (GameObject)
-    // 화면에 떠있는 팝업을 즉시 삭제하는 함수
-    private void HideWarningPopup()
-    {
-        if (_warningCoroutine != null) StopCoroutine(_warningCoroutine);
-        
-        if (_currentWarningPopup != null)
-        {
-            Destroy(_currentWarningPopup); // 생성된 복제본만 파괴
-        }
-    }
-
-    private void ShowWarningPopup()
+    /// <summary>
+    /// 중복 시 
+    /// </summary>
+    private void ShowWarningMessage(InputAction newAction, KeyBindingItem newItem, string oldOverridePath, 
+        string oldEffectivePath, string newPath, InputAction existingAction, int existingIndex)
     {
         if (warningPrefab == null || warningParent == null) return; 
 
-        HideWarningPopup();
+        GameObject popupObj = Instantiate(warningPrefab, warningParent);
+        popupObj.SetActive(true); 
 
-        // 설정한 부모에 생성 / SetActive
-        _currentWarningPopup = Instantiate(warningPrefab, warningParent);
-        _currentWarningPopup.SetActive(true); 
-        
-        _warningCoroutine = StartCoroutine(DestroyWarningRoutine(_currentWarningPopup));
-    }
-    
-    // 2초 뒤에 삭제하는 코루틴
-    private IEnumerator DestroyWarningRoutine(GameObject targetPopup)
-    {
-        yield return new WaitForSeconds(2.0f); // 2초 대기
-        
-        // 시간이 다 되면 오브젝트 파괴
-        if (targetPopup != null)
+        WarningMessageController messageController = popupObj.GetComponent<WarningMessageController>();
+        if (messageController == null) return;
+
+        string keyNameUI = GetKeyName(newAction, newItem.bindingIndex);
+
+        Action onKeepExisting = () =>
         {
-            Destroy(targetPopup);
-        }
-    }
+            if (string.IsNullOrEmpty(oldOverridePath))
+                newAction.RemoveBindingOverride(newItem.bindingIndex); 
+            else
+                newAction.ApplyBindingOverride(newItem.bindingIndex, oldOverridePath); 
 
-    private IEnumerator ResetButtonTextRoutine(KeyBindingItem item, InputAction action)
-    {
-        yield return new WaitForSeconds(1.0f);
-        item.buttonText.text = GetKeyName(action, item.bindingIndex);
+            RebindComplete(newAction, newItem);
+        };
+
+        Action onApplyNew = () =>
+        {
+            // 맞교환(Swap) 로직
+            if (string.IsNullOrEmpty(oldEffectivePath))
+            {
+                // 만약 뺏어온 액션이 원래 빈칸이었다면, 기존 액션도 빈칸으로 만듦
+                existingAction.ApplyBindingOverride(existingIndex, "");
+            }
+            else
+            {
+                // 뺏긴 기존 액션에게, 방금 뺏어온 액션이 쓰던 '예전 키'를 덮어씌움
+                existingAction.ApplyBindingOverride(existingIndex, oldEffectivePath);
+            }
+
+            // 새로운 액션은 RebindingOperation이 이미 덮어씌웠으므로 저장과 UI 갱신만 진행
+            RebindComplete(newAction, newItem);
+            RefreshKeyBindingsUI(); 
+        };
+
+        // 기존 액션 이름 매핑 (Define.KeyName 사용)
+        string existingName = existingAction.name;
+        string existingPartName = "";
+        if (existingIndex >= 0 && existingIndex < existingAction.bindings.Count && existingAction.bindings[existingIndex].isPartOfComposite)
+            existingPartName = existingAction.bindings[existingIndex].name.ToLower();
+
+        if (existingName.Equals("Move", StringComparison.OrdinalIgnoreCase))
+        {
+            switch (existingPartName)
+            {
+                case "up": existingName = Define.KeyName.up; break;
+                case "down": existingName = Define.KeyName.down; break;
+                case "left": existingName = Define.KeyName.left; break;
+                case "right": existingName = Define.KeyName.right; break;
+                default: existingName = Define.KeyName.move; break;
+            }
+        }
+        else
+        {
+            switch (existingName.ToLower())
+            {
+                case "jump": existingName = Define.KeyName.jump; break;
+                case "throworcancel": existingName = Define.KeyName.@throw; break;
+                case "interact": existingName = Define.KeyName.interact; break;
+            }
+        }
+
+        string newName = newAction.name;
+        string newPartName = "";
+        if (newItem.bindingIndex >= 0 && newItem.bindingIndex < newAction.bindings.Count && newAction.bindings[newItem.bindingIndex].isPartOfComposite)
+            newPartName = newAction.bindings[newItem.bindingIndex].name.ToLower();
+
+        if (newName.Equals("Move", StringComparison.OrdinalIgnoreCase))
+        {
+            switch (newPartName)
+            {
+                case "up": newName = Define.KeyName.up; break;
+                case "down": newName = Define.KeyName.down; break;
+                case "left": newName = Define.KeyName.left; break;
+                case "right": newName = Define.KeyName.right; break;
+                default: newName = Define.KeyName.move; break;
+            }
+        }
+        else
+        {
+            switch (newName.ToLower())
+            {
+                case "jump": newName = Define.KeyName.jump; break;
+                case "throworcancel": newName = Define.KeyName.@throw; break;
+                case "interact": newName = Define.KeyName.interact; break;
+            }
+        }
+
+        messageController.Initialize(existingName, newName, keyNameUI, onKeepExisting, onApplyNew);
     }
 
     private void RebindComplete(InputAction action, KeyBindingItem item)
     {
         action.Enable();
         item.buttonText.text = GetKeyName(action, item.bindingIndex);
-
-        // 저장
         DataManager.Instance.Save(); 
     }
 
     private string GetKeyName(InputAction action, int bindingIndex)
     {
         if (action == null || action.bindings.Count <= bindingIndex) return "??";
+        
+        string path = action.bindings[bindingIndex].effectivePath;
+        if (string.IsNullOrEmpty(path)) return "??"; 
 
-        // 1. 기본 이름 가져오기
         string keyName = InputControlPath.ToHumanReadableString(
-            action.bindings[bindingIndex].effectivePath,
+            path,
             InputControlPath.HumanReadableStringOptions.OmitDevice);
 
-        // 2. "Digit 1" 같은 숫자 키에서 "Digit " 제거 (그냥 "1"로)
         keyName = keyName.Replace("Digit ", "");
 
-        // 3. 특수 키들을 의미 있는 2글자로 변환
         switch (keyName)
         {
             case "Left Shift": return "LS";
@@ -263,18 +290,13 @@ public class ControlPanelController : MonoBehaviour
             case "Down Arrow": return "DN";
             case "Left Arrow": return "LT";
             case "Right Arrow": return "RT";
-            // 마우스
             case "Left Button": return "LB"; 
             case "Right Button": return "RB";
         }
 
-        // 4. 그 외의 키가 2글자를 넘으면 앞 2글자만 자르기
         if (keyName.Length > 2)
-        {
             keyName = keyName.Substring(0, 2);
-        }
 
-        // 5. 대문자로 반환
         return keyName.ToUpper();
     }
 }
