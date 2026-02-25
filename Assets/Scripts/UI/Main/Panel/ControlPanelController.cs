@@ -96,7 +96,7 @@ public class ControlPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// 중복 키 검사 (수정됨)
+    /// 중복 키 검사
     /// </summary>
     private bool IsDuplicateKey(InputAction targetAction, int targetIndex, string newPath)
     {
@@ -113,9 +113,9 @@ public class ControlPanelController : MonoBehaviour
                 // 2. Composite(Vector2 껍데기 등)은 실제 키가 아니므로 제외
                 if (action.bindings[i].isComposite) continue;
 
-                // 3. ★ 수정된 부분: 단순 문자열 비교 (==) 사용
-                // effectivePath가 null일 수도 있으므로 안전하게 처리
+                // 3. 단순 문자열 비교 사용
                 string pathToCheck = action.bindings[i].effectivePath;
+                
                 if (string.IsNullOrEmpty(pathToCheck)) continue;
 
                 if (newPath == pathToCheck)
@@ -139,7 +139,7 @@ public class ControlPanelController : MonoBehaviour
         InputAction action = DataManager.Instance.InputAsset.FindAction(item.actionName);
         if (action == null) return;
 
-        // ★ 변경: 시작할 때 떠있던 복제본 즉시 삭제
+        // 시작할 때 떠있던 복제본 즉시 삭제
         HideWarningPopup();
 
         _rebindOperation?.Dispose();
@@ -162,7 +162,7 @@ public class ControlPanelController : MonoBehaviour
                     action.Enable();
                     operation.Dispose();
 
-                    // (유지) 버튼 텍스트 원상복구
+                    // 버튼 텍스트 원상복구
                     StartCoroutine(ResetButtonTextRoutine(item, action));
                     return;
                 }
@@ -179,7 +179,7 @@ public class ControlPanelController : MonoBehaviour
                 operation.Dispose();
                 item.buttonText.text = GetKeyName(action, item.bindingIndex);
 
-                // ★ 변경: 취소 시 떠있던 복제본 즉시 삭제
+                // 취소 시 떠있던 복제본 삭제
                 HideWarningPopup();
             })
             .Start();
@@ -199,12 +199,11 @@ public class ControlPanelController : MonoBehaviour
 
     private void ShowWarningPopup()
     {
-        // 부모나 프리팹이 연결 안되어있으면 실행 안함
         if (warningPrefab == null || warningParent == null) return; 
 
-        HideWarningPopup(); // 기존 거 지우고
+        HideWarningPopup();
 
-        // ★ 변경: 부모(Canvas) 안에 생성하고, 확실하게 켜주기(SetActive)
+        // 설정한 부모에 생성 / SetActive
         _currentWarningPopup = Instantiate(warningPrefab, warningParent);
         _currentWarningPopup.SetActive(true); 
         
@@ -250,12 +249,9 @@ public class ControlPanelController : MonoBehaviour
         // 2. "Digit 1" 같은 숫자 키에서 "Digit " 제거 (그냥 "1"로)
         keyName = keyName.Replace("Digit ", "");
 
-        // 3. 특수 키들을 의미 있는 2글자로 변환 (원하는 대로 수정 가능)
+        // 3. 특수 키들을 의미 있는 2글자로 변환
         switch (keyName)
         {
-            case "Space": return "SP";
-            case "Enter": return "EN";
-            case "Escape": return "ES";
             case "Left Shift": return "LS";
             case "Right Shift": return "RS";
             case "Left Ctrl": return "LC";
