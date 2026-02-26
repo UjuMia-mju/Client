@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class OtherPlayers : MovingObject
 {
@@ -6,7 +7,6 @@ public class OtherPlayers : MovingObject
 
     // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
     //private PlayerStat playerStat;
-
 
     public ulong PlayerId { get; set; }
     public string PlayerName { get; set; }
@@ -37,11 +37,13 @@ public class OtherPlayers : MovingObject
         //StartCoroutine(playerStat.OxygenDecrease());
     }
 
-    // Update is called once per frame
-    //void Update()
-    //{
-
-    //}
+    void Update()
+    {
+        //playerAnimator.PlayerAnimation(playerInput.axisResultDir,
+        //        playerInput.GetIsJumping(),
+        //        isGrounded,
+        //        inputFreeze);
+    }
 
     private void FixedUpdate()
     {

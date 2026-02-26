@@ -9,7 +9,7 @@ public static class Define
         public const string MAIN   = "Main";
         public const string GACHA  = "Gacha";
         public const string LOBBY  = "Lobby";
-        public const string GAME   = "Game";
+        public const string GAME_1_1   = "Stage01Level01";
     }
 
     public static class Tag
