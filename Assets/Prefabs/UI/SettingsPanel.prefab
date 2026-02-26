@@ -9816,24 +9816,31 @@ MonoBehaviour:
   - actionName: Move
     bindingIndex: 1
     buttonText: {fileID: 1433583870110498268}
+    keyButton: {fileID: 2633194886060634035}
   - actionName: Move
     bindingIndex: 2
     buttonText: {fileID: 792362660578236511}
+    keyButton: {fileID: 5202514141763634166}
   - actionName: Move
     bindingIndex: 3
     buttonText: {fileID: 6981637746762112153}
+    keyButton: {fileID: 9215524646339639219}
   - actionName: Move
     bindingIndex: 4
     buttonText: {fileID: 605706416384621585}
+    keyButton: {fileID: 586284559558512847}
   - actionName: Jump
     bindingIndex: 0
     buttonText: {fileID: 6327530163495081601}
+    keyButton: {fileID: 495280280900877194}
   - actionName: Interact
     bindingIndex: 0
     buttonText: {fileID: 9190893739001848215}
+    keyButton: {fileID: 264106252973894177}
   - actionName: ThrowOrCancel
     bindingIndex: 0
     buttonText: {fileID: 8664522984144156407}
+    keyButton: {fileID: 2542476517355547325}
 --- !u!1 &8611503878236194694
 GameObject:
   m_ObjectHideFlags: 0

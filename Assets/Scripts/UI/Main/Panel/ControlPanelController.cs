@@ -28,12 +28,19 @@ public class ControlPanelController : MonoBehaviour
         public string actionName;       
         public int bindingIndex;        
         public TextMeshProUGUI buttonText; 
+        public Button keyButton;
     }
 
     [Header("Key Bindings Setup")]
     [SerializeField] private List<KeyBindingItem> keyBindings;
 
     private InputActionRebindingExtensions.RebindingOperation _rebindOperation;
+    
+    // 키변경 버튼 깜빡임 효과
+    private Coroutine _blinkCoroutine;
+    private Button _currentBlinkingButton; // 현재 깜빡이고 있는 버튼 기억
+    private Color _normalColor = Color.white; // 기본 색상
+    private Color _blinkColor = new Color(0.8f, 0f, 0.3f); // 깜빡일 때 색상
     
     private void Start()
     {
@@ -49,7 +56,50 @@ public class ControlPanelController : MonoBehaviour
 
         RefreshKeyBindingsUI();
     }
+    
+    /// <summary>
+    /// 버튼 내장 색상(ColorBlock)을 변경하는 코루틴
+    /// </summary>
+    private IEnumerator BlinkButtonRoutine(Button targetButton)
+    {
+        if (targetButton == null) yield break;
 
+        bool isWhite = false;
+        while (true)
+        {
+            // Button의 ColorBlock을 가져와서 색상을 수정한 뒤 다시 덮어씌워야 합니다.
+            ColorBlock cb = targetButton.colors;
+            cb.normalColor = isWhite ? _normalColor : _blinkColor;
+            cb.selectedColor = isWhite ? _normalColor : _blinkColor; // 클릭(선택)된 상태일 수도 있으니 같이 변경
+            targetButton.colors = cb;
+        
+            isWhite = !isWhite;
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+    /// <summary>
+    /// 깜빡임을 멈추고 버튼 색상을 원래대로 돌려놓는 메서드
+    /// </summary>
+    private void StopBlink()
+    {
+        if (_blinkCoroutine != null)
+        {
+            StopCoroutine(_blinkCoroutine);
+            _blinkCoroutine = null;
+        }
+    
+        // 이전에 깜빡이던 버튼이 있다면 원래 색상으로 복구
+        if (_currentBlinkingButton != null)
+        {
+            ColorBlock cb = _currentBlinkingButton.colors;
+            cb.normalColor = _normalColor;
+            cb.selectedColor = _normalColor;
+            _currentBlinkingButton.colors = cb;
+        
+            _currentBlinkingButton = null;
+        }
+    }
+    
     /// <summary>
     /// 마우스 감도 슬라이더 이벤트
     /// </summary>
@@ -123,7 +173,15 @@ public class ControlPanelController : MonoBehaviour
         if (action == null) return;
 
         string oldOverridePath = action.bindings[item.bindingIndex].overridePath;
-        string oldEffectivePath = action.bindings[item.bindingIndex].effectivePath;
+        string oldEffectivePath = action.bindings[item.bindingIndex].effectivePath; 
+
+        // 기존 깜빡임을 멈추고, 누른 버튼의 깜빡임 시작
+        StopBlink();
+        if (item.keyButton != null)
+        {
+            _currentBlinkingButton = item.keyButton;
+            _blinkCoroutine = StartCoroutine(BlinkButtonRoutine(item.keyButton));
+        }
 
         _rebindOperation?.Dispose();
         action.Disable();
@@ -133,13 +191,15 @@ public class ControlPanelController : MonoBehaviour
             .OnMatchWaitForAnother(0.1f)
             .OnComplete(operation =>
             {
+                // 키 입력 완료 시 깜빡임 멈추기
+                StopBlink(); 
+
                 string newPath = action.bindings[item.bindingIndex].effectivePath;
                 var duplicateResult = CheckDuplicateKey(action, item.bindingIndex, newPath);
 
                 if (duplicateResult.isDuplicate)
                 {
-                    ShowWarningMessage(action, item, oldOverridePath, oldEffectivePath, newPath, 
-                        duplicateResult.duplicateAction, duplicateResult.duplicateIndex);
+                    ShowWarningMessage(action, item, oldOverridePath, oldEffectivePath, newPath, duplicateResult.duplicateAction, duplicateResult.duplicateIndex);
                     operation.Dispose();
                     return;
                 }
@@ -149,6 +209,9 @@ public class ControlPanelController : MonoBehaviour
             })
             .OnCancel(operation =>
             {
+                // 키 입력 취소 시 깜빡임 멈추기
+                StopBlink(); 
+
                 action.Enable();
                 operation.Dispose();
                 item.buttonText.text = GetKeyName(action, item.bindingIndex);
