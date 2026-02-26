@@ -2,24 +2,20 @@
 
 public class OtherPlayers : MovingObject
 {
-    private bool inputFreeze = false;
-
-    // 컴포넌트 참조 변수
     private PlayerAnimator playerAnimator;
-
-    // 아이템 시스템은 잠시 주석화
-    //public PlayerItemSystem playerItemSystem { get; private set; }
-
-    public GameObject nearestObject { get; private set; } // 플레이어에게서 가장 가까운 오브젝트
-
-    //private const float DETECT_RADIUS = 5.5f; // 구형 트리거 반지름 
-
-    public bool isGetItem { get; private set; } = false;
-
-    public GameObject playerBoneModel;
 
     // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
     //private PlayerStat playerStat;
+
+
+    public ulong PlayerId { get; set; }
+    public string PlayerName { get; set; }
+
+    [SerializeField] private float lerpSpeed = 10f;
+
+    private Vector3 _targetPos;
+    private Quaternion _targetRot;
+    private bool _hasTarget = false;
 
     // 초기화
     protected override void Awake()
@@ -33,20 +29,40 @@ public class OtherPlayers : MovingObject
         playerAnimator.Initialize();
     }
 
-    //private void Start()
-    //{
-    //    // 산소가 줄어들기 시작함
-    //    //StartCoroutine(playerStat.OxygenDecrease());
-    //}
+    private void Start()
+    {
+        _targetPos = transform.position;
+        _targetRot = transform.rotation;
+        // 산소가 줄어들기 시작함
+        //StartCoroutine(playerStat.OxygenDecrease());
+    }
 
     // Update is called once per frame
     //void Update()
     //{
-        
+
     //}
 
-    //private void FixedUpdate()
-    //{
-        
-    //}
+    private void FixedUpdate()
+    {
+        // movDir은 일단 사용하지 않는 것으로 하고, 영벡터를 파라메터로 넣었습니다. 의미는 없습니다.
+        Moving(Vector3.zero);
+    }
+
+    protected override void Moving(Vector3 movDir)
+    {
+        if (_hasTarget)
+        {
+            // 부드러운 보간 이동
+            rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.deltaTime * lerpSpeed));
+            rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.deltaTime * lerpSpeed));
+        }
+    }
+
+    public void SetTargetPosition(Vector3 position, Quaternion rotation)
+    {
+        _targetPos = position;
+        _targetRot = rotation;
+        _hasTarget = true;
+    }
 }

@@ -1363,7 +1363,6 @@ GameObject:
   - component: {fileID: 1442001259}
   - component: {fileID: 1442001258}
   - component: {fileID: 1442001257}
-  - component: {fileID: 1442001256}
   - component: {fileID: 1442001254}
   - component: {fileID: 1442001253}
   - component: {fileID: 1442001252}
@@ -1412,18 +1411,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGravityController
   planet: {fileID: 8301335579166610431}
---- !u!114 &1442001256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1442001251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 109576323b1757f40b0f492139474e24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInput
 --- !u!114 &1442001257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1537,6 +1524,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc8934166e2ba54483e8f5748e544c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OtherPlayers
+  walkSpeed: 0
+  jumpForce: 0
+  rotationSpeed: 0
+  lerpSpeed: 10
 --- !u!1 &1499466911
 GameObject:
   m_ObjectHideFlags: 0
@@ -3201,6 +3192,7 @@ MonoBehaviour:
   jumpForce: 5
   rotationSpeed: 10
   playerBoneModel: {fileID: 130923350922601560}
+  sendInterval: 0.05
 --- !u!114 &130923350922639491
 MonoBehaviour:
   m_ObjectHideFlags: 0

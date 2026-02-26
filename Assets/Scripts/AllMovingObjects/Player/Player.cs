@@ -22,6 +22,13 @@ public class Player : MovingObject
     // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
     //private PlayerStat playerStat;
 
+
+    // 서버 관련 변수들
+    public float sendInterval = 0.05f; // 20fps로 위치 전송 (네트워크 부하 고려)
+    private float _lastSendTime = 0f;
+    private Vector3 _lastSendPos;
+    private Quaternion _lastSendRot;
+
     // 초기화
     protected override void Awake()
     {
@@ -38,6 +45,15 @@ public class Player : MovingObject
 
     private void Start()
     {
+
+        _lastSendPos = transform.position;
+        _lastSendRot = transform.rotation;
+
+        // 게임 입장 패킷 전송
+        NetManager.Instance.SendEnterGame(0);
+
+
+
         // 산소가 줄어들기 시작함
         //StartCoroutine(playerStat.OxygenDecrease());
     }
@@ -175,5 +191,26 @@ public class Player : MovingObject
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, DETECT_RADIUS);
+    }
+
+    // 서버로 위치 정보 패킷전송
+    private void SendPositionToServer()
+    {
+        // 일정 간격으로만 전송 (네트워크 최적화)
+        if (Time.time - _lastSendTime < sendInterval)
+            return;
+
+        // 위치나 회전이 변경되었을 때만 전송
+        bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.01f;
+        bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 0.5f;
+
+        if (posChanged || rotChanged)
+        {
+            NetManager.Instance.SendMove(transform.position, transform.rotation);
+
+            _lastSendPos = transform.position;
+            _lastSendRot = transform.rotation;
+            _lastSendTime = Time.time;
+        }
     }
 }
