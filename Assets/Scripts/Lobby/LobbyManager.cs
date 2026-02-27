@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LobbyManager : MonoBehaviour
@@ -6,6 +7,7 @@ public class LobbyManager : MonoBehaviour
     public GameObject playerPrefab;
     public Vector3 spawnCenter; // 스폰될 왼쪽 구역의 중심 좌표
     public float spawnRadius = 4f; // 스폰 허용 반경
+    private List<GameObject> spawnedPlayers = new List<GameObject>();
 
     [Header("우주선 세팅")]
     public Transform spaceshipDoor; // 우주선 문(빨려 들어갈 목표 지점)
@@ -88,7 +90,12 @@ public class LobbyManager : MonoBehaviour
     public void SpawnNewPlayer()
     {
         Vector3 safePosition = GetSafeSpawnPosition();
-        Instantiate(playerPrefab, safePosition, Quaternion.identity);
+        GameObject newPlayer = Instantiate(playerPrefab, safePosition, Quaternion.Euler(0, 180f, 0));
+        spawnedPlayers.Add(newPlayer);
+
+        Animator anim = newPlayer.GetComponent<Animator>();
+        if(anim != null)
+            anim.SetTrigger("bIsInLobby");
     }
 
     // 빈 공간을 찾는 함수
