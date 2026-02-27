@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class PlayerTPCamera : MonoBehaviour
 {
@@ -41,6 +42,7 @@ public class PlayerTPCamera : MonoBehaviour
         inputActions = new PlayerInputSystem();
         inputActions.Player.Enable();
     }
+
 
     private void Update()
     {

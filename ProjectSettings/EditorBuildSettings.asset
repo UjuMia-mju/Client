@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Splash.unity
     guid: facd776438c5b5e40abe1c458e61be5e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Main.unity
     guid: 56bf6d66fc619bf43b151d13a504e239
   - enabled: 0
@@ -17,13 +17,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Lobby.unity
     guid: 31c0e93ab5b512d4eb6e469505a3d910
-  - enabled: 0
-    path: Assets/Scenes/GameStages/Stage01Level01.unity
-    guid: 002c9d64a9a79ae4099485a459d388b8
   - enabled: 1
     path: Assets/Scenes/TestLoginScene.unity
     guid: 4b6bf4fa7b294cc409ef52dfef3b4595
   - enabled: 1
+    path: Assets/Scenes/GameStages/Stage01Level01.unity
+    guid: 002c9d64a9a79ae4099485a459d388b8
+  - enabled: 0
     path: Assets/Scenes/TestMoveScene.unity
     guid: f92c37ec4883f1b46bf63fc7595be2e5
   m_configObjects:

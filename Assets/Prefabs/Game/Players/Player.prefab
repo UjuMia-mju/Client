@@ -998,6 +998,7 @@ MonoBehaviour:
   jumpForce: 5
   rotationSpeed: 10
   playerBoneModel: {fileID: 3170064178807919194}
+  cameraOffset: {fileID: 6450239085880179291}
   sendInterval: 0.05
 --- !u!114 &2520979513359537613
 MonoBehaviour:

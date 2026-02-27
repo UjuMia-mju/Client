@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayManager : SceneSingleton<PlayManager>
 {
     public GameObject SpawnOffset;
-    [SerializeField] private GameObject localPlayerPrefab;
+    //[SerializeField] private GameObject localPlayerPrefab;
     [SerializeField] private GameObject remotePlayerPrefab;
 
     private GameObject _localPlayer;
@@ -22,7 +22,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         // 서버에 ENTER_GAME 패킷 전송 (게임 입장 요청)
         NetManager.Instance.SendEnterGame((ulong)NetManager.Instance._playerId);
         // 로컬 플레이어 생성
-        SpawnLocalPlayer();
+        //SpawnLocalPlayer();
     }
     void OnDestroy()
     {
@@ -32,11 +32,11 @@ public class PlayManager : SceneSingleton<PlayManager>
         PacketManager.Instance.OnMoveEvent -= OnPlayerMove;
         PacketManager.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
     }
-    private void SpawnLocalPlayer()
-    {
-        _localPlayer = Instantiate(localPlayerPrefab, SpawnOffset.transform.position, Quaternion.identity);
-        _localPlayer.name = "LocalPlayer";
-    }
+    //private void SpawnLocalPlayer()
+    //{
+    //    _localPlayer = Instantiate(localPlayerPrefab, SpawnOffset.transform.position, Quaternion.identity);
+    //    _localPlayer.name = "LocalPlayer";
+    //}
     // 게임 입장 성공
     private void OnEnterGameResult(S_ENTER_GAME packet)
     {
