@@ -84,9 +84,6 @@ public class Player : MovingObject
 
         // 구형 트리거
         SphereTriggerFunc();
-
-        // 서버로 패킷 전송
-        SendPositionToServer();
     }
 
     // 물리 작용 업데이트
@@ -103,6 +100,9 @@ public class Player : MovingObject
                 playerInput.MakeIsJumpingFalse();
             }
         }
+
+        // 서버로 패킷 전송
+        SendPositionToServer();
     }
 
     // E키 상호작용

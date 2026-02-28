@@ -39,6 +39,8 @@ public class OtherPlayers : MovingObject
 
     void Update()
     {
+        transform.position = _targetPos;
+        transform.rotation = _targetRot;
         //playerAnimator.PlayerAnimation(playerInput.axisResultDir,
         //        playerInput.GetIsJumping(),
         //        isGrounded,
@@ -48,18 +50,18 @@ public class OtherPlayers : MovingObject
     private void FixedUpdate()
     {
         // movDir은 일단 사용하지 않는 것으로 하고, 영벡터를 파라메터로 넣었습니다. 의미는 없습니다.
-        Moving(Vector3.zero);
+        //Moving(Vector3.zero);
     }
 
-    protected override void Moving(Vector3 movDir)
-    {
-        if (_hasTarget)
-        {
-            // 부드러운 보간 이동
-            rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.deltaTime * lerpSpeed));
-            rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.deltaTime * lerpSpeed));
-        }
-    }
+    //protected override void Moving(Vector3 movDir)
+    //{
+    //    if (_hasTarget)
+    //    {
+    //        // 부드러운 보간 이동
+    //        rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed));
+    //        rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.f * lerpSpeed));
+    //    }
+    //}
 
     public void SetTargetPosition(Vector3 position, Quaternion rotation)
     {
