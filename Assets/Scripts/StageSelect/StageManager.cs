@@ -15,6 +15,19 @@ public class StageManager : MonoBehaviour
     [SerializeField] private float popUpDuration = 0.2f;
     [SerializeField] private Vector3 finalPanelScale = new Vector3(1f, 1f, 1f); 
 
+    [Header("Camera Move Settings")]
+    [Tooltip("카메라가 이동하는 데 걸리는 시간(초)")]
+    [SerializeField] private float cameraMoveDuration = 0.5f;
+
+    // 기본(Origin) 카메라 위치와 회전값
+    private Vector3 originPos = new Vector3(0.200000003f, -10.3100004f, 7.5999999f);
+    private Quaternion originRot = new Quaternion(-0.390727788f, 0.0016025817f, 0.00377544644f, 0.920497179f);
+
+    // 클릭 시 타겟(Target) 카메라 위치와 회전값
+    private Vector3 targetPos = new Vector3(4.94000006f, -12.2399998f, 4f);
+    private Quaternion targetRot = new Quaternion(-0.344169676f, -0.0222564563f, -0.0605728365f, 0.936687112f);
+
+    private Camera _mainCamera;
     private GameObject _currentPanel;
     private StageNode _currentSelectedNode; 
     private bool _isTransitioning = false;
@@ -23,6 +36,9 @@ public class StageManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        // 메인 카메라 미리 찾아두기
+        _mainCamera = Camera.main;
     }
 
     private void Start()
@@ -34,11 +50,17 @@ public class StageManager : MonoBehaviour
         {
             node.Init();
         }
+
+        // 게임 시작 시 카메라를 기본 위치로 강제 세팅 (혹시 에디터에서 다른 곳에 있어도 꼬이지 않게)
+        if (_mainCamera != null)
+        {
+            _mainCamera.transform.position = originPos;
+            _mainCamera.transform.rotation = originRot;
+        }
     }
 
     private void Update()
     {
-        // 행성들 궤도/자전 업데이트 (isMovementPaused가 false일 때만 움직임)
         foreach (var node in stageNodes)
         {
             if (node != null)
@@ -48,7 +70,6 @@ public class StageManager : MonoBehaviour
             }
         }
 
-        // ESC 키로 창 닫기
         if (_currentSelectedNode != null && !_isTransitioning && Keyboard.current[Key.Escape].wasPressedThisFrame)
         {
             StartCoroutine(ClosePanelSequence());
@@ -66,13 +87,17 @@ public class StageManager : MonoBehaviour
     private IEnumerator OpenPanelSequence(StageNode targetNode)
     {
         _isTransitioning = true;
-
-        // 팝업이 떠 있는 동안 배경 행성들 움직임 정지 (어지러움 방지)
         isMovementPaused = true; 
 
+        // 1. 카메라 스르륵 이동 시작 (현재 위치 -> 타겟 위치)
+        if (_mainCamera != null)
+        {
+            StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, targetPos, targetRot));
+        }
+
+        // 2. UI 패널 팝업
         if (targetNode.stagePanelPrefab != null)
         {
-            // Canvas 프리팹 화면 최상단에 바로 생성
             _currentPanel = Instantiate(targetNode.stagePanelPrefab);
             
             RectTransform rect = _currentPanel.GetComponent<RectTransform>();
@@ -95,7 +120,6 @@ public class StageManager : MonoBehaviour
         _isTransitioning = false;
     }
 
-    // 외부 UI 버튼(X 버튼 등)에서도 호출할 수 있도록 public으로 열어둠
     public void ClosePanel()
     {
         if (_currentSelectedNode != null && !_isTransitioning)
@@ -108,6 +132,13 @@ public class StageManager : MonoBehaviour
     {
         _isTransitioning = true;
 
+        // 1. 카메라 원상복구 시작 (현재 위치 -> 원래 위치)
+        if (_mainCamera != null)
+        {
+            StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, originPos, originRot));
+        }
+
+        // 2. 패널 닫기 연출
         if (_currentPanel != null)
         {
             yield return StartCoroutine(DynamicClosePanel(_currentPanel));
@@ -115,13 +146,37 @@ public class StageManager : MonoBehaviour
             _currentPanel = null;
         }
 
-        // 창이 닫히면 배경 행성들 다시 움직임 재개
         isMovementPaused = false; 
-
         _currentSelectedNode = null;
         _isTransitioning = false;
     }
 
+    // =========================================================
+    // 카메라 이동 전용 코루틴
+    // =========================================================
+    private IEnumerator MoveCamera(Vector3 startP, Quaternion startR, Vector3 endP, Quaternion endR)
+    {
+        float elapsed = 0f;
+        while (elapsed < cameraMoveDuration)
+        {
+            elapsed += Time.deltaTime;
+            // SmoothStep을 적용해서 가속/감속이 부드럽게 되도록 처리
+            float t = Mathf.SmoothStep(0, 1, elapsed / cameraMoveDuration);
+            
+            _mainCamera.transform.position = Vector3.Lerp(startP, endP, t);
+            _mainCamera.transform.rotation = Quaternion.Slerp(startR, endR, t);
+            
+            yield return null;
+        }
+        
+        // 마지막에 오차 없이 정확한 위치로 고정
+        _mainCamera.transform.position = endP;
+        _mainCamera.transform.rotation = endR;
+    }
+
+    // =========================================================
+    // UI 애니메이션
+    // =========================================================
     private IEnumerator DynamicPopUpPanel(GameObject panel)
     {
         CanvasGroup cg = panel.GetComponent<CanvasGroup>();
