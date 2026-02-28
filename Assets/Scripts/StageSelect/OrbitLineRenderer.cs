@@ -1,50 +1,111 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(LineRenderer))]
-public class OrbitLineRenderer : MonoBehaviour
+public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    [Header("Orbit References")]
-    [SerializeField] private Transform orbitCenter; // 궤도의 중심점
-    [SerializeField] private Vector3 orbitAxis = Vector3.up; // 회전 축 (StageNode와 동일하게 맞춤)
+    [Header("References")]
+    public StageNode targetNode; 
+    public Transform orbitCenter;
 
     [Header("Line Settings")]
-    [SerializeField] private int segments = 60; // 선을 구성하는 점의 개수 (높을수록 부드러운 원)
-    [SerializeField] private float lineWidth = 0.05f; // 선의 두께
+    public int segments = 60;
+    public float lineWidth = 0.05f;
 
+    [Header("Hover Settings")]
+    public Color hoverColor = Color.yellow; 
+    
+    [Tooltip("선 클릭 판정(히트박스) 두께 배수")]
+    public float hitBoxMultiplier = 5f; 
+    
+    private Gradient _originalGradient;
     private LineRenderer _lineRenderer;
+    private MeshCollider _meshCollider;
 
     private void Start()
     {
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        transform.localScale = Vector3.one;
+
         _lineRenderer = GetComponent<LineRenderer>();
-        
-        // LineRenderer 기본 세팅
-        _lineRenderer.positionCount = segments + 1;
-        _lineRenderer.useWorldSpace = true;
-        _lineRenderer.startWidth = lineWidth;
-        _lineRenderer.endWidth = lineWidth;
+        _originalGradient = _lineRenderer.colorGradient;
 
         DrawOrbit();
+        GenerateMeshCollider(); // 여기서 두꺼운 히트박스를 만듦!
     }
 
     private void DrawOrbit()
     {
-        if (orbitCenter == null) return;
+        if (orbitCenter == null || targetNode == null) return;
 
-        // 중심점에서 현재 구체(Sphere)까지의 방향과 거리를 시작 벡터로 설정
-        Vector3 startDirection = transform.position - orbitCenter.position;
+        _lineRenderer.positionCount = segments;
+        _lineRenderer.useWorldSpace = true;
+        _lineRenderer.startWidth = lineWidth;
+        _lineRenderer.endWidth = lineWidth;
+        _lineRenderer.loop = true;
 
-        for (int i = 0; i <= segments; i++)
+        Vector3 startDirection = targetNode.transform.position - orbitCenter.position;
+
+        for (int i = 0; i < segments; i++)
         {
-            // 0도부터 360도까지 segments 개수만큼 쪼개서 각도 계산
             float currentAngle = ((float)i / segments) * 360f;
-            
-            // 지정한 축(orbitAxis)을 기준으로 회전하는 쿼터니언 생성
-            Quaternion rotation = Quaternion.AngleAxis(currentAngle, orbitAxis);
-            
-            // 중심점 위치에 회전된 벡터를 더해 궤도 위의 3D 좌표를 구함
+            Quaternion rotation = Quaternion.AngleAxis(currentAngle, targetNode.orbitAxis);
             Vector3 point = orbitCenter.position + (rotation * startDirection);
             
             _lineRenderer.SetPosition(i, point);
         }
+    }
+
+    // =========================================================
+    // 핵심 꼼수: 두꺼운 메쉬 콜라이더 굽기
+    // =========================================================
+    private void GenerateMeshCollider()
+    {
+        // 1. 선 두께를 굽기 전 임시로 엄청 두껍게 만듦
+        _lineRenderer.startWidth = lineWidth * hitBoxMultiplier;
+        _lineRenderer.endWidth = lineWidth * hitBoxMultiplier;
+
+        // 2. 뚱뚱해진 상태의 선 모양대로 3D 메쉬를 구워냄
+        Mesh fatMesh = new Mesh();
+        _lineRenderer.BakeMesh(fatMesh, Camera.main, true);
+
+        // 3. 눈에 보이는 선 두께는 다시 원래대로(얇게) 원상복구!
+        _lineRenderer.startWidth = lineWidth;
+        _lineRenderer.endWidth = lineWidth;
+
+        // 4. 구워낸 뚱뚱한 메쉬를 물리 충돌체(콜라이더)에 덮어씌움
+        _meshCollider = gameObject.GetComponent<MeshCollider>();
+        if (_meshCollider == null)
+            _meshCollider = gameObject.AddComponent<MeshCollider>();
+            
+        _meshCollider.sharedMesh = fatMesh;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        SetLineColor(hoverColor);
+        if (targetNode != null) targetNode.OnPointerEnter(eventData);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _lineRenderer.colorGradient = _originalGradient;
+        if (targetNode != null) targetNode.OnPointerExit(eventData);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (targetNode != null) targetNode.OnPointerClick(eventData);
+    }
+
+    private void SetLineColor(Color color)
+    {
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(color, 0.0f), new GradientColorKey(color, 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 1.0f) }
+        );
+        _lineRenderer.colorGradient = gradient;
     }
 }

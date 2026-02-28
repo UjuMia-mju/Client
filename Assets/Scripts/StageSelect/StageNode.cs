@@ -21,8 +21,6 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     
     private Vector3 _originalScale;
     private Vector3 _targetScale;
-    
-    // NOTE: 현재 마우스가 올라가 있는지 체크하는 변수
     private bool _isHovered = false;
 
     public void Init()
@@ -39,7 +37,7 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void UpdateMovement(float deltaTime)
     {
-        // 마우스가 올라가 있으면(Hover 상태) 공전과 자전을 모두 멈춤!
+        // 마우스가 올라가 있으면(Hover 상태) 공전과 자전을 모두 멈춤
         if (_isHovered) return;
 
         if (orbitCenter != null) transform.RotateAround(orbitCenter.position, orbitAxis, orbitSpeed * deltaTime);
@@ -52,17 +50,15 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
             transform.localScale = Vector3.Lerp(transform.localScale, _targetScale, deltaTime * hoverTransitionSpeed);
     }
 
-    // 마우스가 올라왔을 때
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _isHovered = true; // 정지 온!
+        _isHovered = true; 
         _targetScale = _originalScale * hoverScaleMultiplier;
     }
 
-    // 마우스가 벗어났을 때
     public void OnPointerExit(PointerEventData eventData)
     {
-        _isHovered = false; // 정지 오프, 다시 이동 시작!
+        _isHovered = false; 
         _targetScale = _originalScale;
     }
 
@@ -70,7 +66,6 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     {
         if (stagePanelPrefab != null)
         {
-            // 클릭해서 패널이 열려도 Hover 상태가 꼬이지 않도록 초기화해 줌
             _isHovered = false; 
             _targetScale = _originalScale;
             
