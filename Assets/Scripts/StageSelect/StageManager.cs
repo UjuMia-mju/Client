@@ -11,6 +11,10 @@ public class StageManager : MonoBehaviour
     public List<StageNode> stageNodes = new List<StageNode>();
     public bool isMovementPaused = false;
 
+    [Header("UI Navigation Buttons")]
+    [SerializeField] private GameObject leftButton;
+    [SerializeField] private GameObject rightButton;
+
     [Header("UI Pop-Up Settings")]
     [SerializeField] private float popUpDuration = 0.2f;
     [SerializeField] private Vector3 finalPanelScale = new Vector3(1f, 1f, 1f); 
@@ -19,11 +23,9 @@ public class StageManager : MonoBehaviour
     [Tooltip("카메라가 이동하는 데 걸리는 시간(초)")]
     [SerializeField] private float cameraMoveDuration = 0.5f;
 
-    // 기본(Origin) 카메라 위치와 회전값
     private Vector3 originPos = new Vector3(0.200000003f, -10.3100004f, 7.5999999f);
     private Quaternion originRot = new Quaternion(-0.390727788f, 0.0016025817f, 0.00377544644f, 0.920497179f);
 
-    // 클릭 시 타겟(Target) 카메라 위치와 회전값
     private Vector3 targetPos = new Vector3(4.94000006f, -12.2399998f, 4f);
     private Quaternion targetRot = new Quaternion(-0.344169676f, -0.0222564563f, -0.0605728365f, 0.936687112f);
 
@@ -37,7 +39,6 @@ public class StageManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // 메인 카메라 미리 찾아두기
         _mainCamera = Camera.main;
     }
 
@@ -51,7 +52,6 @@ public class StageManager : MonoBehaviour
             node.Init();
         }
 
-        // 게임 시작 시 카메라를 기본 위치로 강제 세팅 (혹시 에디터에서 다른 곳에 있어도 꼬이지 않게)
         if (_mainCamera != null)
         {
             _mainCamera.transform.position = originPos;
@@ -89,13 +89,15 @@ public class StageManager : MonoBehaviour
         _isTransitioning = true;
         isMovementPaused = true; 
 
-        // 1. 카메라 스르륵 이동 시작 (현재 위치 -> 타겟 위치)
+        // 1. 카메라가 이동하기 전에 좌/우 버튼 비활성화 (숨기기)
+        if (leftButton != null) leftButton.SetActive(false);
+        if (rightButton != null) rightButton.SetActive(false);
+
         if (_mainCamera != null)
         {
             StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, targetPos, targetRot));
         }
 
-        // 2. UI 패널 팝업
         if (targetNode.stagePanelPrefab != null)
         {
             _currentPanel = Instantiate(targetNode.stagePanelPrefab);
@@ -132,13 +134,11 @@ public class StageManager : MonoBehaviour
     {
         _isTransitioning = true;
 
-        // 1. 카메라 원상복구 시작 (현재 위치 -> 원래 위치)
         if (_mainCamera != null)
         {
             StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, originPos, originRot));
         }
 
-        // 2. 패널 닫기 연출
         if (_currentPanel != null)
         {
             yield return StartCoroutine(DynamicClosePanel(_currentPanel));
@@ -149,18 +149,18 @@ public class StageManager : MonoBehaviour
         isMovementPaused = false; 
         _currentSelectedNode = null;
         _isTransitioning = false;
+
+        // 2. 패널이 완전히 닫히고 카메라가 복귀한 뒤에 버튼 다시 활성화
+        if (leftButton != null) leftButton.SetActive(true);
+        if (rightButton != null) rightButton.SetActive(true);
     }
 
-    // =========================================================
-    // 카메라 이동 전용 코루틴
-    // =========================================================
     private IEnumerator MoveCamera(Vector3 startP, Quaternion startR, Vector3 endP, Quaternion endR)
     {
         float elapsed = 0f;
         while (elapsed < cameraMoveDuration)
         {
             elapsed += Time.deltaTime;
-            // SmoothStep을 적용해서 가속/감속이 부드럽게 되도록 처리
             float t = Mathf.SmoothStep(0, 1, elapsed / cameraMoveDuration);
             
             _mainCamera.transform.position = Vector3.Lerp(startP, endP, t);
@@ -169,14 +169,10 @@ public class StageManager : MonoBehaviour
             yield return null;
         }
         
-        // 마지막에 오차 없이 정확한 위치로 고정
         _mainCamera.transform.position = endP;
         _mainCamera.transform.rotation = endR;
     }
 
-    // =========================================================
-    // UI 애니메이션
-    // =========================================================
     private IEnumerator DynamicPopUpPanel(GameObject panel)
     {
         CanvasGroup cg = panel.GetComponent<CanvasGroup>();
