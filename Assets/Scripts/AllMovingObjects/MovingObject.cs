@@ -111,9 +111,11 @@ public class MovingObject : MonoBehaviour
         if (Physics.Raycast(ray, out hit, RAY_LENGTH, maskData))
         {
             isGrounded = true;
+            Debug.Log("지금 발이 땅에 닿았어!!" + isGrounded);
         }
         else
         {
+            Debug.Log("공중에 떠있어!!!!! !!" + isGrounded);
             isGrounded = false;
         }
     }

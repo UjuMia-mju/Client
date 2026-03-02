@@ -81,7 +81,12 @@ public class Player : MovingObject
             if (playerInput.GetIsJumping() && isGrounded)
             {
                 Jump();
-                playerInput.MakeIsJumpingFalse();
+                playerInput.SetIsJumping(false);
+            }
+            else if (!isGrounded)
+            {
+                // 공중에서 눌린 점프 입력은 그냥 버림(중요)
+                playerInput.SetIsJumping(false);
             }
         }
     }
