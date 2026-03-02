@@ -1,4 +1,4 @@
-namespace Protocol
+﻿namespace Protocol
 {
     public enum PacketId : ushort
     {
@@ -13,5 +13,9 @@ namespace Protocol
         PKT_S_PLAYER_LIST = 1008,
         PKT_S_PLAYER_ENTER = 1009,
         PKT_S_PLAYER_LEAVE = 1010,
+
+        // 애니메이션 처리를 위해 새롭게 넣었습니다. 20260301
+        PKT_C_ANIMATION = 1011,
+        PKT_S_ANIMATION = 1012,
     }
 }

@@ -52,7 +52,7 @@ public class Player : MovingObject
         // 게임 입장 패킷 전송
         NetManager.Instance.SendEnterGame(0);
 
-
+        SendEnterPosToServer();
 
         // 산소가 줄어들기 시작함
         //StartCoroutine(playerStat.OxygenDecrease());
@@ -61,8 +61,6 @@ public class Player : MovingObject
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
     private void Update()
     {
-        // 서버로 패킷 전송
-        SendPositionToServer();
 
         playerInput.InputProcess(); // 인풋, 충돌 감지는 Input이 되지 않으면 레이캐스트가 멈추므로 가장 먼저 처리합니다.
 
@@ -103,6 +101,13 @@ public class Player : MovingObject
                 playerInput.MakeIsJumpingFalse();
             }
         }
+    }
+
+    private void LateUpdate()
+    {
+        // 서버로 패킷 전송
+        SendPositionToServer();
+        SendAnimationToServer();
     }
 
     // E키 상호작용
@@ -196,6 +201,16 @@ public class Player : MovingObject
         Gizmos.DrawWireSphere(transform.position, DETECT_RADIUS);
     }
 
+    // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
+    private void SendEnterPosToServer()
+    {
+        NetManager.Instance.SendMove(transform.position, transform.rotation);
+
+        _lastSendPos = transform.position;
+        _lastSendRot = transform.rotation;
+        _lastSendTime = Time.time;
+    }
+
     // 서버로 위치 정보 패킷전송
     private void SendPositionToServer()
     {
@@ -213,7 +228,16 @@ public class Player : MovingObject
 
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;
+
+
             _lastSendTime = Time.time;
         }
+    }
+
+    // 애니메이션 상태 패킷 전송
+    // TODO : 애니메이션 상태가 변경될 때만 전송시키게 하면 더 성능 개선이 가능합니다.
+    private void SendAnimationToServer()
+    {
+        NetManager.Instance.SendAnimation(playerAnimator.GetAnimState());
     }
 }

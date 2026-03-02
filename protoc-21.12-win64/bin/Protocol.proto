@@ -1,4 +1,4 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 package Protocol;
 
 import "Enum.proto";
@@ -49,6 +49,17 @@ message S_MOVE
 	uint64 playerId = 1;
 	PosInfo pos = 2;
 	RotInfo rot = 3;
+}
+
+message C_ANIMATION
+{
+	int32 state = 1;
+}
+
+message S_ANIMATION
+{
+	uint64 playerId = 1;
+	int32 state = 2;
 }
 
 // 플레이어 정보
