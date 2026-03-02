@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.Animations;
-using static UnityEditor.Progress;
+﻿using UnityEngine;
 
 public class Player : MovingObject
 {
@@ -11,14 +8,16 @@ public class Player : MovingObject
     // 컴포넌트 참조 변수
     private PlayerInput playerInput;
     private PlayerAnimator playerAnimator;
+    private PlayerTPCamera playerTPCamera;
     public PlayerItemSystem playerItemSystem { get; private set; }
 
     public GameObject nearestObject { get; private set; } // 플레이어에게서 가장 가까운 오브젝트
 
     private const float DETECT_RADIUS = 5.5f; // 구형 트리거 반지름 
 
-
     public bool isGetItem { get; private set; } = false;
+
+    public GameObject playerBoneModel;
 
     // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
     //private PlayerStat playerStat;
@@ -31,6 +30,7 @@ public class Player : MovingObject
         playerInput = GetComponent<PlayerInput>();
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
+        playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
         //playerStat = GetComponent<PlayerStat>();
 
         playerAnimator.Initialize();
@@ -48,11 +48,11 @@ public class Player : MovingObject
         playerInput.InputProcess(); // 인풋, 충돌 감지는 Input이 되지 않으면 레이캐스트가 멈추므로 가장 먼저 처리합니다.
 
         // 충돌 감지
-        inputFreeze = CollisionDetectWithRaycast(playerInput.axisResultDir, wallMask);
+        inputFreeze = CollisionDetectWithRaycast(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir), wallMask);
 
         if (!inputFreeze)
         {
-            GroundDetectingWithRaycast(groundMask);
+            GroundDetectingWithRaycast(groundMask | walkable);
 
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
@@ -69,25 +69,25 @@ public class Player : MovingObject
         // 구형 트리거
         SphereTriggerFunc();
     }
-    //
+
     // 물리 작용 업데이트
     private void FixedUpdate()
     {
         if (!inputFreeze)
         {
-            Moving(playerInput.axisResultDir);
-            RotateToDirection(this.transform, playerInput.axisX, playerInput.axisY);
+            Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
+            RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
 
-            if (playerInput.GetIsJumping())
+            if (playerInput.GetIsJumping() && isGrounded)
             {
                 Jump();
-                playerInput.MakeIsJumpingFalse();
+                playerInput.SetIsJumping(false);
             }
-        }
-
-        else
-        {
-            rb.Sleep();
+            else if (!isGrounded)
+            {
+                // 공중에서 눌린 점프 입력은 그냥 버림(중요)
+                playerInput.SetIsJumping(false);
+            }
         }
     }
 
@@ -121,7 +121,6 @@ public class Player : MovingObject
             }
 
             // 그 외에는 처리하지 않음
-
         }
     }
 
@@ -182,5 +181,4 @@ public class Player : MovingObject
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, DETECT_RADIUS);
     }
-
 }

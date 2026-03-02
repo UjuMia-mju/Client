@@ -69,9 +69,9 @@ public class PlayerInput : MonoBehaviour
         return isJumping;
     }
 
-    public void MakeIsJumpingFalse()
+    public void SetIsJumping(bool data)
     {
-        isJumping = false;
+        isJumping = data;
     }
 
     public bool GetIsInteract()
