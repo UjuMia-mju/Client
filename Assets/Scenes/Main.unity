@@ -182,12 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a32e6a5e4ee564408c6cd6c41908e75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuPanelController
-  singlePlay:
-    button: {fileID: 770621675}
-    panelPrefab: {fileID: 90857599718438145, guid: c68cd1c0c3ddafb4f867992404b8f4c5, type: 3}
-  multiPlay:
-    button: {fileID: 107272409}
-    panelPrefab: {fileID: 90857599718438145, guid: 4d54aa01cf1eca14da58fee699d259aa, type: 3}
+  singlePlayButton: {fileID: 770621675}
+  multiPlayButton: {fileID: 107272409}
   settings:
     button: {fileID: 344838249}
     panelPrefab: {fileID: 90857599718438145, guid: 3b5d8472ed4ee034bb2cc1c12911edba, type: 3}

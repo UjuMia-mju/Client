@@ -1,4 +1,7 @@
-﻿/// <summary>
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
 /// 유니티의 고유 시스템(Scene, Tag, Layer 등) 이름 관리
 /// </summary>
 public static class Define
@@ -9,7 +12,8 @@ public static class Define
         public const string MAIN   = "Main";
         public const string GACHA  = "Gacha";
         public const string LOBBY  = "Lobby";
-        public const string GAME   = "Game";
+        public const string GAME   = "Stage01Level01";
+        public const string StageSelect  = "StageSelect";
     }
 
     public static class Tag
@@ -25,5 +29,25 @@ public static class Define
         public const string GROUND = "Ground";
         public const string WALL = "Wall";
         public const string WALKABLE_COLLIDER = "WalkableCollider";
+    }
+
+    public static readonly List<Vector2Int> Resolution = new List<Vector2Int>()
+    {
+        new Vector2Int(1920, 1080), // Index 0 (FHD)
+        new Vector2Int(2560, 1440), // Index 1 (QHD)
+        new Vector2Int(3840, 2160)  // Index 2 (UHD)
+    };
+    
+    public static class KeyName
+    {
+        public const string up = "위쪽 이동";
+        public const string down = "아래쪽 이동";
+        public const string left = "왼쪽 이동";
+        public const string right = "오른쪽 이동";
+        public const string move = "이동";
+        
+        public const string jump = "점프";
+        public const string @throw = "던지기"; // throw는 C# 예약어이므로 @를 붙여서 사용
+        public const string interact = "상호작용";
     }
 }

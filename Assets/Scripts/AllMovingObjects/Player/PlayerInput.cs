@@ -22,6 +22,12 @@ public class PlayerInput : MonoBehaviour
         inputActions.Player.Enable();
     }
 
+    private void Start()
+    {
+        string updatedKeys = DataManager.Instance.InputAsset.SaveBindingOverridesAsJson();
+        inputActions.asset.LoadBindingOverridesFromJson(updatedKeys);
+    }
+
     private void OnEnable()
     {
         inputActions.Player.Enable();
