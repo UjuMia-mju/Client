@@ -172,7 +172,7 @@ public class MenuManager : MonoBehaviour
         Vector3 startScale = panel.transform.localScale;
         float elapsed = 0f;
 
-        while (elapsed < popUpDuration) // Pop-Up과 동일한 popUpDuration 사용
+        while (elapsed < popUpDuration)
         {
             elapsed += Time.deltaTime;
             float t = Mathf.SmoothStep(0, 1, elapsed / popUpDuration);
