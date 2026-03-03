@@ -4,6 +4,9 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// MenuPanel의 버튼들의 Hover 및 Click 이벤트 관리
+/// </summary>
 public class MenuPanelController : MonoBehaviour
 {
     [System.Serializable]
@@ -14,14 +17,15 @@ public class MenuPanelController : MonoBehaviour
     }
 
     [Header("Menu Sets")]
-    [SerializeField] private MenuSet singlePlay;
-    [SerializeField] private MenuSet multiPlay;
+    [SerializeField] private Button singlePlayButton;
+    [SerializeField] private Button multiPlayButton;
     [SerializeField] private MenuSet settings;
     [SerializeField] private MenuSet custom;
     [SerializeField] private MenuSet store;
     
     [Header(" ")]
     [SerializeField] private MenuManager menuManager;
+    
     // Hover
     private Dictionary<Button, Vector3> _buttonOriginScales = new Dictionary<Button, Vector3>();
     private float _hoverScale = 1.1f;
@@ -32,55 +36,85 @@ public class MenuPanelController : MonoBehaviour
     
     void Start()
     {
-        _allMenuSets = new List<MenuSet> { singlePlay, multiPlay, settings, custom, store };
+        _allMenuSets = new List<MenuSet> { settings, custom, store };
 
-        // 1. 시작 시점에 Tag가 달린 모든 오브젝트를 리스트에 미리 저장
+        // 1. Tag가 달린 모든 오브젝트 저장 (복구용)
         GameObject[] mainButtons = GameObject.FindGameObjectsWithTag(Define.Tag.MAINBUTTON);
         foreach (GameObject go in mainButtons)
         {
             _mainButtonObjects.Add(go);
         }
 
-        // 2. 버튼별 이벤트 초기화
+        // 2. 씬 이동 버튼 개별 초기화
+        if (singlePlayButton != null)
+        {
+            _buttonOriginScales[singlePlayButton] = singlePlayButton.transform.localScale;
+            InitSceneButton(singlePlayButton);
+        }
+
+        if (multiPlayButton != null)
+        {
+            _buttonOriginScales[multiPlayButton] = multiPlayButton.transform.localScale;
+            InitSceneButton(multiPlayButton);
+        }
+
+        // 3. 패널 오픈 버튼 초기화 (기존 MenuSet)
         foreach (var set in _allMenuSets)
         {
             if (set.button == null) continue;
-
             _buttonOriginScales[set.button] = set.button.transform.localScale;
-            InitButtonEvents(set); 
+            InitPanelButton(set); 
         }
     }
     
     /// <summary>
-    /// 버튼 클릭, 호버 이벤트 등록
+    /// 씬 이동 전용 버튼 초기화 (Single, Multi)
     /// </summary>
-    private void InitButtonEvents(MenuSet set)
+    private void InitSceneButton(Button btn)
     {
-        // 버튼 클릭 시 연출 실행
+        btn.onClick.AddListener(() => {
+            SoundManager.Instance.PlaySFX("Click2");
+            // Lobby 씬 완성 시 Define.Scene.Lobby 로 변경
+            SceneLoader.Instance.LoadScene(Define.Scene.GAME); 
+        });
+
+        AddHoverEvents(btn); // 공통 호버 이벤트 연결
+    }
+
+    /// <summary>
+    /// 패널 오픈 전용 버튼 초기화 (Settings, Custom, Store)
+    /// </summary>
+    private void InitPanelButton(MenuSet set)
+    {
         set.button.onClick.AddListener(() => {
             SoundManager.Instance.PlaySFX("Click2");
             OnButtonClicked(set.button, set.panelPrefab);
         });
 
-        // 호버(마우스 올림/내림) 효과
-        EventTrigger trigger = set.button.gameObject.GetComponent<EventTrigger>() ?? set.button.gameObject.AddComponent<EventTrigger>();
+        AddHoverEvents(set.button); // 공통 호버 이벤트 연결
+    }
+
+    /// <summary>
+    /// 호버(Hover) 이벤트 관리
+    /// </summary>
+    private void AddHoverEvents(Button btn)
+    {
+        EventTrigger trigger = btn.gameObject.GetComponent<EventTrigger>() ?? btn.gameObject.AddComponent<EventTrigger>();
         
-        // PointerEnter (커짐)
         AddEvent(trigger, EventTriggerType.PointerEnter, () => {
             SoundManager.Instance.PlaySFX("Hover");
-            if (set.button.interactable) 
-                set.button.transform.localScale = _buttonOriginScales[set.button] * _hoverScale;
+            if (btn.interactable) 
+                btn.transform.localScale = _buttonOriginScales[btn] * _hoverScale;
         });
 
-        // PointerExit (복구)
         AddEvent(trigger, EventTriggerType.PointerExit, () => {
-            if (set.button.interactable) 
-                set.button.transform.localScale = _buttonOriginScales[set.button];
+            if (btn.interactable) 
+                btn.transform.localScale = _buttonOriginScales[btn];
         });
     }
 
     /// <summary>
-    /// 클릭 이벤트 시 대상 외 모든 버튼을 비활성화
+    /// 클릭 이벤트
     /// </summary>
     private void OnButtonClicked(Button clickedBtn, GameObject panelPrefab)
     {
@@ -92,18 +126,11 @@ public class MenuPanelController : MonoBehaviour
 
             if (go != clickedBtn.gameObject)
             {
-                // 다른 버튼들은 통째로 비활성화
                 go.SetActive(false);
             }
             else
             {
-                // MainButton(Tag) 외의 모든 자식개체 비활성화
-                foreach (Transform child in go.transform)
-                {
-                    child.gameObject.SetActive(false);
-                }
-            
-                // 버튼 자체의 이미지(배경)도 있다면 숨김
+                foreach (Transform child in go.transform) child.gameObject.SetActive(false);
                 if (go.TryGetComponent<Image>(out var img)) img.enabled = false;
             }
         }
@@ -111,42 +138,38 @@ public class MenuPanelController : MonoBehaviour
         menuManager.StartZoomSequence(clickedBtn.transform, panelPrefab);
     }
 
-    /// <summary>
-    /// 모든 버튼 활성화
-    /// </summary>
     public void ResetAllButtons()
     {
         foreach (GameObject go in _mainButtonObjects)
         {
             if (go == null) continue;
 
-            // 클릭 버튼 활성화
             go.SetActive(true); 
-        
-            foreach (Transform child in go.transform)
-            {
-                child.gameObject.SetActive(true);
-            }
+            foreach (Transform child in go.transform) child.gameObject.SetActive(true);
 
             if (go.TryGetComponent<Button>(out var btn))
             {
                 btn.interactable = true;
                 if (go.TryGetComponent<Image>(out var img)) img.enabled = true;
-                btn.transform.localScale = _buttonOriginScales[btn];
+                
+                // _buttonOriginScales에 등록된 원본 크기가 있으면 복구
+                if (_buttonOriginScales.ContainsKey(btn))
+                    btn.transform.localScale = _buttonOriginScales[btn];
             }
         }
     }
 
     /// <summary>
-    /// Hover 기능 해제
+    /// 모든 버튼의 호버 해제
     /// </summary>
     private void DisableAllHovers()
     {
-        foreach (var set in _allMenuSets)
+        // 딕셔너리에 등록된 '모든' 버튼을 순회하며 비활성화합니다.
+        foreach (var btn in _buttonOriginScales.Keys)
         {
-            if (set.button == null) continue;
-            set.button.interactable = false;
-            set.button.transform.localScale = _buttonOriginScales[set.button];
+            if (btn == null) continue;
+            btn.interactable = false;
+            btn.transform.localScale = _buttonOriginScales[btn];
         }
     }
 

@@ -20,13 +20,19 @@ public class SoundPanelController : MonoBehaviour
     
     public void OnBGMSliderChanged(float value)
     {
+        DataManager.Instance.data.bgmVolume = value;
         SoundManager.Instance.SetBGMVolume(value);
+        DataManager.Instance.Save();
+        
         BGMVolumeText.text = (value*100).ToString("0");
     }
 
     public void OnSFXSliderChanged(float value)
     {
-        SoundManager.Instance.SetSFXVolume(value); 
+        DataManager.Instance.data.sfxVolume = value;
+        SoundManager.Instance.SetSFXVolume(value);
+        DataManager.Instance.Save();
+            
         SFXVolumeText.text = (value*100).ToString("0");
     }
 }
