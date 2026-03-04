@@ -20,7 +20,7 @@ public class Player : MovingObject
     public GameObject playerBoneModel;
 
     // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
-    //private PlayerStat playerStat;
+    private PlayerStat playerStat;
 
     // 초기화
     protected override void Awake()
@@ -31,7 +31,7 @@ public class Player : MovingObject
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
         playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
-        //playerStat = GetComponent<PlayerStat>();
+        playerStat = GetComponent<PlayerStat>();
 
         playerAnimator.Initialize();
     }
@@ -39,7 +39,7 @@ public class Player : MovingObject
     private void Start()
     {
         // 산소가 줄어들기 시작함
-        //StartCoroutine(playerStat.OxygenDecrease());
+        StartCoroutine(playerStat.OxygenDecrease());
     }
 
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트

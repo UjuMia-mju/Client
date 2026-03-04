@@ -46,6 +46,7 @@ public class PlayerInput : MonoBehaviour
 
     private void OnJump(InputAction.CallbackContext ctx)
     {
+        Debug.Log("점프 눌러짐");
         isJumping = true;
     }
 
