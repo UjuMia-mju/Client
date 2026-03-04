@@ -35,13 +35,20 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         }
     }
 
-    public void UpdateMovement(float deltaTime)
+    // 변경된 핵심 부분: 외부에서 '전체 일시정지' 상태를 받아옴
+    public void UpdateMovement(float deltaTime, bool isGlobalPaused)
     {
-        // 마우스가 올라가 있으면(Hover 상태) 공전과 자전을 모두 멈춤
+        // 1. 마우스 호버 시에는 클릭을 위해 '완전 정지' (자전도 멈춤)
         if (_isHovered) return;
 
-        if (orbitCenter != null) transform.RotateAround(orbitCenter.position, orbitAxis, orbitSpeed * deltaTime);
+        // 2. 자전(Spin): 전체 일시정지(isGlobalPaused)와 상관없이 항상 돔!
         transform.Rotate(spinAxis, spinSpeed * deltaTime, Space.Self);
+
+        // 3. 공전(Orbit): 전체 일시정지가 아닐 때만 돔
+        if (!isGlobalPaused && orbitCenter != null)
+        {
+            transform.RotateAround(orbitCenter.position, orbitAxis, orbitSpeed * deltaTime);
+        }
     }
 
     public void UpdateScale(float deltaTime)
