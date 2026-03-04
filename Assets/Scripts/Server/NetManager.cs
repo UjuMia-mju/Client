@@ -43,6 +43,7 @@ public class NetManager : Singleton<NetManager>
 
             // 비동기 작업 등록
             _socket.BeginConnect(endPoint, OnConnectCallback, null);
+            
         }
         catch (Exception ex)
         {

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayManager : SceneSingleton<PlayManager>
 {
-    public GameObject SpawnOffset;
     //[SerializeField] private GameObject localPlayerPrefab;
     [SerializeField] private GameObject remotePlayerPrefab;
 
@@ -114,6 +113,7 @@ public class PlayManager : SceneSingleton<PlayManager>
             Debug.LogWarning($"Received move for unknown player: {packet.PlayerId}");
         }
     }
+
 
     // 플레이어 애니메이션
     private void OnAnim(S_ANIMATION packet)

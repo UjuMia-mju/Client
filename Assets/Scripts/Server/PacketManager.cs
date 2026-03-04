@@ -49,10 +49,11 @@ public class PacketManager : Singleton<PacketManager>
         }
     }
 
+
     private void HandleLoginResult(byte[] data)
     {
         S_LOGIN result = S_LOGIN.Parser.ParseFrom(data);  // ← S_LOGIN 사용
-
+        
         if (result.Success)
         {
             Debug.Log($"✓ Login Success!");
