@@ -1,4 +1,4 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 package Protocol;
 
 import "Enum.proto";
@@ -7,7 +7,7 @@ message Player
 {
 	uint64 id = 1;
 	string name = 2;
-	PlayerType playerType = 3;
+	int32 tag = 3;
 }
 
 message PosInfo
@@ -31,4 +31,35 @@ message PlayerInfo
     string name = 2;
     PosInfo pos = 3;
     RotInfo rot = 4;
+}
+
+// 방 정보
+message RoomInfo
+{
+	uint64 room_id = 1;
+	string room_name = 2;
+	Player host = 3; // 방장 정보
+	int32 current_count = 4;
+	int32 max_count = 5;
+	bool is_playing = 6; // 게임 진행 중 여부
+}
+
+// 방 멤버 정보
+message RoomMemberInfo
+{
+	Player player = 1;
+	bool is_ready = 2; // 준비 상태
+}
+
+// 스테이지 정보
+message StageInfo
+{
+	int32 stage_level = 1;      // 스테이지 레벨 (태양계)
+	int32 stage_index = 2;      // 스테이지 번호
+	string stage_name = 3;      // 스테이지 이름 (예: "지구")
+	string description = 4;     // 스테이지 설명
+	int32 difficulty = 5;       // 난이도 -> 일단 임시
+
+	// 보상 정보 (나중에 추가)
+	// repeated RewardInfo rewards = 6;
 }

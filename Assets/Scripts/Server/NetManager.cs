@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -43,6 +43,7 @@ public class NetManager : Singleton<NetManager>
 
             // 비동기 작업 등록
             _socket.BeginConnect(endPoint, OnConnectCallback, null);
+            
         }
         catch (Exception ex)
         {
@@ -303,11 +304,13 @@ public class NetManager : Singleton<NetManager>
             Z = position.z
         };
 
+        // 이 부분에서 쿼터니언이 오일러각으로 변환되고 있었습니다. 해당 부분을 수정했습니다.
         RotInfo rotInfo = new RotInfo
         {
-            X = rotation.eulerAngles.x,
-            Y = rotation.eulerAngles.y,
-            Z = rotation.eulerAngles.z
+            X = rotation.x,
+            Y = rotation.y,
+            Z = rotation.z,
+            W = rotation.w
         };
 
         C_MOVE movePacket = new C_MOVE
@@ -318,6 +321,15 @@ public class NetManager : Singleton<NetManager>
 
         SendPacket(PacketId.PKT_C_MOVE, movePacket);
     }
+
+    public void SendAnimation(AnimState animState)
+    {
+        C_ANIMATION animationPacket = new C_ANIMATION
+        {
+            State = (int)animState
+        };
+        SendPacket(PacketId.PKT_C_ANIMATION, animationPacket);
+    }   
 
     /// <summary>
     /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출

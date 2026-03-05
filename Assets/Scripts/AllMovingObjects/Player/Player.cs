@@ -22,6 +22,13 @@ public class Player : MovingObject
     // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
     private PlayerStat playerStat;
 
+
+    // 서버 관련 변수들
+    public float sendInterval = 0.05f; // 20fps로 위치 전송 (네트워크 부하 고려)
+    private float _lastSendTime = 0f;
+    private Vector3 _lastSendPos;
+    private Quaternion _lastSendRot;
+
     // 초기화
     protected override void Awake()
     {
@@ -38,6 +45,15 @@ public class Player : MovingObject
 
     private void Start()
     {
+
+        _lastSendPos = transform.position;
+        _lastSendRot = transform.rotation;
+
+        // 게임 입장 패킷 전송
+        NetManager.Instance.SendEnterGame(0);
+
+        SendEnterPosToServer();
+
         // 산소가 줄어들기 시작함
         StartCoroutine(playerStat.OxygenDecrease());
     }
@@ -45,6 +61,7 @@ public class Player : MovingObject
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
     private void Update()
     {
+
         playerInput.InputProcess(); // 인풋, 충돌 감지는 Input이 되지 않으면 레이캐스트가 멈추므로 가장 먼저 처리합니다.
 
         // 충돌 감지
@@ -89,6 +106,13 @@ public class Player : MovingObject
                 playerInput.SetIsJumping(false);
             }
         }
+    }
+
+    private void LateUpdate()
+    {
+        // 서버로 패킷 전송
+        SendPositionToServer();
+        SendAnimationToServer();
     }
 
     // E키 상호작용
@@ -180,5 +204,45 @@ public class Player : MovingObject
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, DETECT_RADIUS);
+    }
+
+    // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
+    private void SendEnterPosToServer()
+    {
+        NetManager.Instance.SendMove(transform.position, transform.rotation);
+
+        _lastSendPos = transform.position;
+        _lastSendRot = transform.rotation;
+        _lastSendTime = Time.time;
+    }
+
+    // 서버로 위치 정보 패킷전송
+    private void SendPositionToServer()
+    {
+        // 일정 간격으로만 전송 (네트워크 최적화)
+        if (Time.time - _lastSendTime < sendInterval)
+            return;
+
+        // 위치나 회전이 변경되었을 때만 전송
+        bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.01f;
+        bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 0.5f;
+
+        if (posChanged || rotChanged)
+        {
+            NetManager.Instance.SendMove(transform.position, transform.rotation);
+
+            _lastSendPos = transform.position;
+            _lastSendRot = transform.rotation;
+
+
+            _lastSendTime = Time.time;
+        }
+    }
+
+    // 애니메이션 상태 패킷 전송
+    // TODO : 애니메이션 상태가 변경될 때만 전송시키게 하면 더 성능 개선이 가능합니다.
+    private void SendAnimationToServer()
+    {
+        NetManager.Instance.SendAnimation(playerAnimator.GetAnimState());
     }
 }

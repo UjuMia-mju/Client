@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Google.Protobuf;
 using Protocol;
 using UnityEngine.SceneManagement;
@@ -13,6 +13,7 @@ public class PacketManager : Singleton<PacketManager>
     public event System.Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event System.Action<S_MOVE> OnMoveEvent;
     public event System.Action<S_CHAT> OnChatEvent;
+    public event System.Action<S_ANIMATION> OnAnimationEvent;
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
@@ -39,16 +40,20 @@ public class PacketManager : Singleton<PacketManager>
             case PacketId.PKT_S_MOVE: 
                 HandleMove(data);
                 break;
+            case PacketId.PKT_S_ANIMATION:
+                HandleAnimation(data);
+                break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
                 break;
         }
     }
 
+
     private void HandleLoginResult(byte[] data)
     {
         S_LOGIN result = S_LOGIN.Parser.ParseFrom(data);  // ← S_LOGIN 사용
-
+        
         if (result.Success)
         {
             Debug.Log($"✓ Login Success!");
@@ -106,5 +111,11 @@ public class PacketManager : Singleton<PacketManager>
     {
         S_CHAT packet = S_CHAT.Parser.ParseFrom(payloadData);
         OnChatEvent?.Invoke(packet);
+    }
+
+    private void HandleAnimation(byte[] payloadData)
+    {
+        S_ANIMATION packet = S_ANIMATION.Parser.ParseFrom(payloadData);
+        OnAnimationEvent?.Invoke(packet);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 
-enum AnimState
+public enum AnimState
 {
     Idle,
     Run,
@@ -43,5 +43,10 @@ public class PlayerAnimator : MonoBehaviour
 
 
         anim.SetInteger("AnimationPar", (int)state);
+    }
+
+    public AnimState GetAnimState()
+    {
+        return state;
     }
 }
