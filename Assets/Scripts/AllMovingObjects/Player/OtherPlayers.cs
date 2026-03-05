@@ -10,7 +10,7 @@ public class OtherPlayers : MovingObject
     public ulong PlayerId { get; set; }
     public string PlayerName { get; set; }
 
-    //[SerializeField] private float lerpSpeed = 10f;
+    [SerializeField] private float lerpSpeed = 10f;
 
     private Vector3 _targetPos;
     private Quaternion _targetRot;
@@ -37,11 +37,9 @@ public class OtherPlayers : MovingObject
     {
         if (_hasTarget)
         {
-            rb.MovePosition(_targetPos);
-            rb.MoveRotation(_targetRot);
             // 부드러운 보간 이동
-            //rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed));
-            //rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.f * lerpSpeed));
+            rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed));
+            rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed));
         }
     }
 
