@@ -3,60 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\playerstat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\allmovingobjects\\player\\playerstat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playerstat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\allmovingobjects\\player\\playerinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playerinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\planet\\damagetrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\damagetrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\core\\generic\\monobehaviorsingleton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\core\\generic\\monobehaviorsingleton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\planet\\oxygenrecovertrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\oxygenrecovertrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\uilookcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\uilookcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\movingobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\movingobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\playeritemsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playeritemsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\playergravitycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playergravitycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\playertpcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playertpcamera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\planet\\planetgravity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\planetgravity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\core\\define.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\core\\define.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\crafting\\crafting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\crafting\\crafting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\planetgravity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\planetgravity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\objectsgravitycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\objectsgravitycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -66,19 +34,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "UILookCamera.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\UILookCamera.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\UILookCamera.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\UILookCamera.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\UILookCamera.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAARAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "PlayerStat.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAcwHAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T02:47:34.265Z"
+              "WhenOpened": "2026-03-05T10:06:10.293Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -88,155 +57,62 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAewCIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADoAAAAAAAAAAAAYwE0AAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T07:52:05.673Z"
+              "WhenOpened": "2026-03-05T09:57:36.814Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "PlayerInput.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerInput.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerInput.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerInput.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerInput.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBYAAAAFAAAAAAAAAA==",
+              "Title": "DamageTrigger.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\DamageTrigger.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\DamageTrigger.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\DamageTrigger.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\DamageTrigger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T07:59:29.241Z",
+              "WhenOpened": "2026-03-05T09:32:30.604Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "PlayerStat.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAAAQwEgAAAAVAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "OxygenRecoverTrigger.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\OxygenRecoverTrigger.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\OxygenRecoverTrigger.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\OxygenRecoverTrigger.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\OxygenRecoverTrigger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-13T04:06:24.465Z",
+              "WhenOpened": "2026-03-05T09:32:28.763Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "PlayerGravityController.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerGravityController.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerGravityController.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerGravityController.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerGravityController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T08:39:20.143Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 4,
               "Title": "PlanetGravity.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\PlanetGravity.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\PlanetGravity.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\PlanetGravity.cs",
               "RelativeToolTip": "Assets\\Scripts\\Planet\\PlanetGravity.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAADwvw0AAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T08:50:05.667Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Items.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T08:34:49.152Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Crafting.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\Crafting.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\Crafting.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\Crafting.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Crafting\\Crafting.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAADwvx4AAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-11T12:13:39.665Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MonoBehaviorSingleton.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Generic\\MonoBehaviorSingleton.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\Generic\\MonoBehaviorSingleton.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Generic\\MonoBehaviorSingleton.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Core\\Generic\\MonoBehaviorSingleton.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAAwBAAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-03T06:48:03.918Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "PlayerItemSystem.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
-              "ViewState": "AgIAADsAAAAAAAAAAAAcwFcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T08:12:05.357Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "ObjectsGravityController.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ObjectsGravityController.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\ObjectsGravityController.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ObjectsGravityController.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\ObjectsGravityController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-10T08:52:10.746Z"
+              "WhenOpened": "2026-03-05T09:32:25.943Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "MovingObject.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
-              "ViewState": "AgIAAFYAAAAAAAAAAAAowHIAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T06:43:45.015Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "PlayerTPCamera.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerTPCamera.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerTPCamera.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerTPCamera.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerTPCamera.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMIAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T06:38:55.574Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
               "Title": "Define.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Define.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\Define.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Define.cs",
               "RelativeToolTip": "Assets\\Scripts\\Core\\Define.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-22T16:44:55.218Z"
+              "WhenOpened": "2026-02-22T16:44:55.218Z",
+              "EditorCaption": ""
             }
           ]
         }

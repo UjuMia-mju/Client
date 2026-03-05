@@ -355,7 +355,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8bf657c6121907b4da1faea641eddda7, type: 2}
+  - {fileID: 2100000, guid: 4c12dd61374e8714b88871fef3aae59e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -664,6 +664,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 594221372}
   m_CullTransparentMesh: 1
+--- !u!1 &669581819
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 669581821}
+  - component: {fileID: 669581820}
+  m_Layer: 0
+  m_Name: PlayManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &669581820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669581819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f29d017f8b27a4c9ffaf8e1adec99d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayManager
+  remotePlayerPrefab: {fileID: 2535703021972386252, guid: ab155bb0bdcacb94d8e97b6cf407d280, type: 3}
+--- !u!4 &669581821
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669581819}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.95183, y: 19.77421, z: -0.51801}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &680748902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1526,7 +1571,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1635541461}
   - component: {fileID: 1635541462}
-  m_Layer: 6
+  - component: {fileID: 1635541463}
+  m_Layer: 0
   m_Name: RecoverOxygenTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1569,6 +1615,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1635541463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635541460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e5a786e1ad9b304c9ae21908d0d29bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OxygenRecoverTrigger
 --- !u!1 &1676482662
 GameObject:
   m_ObjectHideFlags: 0
@@ -1579,7 +1637,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1676482663}
   - component: {fileID: 1676482664}
-  m_Layer: 6
+  - component: {fileID: 1676482665}
+  m_Layer: 0
   m_Name: DamageTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1622,6 +1681,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1676482665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1676482662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
 --- !u!1 &1820163868
 GameObject:
   m_ObjectHideFlags: 0
@@ -2970,6 +3041,7 @@ MonoBehaviour:
   jumpForce: 5
   rotationSpeed: 10
   playerBoneModel: {fileID: 130923350922601560}
+  sendInterval: 0.05
 --- !u!114 &130923350922639491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3209,3 +3281,4 @@ SceneRoots:
   - {fileID: 4943720041582861401}
   - {fileID: 130923350922639482}
   - {fileID: 1025038043}
+  - {fileID: 669581821}

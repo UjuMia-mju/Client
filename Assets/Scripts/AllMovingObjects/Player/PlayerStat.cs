@@ -13,6 +13,7 @@ public class PlayerStat : MonoBehaviour
     private List<Image> hpImageList = new List<Image>();
 
     public Image oxygenImage;
+    private Color originalColor;
 
     private const float FADE_DURATION = 1.5f;
     private const float OXYGEN_DECREASE_INTERVAL = 1f;
@@ -40,7 +41,7 @@ public class PlayerStat : MonoBehaviour
 
     private IEnumerator FadeOutCoroutine(Image img, float duration)
     {
-        Color originalColor = img.color;
+        originalColor = img.color;
         float elapsed = 0f;
 
         while (elapsed < duration)
@@ -50,8 +51,11 @@ public class PlayerStat : MonoBehaviour
             img.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
             yield return null;
         }
+    }
 
-        img.gameObject.SetActive(false);
+    private void ReturnHPImageAlpha(Image img)
+    {
+        img.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
     }
 
     public IEnumerator OxygenDecrease()
@@ -65,6 +69,23 @@ public class PlayerStat : MonoBehaviour
         }
     }
 
+    public IEnumerator OxygenIncrease()
+    {
+        while (true)
+        {
+            if (oxygen >= 1)
+            {
+                oxygen = 1;
+            }
+            else
+            {
+                oxygen += 0.02f;
+                Debug.Log("산소 늘어남 : " + oxygen);
+                yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
+            }
+        }
+    }
+
     // TODO : 체력이 줄어들면, 잠깐 체력 이미지를 보여주고, 1초 후에 다시 사라지도록 합니다.
     // 또 현재 체력 수치에 맞게 이미지를 없애야 합니다.
     // 공격에 따라 데미지를 더 받을 수도 있는지 정해야 합니다.
@@ -73,8 +94,17 @@ public class PlayerStat : MonoBehaviour
         hp -= damage;
         Debug.Log("체력 줄어듬 : " + hp);
 
+        foreach (Transform child in hpParent.transform)
+        {
+            Image hpImage = child.GetComponent<Image>();
+            if (hpImage != null)
+            {
+                ReturnHPImageAlpha(hpImage);
+            }
+        }
+
         // 가장 오른쪽에 있는 이미지를 비활성화
-        for (int i = hpImageList.Count -1; i>= 0; i--)
+        for (int i = hpImageList.Count - 1; i >= 0; i--)
         {
             if (hpImageList[i].IsActive())
             {

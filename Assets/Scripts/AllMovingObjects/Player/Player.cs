@@ -61,7 +61,6 @@ public class Player : MovingObject
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
     private void Update()
     {
-
         playerInput.InputProcess(); // 인풋, 충돌 감지는 Input이 되지 않으면 레이캐스트가 멈추므로 가장 먼저 처리합니다.
 
         // 충돌 감지
