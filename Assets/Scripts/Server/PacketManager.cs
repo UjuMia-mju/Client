@@ -27,6 +27,10 @@ public class PacketManager : Singleton<PacketManager>
     public event System.Action<S_INVITE_NOTIFICATION> OnInviteNotificationEvent;
     public event System.Action<S_INVITE_RESPONSE> OnInviteResponseResultEvent;
 
+    // 준비 / 시작
+    public event System.Action<S_READY> OnReadyEvent;
+    public event System.Action<S_START_ROOM> OnStartRoomEvent;
+
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
