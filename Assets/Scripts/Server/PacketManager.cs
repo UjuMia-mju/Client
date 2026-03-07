@@ -57,6 +57,39 @@ public class PacketManager : Singleton<PacketManager>
             case PacketId.PKT_S_MOVE: 
                 HandleMove(data);
                 break;
+            case PacketId.PKT_S_CREATE_ROOM:
+                HandleCreateRoom(data);
+                break;
+            case PacketId.PKT_S_ROOM_LIST:
+                HandleRoomList(data);
+                break;
+            case PacketId.PKT_S_ENTER_ROOM:
+                HandleEnterRoom(data);
+                break;
+            case PacketId.PKT_S_LEAVE_ROOM:
+                HandleLeaveRoom(data);
+                break;
+            case PacketId.PKT_S_INVITE_PLAYER:
+                HandleInvitePlayerResult(data);
+                break;
+            case PacketId.PKT_S_INVITE_NOTIFICATION:
+                HandleInviteNotification(data);
+                break;
+            case PacketId.PKT_S_INVITE_RESPONSE:
+                HandleInviteResponseResult(data);
+                break;
+            case PacketId.PKT_S_ROOM_MEMBER_ENTER:
+                HandleRoomMemberEnter(data);
+                break;
+            case PacketId.PKT_S_ROOM_MEMBER_LEAVE:
+                HandleRoomMemberLeave(data);
+                break;
+            case PacketId.PKT_S_READY:
+                HandleReady(data);
+                break;
+            case PacketId.PKT_S_START_ROOM:
+                HandleStartRoom(data);
+                break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
                 break;
