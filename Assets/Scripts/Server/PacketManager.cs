@@ -125,4 +125,41 @@ public class PacketManager : Singleton<PacketManager>
         S_CHAT packet = S_CHAT.Parser.ParseFrom(payloadData);
         OnChatEvent?.Invoke(packet);
     }
+
+    // ========== 방 ==========
+    private void HandleCreateRoom(byte[] payloadData)
+    {
+        S_CREATE_ROOM packet = S_CREATE_ROOM.Parser.ParseFrom(payloadData);
+        OnCreateRoomEvent?.Invoke(packet);
+    }
+
+    private void HandleRoomList(byte[] payloadData)
+    {
+        S_ROOM_LIST packet = S_ROOM_LIST.Parser.ParseFrom(payloadData);
+        OnRoomListEvent?.Invoke(packet);
+    }
+
+    private void HandleEnterRoom(byte[] payloadData)
+    {
+        S_ENTER_ROOM packet = S_ENTER_ROOM.Parser.ParseFrom(payloadData);
+        OnEnterRoomEvent?.Invoke(packet);
+    }
+
+    private void HandleLeaveRoom(byte[] payloadData)
+    {
+        S_LEAVE_ROOM packet = S_LEAVE_ROOM.Parser.ParseFrom(payloadData);
+        OnLeaveRoomEvent?.Invoke(packet);
+    }
+
+    private void HandleRoomMemberEnter(byte[] payloadData)
+    {
+        S_ROOM_MEMBER_ENTER packet = S_ROOM_MEMBER_ENTER.Parser.ParseFrom(payloadData);
+        OnRoomMemberEnterEvent?.Invoke(packet);
+    }
+
+    private void HandleRoomMemberLeave(byte[] payloadData)
+    {
+        S_ROOM_MEMBER_LEAVE packet = S_ROOM_MEMBER_LEAVE.Parser.ParseFrom(payloadData);
+        OnRoomMemberLeaveEvent?.Invoke(packet);
+}
 }
