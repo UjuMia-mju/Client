@@ -161,5 +161,24 @@ public class PacketManager : Singleton<PacketManager>
     {
         S_ROOM_MEMBER_LEAVE packet = S_ROOM_MEMBER_LEAVE.Parser.ParseFrom(payloadData);
         OnRoomMemberLeaveEvent?.Invoke(packet);
-}
+    }
+
+    // ========== 초대 ==========
+    private void HandleInvitePlayerResult(byte[] payloadData)
+    {
+        S_INVITE_PLAYER packet = S_INVITE_PLAYER.Parser.ParseFrom(payloadData);
+        OnInvitePlayerResultEvent?.Invoke(packet);
+    }
+
+    private void HandleInviteNotification(byte[] payloadData)
+    {
+        S_INVITE_NOTIFICATION packet = S_INVITE_NOTIFICATION.Parser.ParseFrom(payloadData);
+        OnInviteNotificationEvent?.Invoke(packet);
+    }
+
+    private void HandleInviteResponseResult(byte[] payloadData)
+    {
+        S_INVITE_RESPONSE packet = S_INVITE_RESPONSE.Parser.ParseFrom(payloadData);
+        OnInviteResponseResultEvent?.Invoke(packet);
+    }   
 }
