@@ -181,4 +181,17 @@ public class PacketManager : Singleton<PacketManager>
         S_INVITE_RESPONSE packet = S_INVITE_RESPONSE.Parser.ParseFrom(payloadData);
         OnInviteResponseResultEvent?.Invoke(packet);
     }   
+
+    // ========== 준비 / 시작 ==========
+    private void HandleReady(byte[] payloadData)
+    {
+        S_READY packet = S_READY.Parser.ParseFrom(payloadData);
+        OnReadyEvent?.Invoke(packet);
+    }
+
+    private void HandleStartRoom(byte[] payloadData)
+    {
+        S_START_ROOM packet = S_START_ROOM.Parser.ParseFrom(payloadData);
+        OnStartRoomEvent?.Invoke(packet);
+    }
 }
