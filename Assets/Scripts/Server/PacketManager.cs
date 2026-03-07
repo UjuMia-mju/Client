@@ -21,7 +21,12 @@ public class PacketManager : Singleton<PacketManager>
     public event System.Action<S_LEAVE_ROOM> OnLeaveRoomEvent;
     public event System.Action<S_ROOM_MEMBER_ENTER> OnRoomMemberEnterEvent;
     public event System.Action<S_ROOM_MEMBER_LEAVE> OnRoomMemberLeaveEvent;
-    
+
+    // 초대
+    public event System.Action<S_INVITE_PLAYER> OnInvitePlayerResultEvent;
+    public event System.Action<S_INVITE_NOTIFICATION> OnInviteNotificationEvent;
+    public event System.Action<S_INVITE_RESPONSE> OnInviteResponseResultEvent;
+
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
