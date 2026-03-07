@@ -320,6 +320,38 @@ public class NetManager : Singleton<NetManager>
     }
 
     /// <summary>
+    /// 특정 유저를 방으로 초대한다. player_name + player_tag로 대상 식별.
+    /// </summary>
+    /// <param name="playerName">초대할 유저의 이름</param>
+    /// <param name="playerTag">초대할 유저의 태그 (고유 번호, 예: 1234)</param>
+    public void SendInvitePlayer(string playerName, int playerTag)
+    {
+        C_INVITE_PLAYER invitePlayerPacket = new C_INVITE_PLAYER
+        {
+            PlayerName = playerName,
+            PlayerTag = playerTag
+        };
+
+        SendPacket(PacketId.PKT_C_INVITE_PLAYER, invitePlayerPacket);
+    }
+
+    /// <summary>
+    /// 받은 초대에 대해 수락/거절 응답을 보낸다.
+    /// </summary>
+    /// <param name="inviteId">S_INVITE_NOTIFICATION으로 받은 invite_id</param>
+    /// <param name="accept">true: 수락, false: 거절</param>
+    public void SendInviteResponse(ulong inviteId, bool accept)
+    {
+        C_INVITE_RESPONSE inviteResponsePacket = new C_INVITE_RESPONSE
+        {
+            InviteId = inviteId,
+            Accept = accept
+        };
+
+        SendPacket(PacketId.PKT_C_INVITE_RESPONSE, inviteResponsePacket);
+    }
+
+    /// <summary>
     /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출
     /// </summary>
     private void SendPacket<T>(PacketId packetId, T packet) where T : IMessage
