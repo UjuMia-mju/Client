@@ -13,6 +13,15 @@ public class PacketManager : Singleton<PacketManager>
     public event System.Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event System.Action<S_MOVE> OnMoveEvent;
     public event System.Action<S_CHAT> OnChatEvent;
+
+    // 방
+    public event System.Action<S_CREATE_ROOM> OnCreateRoomEvent;
+    public event System.Action<S_ROOM_LIST> OnRoomListEvent;
+    public event System.Action<S_ENTER_ROOM> OnEnterRoomEvent;
+    public event System.Action<S_LEAVE_ROOM> OnLeaveRoomEvent;
+    public event System.Action<S_ROOM_MEMBER_ENTER> OnRoomMemberEnterEvent;
+    public event System.Action<S_ROOM_MEMBER_LEAVE> OnRoomMemberLeaveEvent;
+    
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
