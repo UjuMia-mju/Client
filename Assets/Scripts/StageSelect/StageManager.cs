@@ -7,43 +7,40 @@ public class StageManager : MonoBehaviour
 {
     public static StageManager Instance { get; private set; }
 
-    [Header("Environment Objects")]
-    public GameObject orbitCenterObject;
-    
-    [Header("OrbitLines")] [SerializeField]
-    private List<OrbitLineRenderer> _allOrbitLines = new List<OrbitLineRenderer>();
-
-    [Header("Nodes")] public List<StageNode> stageNodes = new List<StageNode>();
+    [Header("Nodes")] 
+    public List<StageNode> stageNodes = new List<StageNode>();
     public bool isMovementPaused = false;
 
-    [Header("UI Navigation Buttons")] [SerializeField]
-    private GameObject leftButton;
-
+    [Header("UI Navigation Buttons")] 
+    [SerializeField] private GameObject leftButton;
     [SerializeField] private GameObject rightButton;
 
-    [Header("UI Pop-Up Settings")] [SerializeField]
-    private float popUpDuration = 0.2f;
-
+    [Header("UI Pop-Up Settings")] 
+    [SerializeField] private float popUpDuration = 0.2f;
     [SerializeField] private Vector3 finalPanelScale = new Vector3(1f, 1f, 1f);
 
-    [Header("Camera Move Settings")] [Tooltip("카메라가 이동하는 데 걸리는 시간(초)")] [SerializeField]
-    private float cameraMoveDuration = 0.5f;
+    [Header("Camera Move Settings")] 
+    [Tooltip("카메라가 이동하는 데 걸리는 시간(초)")] 
+    [SerializeField] private float cameraMoveDuration = 0.5f;
 
-    [Tooltip("줌인 시 카메라의 고정 회전 각도")] [SerializeField]
-    private Vector3 zoomEulerAngles = new Vector3(45f, 0f, 0f);
+    [Tooltip("줌인 시 카메라의 고정 회전 각도")] 
+    [SerializeField] private Vector3 zoomEulerAngles = new Vector3(45f, 0f, 0f);
 
-    [Tooltip("행성 중심으로부터 카메라가 떨어질 거리")] [SerializeField]
-    private float zoomDistance = 10f;
+    [Tooltip("행성 중심으로부터 카메라가 떨어질 거리")] 
+    [SerializeField] private float zoomDistance = 10f;
 
     private Vector3 originPos = new Vector3(0.2f, -13.3f, 6.2f);
-    private Quaternion originRot = new Quaternion(-0.3888f, 0.0016f, 0.003f,0.92f);
+    private Quaternion originRot = new Quaternion(-0.3888f, 0.0016f, 0.003f, 0.92f);
 
     private Camera _mainCamera;
     private GameObject _currentPanel;
     private StageNode _currentSelectedNode;
     private bool _isTransitioning = false;
 
-   private void Awake()
+    // NOTE: ClickOff 태그를 가진 오브젝트들을 담아둘 배열
+    private GameObject[] _clickOffObjects;
+
+    private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
@@ -56,8 +53,6 @@ public class StageManager : MonoBehaviour
         if (stageNodes.Count == 0)
             stageNodes = new List<StageNode>(Object.FindObjectsByType<StageNode>(FindObjectsSortMode.None));
 
-        _allOrbitLines = new List<OrbitLineRenderer>(Object.FindObjectsByType<OrbitLineRenderer>(FindObjectsSortMode.None));
-
         foreach (var node in stageNodes)
         {
             node.Init();
@@ -68,6 +63,8 @@ public class StageManager : MonoBehaviour
             _mainCamera.transform.position = originPos;
             _mainCamera.transform.rotation = originRot;
         }
+        
+        _clickOffObjects = GameObject.FindGameObjectsWithTag(Define.Tag.CLICKOFF);
     }
 
     private void Update()
@@ -105,9 +102,6 @@ public class StageManager : MonoBehaviour
         if (leftButton != null) leftButton.SetActive(false);
         if (rightButton != null) rightButton.SetActive(false);
 
-        // =========================================================
-        // 1. 카메라 이동이 '완전히 끝날 때까지' 대기 (yield return 추가)
-        // =========================================================
         if (_mainCamera != null)
         {
             Quaternion dynamicTargetRot = Quaternion.Euler(zoomEulerAngles);
@@ -116,9 +110,6 @@ public class StageManager : MonoBehaviour
             yield return StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, dynamicTargetPos, dynamicTargetRot));
         }
 
-        // =========================================================
-        // 2. 카메라 이동이 끝난 후 패널 띄우기 시작
-        // =========================================================
         if (targetNode.stagePanelPrefab != null)
         {
             _currentPanel = Instantiate(targetNode.stagePanelPrefab);
@@ -155,9 +146,6 @@ public class StageManager : MonoBehaviour
     {
         _isTransitioning = true;
 
-        // =========================================================
-        // 1. 패널이 '완전히 닫힐 때까지' 대기
-        // =========================================================
         if (_currentPanel != null)
         {
             yield return StartCoroutine(DynamicClosePanel(_currentPanel));
@@ -165,9 +153,6 @@ public class StageManager : MonoBehaviour
             _currentPanel = null;
         }
 
-        // =========================================================
-        // 2. 패널이 닫힌 후 카메라 원래 자리로 복귀 대기
-        // =========================================================
         if (_mainCamera != null)
         {
             yield return StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, originPos, originRot));
@@ -185,16 +170,16 @@ public class StageManager : MonoBehaviour
 
     private void ToggleFocusMode(StageNode targetNode, bool isFocusing)
     {
-        if (orbitCenterObject != null)
+        // ClickOff 태그를 가진 모든 오브젝트 토글
+        if (_clickOffObjects != null)
         {
-            orbitCenterObject.SetActive(!isFocusing);
+            foreach (var obj in _clickOffObjects)
+            {
+                if (obj != null) obj.SetActive(!isFocusing);
+            }
         }
 
-        foreach (var line in _allOrbitLines)
-        {
-            if (line != null) line.gameObject.SetActive(!isFocusing);
-        }
-
+        // 타겟 행성을 제외한 나머지 행성들 토글
         foreach (var node in stageNodes)
         {
             if (node == null) continue;
