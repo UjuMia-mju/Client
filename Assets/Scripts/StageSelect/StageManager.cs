@@ -43,7 +43,7 @@ public class StageManager : MonoBehaviour
     private StageNode _currentSelectedNode;
     private bool _isTransitioning = false;
 
-    private void Awake()
+   private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
@@ -53,6 +53,11 @@ public class StageManager : MonoBehaviour
 
     private void Start()
     {
+        if (stageNodes.Count == 0)
+            stageNodes = new List<StageNode>(Object.FindObjectsByType<StageNode>(FindObjectsSortMode.None));
+
+        _allOrbitLines = new List<OrbitLineRenderer>(Object.FindObjectsByType<OrbitLineRenderer>(FindObjectsSortMode.None));
+
         foreach (var node in stageNodes)
         {
             node.Init();
@@ -93,36 +98,37 @@ public class StageManager : MonoBehaviour
     private IEnumerator OpenPanelSequence(StageNode targetNode)
     {
         _isTransitioning = true;
-        isMovementPaused = true;
+        isMovementPaused = true; 
 
-        // =========================================================
-        // [핵심] 집중 모드 ON: 선택한 행성 빼고 다 숨기기!
-        // =========================================================
         ToggleFocusMode(targetNode, true);
 
         if (leftButton != null) leftButton.SetActive(false);
         if (rightButton != null) rightButton.SetActive(false);
 
+        // =========================================================
+        // 1. 카메라 이동이 '완전히 끝날 때까지' 대기 (yield return 추가)
+        // =========================================================
         if (_mainCamera != null)
         {
             Quaternion dynamicTargetRot = Quaternion.Euler(zoomEulerAngles);
-            Vector3 dynamicTargetPos =
-                targetNode.transform.position - (dynamicTargetRot * Vector3.forward * zoomDistance);
+            Vector3 dynamicTargetPos = targetNode.transform.position - (dynamicTargetRot * Vector3.forward * zoomDistance);
 
-            StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, dynamicTargetPos,
-                dynamicTargetRot));
+            yield return StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, dynamicTargetPos, dynamicTargetRot));
         }
 
+        // =========================================================
+        // 2. 카메라 이동이 끝난 후 패널 띄우기 시작
+        // =========================================================
         if (targetNode.stagePanelPrefab != null)
         {
             _currentPanel = Instantiate(targetNode.stagePanelPrefab);
-
+            
             RectTransform rect = _currentPanel.GetComponent<RectTransform>();
             if (rect != null)
             {
-                rect.anchoredPosition = Vector2.zero;
+                rect.anchoredPosition = Vector2.zero; 
                 rect.localRotation = Quaternion.identity;
-                rect.localScale = Vector3.zero;
+                rect.localScale = Vector3.zero; 
             }
 
             Canvas canvas = _currentPanel.GetComponent<Canvas>();
@@ -149,12 +155,9 @@ public class StageManager : MonoBehaviour
     {
         _isTransitioning = true;
 
-        if (_mainCamera != null)
-        {
-            StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, originPos,
-                originRot));
-        }
-
+        // =========================================================
+        // 1. 패널이 '완전히 닫힐 때까지' 대기
+        // =========================================================
         if (_currentPanel != null)
         {
             yield return StartCoroutine(DynamicClosePanel(_currentPanel));
@@ -163,11 +166,16 @@ public class StageManager : MonoBehaviour
         }
 
         // =========================================================
-        // [핵심] 집중 모드 OFF: 숨겼던 친구들 다시 다 보여주기
+        // 2. 패널이 닫힌 후 카메라 원래 자리로 복귀 대기
         // =========================================================
+        if (_mainCamera != null)
+        {
+            yield return StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, originPos, originRot));
+        }
+
         ToggleFocusMode(null, false);
 
-        isMovementPaused = false;
+        isMovementPaused = false; 
         _currentSelectedNode = null;
         _isTransitioning = false;
 
@@ -175,37 +183,29 @@ public class StageManager : MonoBehaviour
         if (rightButton != null) rightButton.SetActive(true);
     }
 
-    // =========================================================
-    // 환경 오브젝트(행성, 선, 태양) 껐다 켜는 함수
-    // =========================================================
     private void ToggleFocusMode(StageNode targetNode, bool isFocusing)
     {
-        // 1. 중앙 태양(Center) 숨기기/보이기
         if (orbitCenterObject != null)
         {
             orbitCenterObject.SetActive(!isFocusing);
         }
 
-        // 2. 모든 궤도 선(Line) 숨기기/보이기
         foreach (var line in _allOrbitLines)
         {
             if (line != null) line.gameObject.SetActive(!isFocusing);
         }
 
-        // 3. 행성들 처리
         foreach (var node in stageNodes)
         {
             if (node == null) continue;
 
             if (isFocusing)
             {
-                // 집중 모드일 때: 타겟 행성만 남기고 나머지는 끔
                 if (node == targetNode) node.gameObject.SetActive(true);
                 else node.gameObject.SetActive(false);
             }
             else
             {
-                // 복귀 모드일 때: 모든 행성을 다시 켬
                 node.gameObject.SetActive(true);
             }
         }
@@ -218,13 +218,13 @@ public class StageManager : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = Mathf.SmoothStep(0, 1, elapsed / cameraMoveDuration);
-
+            
             _mainCamera.transform.position = Vector3.Lerp(startP, endP, t);
             _mainCamera.transform.rotation = Quaternion.Slerp(startR, endR, t);
-
+            
             yield return null;
         }
-
+        
         _mainCamera.transform.position = endP;
         _mainCamera.transform.rotation = endR;
     }
@@ -246,7 +246,6 @@ public class StageManager : MonoBehaviour
             panel.transform.localScale = Vector3.Lerp(Vector3.zero, finalPanelScale, t);
             yield return null;
         }
-
         cg.alpha = 1f;
         panel.transform.localScale = finalPanelScale;
     }
