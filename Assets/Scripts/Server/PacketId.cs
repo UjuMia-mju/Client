@@ -38,5 +38,12 @@
         PKT_S_PLAYER_LEAVE = 1033,
         PKT_C_ANIMATION = 1034,
         PKT_S_ANIMATION = 1035,
+
+        // 20260310일자 수정
+        // 플레이어 스탯, 조합대, 오브젝트 위치/회전정보 헤더 필요합니다.
+        PKT_C_STAT = 1036,
+        PKT_S_STAT = 1037,
+        PKT_C_ITEM_MOVE = 1038,
+        PKT_S_ITEM_MOVE = 1039,
     }
 }

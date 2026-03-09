@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +12,7 @@ public class PlayerStat : MonoBehaviour
     private List<Image> hpImageList = new List<Image>();
 
     private Image oxygenImage;
-    private Color originalColor;
+    private Color originalHPColor;
 
     private const float FADE_DURATION = 1.5f;
     private const float OXYGEN_DECREASE_INTERVAL = 1f;
@@ -22,6 +21,9 @@ public class PlayerStat : MonoBehaviour
     private const string HP = "HP";
     private const string OXYGEN = "Oxygen";
 
+    private List<Coroutine> fadeCoroutines = new List<Coroutine>();
+
+
     private void Start()
     {
         hpImageList = new List<Image>();
@@ -29,6 +31,7 @@ public class PlayerStat : MonoBehaviour
         {
             if (img.name.StartsWith(HP))
             {
+                originalHPColor = img.color;
                 hpImageList.Add(img);
                 StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
             }
@@ -47,21 +50,20 @@ public class PlayerStat : MonoBehaviour
 
     private IEnumerator FadeOutCoroutine(Image img, float duration)
     {
-        originalColor = img.color;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
-            img.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            img.color = new Color(originalHPColor.r, originalHPColor.g, originalHPColor.b, alpha);
             yield return null;
         }
     }
 
     private void ReturnHPImageAlpha(Image img)
     {
-        img.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
+        img.color = new Color(originalHPColor.r, originalHPColor.g, originalHPColor.b, 1);
     }
 
     public IEnumerator OxygenDecrease()
@@ -100,6 +102,17 @@ public class PlayerStat : MonoBehaviour
         hp -= damage;
         Debug.Log("체력 줄어듬 : " + hp);
 
+        foreach (Coroutine c in fadeCoroutines)
+        {
+            if (c != null)
+            {
+                StopCoroutine(c);
+            }
+        }
+
+        fadeCoroutines.Clear();
+
+
         foreach (Image img in hpImageList)
         {
             if (img != null)
@@ -124,7 +137,8 @@ public class PlayerStat : MonoBehaviour
         {
             if (img != null)
             {
-                StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
+                Coroutine c = StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
+                fadeCoroutines.Add(c);
             }
         }
     }

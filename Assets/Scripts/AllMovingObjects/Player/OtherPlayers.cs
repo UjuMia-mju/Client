@@ -17,12 +17,14 @@ public class OtherPlayers : MovingObject
     private bool _hasTarget = false;
 
     private Animator playerAnimator;
+    private OtherPlayerStats otherPlayerStats;
 
     // 초기화
     protected override void Awake()
     {
         base.Awake();
         playerAnimator = GetComponent<Animator>();
+        otherPlayerStats = GetComponent<OtherPlayerStats>();
         //playerItemSystem = GetComponent<PlayerItemSystem>();
         //playerStat = GetComponent<PlayerStat>();
     }
@@ -52,7 +54,11 @@ public class OtherPlayers : MovingObject
 
     public void SetAnimState(int data)
     {
-        Debug.Log("받은 애님 스테이트 값 : " + data);
         playerAnimator.SetInteger("AnimationPar", data);
+    }
+
+    public void SetStat(int hpData, float oxygenData)
+    {
+        otherPlayerStats.SetStat(hpData, oxygenData);
     }
 }

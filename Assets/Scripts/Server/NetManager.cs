@@ -331,6 +331,44 @@ public class NetManager : Singleton<NetManager>
         SendPacket(PacketId.PKT_C_ANIMATION, animationPacket);
     }   
 
+    // 패킷 보내는거 배치파일 실행해서 코드 자동생성 해야 함. 지금 안 됨.
+    public void SendPlayerStat(int hpData, float oxygenData)
+    {
+        C_STAT statPacket = new C_STAT
+        {
+            Hp = hpData,
+            Oxygen = oxygenData
+        };
+        SendPacket(PacketId.PKT_C_STAT, statPacket);
+    }
+
+    public void SendItemMove(Vector3 position, Quaternion rotation)
+    {
+        PosInfo posInfo = new PosInfo
+        {
+            X = position.x,
+            Y = position.y,
+            Z = position.z
+        };
+
+        // 이 부분에서 쿼터니언이 오일러각으로 변환되고 있었습니다. 해당 부분을 수정했습니다.
+        RotInfo rotInfo = new RotInfo
+        {
+            X = rotation.x,
+            Y = rotation.y,
+            Z = rotation.z,
+            W = rotation.w
+        };
+
+        C_MOVE movePacket = new C_MOVE
+        {
+            Pos = posInfo,
+            Rot = rotInfo
+        };
+
+        SendPacket(PacketId.PKT_C_ITEM_MOVE, movePacket);
+    }
+
     /// <summary>
     /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출
     /// </summary>

@@ -14,6 +14,9 @@ public class PacketManager : Singleton<PacketManager>
     public event System.Action<S_MOVE> OnMoveEvent;
     public event System.Action<S_CHAT> OnChatEvent;
     public event System.Action<S_ANIMATION> OnAnimationEvent;
+    public event System.Action<S_STAT> OnStatEvent;
+    public event System.Action<S_ITEM_MOVE> OnItemMoveEvent;
+
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
@@ -42,6 +45,12 @@ public class PacketManager : Singleton<PacketManager>
                 break;
             case PacketId.PKT_S_ANIMATION:
                 HandleAnimation(data);
+                break;
+            case PacketId.PKT_S_STAT:
+                HandleStat(data);
+                break;
+            case PacketId.PKT_S_ITEM_MOVE:
+                HandleItemMove(data);
                 break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
@@ -117,5 +126,17 @@ public class PacketManager : Singleton<PacketManager>
     {
         S_ANIMATION packet = S_ANIMATION.Parser.ParseFrom(payloadData);
         OnAnimationEvent?.Invoke(packet);
+    }
+
+    private void HandleStat(byte[] payloadData)
+    {
+        S_STAT packet = S_STAT.Parser.ParseFrom(payloadData);
+        OnStatEvent?.Invoke(packet);
+    }
+
+    private void HandleItemMove(byte[] payloadData)
+    {
+        S_ITEM_MOVE packet = S_ITEM_MOVE.Parser.ParseFrom(payloadData);
+        OnItemMoveEvent?.Invoke(packet);
     }
 }

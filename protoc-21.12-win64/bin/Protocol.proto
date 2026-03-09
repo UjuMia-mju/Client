@@ -206,3 +206,44 @@ message S_ANIMATION
     uint64 playerId = 1;
     int32 state = 2;
 }
+
+// 플레이어 스탯
+message C_STAT
+{
+	int32 hp = 1;
+	float oxygen = 2;
+}
+
+message S_STAT
+{
+	uint64 playerId = 1;
+	int32 hp = 2;
+	float oxygen = 3;
+}
+
+// 아이템 위치정보
+message C_ITEM_MOVE
+{
+	PosInfo pos = 1;
+	RotInfo rot = 2;
+}
+
+message S_ITEM_MOVE
+{
+	uint64 playerId = 1;
+	PosInfo pos = 2;
+	RotInfo rot = 3;
+}
+
+// 조합대 리스트
+
+message C_WORKBENCH_LIST
+{
+	repeated string itemNames = 1;
+}
+
+message S_WORKBENCH_LIST
+{
+	uint64 playerId = 1;
+	repeated string itemNames = 2;
+}

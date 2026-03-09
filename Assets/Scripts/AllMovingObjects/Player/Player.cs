@@ -25,11 +25,13 @@ public class Player : MovingObject
 
     // 서버 관련 변수들
     public float sendInterval = 0.05f; // 20fps로 위치 전송 (네트워크 부하 고려)
-    private float _lastSendTime = 0f;
-    private Vector3 _lastSendPos;
-    private Quaternion _lastSendRot;
+    protected float _lastSendTime = 0f;
+    protected Vector3 _lastSendPos;
+    protected Quaternion _lastSendRot;
 
     private AnimState lastAnimState;
+    private int lastHP;
+    private float lastOxygen;
 
     // 초기화
     protected override void Awake()
@@ -51,6 +53,9 @@ public class Player : MovingObject
 
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
+
+        lastHP = playerStat.GetHp();
+        lastOxygen = playerStat.GetOxygen();
 
         // 게임 입장 패킷 전송
         NetManager.Instance.SendEnterGame(0);
@@ -114,7 +119,8 @@ public class Player : MovingObject
     {
         // 서버로 패킷 전송
         SendPositionToServer();
-        SendAnimationToServer();
+        SendAnimationToServer(); 
+        SendPlayerStatToServer();
     }
 
     // E키 상호작용
@@ -219,7 +225,7 @@ public class Player : MovingObject
     }
 
     // 서버로 위치 정보 패킷전송
-    private void SendPositionToServer()
+    protected void SendPositionToServer()
     {
         // 일정 간격으로만 전송 (네트워크 최적화)
         if (Time.time - _lastSendTime < sendInterval)
@@ -242,7 +248,6 @@ public class Player : MovingObject
     }
 
     // 애니메이션 상태 패킷 전송
-    // TODO : 애니메이션 상태가 변경될 때만 전송시키게 하면 더 성능 개선이 가능합니다.
     private void SendAnimationToServer()
     {
         AnimState currentState = playerAnimator.GetAnimState();
@@ -253,6 +258,18 @@ public class Player : MovingObject
             NetManager.Instance.SendAnimation(currentState);
             lastAnimState = currentState;
         }
+    }
 
+    private void SendPlayerStatToServer()
+    {
+        float currentOxygen = playerStat.GetOxygen();
+        int currentHp = playerStat.GetHp();
+
+        if (currentOxygen != lastOxygen && currentHp != lastHP)
+        {
+            NetManager.Instance.SendPlayerStat(currentHp, currentOxygen);
+            lastOxygen = currentOxygen;
+            lastHP = currentHp;
+        }
     }
 }
