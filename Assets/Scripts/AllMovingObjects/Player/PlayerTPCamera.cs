@@ -26,6 +26,8 @@ public class PlayerTPCamera : MonoBehaviour
     private Vector3 baseForwardRef; // 기준 forward (월드 벡터)
     private bool inited;
 
+    private Transform playerMovingOffset;
+
     // 
     // 20260207 수정본
     private float lastX = 0.0f;
@@ -34,6 +36,8 @@ public class PlayerTPCamera : MonoBehaviour
 
     private void Awake()
     {
+        playerMovingOffset = transform.GetChild(0);
+
         inputActions = new PlayerInputSystem();
         inputActions.Player.Enable();
     }
@@ -50,6 +54,12 @@ public class PlayerTPCamera : MonoBehaviour
 
     private void LateUpdate()
     {
+        CalculatingCameraRotate();
+        CalculatingPlayerMovingOffsetRotate();
+    }
+
+    private void CalculatingCameraRotate()
+    {
         if (cameraOffset == null || planet == null) return;
 
         //  X축 연산 (Yaw)
@@ -59,7 +69,6 @@ public class PlayerTPCamera : MonoBehaviour
         {
             // 카메라가 타겟을 바라보는 방향을 기준으로 잡기 (처음 1회)
             Vector3 toTarget = (cameraOffset.position - transform.position).normalized;
-
             baseForwardRef = Vector3.ProjectOnPlane(toTarget, gravityUp).normalized;
             if (baseForwardRef.sqrMagnitude < MIN_LIMIT)
                 baseForwardRef = Vector3.ProjectOnPlane(Vector3.forward, gravityUp).normalized;
@@ -85,7 +94,7 @@ public class PlayerTPCamera : MonoBehaviour
         float deltaX = currentX - lastX;
         lastX = currentX;
 
-        // gravityUp을 기준으로 currentX 만큼 회전하는 쿼터니언 생성
+        // gravityUp을 기준으로 deltaX 만큼 회전하는 쿼터니언 생성
         Quaternion yawRot = Quaternion.AngleAxis(deltaX, gravityUp);
 
         // 기준 forward 벡터를 gravityUp에 정사영하여 평면상 벡터로 변환
@@ -103,8 +112,10 @@ public class PlayerTPCamera : MonoBehaviour
 
         Vector3 offset = yawRot * (-forward * distance);
 
-        //  Y축 연산
+        playerMovingOffset.transform.position = cameraOffset.position;
+        playerMovingOffset.transform.rotation = Quaternion.LookRotation(-offset, -gravityUp);
 
+        //  Y축 연산
         // pitch 회전축 = yaw 적용 후의 right 축
         Vector3 pitchAxis = yawRot * right;
         pitchAxis.Normalize();
@@ -123,6 +134,68 @@ public class PlayerTPCamera : MonoBehaviour
         Vector3 newUp = Vector3.Cross(newRight, newForward).normalized;
 
         transform.rotation = Quaternion.LookRotation(newForward, -newUp);
+    }
 
+
+    private void CalculatingPlayerMovingOffsetRotate()
+    {
+        if (cameraOffset == null || planet == null) return;
+
+        //  X축 연산 (Yaw)
+        Vector3 gravityUp = (cameraOffset.position - planet.position).normalized;
+
+        if (!inited)
+        {
+            // 카메라가 타겟을 바라보는 방향을 기준으로 잡기 (처음 1회)
+            Vector3 toTarget = (cameraOffset.position - transform.position).normalized;
+
+            baseForwardRef = Vector3.ProjectOnPlane(toTarget, gravityUp).normalized;
+            if (baseForwardRef.sqrMagnitude < MIN_LIMIT)
+                baseForwardRef = Vector3.ProjectOnPlane(Vector3.forward, gravityUp).normalized;
+
+            inited = true;
+        }
+
+        else
+        {
+            // 이전 카메라 forward를 중력 평면에 투영해서 기준으로 사용
+            Vector3 prevTangentFwd = Vector3.ProjectOnPlane(transform.forward, gravityUp);
+            if (prevTangentFwd.sqrMagnitude > MIN_LIMIT)
+                baseForwardRef = prevTangentFwd.normalized;
+        }
+
+        float deltaX = currentX - lastX;
+        lastX = currentX;
+
+        // gravityUp을 기준으로 deltaX 만큼 회전하는 쿼터니언 생성
+        Quaternion yawRot = Quaternion.AngleAxis(deltaX, gravityUp);
+
+        // 기준 forward 벡터를 gravityUp에 정사영하여 평면상 벡터로 변환
+        Vector3 baseForward = Vector3.ProjectOnPlane(baseForwardRef, gravityUp).normalized;
+
+        // 정사영 결과가 너무 작은 경우 예비값 사용
+        if (baseForward.sqrMagnitude < MIN_LIMIT)
+            baseForward = Vector3.ProjectOnPlane(transform.forward, gravityUp).normalized;
+        if (baseForward.sqrMagnitude < MIN_LIMIT)
+            baseForward = Vector3.ProjectOnPlane(Vector3.forward, gravityUp).normalized;
+
+        // right, forward 벡터를 외적을 연산해 수직인 벡터를 구함
+        Vector3 right = Vector3.Cross(gravityUp, baseForward).normalized;
+        Vector3 forward = Vector3.Cross(right, gravityUp).normalized;
+
+        Vector3 offset = yawRot * (-forward * distance);
+
+
+        Vector3 newForward = (cameraOffset.position - transform.position).normalized;
+        Vector3 newRight = Vector3.Cross(gravityUp, newForward).normalized;
+        Vector3 newUp = Vector3.Cross(newRight, newForward).normalized;
+
+        playerMovingOffset.transform.position = cameraOffset.position;
+        playerMovingOffset.transform.rotation = Quaternion.LookRotation(-offset, gravityUp);
+    }
+
+    public Transform GetPlayerMovingOffset()
+    {
+        return playerMovingOffset;
     }
 }
