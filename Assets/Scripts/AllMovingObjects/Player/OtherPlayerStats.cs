@@ -21,7 +21,7 @@ public class OtherPlayerStats : MonoBehaviour
     private const string HP = "HP";
     private const string OXYGEN = "Oxygen";
 
-    private Coroutine fadeOutCoroutine = null;
+    private List<Coroutine> fadeCoroutines = new List<Coroutine>();
 
     private void Start()
     {
@@ -64,9 +64,60 @@ public class OtherPlayerStats : MonoBehaviour
         img.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
     }
 
+    private IEnumerator DecreaseHpUI()
+    {
+        Debug.Log("체력 줄어듬 : " + hp);
+
+        foreach (Coroutine c in fadeCoroutines)
+        {
+            if (c != null)
+            {
+                StopCoroutine(c);
+            }
+        }
+
+        fadeCoroutines.Clear();
+
+
+        foreach (Image img in hpImageList)
+        {
+            if (img != null)
+            {
+                ReturnHPImageAlpha(img);
+            }
+        }
+
+        // 가장 오른쪽에 있는 이미지를 비활성화
+        for (int i = hpImageList.Count - 1; i >= 0; i--)
+        {
+            if (hpImageList[i].IsActive())
+            {
+                hpImageList[i].gameObject.SetActive(false);
+                break;
+            }
+        }
+
+        yield return new WaitForSeconds(HP_DISPLAY_DURATION); // 체력 이미지가 보이는 시간
+
+        foreach (Image img in hpImageList)
+        {
+            if (img != null)
+            {
+                Coroutine c = StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
+                fadeCoroutines.Add(c);
+            }
+        }
+    }
+
     //TODO : 패킷을 받도록 구현 필요
     public void SetStat(int hpData, float oxygenData)
     {
+        // 이전 값과 비교해서 hp가 줄었는지 확인
+        if (hpData < hp)
+        {
+            StartCoroutine(DecreaseHpUI());
+        }
+
         hp = hpData;
         oxygen = oxygenData;
     }
