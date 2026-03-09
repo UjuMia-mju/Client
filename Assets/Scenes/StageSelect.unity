@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 124221697}
   - component: {fileID: 124221696}
   m_Layer: 0
-  m_Name: 1
+  m_Name: 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -194,8 +194,8 @@ SphereCollider:
   m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 4.172797
+  m_Center: {x: 0, y: 0, z: 0.036468506}
 --- !u!23 &124221698
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 213756898}
   - component: {fileID: 213756897}
   m_Layer: 0
-  m_Name: 4
+  m_Name: 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -368,7 +368,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
-  orbitSpeed: 14
+  orbitSpeed: 10
   spinAxis: {x: 0, y: 1, z: 0}
   spinSpeed: 10
   randomizeStartPosition: 1
@@ -394,8 +394,8 @@ SphereCollider:
   m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 5.29
+  m_Center: {x: -0.13, y: -0.6, z: 0.98}
 --- !u!23 &213756899
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -751,8 +751,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   targetNode: {fileID: 213756897}
   orbitCenter: {fileID: 1922309642}
-  orbitText: {fileID: 0}
-  textHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   segments: 60
   lineWidth: 0.15
   hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -897,6 +895,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   stageNodes:
+  - {fileID: 1922309646}
   - {fileID: 124221696}
   - {fileID: 1767277960}
   - {fileID: 1555946057}
@@ -937,7 +936,7 @@ GameObject:
   - component: {fileID: 1280448957}
   - component: {fileID: 1280448956}
   m_Layer: 0
-  m_Name: 1Text
+  m_Name: 4Text
   m_TagString: ClickOff
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -996,7 +995,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1-1
+  m_text: 1-4
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1244,8 +1243,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   targetNode: {fileID: 124221696}
   orbitCenter: {fileID: 1922309642}
-  orbitText: {fileID: 0}
-  textHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   segments: 60
   lineWidth: 0.15
   hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -1373,7 +1370,7 @@ GameObject:
   - component: {fileID: 1515313629}
   - component: {fileID: 1515313628}
   m_Layer: 0
-  m_Name: 4Text
+  m_Name: 1Text
   m_TagString: ClickOff
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1432,7 +1429,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1-4
+  m_text: 1-1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1568,7 +1565,7 @@ GameObject:
   - component: {fileID: 1555946058}
   - component: {fileID: 1555946057}
   m_Layer: 0
-  m_Name: 3
+  m_Name: 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1629,8 +1626,8 @@ SphereCollider:
   m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 8.505737
+  m_Center: {x: -0.21061182, y: 0, z: 0.54620266}
 --- !u!23 &1555946059
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1700,7 +1697,7 @@ GameObject:
   - component: {fileID: 1690677400}
   - component: {fileID: 1690677399}
   m_Layer: 0
-  m_Name: 2Text
+  m_Name: 3Text
   m_TagString: ClickOff
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1759,7 +1756,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1-2
+  m_text: 1-3
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2035,7 +2032,7 @@ GameObject:
   - component: {fileID: 1767277961}
   - component: {fileID: 1767277960}
   m_Layer: 0
-  m_Name: 2
+  m_Name: 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2096,8 +2093,8 @@ SphereCollider:
   m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 5.712856
+  m_Center: {x: 0, y: 0, z: -1.5035905}
 --- !u!23 &1767277962
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2321,8 +2318,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   targetNode: {fileID: 1555946057}
   orbitCenter: {fileID: 1922309642}
-  orbitText: {fileID: 0}
-  textHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   segments: 60
   lineWidth: 0.15
   hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -2484,8 +2479,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   targetNode: {fileID: 1767277960}
   orbitCenter: {fileID: 1922309642}
-  orbitText: {fileID: 0}
-  textHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   segments: 60
   lineWidth: 0.15
   hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -2630,7 +2623,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1759565806}
@@ -2651,11 +2644,11 @@ SphereCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 3.9780927
+  m_Center: {x: 0, y: 0, z: 0.23117304}
 --- !u!23 &1922309644
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2681,7 +2674,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 469e397ed5f8f4440b550b713d610b2b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2711,7 +2704,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922309641}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: 32ee3a4a0ba913649947d26fd6a83cb0, type: 3}
 --- !u!114 &1922309646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2721,11 +2714,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1922309641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5dee4190caf47141ab7e9f32ee90af6, type: 3}
+  m_Script: {fileID: 11500000, guid: 88d6c64da32e6374a922d40993b1244b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::StageNode
+  orbitCenter: {fileID: 1922309642}
+  orbitAxis: {x: 0, y: 0, z: 1}
+  orbitSpeed: 10
   spinAxis: {x: 0, y: 1, z: 0}
   spinSpeed: 10
+  randomizeStartPosition: 1
+  hoverScaleMultiplier: 1.5
+  hoverTransitionSpeed: 10
+  stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!1 &1981201848
 GameObject:
   m_ObjectHideFlags: 0
@@ -2739,7 +2739,7 @@ GameObject:
   - component: {fileID: 1981201851}
   - component: {fileID: 1981201850}
   m_Layer: 0
-  m_Name: 3Text
+  m_Name: 2Text
   m_TagString: ClickOff
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2798,7 +2798,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1-3
+  m_text: 1-2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
