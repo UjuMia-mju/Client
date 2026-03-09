@@ -9,26 +9,28 @@ public class PlayerStat : MonoBehaviour
     private float oxygen = 1;
     private int hp = 5;
 
-    public GameObject hpParent;
+    //public GameObject hpParent;
     private List<Image> hpImageList = new List<Image>();
 
-    public Image oxygenImage;
+    private Image oxygenImage;
     private Color originalColor;
 
     private const float FADE_DURATION = 1.5f;
     private const float OXYGEN_DECREASE_INTERVAL = 1f;
     private const float HP_DISPLAY_DURATION = 1f;
 
+    private const string HP = "HP";
+    private const string OXYGEN = "Oxygen";
+
     private void Start()
     {
-        foreach (Transform child in hpParent.transform)
+        hpImageList = new List<Image>();
+        foreach (Image img in GetComponentsInChildren<Image>(true))
         {
-            Image hpImage = child.GetComponent<Image>();
-            if (hpImage != null)
+            if (img.name.StartsWith(HP))
             {
-                hpImageList.Add(hpImage);
-
-                StartCoroutine(FadeOutCoroutine(hpImage, FADE_DURATION));
+                hpImageList.Add(img);
+                StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
             }
         }
     }
@@ -94,12 +96,11 @@ public class PlayerStat : MonoBehaviour
         hp -= damage;
         Debug.Log("체력 줄어듬 : " + hp);
 
-        foreach (Transform child in hpParent.transform)
+        foreach (Image img in hpImageList)
         {
-            Image hpImage = child.GetComponent<Image>();
-            if (hpImage != null)
+            if (img != null)
             {
-                ReturnHPImageAlpha(hpImage);
+                ReturnHPImageAlpha(img);
             }
         }
 
@@ -115,12 +116,11 @@ public class PlayerStat : MonoBehaviour
 
         yield return new WaitForSeconds(HP_DISPLAY_DURATION); // 체력 이미지가 보이는 시간
 
-        foreach (Transform child in hpParent.transform)
+        foreach (Image img in hpImageList)
         {
-            Image hpImage = child.GetComponent<Image>();
-            if (hpImage != null)
+            if (img != null)
             {
-                StartCoroutine(FadeOutCoroutine(hpImage, FADE_DURATION));
+                StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
             }
         }
     }
