@@ -59,18 +59,24 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (StageManager.Instance != null && StageManager.Instance.isMovementPaused) return;
+        
         _isHovered = true; 
         _targetScale = _originalScale * hoverScaleMultiplier;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (StageManager.Instance != null && StageManager.Instance.isMovementPaused) return;
+        
         _isHovered = false; 
         _targetScale = _originalScale;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (StageManager.Instance != null && StageManager.Instance.isMovementPaused) return;
+        
         if (stagePanelPrefab != null)
         {
             _isHovered = false; 
