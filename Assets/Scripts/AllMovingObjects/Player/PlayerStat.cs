@@ -32,6 +32,10 @@ public class PlayerStat : MonoBehaviour
                 hpImageList.Add(img);
                 StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
             }
+            else if (img.name.StartsWith(OXYGEN))
+            {
+                oxygenImage = img;
+            }
         }
     }
 

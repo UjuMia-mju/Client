@@ -548,8 +548,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bfd35966b648fb419e837fdb3007688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OxygenSystem
-  hpParent: {fileID: 0}
-  oxygenImage: {fileID: 0}
 --- !u!114 &7282033658369192966
 MonoBehaviour:
   m_ObjectHideFlags: 0

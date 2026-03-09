@@ -29,6 +29,8 @@ public class Player : MovingObject
     private Vector3 _lastSendPos;
     private Quaternion _lastSendRot;
 
+    private AnimState lastAnimState;
+
     // 초기화
     protected override void Awake()
     {
@@ -41,6 +43,7 @@ public class Player : MovingObject
         playerStat = GetComponent<PlayerStat>();
 
         playerAnimator.Initialize();
+        lastAnimState = AnimState.Idle;
     }
 
     private void Start()
@@ -242,6 +245,14 @@ public class Player : MovingObject
     // TODO : 애니메이션 상태가 변경될 때만 전송시키게 하면 더 성능 개선이 가능합니다.
     private void SendAnimationToServer()
     {
-        NetManager.Instance.SendAnimation(playerAnimator.GetAnimState());
+        AnimState currentState = playerAnimator.GetAnimState();
+
+        // 상태가 바뀐 경우에만 전송
+        if (currentState != lastAnimState)
+        {
+            NetManager.Instance.SendAnimation(currentState);
+            lastAnimState = currentState;
+        }
+
     }
 }
