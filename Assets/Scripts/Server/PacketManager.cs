@@ -16,6 +16,7 @@ public class PacketManager : Singleton<PacketManager>
     public event System.Action<S_ANIMATION> OnAnimationEvent;
     public event System.Action<S_STAT> OnStatEvent;
     public event System.Action<S_ITEM_MOVE> OnItemMoveEvent;
+    public event System.Action<S_WORKBENCH_LIST> OnCraftTableEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -52,6 +53,10 @@ public class PacketManager : Singleton<PacketManager>
             case PacketId.PKT_S_ITEM_MOVE:
                 HandleItemMove(data);
                 break;
+            case PacketId.PKT_S_WORKBENCH:
+                HandleCraftTable(data);
+                break;
+
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
                 break;
@@ -138,5 +143,11 @@ public class PacketManager : Singleton<PacketManager>
     {
         S_ITEM_MOVE packet = S_ITEM_MOVE.Parser.ParseFrom(payloadData);
         OnItemMoveEvent?.Invoke(packet);
+    }
+
+    private void HandleCraftTable(byte[] payloadData)
+    {
+        S_WORKBENCH_LIST packet = S_WORKBENCH_LIST.Parser.ParseFrom(payloadData);
+        OnCraftTableEvent?.Invoke(packet);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Protocol;
 using UnityEngine;
+using System.Linq;
 
 public class PlayManager : SceneSingleton<PlayManager>
 {
@@ -20,6 +21,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PacketManager.Instance.OnAnimationEvent += OnAnim;
         PacketManager.Instance.OnStatEvent += OnPlayerStat;
         PacketManager.Instance.OnItemMoveEvent += OnItemMove;
+        PacketManager.Instance.OnCraftTableEvent += OnCraftTableItemInstantiate;
 
         // 서버에 ENTER_GAME 패킷 전송 (게임 입장 요청)
         NetManager.Instance.SendEnterGame((ulong)NetManager.Instance._playerId);
@@ -43,6 +45,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PacketManager.Instance.OnAnimationEvent -= OnAnim;
         PacketManager.Instance.OnStatEvent -= OnPlayerStat;
         PacketManager.Instance.OnItemMoveEvent -= OnItemMove;
+        PacketManager.Instance.OnCraftTableEvent -= OnCraftTableItemInstantiate;
     }
     //private void SpawnLocalPlayer()
     //{
@@ -193,6 +196,32 @@ public class PlayManager : SceneSingleton<PlayManager>
                 Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
 
                 items.SetPos(pos, rot);
+            }
+        }
+        else
+        {
+            // 아직 생성되지 않은 플레이어 (패킷 순서 문제)
+            Debug.LogWarning($"Received stat for unknown player: {packet.PlayerId}");
+        }
+    }
+
+    private void OnCraftTableItemInstantiate(S_WORKBENCH_LIST packet)
+    {
+        if (PlayManager.Instance == null)
+        {
+            Debug.LogWarning("PlayManager instance is null. Cannot process stat packet.");
+            return;
+        }
+        // 내 플레이어는 무시 (이미 로컬에서 움직임)
+        if (packet.PlayerId == (ulong)NetManager.Instance._playerId)
+            return;
+        if (_remotePlayers.TryGetValue(packet.PlayerId, out GameObject obj))
+        {
+            // 아이템 위치 업데이트
+            Crafting craftTable = obj.GetComponent<Crafting>();
+            if (craftTable != null)
+            {
+                craftTable.SetItemList(packet.ItemNames.ToList<string>());
             }
         }
         else

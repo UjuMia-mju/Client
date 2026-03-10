@@ -369,6 +369,13 @@ public class NetManager : Singleton<NetManager>
         SendPacket(PacketId.PKT_C_ITEM_MOVE, movePacket);
     }
 
+    public void SendCraftingList(List<string> data)
+    {
+        C_WORKBENCH_LIST craftingListPacket = new C_WORKBENCH_LIST();
+        craftingListPacket.ItemNames.AddRange(data);
+        SendPacket(PacketId.PKT_C_WORKBENCH, craftingListPacket);
+    }
+
     /// <summary>
     /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출
     /// </summary>

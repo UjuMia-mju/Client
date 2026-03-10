@@ -45,5 +45,7 @@
         PKT_S_STAT = 1037,
         PKT_C_ITEM_MOVE = 1038,
         PKT_S_ITEM_MOVE = 1039,
+        PKT_C_WORKBENCH = 1040,
+        PKT_S_WORKBENCH = 1041,
     }
 }
