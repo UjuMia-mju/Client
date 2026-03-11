@@ -15,7 +15,8 @@ public class Player : MovingObject
 
     private const float DETECT_RADIUS = 5.5f; // 구형 트리거 반지름 
 
-    public bool isGetItem { get; private set; } = false;
+    public bool isPlayerGetSomething { get; private set; } = false;
+    public bool isMining { get; private set; } = false;
 
     public GameObject playerBoneModel;
 
@@ -81,7 +82,8 @@ public class Player : MovingObject
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
                 isGrounded, 
-                inputFreeze);
+                inputFreeze,
+                isMining);
 
             KeyEInteract();
             KeyFInteract();
@@ -129,25 +131,32 @@ public class Player : MovingObject
         if (playerInput.GetIsInteract())
         {
             playerInput.MakeIsInteractFalse();
-            
-            if (nearestObject == null)
+            // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
+            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
+            {
+                Debug.Log("곡괭이질");
+                isMining = true;
+            }
+
+            else if (nearestObject == null)
             {
                 return;
             }
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 아이템이며, 빈 손일 때
-            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isGetItem)
+            // 혹은 태그가 Tool인 것도 포함함.
+            else if (nearestObject.CompareTag(Define.Tag.ITEM) || nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething)
             {
                 playerItemSystem.AttachItem(nearestObject);
-                isGetItem = true;
+                isPlayerGetSomething = true;
             }
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 조합대이며, 아이템을 들고 있을 때
             // 또한 투입할 때 플레이어의 손에서 Detach
-            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isGetItem)
+            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isPlayerGetSomething)
             {
                 Crafting craftTable = nearestObject.GetComponent<Crafting>();
-                isGetItem = false;
+                isPlayerGetSomething = false;
                 craftTable.AddCraftItems(playerItemSystem.currentEquipItem);
                 playerItemSystem.DetachItem();
             }
@@ -166,9 +175,9 @@ public class Player : MovingObject
             if (nearestObject == null || nearestObject != null && !nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
             {
                 // 아이템을 던지고, 플레이어의 손에서 Detach
-                if (isGetItem)
+                if (isPlayerGetSomething)
                 {
-                    isGetItem = false;
+                    isPlayerGetSomething = false;
                     playerItemSystem.ThrowItem(GetMovingAmount());
                     playerItemSystem.DetachItem();
                 }
@@ -193,7 +202,7 @@ public class Player : MovingObject
 
         foreach (Collider col in colliders)
         {
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE))
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE))
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)

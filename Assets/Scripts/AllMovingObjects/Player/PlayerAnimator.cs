@@ -6,7 +6,8 @@ public enum AnimState
     Idle,
     Run,
     Jump,
-    Falling
+    Falling,
+    Mining
 }
 
 public class PlayerAnimator : MonoBehaviour
@@ -19,9 +20,9 @@ public class PlayerAnimator : MonoBehaviour
         anim = gameObject.GetComponentInChildren<Animator>();
     }
 
-    public void PlayerAnimation(Vector3 moveDir, bool isJumping, bool isGrounded, bool inputFreeze)
+    public void PlayerAnimation(Vector3 moveDir, bool isJumping, bool isGrounded, bool inputFreeze, bool isMining)
     {
-        if (inputFreeze || isGrounded && moveDir == Vector3.zero)
+        if (inputFreeze || isGrounded && moveDir == Vector3.zero && !isMining)
         {
             state = AnimState.Idle;
         }
@@ -29,6 +30,11 @@ public class PlayerAnimator : MonoBehaviour
         else if (isJumping && isGrounded)
         {
             state = AnimState.Jump;
+        }
+
+        else if (isMining && isGrounded)
+        {
+            state = AnimState.Mining;
         }
 
         else if (moveDir != Vector3.zero && isGrounded)
