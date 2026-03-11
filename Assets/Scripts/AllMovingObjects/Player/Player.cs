@@ -104,7 +104,7 @@ public class Player : MovingObject
             Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
             RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
 
-            if (playerInput.GetIsJumping() && isGrounded)
+            if (playerInput.GetIsJumping() && isGrounded && !isMining)
             {
                 Jump();
                 playerInput.SetIsJumping(false);
@@ -125,6 +125,12 @@ public class Player : MovingObject
         SendPlayerStatToServer();
     }
 
+    protected override void Moving(Vector3 movDir)
+    {
+        base.Moving(movDir);
+        isMining = false; // 이동하면 광질이 멈춥니다.
+    }
+
     // E키 상호작용
     private void KeyEInteract()
     {
@@ -134,7 +140,6 @@ public class Player : MovingObject
             // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
             if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
             {
-                Debug.Log("곡괭이질");
                 isMining = true;
             }
 
