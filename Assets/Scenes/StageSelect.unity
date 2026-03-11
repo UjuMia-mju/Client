@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d6c64da32e6374a922d40993b1244b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  stageID: 4
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 10
@@ -174,7 +175,6 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
-  stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!135 &124221697
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -366,6 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d6c64da32e6374a922d40993b1244b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  stageID: 1
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 10
@@ -374,7 +375,6 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
-  stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!135 &213756898
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -897,6 +897,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b69b516a9ec4dc44bd6734808cddca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
+  selectPanel: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
   stageNodes:
   - {fileID: 1922309646}
   - {fileID: 124221696}
@@ -1625,6 +1626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d6c64da32e6374a922d40993b1244b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  stageID: 2
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 12
@@ -1633,7 +1635,6 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
-  stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!135 &1555946058
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2286,6 +2287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d6c64da32e6374a922d40993b1244b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  stageID: 3
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 15
@@ -2294,7 +2296,6 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
-  stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!135 &1767277961
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2938,6 +2939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d6c64da32e6374a922d40993b1244b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageNode
+  stageID: 5
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 10
@@ -2946,7 +2948,6 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
-  stagePanelPrefab: {fileID: 7485528604816533081, guid: 55ca336bffcc88c4ba8e8d8f1a815081, type: 3}
 --- !u!1 &1981201848
 GameObject:
   m_ObjectHideFlags: 0

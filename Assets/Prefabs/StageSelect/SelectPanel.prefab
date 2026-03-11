@@ -747,9 +747,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edbcb6f2d71ac9f4cbb502fbc4a1e497, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StagePanelController
-  chapterText: {fileID: 483974940069747677}
-  leftText: {fileID: 2990434415711622759}
-  rightText: {fileID: 5746778074470311745}
+  chapterTextUI: {fileID: 483974940069747677}
+  leftTextUI: {fileID: 2990434415711622759}
+  rightTextUI: {fileID: 5746778074470311745}
 --- !u!1 &8124127078412251028
 GameObject:
   m_ObjectHideFlags: 0
