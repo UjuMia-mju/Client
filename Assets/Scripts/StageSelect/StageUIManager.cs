@@ -19,12 +19,20 @@ public class StageUIManager : MonoBehaviour
         if (rightButton != null) rightButton.SetActive(isVisible);
     }
 
-    public IEnumerator OpenPanel(GameObject panelPrefab)
+    // 이름 변경: chapter, leftText, rightText
+    public IEnumerator OpenPanel(GameObject panelPrefab, string chapter, string leftText, string rightText)
     {
         if (panelPrefab == null) yield break;
 
         _currentPanel = Instantiate(panelPrefab);
         
+        SelectPanelController panelInfo = _currentPanel.GetComponent<SelectPanelController>();
+        if (panelInfo != null)
+        {
+            // 변경된 이름으로 세팅
+            panelInfo.SetInfo(chapter, leftText, rightText);
+        }
+
         RectTransform rect = _currentPanel.GetComponent<RectTransform>();
         if (rect != null)
         {

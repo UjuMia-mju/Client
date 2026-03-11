@@ -376,4 +376,13 @@ public class NetManager : Singleton<NetManager>
     }
 
     #endregion
+    
+    public void SendStageInfo(int stageId)
+    {
+        C_STAGE_INFO stagePacket = new C_STAGE_INFO
+        {
+            StageId = stageId
+        };
+        SendPacket(PacketId.PKT_C_STAGE_INFO, stagePacket);
+    }
 }

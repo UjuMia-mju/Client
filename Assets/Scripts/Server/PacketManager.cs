@@ -107,4 +107,21 @@ public class PacketManager : Singleton<PacketManager>
         S_CHAT packet = S_CHAT.Parser.ParseFrom(payloadData);
         OnChatEvent?.Invoke(packet);
     }
+    
+    public void Handle_S_STAGE_INFO(IMessage packet)
+    {
+        S_STAGE_INFO stageInfo = (S_STAGE_INFO)packet;
+        
+        // 네트워크 스레드에서 유니티 UI를 조작하면 에러가 나니까,
+        // 매뉴얼에 있던 MainThreadDispatcher를 꼭 써줘야 해!
+        MainThreadDispatcher.Enqueue(() =>
+        {
+            StageManager.Instance.OnReceiveStageInfo(
+                stageInfo.StageId, 
+                stageInfo.Chapter, 
+                stageInfo.LeftText, 
+                stageInfo.RightText
+            );
+        });
+    }
 }

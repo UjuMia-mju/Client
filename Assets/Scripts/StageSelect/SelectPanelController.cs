@@ -4,14 +4,16 @@ using UnityEngine.SceneManagement;
 
 public class SelectPanelController : MonoBehaviour
 {
-    [Header("UI Settings")] 
-    [SerializeField] private TextMeshProUGUI chapterText;
-    [SerializeField] private TextMeshProUGUI leftText;
-    [SerializeField] private TextMeshProUGUI rightText;
-
-    void Start()
+    [Header("UI Text References")]
+    public TextMeshProUGUI chapterTextUI;
+    public TextMeshProUGUI leftTextUI;
+    public TextMeshProUGUI rightTextUI;
+    
+    public void SetInfo(string chapter, string leftText, string rightText)
     {
-        // TODO: 서버에서 받아온 데이터 새로고침
+        if (chapterTextUI != null) chapterTextUI.text = chapter;
+        if (leftTextUI != null) leftTextUI.text = leftText;
+        if (rightTextUI != null) rightTextUI.text = rightText;
     }
     public void OnPlayButtonClicked()
     {

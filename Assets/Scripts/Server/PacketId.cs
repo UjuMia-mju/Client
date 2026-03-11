@@ -13,5 +13,7 @@ namespace Protocol
         PKT_S_PLAYER_LIST = 1008,
         PKT_S_PLAYER_ENTER = 1009,
         PKT_S_PLAYER_LEAVE = 1010,
+        PKT_C_STAGE_INFO = 1011, 
+        PKT_S_STAGE_INFO = 1012,
     }
 }
