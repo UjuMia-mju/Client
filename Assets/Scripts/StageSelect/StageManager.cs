@@ -9,8 +9,8 @@ public class StageManager : MonoBehaviour
 {
     public static StageManager Instance { get; private set; }
 
-    [Header("UI Base Prefab")]
-    public GameObject baseStagePanelPrefab; 
+    [Header("UI Prefab")]
+    public GameObject selectPanel; 
 
     [Header("Nodes & Environment")] 
     public List<StageNode> stageNodes = new List<StageNode>();
@@ -68,10 +68,15 @@ public class StageManager : MonoBehaviour
         if (_currentSelectedNode != null || _isTransitioning) return;
         _currentSelectedNode = clickedNode;
 
+        // NOTE: 서버 연결시 삭제
         MockServerResponse(clickedNode.stageID);
+        
+        // NOTE: 서버 연결시 이걸로 변경
+        // NetManager.Instance.SendStageInfo(clickedNode.stageID);
     }
 
     // 서버 응답 가상 테스트 함수
+    // 서버 연결시 삭제
     private void MockServerResponse(int stageId)
     {
         Debug.Log($"[Mock] 서버에 {stageId}번 스테이지 정보 요청...");
@@ -99,9 +104,9 @@ public class StageManager : MonoBehaviour
 
         yield return StartCoroutine(_cameraController.ZoomIn(targetNode.transform));
 
-        if (baseStagePanelPrefab != null)
+        if (selectPanel != null)
         {
-            yield return StartCoroutine(_uiManager.OpenPanel(baseStagePanelPrefab, chapter, leftText, rightText));
+            yield return StartCoroutine(_uiManager.OpenPanel(selectPanel, chapter, leftText, rightText));
         }
 
         _isTransitioning = false;
