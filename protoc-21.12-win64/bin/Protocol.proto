@@ -66,3 +66,16 @@ message S_PLAYER_LEAVE
 {
 	PlayerInfo player = 1;
 }
+
+message C_STAGE_INFO
+{
+	int32 stageId = 1;
+}
+
+message S_STAGE_INFO
+{
+	int32 stageId = 1;
+	string chapter = 2;
+	string leftText = 3;
+	string rightText = 4;
+}
