@@ -876,6 +876,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1212711538}
   - component: {fileID: 1212711537}
+  - component: {fileID: 1212711540}
+  - component: {fileID: 1212711539}
   m_Layer: 0
   m_Name: StageManager
   m_TagString: Untagged
@@ -902,13 +904,6 @@ MonoBehaviour:
   - {fileID: 1555946057}
   - {fileID: 213756897}
   isMovementPaused: 0
-  leftButton: {fileID: 1791206421}
-  rightButton: {fileID: 260927728}
-  popUpDuration: 0.2
-  finalPanelScale: {x: 0.005, y: 0.005, z: 1}
-  cameraMoveDuration: 0.4
-  zoomEulerAngles: {x: 0, y: 0, z: 0}
-  zoomDistance: 3
 --- !u!4 &1212711538
 Transform:
   m_ObjectHideFlags: 0
@@ -918,12 +913,43 @@ Transform:
   m_GameObject: {fileID: 1212711536}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.97, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1212711539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212711536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b22e22ec670174c9f70ca922baaad0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageUIManager
+  leftButton: {fileID: 1791206421}
+  rightButton: {fileID: 260927728}
+  popUpDuration: 0.2
+  finalPanelScale: {x: 1, y: 1, z: 1}
+--- !u!114 &1212711540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212711536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed3af200c9ddcaa4c81f6cf821d78ff5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageCameraController
+  cameraMoveDuration: 0.4
+  zoomEulerAngles: {x: 45, y: 0, z: 0}
+  zoomDistance: 3.5
 --- !u!1 &1280448954
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,7 +977,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1280448954}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.0900002}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -959,7 +985,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13.33, y: -1.97}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1280448956
@@ -975,7 +1001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowTargetPosition
   target: {fileID: 124221695}
-  offset: {x: 8.7, y: -0.91, z: 0.33}
+  offset: {x: 9.07, y: -0.61, z: -0.23}
 --- !u!114 &1280448957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1385,7 +1411,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515313626}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.0900002}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1393,7 +1419,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13.33, y: -1.97}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1515313628
@@ -1409,7 +1435,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowTargetPosition
   target: {fileID: 213756896}
-  offset: {x: 8.7, y: -0.91, z: 0.33}
+  offset: {x: 9.07, y: -0.61, z: -0.23}
 --- !u!114 &1515313629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1712,7 +1738,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690677397}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.0900002}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1720,7 +1746,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13.33, y: -1.97}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1690677399
@@ -1736,7 +1762,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowTargetPosition
   target: {fileID: 1767277959}
-  offset: {x: 8.7, y: -0.91, z: 0.33}
+  offset: {x: 9.07, y: -0.61, z: -0.23}
 --- !u!114 &1690677400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2009,7 +2035,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1755044766}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.0900002}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2017,7 +2043,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13.33, y: -1.97}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1755044768
@@ -2033,7 +2059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowTargetPosition
   target: {fileID: 1922309642}
-  offset: {x: 8.7, y: -0.91, z: 0.33}
+  offset: {x: 9.07, y: -0.61, z: -0.23}
 --- !u!114 &1755044769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2948,7 +2974,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1981201848}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.0900002}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2956,7 +2982,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13.33, y: -1.97}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1981201850
@@ -2972,7 +2998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowTargetPosition
   target: {fileID: 1555946056}
-  offset: {x: 8.7, y: -0.91, z: 0.33}
+  offset: {x: 9.07, y: -0.61, z: -0.23}
 --- !u!114 &1981201851
 MonoBehaviour:
   m_ObjectHideFlags: 0

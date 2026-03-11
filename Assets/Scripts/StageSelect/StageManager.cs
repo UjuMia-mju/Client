@@ -3,41 +3,21 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(StageCameraController))]
+[RequireComponent(typeof(StageUIManager))]
 public class StageManager : MonoBehaviour
 {
     public static StageManager Instance { get; private set; }
 
-    [Header("Nodes")] 
+    [Header("Nodes & Environment")] 
     public List<StageNode> stageNodes = new List<StageNode>();
     public bool isMovementPaused = false;
 
-    [Header("UI Navigation Buttons")] 
-    [SerializeField] private GameObject leftButton;
-    [SerializeField] private GameObject rightButton;
-
-    [Header("UI Pop-Up Settings")] 
-    [SerializeField] private float popUpDuration = 0.2f;
-    [SerializeField] private Vector3 finalPanelScale = new Vector3(1f, 1f, 1f);
-
-    [Header("Camera Move Settings")] 
-    [Tooltip("카메라가 이동하는 데 걸리는 시간(초)")] 
-    [SerializeField] private float cameraMoveDuration = 0.5f;
-
-    [Tooltip("줌인 시 카메라의 고정 회전 각도")] 
-    [SerializeField] private Vector3 zoomEulerAngles = new Vector3(45f, 0f, 0f);
-
-    [Tooltip("행성 중심으로부터 카메라가 떨어질 거리")] 
-    [SerializeField] private float zoomDistance = 10f;
-
-    private Vector3 originPos = new Vector3(0.2f, -13.3f, 6.2f);
-    private Quaternion originRot = new Quaternion(-0.3888f, 0.0016f, 0.003f, 0.92f);
-
-    private Camera _mainCamera;
-    private GameObject _currentPanel;
+    private StageCameraController _cameraController;
+    private StageUIManager _uiManager;
+    
     private StageNode _currentSelectedNode;
     private bool _isTransitioning = false;
-
-    // NOTE: ClickOff 태그를 가진 오브젝트들을 담아둘 배열
     private GameObject[] _clickOffObjects;
 
     private void Awake()
@@ -45,7 +25,9 @@ public class StageManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        _mainCamera = Camera.main;
+        // 분리한 전문 스크립트들을 찾아와서 연결
+        _cameraController = GetComponent<StageCameraController>();
+        _uiManager = GetComponent<StageUIManager>();
     }
 
     private void Start()
@@ -58,12 +40,7 @@ public class StageManager : MonoBehaviour
             node.Init();
         }
 
-        if (_mainCamera != null)
-        {
-            _mainCamera.transform.position = originPos;
-            _mainCamera.transform.rotation = originRot;
-        }
-        
+        _cameraController.ResetToOrigin();
         _clickOffObjects = GameObject.FindGameObjectsWithTag(Define.Tag.CLICKOFF);
     }
 
@@ -98,38 +75,15 @@ public class StageManager : MonoBehaviour
         isMovementPaused = true; 
 
         ToggleFocusMode(targetNode, true);
+        
+        // UI 매니저야 버튼 좀 꺼줘!
+        _uiManager.ToggleNavButtons(false);
 
-        if (leftButton != null) leftButton.SetActive(false);
-        if (rightButton != null) rightButton.SetActive(false);
+        // 카메라 매니저야 줌인 부탁해! (끝날 때까지 대기)
+        yield return StartCoroutine(_cameraController.ZoomIn(targetNode.transform));
 
-        if (_mainCamera != null)
-        {
-            Quaternion dynamicTargetRot = Quaternion.Euler(zoomEulerAngles);
-            Vector3 dynamicTargetPos = targetNode.transform.position - (dynamicTargetRot * Vector3.forward * zoomDistance);
-
-            yield return StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, dynamicTargetPos, dynamicTargetRot));
-        }
-
-        if (targetNode.stagePanelPrefab != null)
-        {
-            _currentPanel = Instantiate(targetNode.stagePanelPrefab);
-            
-            RectTransform rect = _currentPanel.GetComponent<RectTransform>();
-            if (rect != null)
-            {
-                rect.anchoredPosition = Vector2.zero; 
-                rect.localRotation = Quaternion.identity;
-                rect.localScale = Vector3.zero; 
-            }
-
-            Canvas canvas = _currentPanel.GetComponent<Canvas>();
-            if (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceCamera)
-            {
-                canvas.worldCamera = Camera.main;
-            }
-
-            yield return StartCoroutine(DynamicPopUpPanel(_currentPanel));
-        }
+        // UI 매니저야 패널 띄워줘! (끝날 때까지 대기)
+        yield return StartCoroutine(_uiManager.OpenPanel(targetNode.stagePanelPrefab));
 
         _isTransitioning = false;
     }
@@ -146,17 +100,9 @@ public class StageManager : MonoBehaviour
     {
         _isTransitioning = true;
 
-        if (_currentPanel != null)
-        {
-            yield return StartCoroutine(DynamicClosePanel(_currentPanel));
-            Destroy(_currentPanel);
-            _currentPanel = null;
-        }
-
-        if (_mainCamera != null)
-        {
-            yield return StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, originPos, originRot));
-        }
+        // UI 닫고 -> 카메라 복귀
+        yield return StartCoroutine(_uiManager.ClosePanel());
+        yield return StartCoroutine(_cameraController.ZoomOut());
 
         ToggleFocusMode(null, false);
 
@@ -164,13 +110,11 @@ public class StageManager : MonoBehaviour
         _currentSelectedNode = null;
         _isTransitioning = false;
 
-        if (leftButton != null) leftButton.SetActive(true);
-        if (rightButton != null) rightButton.SetActive(true);
+        _uiManager.ToggleNavButtons(true);
     }
 
     private void ToggleFocusMode(StageNode targetNode, bool isFocusing)
     {
-        // ClickOff 태그를 가진 모든 오브젝트 토글
         if (_clickOffObjects != null)
         {
             foreach (var obj in _clickOffObjects)
@@ -179,7 +123,6 @@ public class StageManager : MonoBehaviour
             }
         }
 
-        // 타겟 행성을 제외한 나머지 행성들 토글
         foreach (var node in stageNodes)
         {
             if (node == null) continue;
@@ -193,62 +136,6 @@ public class StageManager : MonoBehaviour
             {
                 node.gameObject.SetActive(true);
             }
-        }
-    }
-
-    private IEnumerator MoveCamera(Vector3 startP, Quaternion startR, Vector3 endP, Quaternion endR)
-    {
-        float elapsed = 0f;
-        while (elapsed < cameraMoveDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0, 1, elapsed / cameraMoveDuration);
-            
-            _mainCamera.transform.position = Vector3.Lerp(startP, endP, t);
-            _mainCamera.transform.rotation = Quaternion.Slerp(startR, endR, t);
-            
-            yield return null;
-        }
-        
-        _mainCamera.transform.position = endP;
-        _mainCamera.transform.rotation = endR;
-    }
-
-    private IEnumerator DynamicPopUpPanel(GameObject panel)
-    {
-        CanvasGroup cg = panel.GetComponent<CanvasGroup>();
-        if (cg == null) cg = panel.AddComponent<CanvasGroup>();
-
-        cg.alpha = 0f;
-        panel.transform.localScale = Vector3.zero;
-
-        float elapsed = 0f;
-        while (elapsed < popUpDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0, 1, elapsed / popUpDuration);
-            cg.alpha = Mathf.Lerp(0f, 1f, t);
-            panel.transform.localScale = Vector3.Lerp(Vector3.zero, finalPanelScale, t);
-            yield return null;
-        }
-        cg.alpha = 1f;
-        panel.transform.localScale = finalPanelScale;
-    }
-
-    private IEnumerator DynamicClosePanel(GameObject panel)
-    {
-        CanvasGroup cg = panel.GetComponent<CanvasGroup>();
-        if (cg == null) yield break;
-
-        Vector3 startScale = panel.transform.localScale;
-        float elapsed = 0f;
-        while (elapsed < popUpDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0, 1, elapsed / popUpDuration);
-            cg.alpha = Mathf.Lerp(1f, 0f, t);
-            panel.transform.localScale = Vector3.Lerp(startScale, Vector3.zero, t);
-            yield return null;
         }
     }
 }
