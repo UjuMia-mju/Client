@@ -26,6 +26,8 @@ public class NetManager : Singleton<NetManager>
 
     // 임시로 정보 저장 (실제 게임에서는 별도의 로그인 관리 필요)
     public int _playerId;
+    public string PlayerName { get; set; } = "";
+    public int PlayerTag { get; set; } = 0;
 
     #region Connect
     public void Connect(string ip, int port)
@@ -317,6 +319,50 @@ public class NetManager : Singleton<NetManager>
         };
 
         SendPacket(PacketId.PKT_C_MOVE, movePacket);
+    }
+
+    // ==================== Lobby/Room ====================
+
+    public void SendCreateRoom()
+    {
+        C_CREATE_ROOM packet = new C_CREATE_ROOM();
+        SendPacket(PacketId.PKT_C_CREATE_ROOM, packet);
+    }
+
+    public void SendRoomList()
+    {
+        C_ROOM_LIST packet = new C_ROOM_LIST();
+        SendPacket(PacketId.PKT_C_ROOM_LIST, packet);
+    }
+
+    public void SendEnterRoom(ulong roomId)
+    {
+        C_ENTER_ROOM packet = new C_ENTER_ROOM
+        {
+            RoomId = roomId
+        };
+        SendPacket(PacketId.PKT_C_ENTER_ROOM, packet);
+    }
+
+    public void SendLeaveRoom()
+    {
+        C_LEAVE_ROOM packet = new C_LEAVE_ROOM();
+        SendPacket(PacketId.PKT_C_LEAVE_ROOM, packet);
+    }
+
+    public void SendReady(bool isReady)
+    {
+        C_READY packet = new C_READY
+        {
+            IsReady = isReady
+        };
+        SendPacket(PacketId.PKT_C_READY, packet);
+    }
+
+    public void SendStartRoom()
+    {
+        C_START_ROOM packet = new C_START_ROOM();
+        SendPacket(PacketId.PKT_C_START_ROOM, packet);
     }
 
     /// <summary>
