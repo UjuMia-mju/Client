@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Protocol;
 
 
 // 로비에서 초대 보내기 UI.
@@ -18,6 +19,17 @@ public class LobbyInviteUI : MonoBehaviour
     {
         if (inviteButton != null)
             inviteButton.onClick.AddListener(OnClickInvite);
+    }
+
+    private void OnEnable()
+    {
+        PacketManager.Instance.OnInvitePlayerResultEvent += OnInvitePlayerResult;
+    }
+
+    private void OnDisable()
+    {
+        if (PacketManager.Instance != null)
+            PacketManager.Instance.OnInvitePlayerResultEvent -= OnInvitePlayerResult;
     }
 
     // 초대 버튼 클릭 시 호출. 입력 검증 후 NetManager.SendInvitePlayer로 C_INVITE_PLAYER 패킷 전송.
@@ -50,5 +62,13 @@ public class LobbyInviteUI : MonoBehaviour
 
         // C_INVITE_PLAYER 패킷 전송 → 서버가 S_INVITE_PLAYER(보낸 사람), S_INVITE_NOTIFICATION(받는 사람) 처리
         NetManager.Instance.SendInvitePlayer(playerName, playerTag);
+    }
+
+    private void OnInvitePlayerResult(S_INVITE_PLAYER packet)
+    {
+        if (packet.Success)
+            Debug.Log($"[LobbyInviteUI] 초대 전송 성공: {packet.PlayerName}#{packet.PlayerTag}");
+        else
+            Debug.LogWarning($"[LobbyInviteUI] 초대 전송 실패: {packet.ErrorMsg}");
     }
 }
