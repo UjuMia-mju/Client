@@ -17,18 +17,24 @@ public class LobbyInvitePopup : MonoBehaviour
 
     // 현재 초대의 invite_id (C_INVITE_RESPONSE 전송 시 사용)
     private ulong _inviteId;
+    // 초대된 방 ID (수락 시 C_ENTER_ROOM 전송에 사용 가능)
+    private ulong _roomId;
 
     // 활성화 시 이벤트 구독. S_INVITE_NOTIFICATION 수신 시 OnInviteNotification 호출됨.
     private void OnEnable()
     {
         PacketManager.Instance.OnInviteNotificationEvent += OnInviteNotification;
+        PacketManager.Instance.OnInviteResponseResultEvent += OnInviteResponseResult;
     }
 
     // 비활성화 시 이벤트 구독 해제
     private void OnDisable()
     {
         if (PacketManager.Instance != null)
+        {
             PacketManager.Instance.OnInviteNotificationEvent -= OnInviteNotification;
+            PacketManager.Instance.OnInviteResponseResultEvent -= OnInviteResponseResult;
+        }
     }
 
     // 초기화: 팝업 비활성화, 수락/거절 버튼 클릭 리스너 등록
@@ -47,6 +53,7 @@ public class LobbyInvitePopup : MonoBehaviour
     private void OnInviteNotification(S_INVITE_NOTIFICATION packet)
     {
         _inviteId = packet.InviteId;  // 수락/거절 시 C_INVITE_RESPONSE에 전달할 ID
+        _roomId = packet.RoomId;
 
         if (messageText != null)
             messageText.text = $"{packet.InviterName} 님이 '{packet.RoomName}' 방으로 초대했습니다.";
@@ -59,6 +66,11 @@ public class LobbyInvitePopup : MonoBehaviour
     private void OnClickAccept()
     {
         NetManager.Instance.SendInviteResponse(_inviteId, true);
+
+        // 서버 구현에 따라 '수락'만 보내면 자동으로 S_ENTER_ROOM을 내려줄 수도 있지만,
+        // 클라가 명시적으로 입장을 요청하는 구조라면 아래 호출이 필요하다.
+        NetManager.Instance.SendEnterRoom(_roomId);
+
         if (popupRoot != null)
             popupRoot.SetActive(false);
     }
@@ -69,5 +81,11 @@ public class LobbyInvitePopup : MonoBehaviour
         NetManager.Instance.SendInviteResponse(_inviteId, false);
         if (popupRoot != null)
             popupRoot.SetActive(false);
+    }
+
+    private void OnInviteResponseResult(S_INVITE_RESPONSE packet)
+    {
+        if (!packet.Success)
+            Debug.LogWarning($"[LobbyInvitePopup] 초대 응답 처리 실패: {packet.ErrorMsg}");
     }
 }
