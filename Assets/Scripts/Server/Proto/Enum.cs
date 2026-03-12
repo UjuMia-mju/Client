@@ -24,23 +24,132 @@ namespace Protocol {
     static EnumReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgpFbnVtLnByb3RvEghQcm90b2NvbCpoCgpQbGF5ZXJUeXBlEhQKEFBMQVlF",
-            "Ul9UWVBFX05PTkUQABIWChJQTEFZRVJfVFlQRV9LTklHSFQQARIUChBQTEFZ",
-            "RVJfVFlQRV9NQUdFEAISFgoSUExBWUVSX1RZUEVfQVJDSEVSEANiBnByb3Rv",
-            "Mw=="));
+            "CgpFbnVtLnByb3RvEghQcm90b2NvbCq6AQoNU3RhdEV2ZW50VHlwZRITCg9T",
+            "VEFUX0VWRU5UX05PTkUQABIQCgxEQU1BR0VfVEFLRU4QARIKCgZIRUFMRUQQ",
+            "AhIUChBIRUFMVEhfSVRFTV9VU0VEEAMSEwoPT1hZR0VOX0NPTlNVTUVEEAoS",
+            "EwoPT1hZR0VOX1JFU1RPUkVEEAsSFAoQT1hZR0VOX0lURU1fVVNFRBAMEhEK",
+            "DUZPT0RfQ09OU1VNRUQQFBINCglUT09MX1VTRUQQFSo0CgpPYmplY3RUeXBl",
+            "EhIKDk9CSkVDVF9JRF9OT05FEAASCAoEVE9PTBABEggKBElURU0QAipFCghJ",
+            "dGVtVHlwZRIICgROT05FEAASCAoEV09PRBBkEgkKBVNUT05FEGUSDAoISVJP",
+            "Tl9PUkUQZhIMCghHT0xEX09SRRBnKj8KCFRvb2xUeXBlEhIKDlRPT0xfVFlQ",
+            "RV9OT05FEAASBwoDQVhFEGQSCwoHUElDS0FYRRBlEgkKBURSSUxMEGYqSQoJ",
+            "SXRlbVN0YXRlEhMKD0lURU1fU1RBVEVfTk9ORRAAEg0KCU9OX0dST1VORBAB",
+            "EgoKBklOX0FJUhACEgwKCEVRVUlQUEVEEANiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Protocol.PlayerType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Protocol.StatEventType), typeof(global::Protocol.ObjectType), typeof(global::Protocol.ItemType), typeof(global::Protocol.ToolType), typeof(global::Protocol.ItemState), }, null, null));
     }
     #endregion
 
   }
   #region Enums
-  public enum PlayerType {
-    [pbr::OriginalName("PLAYER_TYPE_NONE")] None = 0,
-    [pbr::OriginalName("PLAYER_TYPE_KNIGHT")] Knight = 1,
-    [pbr::OriginalName("PLAYER_TYPE_MAGE")] Mage = 2,
-    [pbr::OriginalName("PLAYER_TYPE_ARCHER")] Archer = 3,
+  /// <summary>
+  /// ==================== 플레이어 스탯 이벤트 타입 ====================
+  /// </summary>
+  public enum StatEventType {
+    [pbr::OriginalName("STAT_EVENT_NONE")] StatEventNone = 0,
+    /// <summary>
+    /// HP 관련
+    /// </summary>
+    [pbr::OriginalName("DAMAGE_TAKEN")] DamageTaken = 1,
+    /// <summary>
+    /// 회복
+    /// </summary>
+    [pbr::OriginalName("HEALED")] Healed = 2,
+    /// <summary>
+    /// 회복 아이템 사용
+    /// </summary>
+    [pbr::OriginalName("HEALTH_ITEM_USED")] HealthItemUsed = 3,
+    /// <summary>
+    /// 산소 관련
+    /// </summary>
+    [pbr::OriginalName("OXYGEN_CONSUMED")] OxygenConsumed = 10,
+    /// <summary>
+    /// 산소 회복
+    /// </summary>
+    [pbr::OriginalName("OXYGEN_RESTORED")] OxygenRestored = 11,
+    /// <summary>
+    /// 산소통 사용
+    /// </summary>
+    [pbr::OriginalName("OXYGEN_ITEM_USED")] OxygenItemUsed = 12,
+    /// <summary>
+    /// 아이템 사용
+    /// </summary>
+    [pbr::OriginalName("FOOD_CONSUMED")] FoodConsumed = 20,
+    /// <summary>
+    /// 도구 사용
+    /// </summary>
+    [pbr::OriginalName("TOOL_USED")] ToolUsed = 21,
+  }
+
+  public enum ObjectType {
+    [pbr::OriginalName("OBJECT_ID_NONE")] ObjectIdNone = 0,
+    /// <summary>
+    /// 도구
+    /// </summary>
+    [pbr::OriginalName("TOOL")] Tool = 1,
+    /// <summary>
+    /// 광석
+    /// </summary>
+    [pbr::OriginalName("ITEM")] Item = 2,
+  }
+
+  public enum ItemType {
+    [pbr::OriginalName("NONE")] None = 0,
+    /// <summary>
+    /// 나무
+    /// </summary>
+    [pbr::OriginalName("WOOD")] Wood = 100,
+    /// <summary>
+    /// 돌
+    /// </summary>
+    [pbr::OriginalName("STONE")] Stone = 101,
+    /// <summary>
+    /// 철광석
+    /// </summary>
+    [pbr::OriginalName("IRON_ORE")] IronOre = 102,
+    /// <summary>
+    /// 금광석
+    /// </summary>
+    [pbr::OriginalName("GOLD_ORE")] GoldOre = 103,
+  }
+
+  /// <summary>
+  /// ==================== 도구 타입 ====================
+  /// </summary>
+  public enum ToolType {
+    [pbr::OriginalName("TOOL_TYPE_NONE")] None = 0,
+    /// <summary>
+    /// 도끼 - 나무 채집
+    /// </summary>
+    [pbr::OriginalName("AXE")] Axe = 100,
+    /// <summary>
+    /// 곡괭이 - 돌/광석 채집
+    /// </summary>
+    [pbr::OriginalName("PICKAXE")] Pickaxe = 101,
+    /// <summary>
+    /// 드릴 - 등급 높은 광석 채집
+    /// </summary>
+    [pbr::OriginalName("DRILL")] Drill = 102,
+  }
+
+  /// <summary>
+  /// ==================== 아이템/도구 상태 ====================
+  /// </summary>
+  public enum ItemState {
+    [pbr::OriginalName("ITEM_STATE_NONE")] None = 0,
+    /// <summary>
+    /// 바닥에 떨어진 상태
+    /// </summary>
+    [pbr::OriginalName("ON_GROUND")] OnGround = 1,
+    /// <summary>
+    /// 공중에 떠있는 상태 (던져진 직후)
+    /// </summary>
+    [pbr::OriginalName("IN_AIR")] InAir = 2,
+    /// <summary>
+    /// 플레이어가 장착한 상태
+    /// </summary>
+    [pbr::OriginalName("EQUIPPED")] Equipped = 3,
   }
 
   #endregion
