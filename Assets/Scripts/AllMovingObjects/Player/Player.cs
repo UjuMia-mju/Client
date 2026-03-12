@@ -122,7 +122,7 @@ public class Player : MovingObject
         // 서버로 패킷 전송
         SendPositionToServer();
         SendAnimationToServer(); 
-        SendPlayerStatToServer();
+        //SendPlayerStatToServer();
     }
 
     protected override void Moving(Vector3 movDir)
@@ -150,9 +150,11 @@ public class Player : MovingObject
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 아이템이며, 빈 손일 때
             // 혹은 태그가 Tool인 것도 포함함.
-            else if (nearestObject.CompareTag(Define.Tag.ITEM) || nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething)
+            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething || nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething)
             {
                 playerItemSystem.AttachItem(nearestObject);
+                //SendItemAttachedToServer(nearestObject.GetComponent<Items>());
+                SendItemAttachedToServer(playerItemSystem.GetCurrentEquipItemClass());
                 isPlayerGetSomething = true;
             }
 
@@ -183,6 +185,7 @@ public class Player : MovingObject
                 if (isPlayerGetSomething)
                 {
                     isPlayerGetSomething = false;
+                    SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
                     playerItemSystem.ThrowItem(GetMovingAmount());
                     playerItemSystem.DetachItem();
                 }
@@ -274,16 +277,28 @@ public class Player : MovingObject
         }
     }
 
-    private void SendPlayerStatToServer()
+    // 아이템을 들어올렸을 때 RemotePlayer의 소켓에 부착시키기 위해 패킷을 1회 전송
+    private void SendItemAttachedToServer(Items data)
     {
-        float currentOxygen = playerStat.GetOxygen();
-        int currentHp = playerStat.GetHp();
-
-        if (currentOxygen != lastOxygen && currentHp != lastHP)
-        {
-            NetManager.Instance.SendPlayerStat(currentHp, currentOxygen);
-            lastOxygen = currentOxygen;
-            lastHP = currentHp;
-        }
+        NetManager.Instance.SendItemAttached(data);
     }
+
+    // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
+    private void SendItemDetatchedToServer(Items data)
+    {
+        NetManager.Instance.SendItemDetatched(data);
+    }
+
+    //private void SendPlayerStatToServer()
+    //{
+    //    float currentOxygen = playerStat.GetOxygen();
+    //    int currentHp = playerStat.GetHp();
+
+    //    if (currentOxygen != lastOxygen && currentHp != lastHP)
+    //    {
+    //        NetManager.Instance.SendPlayerStat(currentHp, currentOxygen);
+    //        lastOxygen = currentOxygen;
+    //        lastHP = currentHp;
+    //    }
+    //}
 }

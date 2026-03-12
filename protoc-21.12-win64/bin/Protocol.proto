@@ -163,6 +163,51 @@ message S_ENTER_GAME
 	bool success = 1;
 }
 
+message C_TEST_ENTER_GAME
+{
+	uint64 playerIndex = 1;
+}
+
+// ==================== 스테이지 정보 ====================
+
+message C_SHOW_STAGE
+{
+	int32 stageLevel = 1;
+	int32 stageIndex = 2;
+}
+
+message S_SHOW_STAGE
+{
+	bool success = 1;
+	StageInfo stage = 2;
+}
+
+// ==================== 스테이지 시작 ===================
+message C_START_STAGE
+{
+	int32 stageLevel = 1;
+	int32 stageIndex = 2;
+}
+
+// 스테이지 시작 결과 (true면 스테이지 시작, false면 실패))
+message S_START_STAGE
+{
+	bool success = 1;
+	StageInfo stage = 2; // 선택된 스테이지 정보 같이 뿌려줌.
+}
+
+// ==================== 스테이지 클리어 정보 조회 ====================
+
+message C_GET_CLEAR_INFO
+{
+}
+
+message S_GET_CLEAR_INFO
+{
+	bool success = 1;
+	repeated StageClearInfo stage_clears = 2;
+}
+
 // ==================== 게임 플레이 ====================
 
 // 플레이어 움직임
@@ -196,54 +241,69 @@ message S_PLAYER_LEAVE
 }
 
 // 플레이어 애니메이션 상태
-message C_ANIMATION
+message C_PLAYER_ANIMATION
 {
-    int32 state = 1;
+	int32 state = 1;
 }
 
-message S_ANIMATION
+message S_PLAYER_ANIMATION
+{
+	uint64 playerId = 1;
+	int32 state = 2;
+}
+
+// ==================== 플레이어 스탯 ====================
+message C_PLAYER_STAT_EVENT
+{
+    StatEventType event_type = 1; // ITEM_USED, DAMAGE_TAKEN 등
+    int32 item_id = 2; // 아이템 사용 시
+}
+
+message S_PLAYER_STAT
 {
     uint64 playerId = 1;
-    int32 state = 2;
+    int32 hp = 2;
+    float oxygen = 3;
 }
 
-// 플레이어 스탯
-message C_STAT
+// ==================== 오브젝트 시스템 (도구 + 아이템 통합) ====================
+// 오브젝트 줍기
+message C_OBJECT_PICKUP
 {
-	int32 hp = 1;
-	float oxygen = 2;
+	ObjectId object_id = 1; // ToolType 또는 item_id를 담는 구조체
 }
 
-message S_STAT
+message S_OBJECT_PICKUP
 {
-	uint64 playerId = 1;
-	int32 hp = 2;
-	float oxygen = 3;
+	bool success = 1;
+	ObjectId object_id = 2;
+	uint64 player_id = 3;
+	string error_msg = 4;
 }
 
-// 아이템 위치정보
-message C_ITEM_MOVE
+// 오브젝트 드롭
+message C_OBJECT_DROP
 {
-	PosInfo pos = 1;
-	RotInfo rot = 2;
+	ObjectId object_id = 1;
 }
 
-message S_ITEM_MOVE
+message S_OBJECT_DROP
 {
-	uint64 playerId = 1;
+	ObjectId object_id = 1;
+	uint64 player_id = 2;
+}
+
+// 오브젝트 이동
+message C_OBJECT_MOVE
+{
+	ObjectId object_id = 1;
 	PosInfo pos = 2;
 	RotInfo rot = 3;
 }
 
-// 조합대 리스트
-
-message C_WORKBENCH_LIST
+message S_OBJECT_MOVE
 {
-	repeated string itemNames = 1;
-}
-
-message S_WORKBENCH_LIST
-{
-	uint64 playerId = 1;
-	repeated string itemNames = 2;
+	ObjectId object_id = 1;
+	PosInfo pos = 2;
+	RotInfo rot = 3;
 }

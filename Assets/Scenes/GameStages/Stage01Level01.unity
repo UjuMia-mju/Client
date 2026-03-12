@@ -591,6 +591,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 543017934}
   m_CullTransparentMesh: 1
+--- !u!1 &560856787
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 560856788}
+  - component: {fileID: 560856789}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &560856788
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 560856787}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &560856789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 560856787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69afb27bc9a488b4c812904a58f10e89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemManager
 --- !u!1 &594221372
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,6 +1652,7 @@ MonoBehaviour:
   jumpForce: 0
   rotationSpeed: 0
   sendInterval: 0.05
+  itemId: 2
 --- !u!54 &2079630442
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1748,7 +1793,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2115642775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1778,6 +1823,7 @@ MonoBehaviour:
   jumpForce: 0
   rotationSpeed: 0
   sendInterval: 0.05
+  itemId: 0
 --- !u!54 &2115642777
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3230,6 +3276,7 @@ MonoBehaviour:
   jumpForce: 0
   rotationSpeed: 0
   sendInterval: 0.05
+  itemId: 1
 --- !u!65 &4548940437494441676
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3455,3 +3502,4 @@ SceneRoots:
   - {fileID: 130923350922639482}
   - {fileID: 1025038043}
   - {fileID: 669581821}
+  - {fileID: 560856788}

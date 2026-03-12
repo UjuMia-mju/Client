@@ -4,9 +4,6 @@ using UnityEngine.UIElements;
 
 public class OtherPlayers : MovingObject
 {
-    // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
-    //private PlayerStat playerStat;
-
     public ulong PlayerId { get; set; }
     public string PlayerName { get; set; }
 
@@ -16,16 +13,17 @@ public class OtherPlayers : MovingObject
     private Quaternion _targetRot;
     private bool _hasTarget = false;
 
-    private Animator playerAnimator;
-    private OtherPlayerStats otherPlayerStats;
+    private Animator otherPlayerAnimator;
+    private OtherPlayerStats otherPlayerStats;  // UI 담당과 상의필요함.
+    private PlayerItemSystem otherPlayerItemSystem;
 
     // 초기화
     protected override void Awake()
     {
         base.Awake();
-        playerAnimator = GetComponent<Animator>();
+        otherPlayerAnimator = GetComponent<Animator>();
         otherPlayerStats = GetComponent<OtherPlayerStats>();
-        //playerItemSystem = GetComponent<PlayerItemSystem>();
+        otherPlayerItemSystem = GetComponent<PlayerItemSystem>();
         //playerStat = GetComponent<PlayerStat>();
     }
 
@@ -54,7 +52,17 @@ public class OtherPlayers : MovingObject
 
     public void SetAnimState(int data)
     {
-        playerAnimator.SetInteger("AnimationPar", data);
+        otherPlayerAnimator.SetInteger("AnimationPar", data);
+    }
+
+    public void SetEquipItem(Items itemData)
+    {
+        otherPlayerItemSystem.AttachItem(itemData.gameObject);
+    }
+
+    public void DetachEquipItem()
+    {
+        otherPlayerItemSystem.ThrowItem(GetMovingAmount());
     }
 
     public void SetStat(int hpData, float oxygenData)

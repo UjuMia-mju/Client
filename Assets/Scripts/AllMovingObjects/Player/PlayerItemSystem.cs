@@ -105,4 +105,12 @@ public class PlayerItemSystem : MonoBehaviour
             return null;
         }
     }
+
+    public Items GetCurrentEquipItemClass()
+    {
+        if (this.currentEquipItem != null)
+            return currentEquipItem.GetComponent <Items>();
+
+        return null;
+    }
 }

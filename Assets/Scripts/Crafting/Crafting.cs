@@ -33,7 +33,7 @@ public class Crafting : MonoBehaviour
 
     private void LateUpdate()
     {
-        SendItemListToServer();
+        //SendItemListToServer();
     }
 
     public void AddCraftItems(GameObject data)
@@ -99,16 +99,16 @@ public class Crafting : MonoBehaviour
         return null;
     }
 
-    private void SendItemListToServer()
-    {
-        int itemCount = craftItems.Count;
+    //private void SendItemListToServer()
+    //{
+    //    int itemCount = craftItems.Count;
 
-        if (itemCount != lastItemCount)
-        {
-            NetManager.Instance.SendCraftingList(craftItems.ConvertAll(item => item.name));
-            lastItemCount = itemCount;
-        }
-    }
+    //    if (itemCount != lastItemCount)
+    //    {
+    //        NetManager.Instance.SendCraftingList(craftItems.ConvertAll(item => item.name));
+    //        lastItemCount = itemCount;
+    //    }
+    //}
 
     public void SetItemList(List<string> data)
     {
