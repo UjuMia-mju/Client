@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Protocol;
 
 // 초대 알림 팝업.
 // PacketManager.OnInviteNotificationEvent를 구독하여 S_INVITE_NOTIFICATION 패킷 수신 시 팝업 표시.
-// 수락/거절 버튼 클릭 시 NetManager.SendInviteResponse로 C_INVITE_RESPONSE 패킷을 서버에 전송한다.
+// 팝업 패널을 "비활성"으로 두면 이 스크립트의 OnEnable이 안 돌아서 이벤트 구독이 안 됨.
+// "항상 활성" 오브젝트(Canvas, 빈 InvitePopupManager 등)에 붙여야합니다
 public class LobbyInvitePopup : MonoBehaviour
 {
     [Header("팝업")]
@@ -63,17 +65,18 @@ public class LobbyInvitePopup : MonoBehaviour
             popupRoot.SetActive(true);
     }
 
-    // 수락 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: true) 전송 후 팝업 숨김
+    // 수락 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: true) 전송 후 방 입장 요청, 메인에 있으면 로비 씬으로 이동
     private void OnClickAccept()
     {
         NetManager.Instance.SendInviteResponse(_inviteId, true);
-
-        // 서버 구현에 따라 '수락'만 보내면 자동으로 S_ENTER_ROOM을 내려줄 수도 있지만,
-        // 클라가 명시적으로 입장을 요청하는 구조라면 아래 호출이 필요하다.
         NetManager.Instance.SendEnterRoom(_roomId);
 
         if (popupRoot != null)
             popupRoot.SetActive(false);
+
+        // 메인(또는 로비가 아닌 씬)에 있으면 로비 씬으로 이동 → 방 입장 화면으로
+        if (SceneManager.GetActiveScene().name != Define.Scene.LOBBY)
+            SceneLoader.Instance.LoadScene(Define.Scene.LOBBY);
     }
 
     // 거절 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: false) 전송 후 팝업 숨김
