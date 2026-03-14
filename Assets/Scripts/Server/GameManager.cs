@@ -26,8 +26,8 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
             NetManager.Instance._playerId = (int)packet.Player.Id; //  이런 캐스팅 부분 나중에 수정해야함.
             NetManager.Instance.PlayerName = packet.Player.Name;
             NetManager.Instance.PlayerTag = packet.Player.Tag;
-            // 로그인 성공 시 로비 씬으로 이동
-            SceneLoader.Instance.LoadScene(Define.Scene.LOBBY);
+            // 로그인 성공 → Splash → Main → (멀티플레이 버튼 시 방 생성 후 로비)
+            SceneLoader.Instance.LoadScene(Define.Scene.SPLASH);
         }
         else
         {
