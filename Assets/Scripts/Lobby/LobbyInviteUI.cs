@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Protocol;
 
 
@@ -8,8 +9,8 @@ using Protocol;
 public class LobbyInviteUI : MonoBehaviour
 {
     [Header("초대 입력")]
-    [SerializeField] private InputField targetPlayerNameInput;   // 초대할 유저의 이름 입력 필드
-    [SerializeField] private InputField targetPlayerTagInput;    // 초대할 유저의 태그(고유 번호, 예: 1234) 입력 필드
+    [SerializeField] private TMP_InputField targetPlayerNameInput;   // 초대할 유저의 이름 입력 필드
+    [SerializeField] private TMP_InputField targetPlayerTagInput;   // 초대할 유저의 태그(고유 번호, 예: 1234) 입력 필드
 
     [Header("버튼")]
     [SerializeField] private Button inviteButton;                // 초대 전송 버튼
