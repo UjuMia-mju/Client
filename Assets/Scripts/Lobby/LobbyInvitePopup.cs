@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Protocol;
 
 // 초대 알림 팝업.
@@ -9,7 +10,7 @@ public class LobbyInvitePopup : MonoBehaviour
 {
     [Header("팝업")]
     [SerializeField] private GameObject popupRoot;   // 팝업 Panel 오브젝트 (초기에는 비활성화)
-    [SerializeField] private Text messageText;       // 초대 메시지 표시용 Text
+    [SerializeField] private TextMeshProUGUI messageText;   // 초대 메시지 표시용 Text
 
     [Header("버튼")]
     [SerializeField] private Button acceptButton;    // 수락 버튼
