@@ -8,18 +8,43 @@ using Protocol;
 // 플레이어 이름 + 태그를 입력하고 초대 버튼을 누르면 NetManager.SendInvitePlayer를 호출하여 C_INVITE_PLAYER 패킷을 서버에 전송한다.
 public class LobbyInviteUI : MonoBehaviour
 {
+    [Header("패널")]
+    [SerializeField] private GameObject panelRoot;   // InvitePanel 루트 (초기 비활성, 초대 버튼으로만 열림)
+
+    [Header("열기/닫기")]
+    [SerializeField] private Button openInvitePanelButton;  // 로비에 둘 "초대" 버튼 → 누르면 패널 활성화
+    [SerializeField] private Button closeButton;           // 패널 안 "닫기" 버튼 (선택)
+
     [Header("초대 입력")]
-    [SerializeField] private TMP_InputField targetPlayerNameInput;   // 초대할 유저의 이름 입력 필드
-    [SerializeField] private TMP_InputField targetPlayerTagInput;   // 초대할 유저의 태그(고유 번호, 예: 1234) 입력 필드
+    [SerializeField] private TMP_InputField targetPlayerNameInput;
+    [SerializeField] private TMP_InputField targetPlayerTagInput;
 
     [Header("버튼")]
-    [SerializeField] private Button inviteButton;                // 초대 전송 버튼
+    [SerializeField] private Button inviteButton;   // 초대 전송 버튼
 
-    // 초대 버튼 클릭 리스너 등록
     private void Start()
     {
+        if (panelRoot != null)
+            panelRoot.SetActive(false);
+
+        if (openInvitePanelButton != null)
+            openInvitePanelButton.onClick.AddListener(OnClickOpenPanel);
+        if (closeButton != null)
+            closeButton.onClick.AddListener(OnClickClosePanel);
         if (inviteButton != null)
             inviteButton.onClick.AddListener(OnClickInvite);
+    }
+
+    private void OnClickOpenPanel()
+    {
+        if (panelRoot != null)
+            panelRoot.SetActive(true);
+    }
+
+    private void OnClickClosePanel()
+    {
+        if (panelRoot != null)
+            panelRoot.SetActive(false);
     }
 
     private void OnEnable()
