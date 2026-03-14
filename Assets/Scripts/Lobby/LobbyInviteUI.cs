@@ -5,7 +5,8 @@ using Protocol;
 
 
 // 로비에서 초대 보내기 UI.
-// 플레이어 이름 + 태그를 입력하고 초대 버튼을 누르면 NetManager.SendInvitePlayer를 호출하여 C_INVITE_PLAYER 패킷을 서버에 전송한다.
+// 이 스크립트는 "항상 활성"인 오브젝트(Canvas, 로비 빈 오브젝트 등)에 붙여야 함.
+// InvitePanel에 붙이면 패널이 비활성일 때 Start()가 안 돌아서 "초대" 버튼 리스너가 등록되지 않음.
 public class LobbyInviteUI : MonoBehaviour
 {
     [Header("패널")]
@@ -28,7 +29,16 @@ public class LobbyInviteUI : MonoBehaviour
             panelRoot.SetActive(false);
 
         if (openInvitePanelButton != null)
+        {
             openInvitePanelButton.onClick.AddListener(OnClickOpenPanel);
+        }
+        else
+        {
+            Debug.LogWarning("[LobbyInviteUI] Open Invite Panel Button이 할당되지 않았습니다. 인스펙터에서 연결하세요.");
+        }
+
+        if (panelRoot == null)
+            Debug.LogWarning("[LobbyInviteUI] Panel Root가 할당되지 않았습니다. InvitePanel을 연결하세요.");
         if (closeButton != null)
             closeButton.onClick.AddListener(OnClickClosePanel);
         if (inviteButton != null)
@@ -38,7 +48,9 @@ public class LobbyInviteUI : MonoBehaviour
     private void OnClickOpenPanel()
     {
         if (panelRoot != null)
+        {
             panelRoot.SetActive(true);
+        }
     }
 
     private void OnClickClosePanel()
