@@ -59,12 +59,6 @@ public class NetManager : Singleton<NetManager>
             _isConnected = true;
             Debug.Log("Connected to server!");
 
-            // Unity 메인 스레드에서 처리
-            // MainThreadDispatcher.Enqueue(() =>
-            // {
-            //     PacketManager.Instance.OnConnected();
-            // });
-
             // 수신 시작
             RegisterRecv();
         }
@@ -75,6 +69,7 @@ public class NetManager : Singleton<NetManager>
     }
 
     #endregion
+    
     // ------------------- Receive -------------------
     #region Receive
     private void RegisterRecv()
@@ -108,7 +103,7 @@ public class NetManager : Singleton<NetManager>
                 return;
             }
 
-            // 패킷 처리 (C++ PacketSession::OnRecv와 동일)
+            // 패킷 처리 
             int processedBytes = ProcessPackets();
 
             if (processedBytes < 0)
@@ -135,7 +130,6 @@ public class NetManager : Singleton<NetManager>
         }
     }
 
-    // 패킷 파싱 (C++ PacketSession::OnRecv 로직)
     private int ProcessPackets()
     {
         Debug.Log($"Processing packets in buffer. DataSize: {_recvBuffer.DataSize} bytes");  // 로그
@@ -173,12 +167,10 @@ public class NetManager : Singleton<NetManager>
         return processedBytes;
     }
 
-    // ==================== 높은 수준의 Recv 메서드들 ====================
-
     #endregion
+    
     // ------------------- Send -------------------
     #region Send
-    // 송신 (C++ Session::Send와 동일)
     public void Send(ArraySegment<byte> packet)
     {
         if (!_isConnected)
@@ -196,7 +188,6 @@ public class NetManager : Singleton<NetManager>
         }
     }
 
-    // 송신 등록 (C++ Session::RegisterSend와 동일)
     private void RegisterSend()
     {
         if (!_isConnected)
@@ -259,8 +250,6 @@ public class NetManager : Singleton<NetManager>
         }
     }
 
-    //---------------
-
     // ==================== 높은 수준의 전송 메서드들 ====================
 
     public void SendLogin(string userId, string password)
@@ -319,9 +308,17 @@ public class NetManager : Singleton<NetManager>
         SendPacket(PacketId.PKT_C_MOVE, movePacket);
     }
 
-    /// <summary>
-    /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출
-    /// </summary>
+    public void SendShowStage(int stageLevel, int stageIndex)
+    {
+        C_SHOW_STAGE packet = new C_SHOW_STAGE
+        {
+            StageLevel = stageLevel,
+            StageIndex = stageIndex
+        };
+
+        SendPacket(PacketId.PKT_C_SHOW_STAGE, packet);
+    }
+
     private void SendPacket<T>(PacketId packetId, T packet) where T : IMessage
     {
         try
@@ -351,6 +348,7 @@ public class NetManager : Singleton<NetManager>
     }
 
     #endregion
+    
     // ------------------- Disconnect -------------------
     #region Disconnect Handler
     public void Disconnect(string reason)
@@ -363,11 +361,6 @@ public class NetManager : Singleton<NetManager>
 
         _socket?.Close();
         _socket = null;
-
-        // MainThreadDispatcher.Enqueue(() =>
-        // {
-        //     PacketManager.Instance.OnDisconnected();
-        // });
     }
 
     private void OnApplicationQuit()
@@ -376,13 +369,4 @@ public class NetManager : Singleton<NetManager>
     }
 
     #endregion
-    
-    public void SendStageInfo(int stageId)
-    {
-        C_STAGE_INFO stagePacket = new C_STAGE_INFO
-        {
-            StageId = stageId
-        };
-        SendPacket(PacketId.PKT_C_STAGE_INFO, stagePacket);
-    }
 }

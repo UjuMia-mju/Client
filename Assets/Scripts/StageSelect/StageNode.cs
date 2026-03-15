@@ -5,8 +5,11 @@ using UnityEngine.EventSystems;
 public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [Header("Stage Identity")]
-    [Tooltip("이 행성의 고유 스테이지 ID")]
-    public int stageID; 
+    [Tooltip("스테이지 레벨(월드) 번호 (예: 1)")]
+    public int stageLevel = 1; 
+    
+    [Tooltip("스테이지 인덱스(세부) 번호 (예: 1, 2, 3...)")]
+    public int stageIndex = 1;
 
     [Header("Orbit & Spin Settings")]
     public Transform orbitCenter; 
@@ -77,12 +80,11 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // 줌인 상태일 때는 중복 클릭 방지
         if (StageManager.Instance != null && StageManager.Instance.isMovementPaused) return;
         
         _isHovered = false; 
         _targetScale = _originalScale;
-        
+
         if (StageManager.Instance != null)
         {
             StageManager.Instance.OnStageClicked(this);

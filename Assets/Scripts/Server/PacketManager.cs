@@ -13,6 +13,8 @@ public class PacketManager : Singleton<PacketManager>
     public event System.Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event System.Action<S_MOVE> OnMoveEvent;
     public event System.Action<S_CHAT> OnChatEvent;
+    public event System.Action<S_SHOW_STAGE> OnShowStageEvent;
+
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
@@ -39,6 +41,9 @@ public class PacketManager : Singleton<PacketManager>
             case PacketId.PKT_S_MOVE: 
                 HandleMove(data);
                 break;
+            case PacketId.PKT_S_SHOW_STAGE:
+                HandleShowStage(data);
+                break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
                 break;
@@ -47,7 +52,7 @@ public class PacketManager : Singleton<PacketManager>
 
     private void HandleLoginResult(byte[] data)
     {
-        S_LOGIN result = S_LOGIN.Parser.ParseFrom(data);  // ← S_LOGIN 사용
+        S_LOGIN result = S_LOGIN.Parser.ParseFrom(data); 
 
         if (result.Success)
         {
@@ -65,7 +70,7 @@ public class PacketManager : Singleton<PacketManager>
 
     private void HandleEnterGameResult(byte[] data)
     {
-        S_ENTER_GAME result = S_ENTER_GAME.Parser.ParseFrom(data);  // ← S_ENTER_GAME 사용
+        S_ENTER_GAME result = S_ENTER_GAME.Parser.ParseFrom(data); 
 
         if (result.Success)
         {
@@ -108,20 +113,10 @@ public class PacketManager : Singleton<PacketManager>
         OnChatEvent?.Invoke(packet);
     }
     
-    public void Handle_S_STAGE_INFO(IMessage packet)
+    private void HandleShowStage(byte[] payloadData)
     {
-        S_STAGE_INFO stageInfo = (S_STAGE_INFO)packet;
+        S_SHOW_STAGE packet = S_SHOW_STAGE.Parser.ParseFrom(payloadData);
         
-        // 네트워크 스레드에서 유니티 UI를 조작하면 에러가 나니까,
-        // 매뉴얼에 있던 MainThreadDispatcher를 꼭 써줘야 해!
-        MainThreadDispatcher.Enqueue(() =>
-        {
-            StageManager.Instance.OnReceiveStageInfo(
-                stageInfo.StageId, 
-                stageInfo.Chapter, 
-                stageInfo.LeftText, 
-                stageInfo.RightText
-            );
-        });
+        OnShowStageEvent?.Invoke(packet);
     }
 }
