@@ -9,7 +9,8 @@ public class StageManager : MonoBehaviour
 {
     public static StageManager Instance { get; private set; }
 
-    [Header("UI Prefab")]
+    [Header("UI Base Prefab")]
+    [Tooltip("여기에 SelectPanel 프리팹을 넣어주세요!")]
     public GameObject selectPanel; 
 
     [Header("Nodes & Environment")] 
@@ -68,33 +69,33 @@ public class StageManager : MonoBehaviour
         if (_currentSelectedNode != null || _isTransitioning) return;
         _currentSelectedNode = clickedNode;
 
-        // NOTE: 서버 연결시 삭제
-        MockServerResponse(clickedNode.stageID);
+        // MOCK 서버 호출
+        MockServerResponse(clickedNode.stageLevel, clickedNode.stageIndex);
         
-        // NOTE: 서버 연결시 이걸로 변경
-        // NetManager.Instance.SendStageInfo(clickedNode.stageID);
+        // TODO: 서버 구현 시 주석 해제
+        // NetManager.Instance.SendShowStage(clickedNode.stageLevel, clickedNode.stageIndex);
     }
 
-    // 서버 응답 가상 테스트 함수
-    // 서버 연결시 삭제
-    private void MockServerResponse(int stageId)
+    // TODO: 서버 구현 시 주석 해제
+    private void MockServerResponse(int stageLevel, int stageIndex)
     {
-        Debug.Log($"[Mock] 서버에 {stageId}번 스테이지 정보 요청...");
+        Debug.Log($"[Mock] 서버에 Level {stageLevel}, Index {stageIndex} 정보 요청...");
         
-        string chapter = $"챕터 {stageId}";
-        string leftText = $"이곳은 {stageId}번 구역입니다.\n위험한 적이 출몰합니다.";
-        string rightText = $"클리어 보상: \n골드 {stageId * 100}G";
+        string mockStageName = $"챕터 {stageLevel}-{stageIndex}";
+        int mockDifficulty = Mathf.Clamp(stageLevel + stageIndex, 1, 5); 
+        string mockDescription = "거대한 수풀과 숲을 이룬 버섯 군락이 지표면을 완전히 점령한 행성입니다. \n\n이곳의 식물들은 비정상적으로 거대하여, " +
+                                 "\n한 그루의 높이가 수 킬로미터에 달합니다. \n\n대기 중에는 고농도의 산소와 포자가 가득 차 있어, " +
+                                 "모든 유기물은 일반적인 환경보다 수십 배 빠른 속도로 성장합니다.";
         
-        OnReceiveStageInfo(stageId, chapter, leftText, rightText);
+        OnReceiveStageInfo(mockStageName, mockDifficulty, mockDescription);
     }
 
-    // 실제 패킷(S_STAGE_INFO)을 받으면 호출될 함수
-    public void OnReceiveStageInfo(int stageId, string chapter, string leftText, string rightText)
+    public void OnReceiveStageInfo(string stageName, int difficulty, string description)
     {
-        StartCoroutine(OpenPanelSequence(_currentSelectedNode, chapter, leftText, rightText));
+        StartCoroutine(OpenPanelSequence(_currentSelectedNode, stageName, difficulty, description));
     }
 
-    private IEnumerator OpenPanelSequence(StageNode targetNode, string chapter, string leftText, string rightText)
+    private IEnumerator OpenPanelSequence(StageNode targetNode, string stageName, int difficulty, string description)
     {
         _isTransitioning = true;
         isMovementPaused = true; 
@@ -106,7 +107,7 @@ public class StageManager : MonoBehaviour
 
         if (selectPanel != null)
         {
-            yield return StartCoroutine(_uiManager.OpenPanel(selectPanel, chapter, leftText, rightText));
+            yield return StartCoroutine(_uiManager.OpenPanel(selectPanel, stageName, difficulty, description));
         }
 
         _isTransitioning = false;

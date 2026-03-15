@@ -19,8 +19,7 @@ public class StageUIManager : MonoBehaviour
         if (rightButton != null) rightButton.SetActive(isVisible);
     }
 
-    // 이름 변경: chapter, leftText, rightText
-    public IEnumerator OpenPanel(GameObject panelPrefab, string chapter, string leftText, string rightText)
+    public IEnumerator OpenPanel(GameObject panelPrefab, string stageName, int difficulty, string description)
     {
         if (panelPrefab == null) yield break;
 
@@ -29,8 +28,7 @@ public class StageUIManager : MonoBehaviour
         SelectPanelController panelInfo = _currentPanel.GetComponent<SelectPanelController>();
         if (panelInfo != null)
         {
-            // 변경된 이름으로 세팅
-            panelInfo.SetInfo(chapter, leftText, rightText);
+            panelInfo.SetInfo(stageName, difficulty, description);
         }
 
         RectTransform rect = _currentPanel.GetComponent<RectTransform>();

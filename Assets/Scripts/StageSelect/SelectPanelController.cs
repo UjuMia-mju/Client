@@ -1,22 +1,26 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using TMPro;
 
 public class SelectPanelController : MonoBehaviour
 {
     [Header("UI Text References")]
-    public TextMeshProUGUI chapterTextUI;
-    public TextMeshProUGUI leftTextUI;
-    public TextMeshProUGUI rightTextUI;
+    public TextMeshProUGUI titleText;
+    public TextMeshProUGUI difficultyText;
+    public TextMeshProUGUI playTimeText;   
+    public TextMeshProUGUI rightText;
     
-    public void SetInfo(string chapter, string leftText, string rightText)
+    public void SetInfo(string stageName, int difficulty, string description)
     {
-        if (chapterTextUI != null) chapterTextUI.text = chapter;
-        if (leftTextUI != null) leftTextUI.text = leftText;
-        if (rightTextUI != null) rightTextUI.text = rightText;
-    }
-    public void OnPlayButtonClicked()
-    {
-        SceneManager.LoadScene("Scenes/GameStages/Stage01Level01");
+        if (titleText != null) titleText.text = stageName;
+        
+        if (difficultyText != null) 
+            difficultyText.text = $"난이도 : {difficulty}"; 
+
+        // TODO: 패킷 추가되면 적용
+        if (playTimeText != null) 
+            playTimeText.text = $"예상 소요 시간 : 미정";
+            
+        if (rightText != null) 
+            rightText.text = description;
     }
 }
