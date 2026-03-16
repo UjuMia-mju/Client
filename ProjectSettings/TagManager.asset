@@ -8,6 +8,7 @@ TagManager:
   - CraftTable
   - MainButton
   - Pickaxe
+  - ClickOff
   layers:
   - Default
   - TransparentFX
