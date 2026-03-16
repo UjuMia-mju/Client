@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Google.Protobuf;
 using Protocol;
 using UnityEngine.SceneManagement;
@@ -13,6 +13,13 @@ public class PacketManager : Singleton<PacketManager>
     public event System.Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event System.Action<S_MOVE> OnMoveEvent;
     public event System.Action<S_CHAT> OnChatEvent;
+    public event System.Action<S_PLAYER_ANIMATION> OnAnimationEvent;
+    public event System.Action<S_PLAYER_STAT> OnStatEvent;
+    public event System.Action<S_OBJECT_PICKUP> OnItemAttached;
+    public event System.Action<S_OBJECT_DROP> OnItemDetatched;
+    //public event System.Action<S_OBJECT_MOVE> OnItemMoveEvent;
+    //public event System.Action<S_WORKBENCH_LIST> OnCraftTableEvent;
+
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
@@ -39,16 +46,36 @@ public class PacketManager : Singleton<PacketManager>
             case PacketId.PKT_S_MOVE: 
                 HandleMove(data);
                 break;
+            case PacketId.PKT_S_PLAYER_ANIMATION:
+                HandleAnimation(data);
+                break;
+            //case PacketId.PKT_S_PLAYER_STAT:
+            //    HandleStat(data);
+            //    break;
+            case PacketId.PKT_S_OBJECT_PICKUP:
+                HandleItemAttached(data);
+                break;
+            case PacketId.PKT_S_OBJECT_DROP:
+                HandleItemDetatched(data);
+                break;
+            //case PacketId.PKT_S_OBJECT_MOVE:
+            //    HandleItemMove(data);
+            //    break;
+            //case PacketId.PKT_S_WORKBENCH:
+            //    HandleCraftTable(data);
+            //    break;
+
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
                 break;
         }
     }
 
+
     private void HandleLoginResult(byte[] data)
     {
         S_LOGIN result = S_LOGIN.Parser.ParseFrom(data);  // ← S_LOGIN 사용
-
+        
         if (result.Success)
         {
             Debug.Log($"✓ Login Success!");
@@ -107,4 +134,40 @@ public class PacketManager : Singleton<PacketManager>
         S_CHAT packet = S_CHAT.Parser.ParseFrom(payloadData);
         OnChatEvent?.Invoke(packet);
     }
+
+    private void HandleAnimation(byte[] payloadData)
+    {
+        S_PLAYER_ANIMATION packet = S_PLAYER_ANIMATION.Parser.ParseFrom(payloadData);
+        OnAnimationEvent?.Invoke(packet);
+    }
+
+    //private void HandleStat(byte[] payloadData)
+    //{
+    //    S_PLAYER_STAT packet = S_PLAYER_STAT.Parser.ParseFrom(payloadData);
+    //    OnStatEvent?.Invoke(packet);
+    //}
+
+    private void HandleItemAttached(byte[] payloadData)
+    {
+        S_OBJECT_PICKUP packet = S_OBJECT_PICKUP.Parser.ParseFrom(payloadData);
+        OnItemAttached?.Invoke(packet);
+    }
+
+    private void HandleItemDetatched(byte[] payloadData)
+    {
+        S_OBJECT_DROP packet = S_OBJECT_DROP.Parser.ParseFrom(payloadData);
+        OnItemDetatched?.Invoke(packet);
+    }
+
+    //private void HandleItemMove(byte[] payloadData)
+    //{
+    //    S_OBJECT_MOVE packet = S_OBJECT_MOVE.Parser.ParseFrom(payloadData);
+    //    OnItemMoveEvent?.Invoke(packet);
+    //}
+
+    //private void HandleCraftTable(byte[] payloadData)
+    //{
+    //    S_WORKBENCH_LIST packet = S_WORKBENCH_LIST.Parser.ParseFrom(payloadData);
+    //    OnCraftTableEvent?.Invoke(packet);
+    //}
 }

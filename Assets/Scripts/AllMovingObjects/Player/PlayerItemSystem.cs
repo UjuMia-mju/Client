@@ -3,7 +3,6 @@
 public class PlayerItemSystem : MonoBehaviour
 {
     public GameObject itemSocket {get; private set;}
-
     public GameObject currentEquipItem { get; private set; }
 
     private const float THROW_FORCE = 0.02f;
@@ -93,5 +92,25 @@ public class PlayerItemSystem : MonoBehaviour
     public void DetachItem()
     {
         this.currentEquipItem = null;
+    }
+
+    public string GetItemTag()
+    {
+        if (this.currentEquipItem != null)
+        {
+            return currentEquipItem.tag;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public Items GetCurrentEquipItemClass()
+    {
+        if (this.currentEquipItem != null)
+            return currentEquipItem.GetComponent <Items>();
+
+        return null;
     }
 }

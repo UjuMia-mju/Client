@@ -24,8 +24,8 @@ public class PlayerInput : MonoBehaviour
 
     private void Start()
     {
-        string updatedKeys = DataManager.Instance.InputAsset.SaveBindingOverridesAsJson();
-        inputActions.asset.LoadBindingOverridesFromJson(updatedKeys);
+        //string updatedKeys = DataManager.Instance.InputAsset.SaveBindingOverridesAsJson();
+        //inputActions.asset.LoadBindingOverridesFromJson(updatedKeys);
     }
 
     private void OnEnable()
@@ -46,6 +46,7 @@ public class PlayerInput : MonoBehaviour
 
     private void OnJump(InputAction.CallbackContext ctx)
     {
+        Debug.Log("점프 눌러짐");
         isJumping = true;
     }
 

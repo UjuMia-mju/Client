@@ -1,12 +1,40 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+
+// NOTE : 이 클래스는 조합대에 아이템을 올리고 제거하는 기능을 담당합니다.
+// 20260310 기능추가 : 이제 프리팹을 인스펙터에서 등록하고, Awake에서 딕셔너리로 변환해 패킷을 받을 때 이 딕셔너리를 참조해 craftItems 리스트를 초기화해줍니다.
+// 
 public class Crafting : MonoBehaviour
 {
+    
+    // Inspector에서 프리팹들을 등록
+    [SerializeField] private List<GameObject> itemPrefabList;
+    // 바로 윗줄 리스트를 Awake에서 딕셔너리로 전환
+    private Dictionary<string, GameObject> itemPrefabDict = new Dictionary<string, GameObject>();
+
     private List<GameObject> craftItems = new List<GameObject>();
 
     private const float ITEM_THROW_HEIGHT = 3.5f; 
     private const float ITEM_THROW_FORCE = 200f;
+
+    private int lastItemCount = 0;
+
+    private void Awake()
+    {
+        foreach (var prefab in itemPrefabList)
+        {
+            if (prefab != null && !itemPrefabDict.ContainsKey(prefab.name))
+            {
+                itemPrefabDict[prefab.name] = prefab;
+            }
+        }
+    }
+
+    private void LateUpdate()
+    {
+        //SendItemListToServer();
+    }
 
     public void AddCraftItems(GameObject data)
     {
@@ -58,5 +86,46 @@ public class Crafting : MonoBehaviour
 
         craftItems.Clear();
         Debug.Log("조합대의 모든 아이템이 제거되었습니다.");
-    }   
+    }
+    
+    // 이름으로 프리팹 가져오기
+    public GameObject GetPrefab(string itemName)
+    {
+        if (itemPrefabDict.TryGetValue(itemName, out GameObject prefab))
+        {
+            return prefab;
+        }
+        Debug.LogWarning($"프리팹 {itemName}을 찾을 수 없습니다.");
+        return null;
+    }
+
+    //private void SendItemListToServer()
+    //{
+    //    int itemCount = craftItems.Count;
+
+    //    if (itemCount != lastItemCount)
+    //    {
+    //        NetManager.Instance.SendCraftingList(craftItems.ConvertAll(item => item.name));
+    //        lastItemCount = itemCount;
+    //    }
+    //}
+
+    public void SetItemList(List<string> data)
+    {
+        foreach (string item in data)
+        {
+            // 프리팹 매핑 딕셔너리에서 찾아서 인스턴스 생성
+            if (itemPrefabDict.TryGetValue(item, out GameObject prefab))
+            {
+                GameObject newItem = Instantiate(prefab);
+                newItem.transform.SetParent(this.transform);
+                newItem.SetActive(false);
+                craftItems.Add(newItem);
+            }
+            else
+            {
+                Debug.Log("딕셔너리에 없는 아이템입니다.");
+            }
+        }
+    }
 }

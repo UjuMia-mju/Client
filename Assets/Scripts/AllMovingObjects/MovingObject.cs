@@ -63,11 +63,6 @@ public class MovingObject : MonoBehaviour
         }
         else
         {
-            if (movDir == Vector3.zero)
-            {
-                return;
-            }
-
             movDir.Normalize();
             Quaternion targetRot = Quaternion.LookRotation(movDir, this.transform.position);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed*Time.fixedDeltaTime));

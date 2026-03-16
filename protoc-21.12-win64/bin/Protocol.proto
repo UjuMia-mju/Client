@@ -1,4 +1,4 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 package Protocol;
 
 import "Enum.proto";
@@ -16,16 +16,130 @@ message S_LOGIN
 	Player player = 2;
 }
 
-message C_ENTER_GAME
+// ==================== 방 생성 ====================
+message C_CREATE_ROOM
 {
-	uint64 playerIndex = 1;
 }
 
-message S_ENTER_GAME
+message S_CREATE_ROOM
 {
 	bool success = 1;
+	RoomInfo room = 2; // 생성된 방 정보
+	string error_msg = 3; // 실패 시 오류 메시지
 }
 
+// ==================== 방 목록 조회 ====================
+message C_ROOM_LIST
+{
+}
+
+message S_ROOM_LIST
+{
+	repeated RoomInfo rooms = 1;
+}
+
+// ==================== 방 입장 ====================
+message C_ENTER_ROOM
+{
+	uint64 room_id = 1;
+}
+
+message S_ENTER_ROOM
+{
+	bool success = 1;
+	RoomInfo room = 2;
+	repeated RoomMemberInfo members = 3;
+	string error_msg = 4;
+}
+
+// ==================== 방 퇴장 ====================
+message C_LEAVE_ROOM
+{
+}
+
+message S_LEAVE_ROOM
+{
+	bool success = 1;
+	uint64 player_id = 2;
+}
+
+// ==================== 초대 보내기 ====================
+message C_INVITE_PLAYER
+{
+	string player_name = 1;
+	int32 player_tag = 2; // 고유 번호 1234
+}
+
+message S_INVITE_PLAYER
+{
+	bool success = 1;
+	string player_name = 2;
+	int32 player_tag = 3; // 고유 번호 1234
+	string error_msg = 4;
+}
+
+// ==================== 초대 알림 ====================
+message S_INVITE_NOTIFICATION
+{
+	uint64 room_id = 1;
+	string room_name = 2;
+	string inviter_name = 3;
+	uint64 invite_id = 4;
+}
+
+// ==================== 초대 응답 ====================
+message C_INVITE_RESPONSE
+{
+	uint64 invite_id = 1;
+	bool accept = 2;
+}
+
+message S_INVITE_RESPONSE
+{
+	bool success = 1;
+	string error_msg = 2;
+}
+
+// ==================== 방 멤버 입장 알림 ====================
+message S_ROOM_MEMBER_ENTER
+{
+	RoomMemberInfo member = 1;
+}
+
+// ==================== 방 멤버 퇴장 알림 ====================
+message S_ROOM_MEMBER_LEAVE
+{
+	uint64 player_id = 1;
+	string player_name = 2;
+	uint64 new_owner_id = 3; // 방장이 퇴장할 경우 새로운 방장 ID (0이면 방이 삭제됨)
+}
+
+// ==================== 준비 상태 변경 ====================
+message C_READY
+{
+	bool is_ready = 1;
+}
+
+message S_READY
+{
+	uint64 player_id = 1;
+	bool is_ready = 2;
+}
+
+// ==================== 게임 시작(방 시작) ====================
+
+message C_START_ROOM
+{
+}
+
+message S_START_ROOM
+{
+	bool success = 1;
+	string error_msg = 2;
+}
+
+
+// ==================== 채팅 ====================
 message C_CHAT
 {
 	string msg = 1;
@@ -36,6 +150,65 @@ message S_CHAT
 	uint64 playerId = 1;
 	string msg = 2;
 }
+
+// ==================== 게임 입장(실제 게임 스테이지 진입) ====================
+
+message C_ENTER_GAME
+{
+	uint64 playerIndex = 1;
+}
+
+message S_ENTER_GAME
+{
+	bool success = 1;
+}
+
+message C_TEST_ENTER_GAME
+{
+	uint64 playerIndex = 1;
+}
+
+// ==================== 스테이지 정보 ====================
+
+message C_SHOW_STAGE
+{
+	int32 stageLevel = 1;
+	int32 stageIndex = 2;
+}
+
+message S_SHOW_STAGE
+{
+	bool success = 1;
+	StageInfo stage = 2;
+}
+
+// ==================== 스테이지 시작 ===================
+message C_START_STAGE
+{
+	int32 stageLevel = 1;
+	int32 stageIndex = 2;
+}
+
+// 스테이지 시작 결과 (true면 스테이지 시작, false면 실패))
+message S_START_STAGE
+{
+	bool success = 1;
+	StageInfo stage = 2; // 선택된 스테이지 정보 같이 뿌려줌.
+}
+
+// ==================== 스테이지 클리어 정보 조회 ====================
+
+message C_GET_CLEAR_INFO
+{
+}
+
+message S_GET_CLEAR_INFO
+{
+	bool success = 1;
+	repeated StageClearInfo stage_clears = 2;
+}
+
+// ==================== 게임 플레이 ====================
 
 // 플레이어 움직임
 message C_MOVE
@@ -65,4 +238,72 @@ message S_PLAYER_ENTER
 message S_PLAYER_LEAVE
 {
 	PlayerInfo player = 1;
+}
+
+// 플레이어 애니메이션 상태
+message C_PLAYER_ANIMATION
+{
+	int32 state = 1;
+}
+
+message S_PLAYER_ANIMATION
+{
+	uint64 playerId = 1;
+	int32 state = 2;
+}
+
+// ==================== 플레이어 스탯 ====================
+message C_PLAYER_STAT_EVENT
+{
+    StatEventType event_type = 1; // ITEM_USED, DAMAGE_TAKEN 등
+    int32 item_id = 2; // 아이템 사용 시
+}
+
+message S_PLAYER_STAT
+{
+    uint64 playerId = 1;
+    int32 hp = 2;
+    float oxygen = 3;
+}
+
+// ==================== 오브젝트 시스템 (도구 + 아이템 통합) ====================
+// 오브젝트 줍기
+message C_OBJECT_PICKUP
+{
+	ObjectId object_id = 1; // ToolType 또는 item_id를 담는 구조체
+}
+
+message S_OBJECT_PICKUP
+{
+	bool success = 1;
+	ObjectId object_id = 2;
+	uint64 player_id = 3;
+	string error_msg = 4;
+}
+
+// 오브젝트 드롭
+message C_OBJECT_DROP
+{
+	ObjectId object_id = 1;
+}
+
+message S_OBJECT_DROP
+{
+	ObjectId object_id = 1;
+	uint64 player_id = 2;
+}
+
+// 오브젝트 이동
+message C_OBJECT_MOVE
+{
+	ObjectId object_id = 1;
+	PosInfo pos = 2;
+	RotInfo rot = 3;
+}
+
+message S_OBJECT_MOVE
+{
+	ObjectId object_id = 1;
+	PosInfo pos = 2;
+	RotInfo rot = 3;
 }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
@@ -75,7 +75,7 @@ public class MenuPanelController : MonoBehaviour
         btn.onClick.AddListener(() => {
             SoundManager.Instance.PlaySFX("Click2");
             // Lobby 씬 완성 시 Define.Scene.Lobby 로 변경
-            SceneLoader.Instance.LoadScene(Define.Scene.GAME); 
+            SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_1); 
         });
 
         AddHoverEvents(btn); // 공통 호버 이벤트 연결

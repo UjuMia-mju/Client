@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 using UnityEngine.SceneManagement;
@@ -24,7 +24,9 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         {
             Debug.Log($"✓ Login Success! Player ID: {packet.Player.Id}, Name: {packet.Player.Name}");
             NetManager.Instance._playerId = (int)packet.Player.Id; //  이런 캐스팅 부분 나중에 수정해야함.
-            SceneManager.LoadScene("TestMoveScene");  // 로그인 성공 시 게임 씬으로 이동
+
+            // 게임 스테이지로 이동하도록 수정
+            SceneManager.LoadScene(Define.Scene.GAME_1_1);  // 로그인 성공 시 게임 씬으로 이동
         }
         else
         {

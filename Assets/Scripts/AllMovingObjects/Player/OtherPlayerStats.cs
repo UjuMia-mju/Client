@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerStat : MonoBehaviour
+public class OtherPlayerStats : MonoBehaviour
 {
     private float oxygen = 1;
     private int hp = 5;
@@ -12,7 +12,7 @@ public class PlayerStat : MonoBehaviour
     private List<Image> hpImageList = new List<Image>();
 
     private Image oxygenImage;
-    private Color originalHPColor;
+    private Color originalColor;
 
     private const float FADE_DURATION = 1.5f;
     private const float OXYGEN_DECREASE_INTERVAL = 1f;
@@ -23,7 +23,6 @@ public class PlayerStat : MonoBehaviour
 
     private List<Coroutine> fadeCoroutines = new List<Coroutine>();
 
-
     private void Start()
     {
         hpImageList = new List<Image>();
@@ -31,7 +30,6 @@ public class PlayerStat : MonoBehaviour
         {
             if (img.name.StartsWith(HP))
             {
-                originalHPColor = img.color;
                 hpImageList.Add(img);
                 StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
             }
@@ -47,59 +45,27 @@ public class PlayerStat : MonoBehaviour
         oxygenImage.fillAmount = oxygen;
     }
 
-
     private IEnumerator FadeOutCoroutine(Image img, float duration)
     {
+        originalColor = img.color;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
-            img.color = new Color(originalHPColor.r, originalHPColor.g, originalHPColor.b, alpha);
+            img.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
             yield return null;
         }
     }
 
     private void ReturnHPImageAlpha(Image img)
     {
-        img.color = new Color(originalHPColor.r, originalHPColor.g, originalHPColor.b, 1);
+        img.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
     }
 
-    public IEnumerator OxygenDecrease()
+    private IEnumerator DecreaseHpUI()
     {
-        while (true)
-        {
-            oxygen -= 0.01f;
-            Debug.Log("산소 줄어듬 : " + oxygen);
-
-            yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
-        }
-    }
-
-    public IEnumerator OxygenIncrease()
-    {
-        while (true)
-        {
-            if (oxygen >= 1)
-            {
-                oxygen = 1;
-            }
-            else
-            {
-                oxygen += 0.02f;
-                Debug.Log("산소 늘어남 : " + oxygen);
-                yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
-            }
-        }
-    }
-
-    // TODO : 체력이 줄어들면, 잠깐 체력 이미지를 보여주고, 1초 후에 다시 사라지도록 합니다.
-    // 또 현재 체력 수치에 맞게 이미지를 없애야 합니다.
-    // 공격에 따라 데미지를 더 받을 수도 있는지 정해야 합니다.
-    public IEnumerator DecreaseHp(int damage)
-    {
-        hp -= damage;
         Debug.Log("체력 줄어듬 : " + hp);
 
         foreach (Coroutine c in fadeCoroutines)
@@ -143,13 +109,16 @@ public class PlayerStat : MonoBehaviour
         }
     }
 
-    public float GetOxygen()
+    //TODO : 패킷을 받도록 구현 필요
+    public void SetStat(int hpData, float oxygenData)
     {
-        return oxygen; 
-    }
+        // 이전 값과 비교해서 hp가 줄었는지 확인
+        if (hpData < hp)
+        {
+            StartCoroutine(DecreaseHpUI());
+        }
 
-    public int GetHp()
-    {
-        return hp;
+        hp = hpData;
+        oxygen = oxygenData;
     }
 }
