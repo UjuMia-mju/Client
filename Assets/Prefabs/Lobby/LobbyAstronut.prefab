@@ -562,6 +562,7 @@ GameObject:
   - component: {fileID: 2459666111947223891}
   - component: {fileID: 549380997509401395}
   - component: {fileID: 8294529069360187301}
+  - component: {fileID: 332561498881429527}
   m_Layer: 0
   m_Name: LobbyAstronut
   m_TagString: Player
@@ -672,6 +673,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Floater
   bTorque: 1
+--- !u!114 &332561498881429527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4115959667986964671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8adad1c69c4c2c5459be1410f0bbe48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LobbyPlayerSlot
+  nameLabel: {fileID: 3368559078556279609}
+  readyStateLabel: {fileID: 1985788784204257968}
 --- !u!1 &4167142206136631989
 GameObject:
   m_ObjectHideFlags: 0
