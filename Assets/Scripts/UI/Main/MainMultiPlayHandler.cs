@@ -36,7 +36,7 @@ public class MainMultiPlayHandler : MonoBehaviour
         };
         synthetic.Members.Add(new RoomMemberInfo
         {
-            Player = new Player
+            Player = new Protocol.Player
             {
                 Id = (ulong)NetManager.Instance._playerId,
                 Name = NetManager.Instance.PlayerName ?? "",
