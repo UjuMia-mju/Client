@@ -191,6 +191,12 @@ public class PacketManager : Singleton<PacketManager>
         return p;
     }
 
+    /// <summary>방 생성 직후 클라에서 S_ENTER_ROOM을 보내지 않을 때, 가짜 S_ENTER_ROOM을 캐시해 두기 위해 사용.</summary>
+    public static void SetCachedEnterRoom(S_ENTER_ROOM packet)
+    {
+        _cachedEnterRoom = packet;
+    }
+
     private void HandleLeaveRoom(byte[] payloadData)
     {
         S_LEAVE_ROOM packet = S_LEAVE_ROOM.Parser.ParseFrom(payloadData);
