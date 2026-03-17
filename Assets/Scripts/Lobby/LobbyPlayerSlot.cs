@@ -15,7 +15,7 @@ public class LobbyPlayerSlot : MonoBehaviour
     {
         if (nameLabel == null || readyStateLabel == null)
             ResolveLabels();
-        // 기본은 레디 미표시. S_READY 등 패킷 수신 시 SetReady(true) 호출 (2번 구현)
+        // 기본은 레디 미표시. S_READY 등 패킷 수신 시 SetReady(true) 호출
         SetReady(false);
     }
 
@@ -40,7 +40,7 @@ public class LobbyPlayerSlot : MonoBehaviour
             nameLabel.text = string.IsNullOrEmpty(playerName) ? "Player" : playerName;
     }
 
-    /// <summary>레디 상태 표시를 켜거나 끕니다. (2번 구현 시 사용)</summary>
+    /// <summary>레디 상태 표시를 켜거나 끕니다.</summary>
     public void SetReady(bool ready)
     {
         if (readyStateLabel == null) ResolveLabels();
