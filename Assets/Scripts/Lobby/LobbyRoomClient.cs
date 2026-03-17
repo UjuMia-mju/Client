@@ -21,6 +21,14 @@ public class LobbyRoomClient : MonoBehaviour
         PacketManager.Instance.OnEnterRoomEvent += OnEnterRoom;
         PacketManager.Instance.OnRoomMemberEnterEvent += OnRoomMemberEnter;
         PacketManager.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeave;
+
+        // 방 생성 후 로비 씬 전환 시, S_ENTER_ROOM이 로비 로드 전에 도착해 이벤트를 놓친 경우 캐시에서 복구
+        S_ENTER_ROOM cached = PacketManager.GetAndClearCachedEnterRoom();
+        if (cached != null)
+        {
+            Debug.Log("[LobbyRoomClient] 캐시된 S_ENTER_ROOM 적용 (방 생성 후 로비 전환)");
+            ApplyEnterRoomResult(cached);
+        }
     }
 
     private void OnDisable()
@@ -40,20 +48,27 @@ public class LobbyRoomClient : MonoBehaviour
             Debug.LogWarning($"[LobbyRoomClient] 방 입장 실패: {packet.ErrorMsg}");
             return;
         }
+        ApplyEnterRoomResult(packet);
+    }
 
+    /// <summary>S_ENTER_ROOM(성공) 패킷으로 멤버 목록 스폰. OnEnterRoom과 캐시 복구에서 공통 사용.</summary>
+    private void ApplyEnterRoomResult(S_ENTER_ROOM packet)
+    {
         _members.Clear();
         Debug.Log($"[LobbyRoomClient] 방 입장 성공: {packet.Room.RoomName} (roomId={packet.Room.RoomId})");
 
-        // 이전 방/테스트 잔여 스폰 제거 후, 패킷의 멤버 목록으로 다시 스폰
-        if (lobbyManager != null)
-            lobbyManager.ClearSpawnedPlayers();
+        if (lobbyManager == null)
+        {
+            Debug.LogWarning("[LobbyRoomClient] LobbyManager가 할당되지 않았습니다.");
+            return;
+        }
 
+        lobbyManager.ClearSpawnedPlayers();
         foreach (RoomMemberInfo member in packet.Members)
         {
             _members.Add(member.Player.Id);
             Debug.Log($"[LobbyRoomClient] 멤버: {member.Player.Name}#{member.Player.Tag} (id={member.Player.Id}) ready={member.IsReady}");
-            if (lobbyManager != null)
-                lobbyManager.SpawnNewPlayer(member.Player.Name, member.Player.Id);
+            lobbyManager.SpawnNewPlayer(member.Player.Name, member.Player.Id);
         }
     }
 
