@@ -2,24 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 로비 씬에서 플레이어 캐릭터(LobbyAstronut) 스폰/디스폰, 우주선 탑승 연출을 담당합니다.
+/// </summary>
 public class LobbyManager : MonoBehaviour
 {
-    public GameObject playerPrefab;
-    public Vector3 spawnCenter; // 스폰될 왼쪽 구역의 중심 좌표
-    public float spawnRadius = 4f; // 스폰 허용 반경
-    private List<GameObject> spawnedPlayers = new List<GameObject>();
+    [Header("로비 플레이어 스폰")]
+    public GameObject playerPrefab;           // LobbyAstronut 프리팹
+    public Vector3 spawnCenter;               // 스폰될 구역의 중심 좌표
+    public float spawnRadius = 4f;            // 스폰 허용 반경 (중복 방지용)
+
+    /// <summary>현재 스폰된 로비 캐릭터들. key = 플레이어 ID (퇴장 시 디스폰/레디 토글에 사용)</summary>
+    private readonly Dictionary<ulong, GameObject> spawnedPlayers = new Dictionary<ulong, GameObject>();
 
     [Header("우주선 세팅")]
-    public Transform spaceshipDoor; // 우주선 문(빨려 들어갈 목표 지점)
-    public float suckDuration = 2.0f; // 빨려 들어가는 데 걸리는 시간
-    // public AnimationCurve suckCurve; // 빨려 들어가는 속도 조절을 위한 애니메이션 커브
+    public Transform spaceshipDoor;   // 우주선 문(빨려 들어갈 목표 지점)
+    public float suckDuration = 2.0f; // 빨려 들어가는 데 걸리는 시간(초)
 
-    // 임시 테스트용
+    /// <summary>전원 레디 시 호출. 우주선 빨려 들어가는 연출 후 인게임 씬 전환용 </summary>
     public void OnAllPlayersReady()
     {
         StartCoroutine(StartSpaceshipSequence());
     }
 
+    /// <summary>우주선 문으로 플레이어들이 빨려 들어가는 연출 코루틴.</summary>
     IEnumerator StartSpaceshipSequence()
     {
         Debug.Log("모두 레디 완료");
@@ -86,19 +92,50 @@ public class LobbyManager : MonoBehaviour
         Debug.Log("인게임 씬으로 넘어갑니다.");
     }
 
-    // 누군가 방에 들어왔을 때 호출할 함수
-    public void SpawnNewPlayer()
+    /// <summary>기존에 스폰된 로비 플레이어를 모두 제거합니다. (방 입장 시 S_ENTER_ROOM 처리 전 초기화용)</summary>
+    public void ClearSpawnedPlayers()
+    {
+        foreach (var go in spawnedPlayers.Values)
+        {
+            if (go != null)
+                Destroy(go);
+        }
+        spawnedPlayers.Clear();
+    }
+
+    /// <summary>해당 플레이어 ID의 로비 캐릭터를 제거합니다. (플레이어 퇴장 시 호출)</summary>
+    public void DespawnPlayer(ulong playerId)
+    {
+        if (spawnedPlayers.TryGetValue(playerId, out GameObject go))
+        {
+            spawnedPlayers.Remove(playerId);
+            if (go != null)
+                Destroy(go);
+        }
+    }
+
+    /// <summary>플레이어 이름을 가진 LobbyAstronut을 스폰합니다. (로비 입장/멤버 입장 시 이름 표시)</summary>
+    /// <param name="playerName">표시할 플레이어 이름 (Name 라벨에 출력)</param>
+    /// <param name="playerId">플레이어 ID (퇴장 시 DespawnPlayer에 사용)</param>
+    public void SpawnNewPlayer(string playerName, ulong playerId)
     {
         Vector3 safePosition = GetSafeSpawnPosition();
         GameObject newPlayer = Instantiate(playerPrefab, safePosition, Quaternion.Euler(0, 180f, 0));
-        spawnedPlayers.Add(newPlayer);
+        spawnedPlayers[playerId] = newPlayer;
+
+        // LobbyPlayerSlot이 없으면 루트에 추가 (프리팹에 미리 붙여두지 않아도 동작)
+        var slot = newPlayer.GetComponentInChildren<LobbyPlayerSlot>();
+        if (slot == null)
+            slot = newPlayer.AddComponent<LobbyPlayerSlot>();
+        if (slot != null)
+            slot.SetPlayerName(playerName);
 
         Animator anim = newPlayer.GetComponent<Animator>();
-        if(anim != null)
+        if (anim != null)
             anim.SetTrigger("bIsInLobby");
     }
 
-    // 빈 공간을 찾는 함수
+    /// <summary>spawnCenter 주변에서 다른 플레이어와 겹치지 않는 위치를 반환합니다.</summary>
     Vector3 GetSafeSpawnPosition()
     {
         int maxAttempts = 10; // 최대 10번 빈 공간을 찾음
