@@ -71,7 +71,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     private void OnPlayerLeave(S_PLAYER_LEAVE packet)
     {
         Debug.Log($"👋 Player {packet.Player.PlayerId} left!");
-        RemoveRemotePlayer(packet.Player.PlayerId);
+        RemoveRemotePlayer((ulong)packet.Player.PlayerId);
     }
 
     // 플레이어 이동
@@ -104,16 +104,17 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
     }
 
-    private void SpawnRemotePlayer(PlayerInfo playerInfo)
+    private void SpawnRemotePlayer(PlayerGameInfo playerInfo)
     {
-        if (_remotePlayers.ContainsKey(playerInfo.PlayerId))
+        ulong id = (ulong)playerInfo.PlayerId;
+        if (_remotePlayers.ContainsKey(id))
         {
             Debug.LogWarning($"Player {playerInfo.PlayerId} already exists!");
             return;
         }
 
-        Vector3 pos = new Vector3(playerInfo.Pos.X, playerInfo.Pos.Y, playerInfo.Pos.Z);
-        Quaternion rot = new Quaternion(playerInfo.Rot.X, playerInfo.Rot.Y, playerInfo.Rot.Z, playerInfo.Rot.W);
+        Vector3 pos = playerInfo.Pos != null ? new Vector3(playerInfo.Pos.X, playerInfo.Pos.Y, playerInfo.Pos.Z) : Vector3.zero;
+        Quaternion rot = playerInfo.Rot != null ? new Quaternion(playerInfo.Rot.X, playerInfo.Rot.Y, playerInfo.Rot.Z, playerInfo.Rot.W) : Quaternion.identity;
 
         GameObject playerObj = Instantiate(remotePlayerPrefab, pos, rot);
         playerObj.name = $"RemotePlayer_{playerInfo.PlayerId}";
@@ -121,11 +122,11 @@ public class PlayManager : SceneSingleton<PlayManager>
         RemotePlayer remotePlayer = playerObj.GetComponent<RemotePlayer>();
         if (remotePlayer != null)
         {
-            remotePlayer.PlayerId = playerInfo.PlayerId;
+            remotePlayer.PlayerId = id;
             remotePlayer.PlayerName = playerInfo.Name;
         }
 
-        _remotePlayers[playerInfo.PlayerId] = playerObj;
+        _remotePlayers[id] = playerObj;
 
         Debug.Log($"✓ Spawned remote player: {playerInfo.Name} ({playerInfo.PlayerId})");
     }
