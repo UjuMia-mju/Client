@@ -103,8 +103,9 @@ public class PacketManager : Singleton<PacketManager>
         if (result.Success)
         {
             Debug.Log($"✓ Login Success!");
-            Debug.Log($"  Player ID: {result.Player.Id}");
-            Debug.Log($"  Player Name: {result.Player.Name}");
+            Debug.Log($"  Player ID: {result.Player.Id}, Name: {result.Player.Name}");
+            if (result.PlayerInfo != null)
+                Debug.Log($"  PlayerInfo: coin={result.PlayerInfo.Coin}, gem={result.PlayerInfo.Gem}, owned_skins={result.PlayerInfo.OwnedSkins.Count}");
 
             OnLoginResultEvent?.Invoke(result);
         }
