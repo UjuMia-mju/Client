@@ -14,7 +14,7 @@ public class LobbyRoomClient : MonoBehaviour
     [SerializeField] private LobbyManager lobbyManager; // 로비 캐릭터 스폰/디스폰 담당. 비어 있으면 스폰 연출 없음.
 
     /// <summary>현재 방에 있는 멤버 ID 집합 (중복 스폰 방지, 퇴장 시 디스폰 대상 확인)</summary>
-    private readonly HashSet<ulong> _members = new HashSet<ulong>();
+    private readonly HashSet<int> _members = new HashSet<int>();
 
     private void OnEnable()
     {
@@ -75,7 +75,7 @@ public class LobbyRoomClient : MonoBehaviour
     /// <summary>다른 플레이어가 방에 입장했을 때. 해당 플레이어용 LobbyAstronut 스폰.</summary>
     private void OnRoomMemberEnter(S_ROOM_MEMBER_ENTER packet)
     {
-        ulong id = packet.Member.Player.Id;
+        int id = packet.Member.Player.Id;
         if (_members.Add(id))
         {
             Debug.Log($"[LobbyRoomClient] 멤버 입장: {packet.Member.Player.Name}#{packet.Member.Player.Tag} (id={id})");
@@ -86,10 +86,11 @@ public class LobbyRoomClient : MonoBehaviour
     /// <summary>플레이어가 방을 나갔을 때. 해당 플레이어용 LobbyAstronut 디스폰.</summary>
     private void OnRoomMemberLeave(S_ROOM_MEMBER_LEAVE packet)
     {
-        if (_members.Remove(packet.PlayerId))
+        int playerId = (int)packet.PlayerId;
+        if (_members.Remove(playerId))
         {
             Debug.Log($"[LobbyRoomClient] 멤버 퇴장: {packet.PlayerName} (id={packet.PlayerId}), newOwnerId={packet.NewOwnerId}");
-            lobbyManager?.DespawnPlayer(packet.PlayerId);
+            lobbyManager?.DespawnPlayer(playerId);
         }
     }
 }
