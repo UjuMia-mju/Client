@@ -238,6 +238,15 @@ public class Player : MovingObject
 
     public void EndMining()
     {
+        if (playerItemSystem.currentEquipItem != null && playerItemSystem.currentEquipItem.CompareTag(Define.Tag.PICKAXE))
+        {
+            Pickaxe tempP = playerItemSystem.currentEquipItem.GetComponent<Pickaxe>();
+            if (tempP != null)
+            {
+                tempP.ResetHasMined();
+            }
+        }
+
         isMining = false;
     }
 

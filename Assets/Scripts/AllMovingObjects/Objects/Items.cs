@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.Animations;
+using static UnityEngine.Rendering.ReloadAttribute;
 
 public class Items : MovingObject
 {
     // 내가 이 아이템을 들고 있는지 여부
     private bool IsOwnedByMe;
-    private const string SOCKET = "Socket";
+    protected const string SOCKET = "Socket";
 
     // 서버 관련 변수들
     public float sendInterval = 0.05f; // 20fps로 위치 전송 (네트워크 부하 고려)
@@ -34,6 +36,8 @@ public class Items : MovingObject
         // 부모 이름이 "Socket"이면 내가 손에 들고 있는 상태라고 판단
         if (transform.parent != null && transform.parent.name == SOCKET)
         {
+            this.transform.localPosition = Vector3.zero;
+            this.transform.localRotation = Quaternion.identity;
             IsOwnedByMe = true;
         }
         else

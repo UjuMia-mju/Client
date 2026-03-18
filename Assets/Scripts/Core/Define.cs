@@ -22,6 +22,7 @@ public static class Define
         public const string CRAFT_TABLE = "CraftTable";
         public const string MAINBUTTON = "MainButton";
         public const string PICKAXE = "Pickaxe";
+        public const string ORE = "Ore";
     }
 
     public static class Layer

@@ -12,6 +12,10 @@ public class ObjectsGravityController : MonoBehaviour
 
     private void Start()
     {
+        if (planet == null)
+        {
+            planet = FindFirstObjectByType<PlanetGravity>();
+        }
         objects = GetComponent<Items>();
         objects.rb.useGravity = false;  // 리지드바디의 기본 중력은 필요 없으므로 비활성화
         planet.Attract(objects);

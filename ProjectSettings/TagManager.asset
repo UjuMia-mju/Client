@@ -8,6 +8,7 @@ TagManager:
   - CraftTable
   - MainButton
   - Pickaxe
+  - Ore
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - UI
   - Wall
   - WalkableCollider
-  - 
-  - 
+  - Pickaxe
+  - Player
   - 
   - 
   - 
