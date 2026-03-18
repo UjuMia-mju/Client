@@ -23,6 +23,8 @@ public class LobbyInviteUI : MonoBehaviour
     [Header("버튼")]
     [SerializeField] private Button inviteButton;   // 초대 전송 버튼
 
+    private bool _inRoom = false;
+
     private void Start()
     {
         if (panelRoot != null)
@@ -43,6 +45,10 @@ public class LobbyInviteUI : MonoBehaviour
             closeButton.onClick.AddListener(OnClickClosePanel);
         if (inviteButton != null)
             inviteButton.onClick.AddListener(OnClickInvite);
+
+        // 방 입장(S_ENTER_ROOM) 성공 전에는 초대 불가
+        if (inviteButton != null)
+            inviteButton.interactable = false;
     }
 
     private void OnClickOpenPanel()
@@ -62,17 +68,34 @@ public class LobbyInviteUI : MonoBehaviour
     private void OnEnable()
     {
         PacketManager.Instance.OnInvitePlayerResultEvent += OnInvitePlayerResult;
+        PacketManager.Instance.OnEnterRoomEvent += OnEnterRoom;
     }
 
     private void OnDisable()
     {
         if (PacketManager.Instance != null)
+        {
             PacketManager.Instance.OnInvitePlayerResultEvent -= OnInvitePlayerResult;
+            PacketManager.Instance.OnEnterRoomEvent -= OnEnterRoom;
+        }
+    }
+
+    private void OnEnterRoom(S_ENTER_ROOM packet)
+    {
+        _inRoom = packet.Success;
+        if (inviteButton != null)
+            inviteButton.interactable = _inRoom;
     }
 
     // 초대 버튼 클릭 시 호출. 입력 검증 후 NetManager.SendInvitePlayer로 C_INVITE_PLAYER 패킷 전송.
     private void OnClickInvite()
     {
+        if (!_inRoom)
+        {
+            Debug.LogWarning("[LobbyInviteUI] 아직 방 입장이 완료되지 않았습니다. 잠시 후 다시 시도하세요.");
+            return;
+        }
+
         // 입력값 추출 (null 체크)
         string playerName = targetPlayerNameInput != null ? targetPlayerNameInput.text.Trim() : "";
         string tagStr = targetPlayerTagInput != null ? targetPlayerTagInput.text.Trim() : "";
