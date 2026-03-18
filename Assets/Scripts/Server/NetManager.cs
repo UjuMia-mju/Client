@@ -28,6 +28,8 @@ public class NetManager : Singleton<NetManager>
     public int _playerId;
     public string PlayerName { get; set; } = "";
     public int PlayerTag { get; set; } = 0;
+    /// <summary>로그인 시 수신한 유저 상세 정보 (S_LOGIN.player_info, 0.2v~)</summary>
+    public Protocol.PlayerInfo PlayerInfo { get; set; }
 
     #region Connect
     public void Connect(string ip, int port)
