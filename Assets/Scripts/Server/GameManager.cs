@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
             NetManager.Instance._playerId = packet.Player.Id;
             NetManager.Instance.PlayerName = packet.Player.Name;
             NetManager.Instance.PlayerTag = packet.Player.Tag;
+            NetManager.Instance.PlayerInfo = packet.PlayerInfo;
             // 로그인 성공 → Splash → Main → (멀티플레이 버튼 시 방 생성 후 로비)
             SceneLoader.Instance.LoadScene(Define.Scene.SPLASH);
         }
