@@ -47,8 +47,8 @@ public class LobbyInviteUI : MonoBehaviour
             inviteButton.onClick.AddListener(OnClickInvite);
 
         // 방 입장(S_ENTER_ROOM) 성공 전에는 초대 불가
-        if (inviteButton != null)
-            inviteButton.interactable = false;
+        // if (inviteButton != null)
+        //     inviteButton.interactable = false;
     }
 
     private void OnClickOpenPanel()
@@ -90,11 +90,11 @@ public class LobbyInviteUI : MonoBehaviour
     // 초대 버튼 클릭 시 호출. 입력 검증 후 NetManager.SendInvitePlayer로 C_INVITE_PLAYER 패킷 전송.
     private void OnClickInvite()
     {
-        if (!_inRoom)
-        {
-            Debug.LogWarning("[LobbyInviteUI] 아직 방 입장이 완료되지 않았습니다. 잠시 후 다시 시도하세요.");
-            return;
-        }
+        // if (!_inRoom)
+        // {
+        //     Debug.LogWarning("[LobbyInviteUI] 아직 방 입장이 완료되지 않았습니다. 잠시 후 다시 시도하세요.");
+        //     return;
+        // }
 
         // 입력값 추출 (null 체크)
         string playerName = targetPlayerNameInput != null ? targetPlayerNameInput.text.Trim() : "";

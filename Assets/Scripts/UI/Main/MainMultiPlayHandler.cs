@@ -26,8 +26,26 @@ public class MainMultiPlayHandler : MonoBehaviour
             return;
         }
 
-        // 서버가 "방에 들어간 상태"로 인식하도록 EnterRoom을 명시적으로 보낸다.
-        // (초대 기능에서 Not in a room 방지)
+        // 로비 씬 로드 타이밍 때문에 S_ENTER_ROOM 이벤트를 놓칠 수 있어,
+        // 최소 1명(본인) 상태는 캐시로 보장해 둔다. (LobbyRoomClient가 씬 로드 후 적용)
+        var synthetic = new S_ENTER_ROOM
+        {
+            Success = true,
+            Room = packet.Room
+        };
+        synthetic.Members.Add(new RoomMemberInfo
+        {
+            Player = new Protocol.Player
+            {
+                Id = NetManager.Instance._playerId,
+                Name = NetManager.Instance.PlayerName ?? "",
+                Tag = NetManager.Instance.PlayerTag
+            },
+            IsReady = false
+        });
+        PacketManager.SetCachedEnterRoom(synthetic);
+
+
         NetManager.Instance.SendEnterRoom(packet.Room.RoomId);
 
         SceneLoader.Instance.LoadScene(Define.Scene.LOBBY);
