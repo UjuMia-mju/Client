@@ -13,7 +13,7 @@ public class LobbyManager : MonoBehaviour
     public float spawnRadius = 4f;            // 스폰 허용 반경 (중복 방지용)
 
     /// <summary>현재 스폰된 로비 캐릭터들. key = 플레이어 ID (퇴장 시 디스폰/레디 토글에 사용)</summary>
-    private readonly Dictionary<ulong, GameObject> spawnedPlayers = new Dictionary<ulong, GameObject>();
+    private readonly Dictionary<int, GameObject> spawnedPlayers = new Dictionary<int, GameObject>();
 
     [Header("우주선 세팅")]
     public Transform spaceshipDoor;   // 우주선 문(빨려 들어갈 목표 지점)
@@ -104,7 +104,7 @@ public class LobbyManager : MonoBehaviour
     }
 
     /// <summary>해당 플레이어 ID의 로비 캐릭터를 제거합니다. (플레이어 퇴장 시 호출)</summary>
-    public void DespawnPlayer(ulong playerId)
+    public void DespawnPlayer(int playerId)
     {
         if (spawnedPlayers.TryGetValue(playerId, out GameObject go))
         {
@@ -117,7 +117,7 @@ public class LobbyManager : MonoBehaviour
     /// <summary>플레이어 이름을 가진 LobbyAstronut을 스폰합니다. (로비 입장/멤버 입장 시 이름 표시)</summary>
     /// <param name="playerName">표시할 플레이어 이름 (Name 라벨에 출력)</param>
     /// <param name="playerId">플레이어 ID (퇴장 시 DespawnPlayer에 사용)</param>
-    public void SpawnNewPlayer(string playerName, ulong playerId)
+    public void SpawnNewPlayer(string playerName, int playerId)
     {
         Vector3 safePosition = GetSafeSpawnPosition();
         GameObject newPlayer = Instantiate(playerPrefab, safePosition, Quaternion.Euler(0, 180f, 0));
