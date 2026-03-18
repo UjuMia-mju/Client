@@ -38,7 +38,7 @@ public class MainMultiPlayHandler : MonoBehaviour
         {
             Player = new Protocol.Player
             {
-                Id = (ulong)NetManager.Instance._playerId,
+                Id = NetManager.Instance._playerId,
                 Name = NetManager.Instance.PlayerName ?? "",
                 Tag = NetManager.Instance.PlayerTag
             },
