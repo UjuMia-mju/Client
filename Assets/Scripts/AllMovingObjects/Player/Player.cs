@@ -108,6 +108,7 @@ public class Player : MovingObject
             {
                 Jump();
                 playerInput.SetIsJumping(false);
+                EndMining();
             }
             else if (!isGrounded)
             {
@@ -127,8 +128,11 @@ public class Player : MovingObject
 
     protected override void Moving(Vector3 movDir)
     {
+        if (movDir != Vector3.zero)
+        {
+            EndMining();
+        }
         base.Moving(movDir);
-        isMining = false; // 이동하면 광질이 멈춥니다.
     }
 
     // E키 상호작용
@@ -140,6 +144,7 @@ public class Player : MovingObject
             // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
             if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
             {
+                Debug.Log("곡괭이질");
                 isMining = true;
             }
 
@@ -229,6 +234,11 @@ public class Player : MovingObject
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, DETECT_RADIUS);
+    }
+
+    public void EndMining()
+    {
+        isMining = false;
     }
 
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.

@@ -58,7 +58,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mining
-  m_Speed: 1.2
+  m_Speed: 1.8
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 3323792188067644525}
@@ -524,7 +524,7 @@ AnimatorStateMachine:
     m_Position: {x: 1320, y: -120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5750623678441626989}
-    m_Position: {x: 70, y: 230, z: 0}
+    m_Position: {x: 50, y: 230, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 8956297714620914801}
@@ -584,7 +584,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.7794118
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -635,7 +635,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.7794118
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
