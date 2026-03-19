@@ -33,7 +33,7 @@ public class TestConnectManager : SceneSingleton<TestConnectManager>
             //     yield break;
             // }
 
-            NetManager.Instance.StartHost(hostPortFromServer);
+            PeerNetManager.Instance.StartHost(hostPortFromServer);
         }
         else
         {
