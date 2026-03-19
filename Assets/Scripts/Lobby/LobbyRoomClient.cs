@@ -16,8 +16,13 @@ public class LobbyRoomClient : MonoBehaviour
     /// <summary>현재 방에 있는 멤버 ID 집합 (중복 스폰 방지, 퇴장 시 디스폰 대상 확인)</summary>
     private readonly HashSet<int> _members = new HashSet<int>();
 
+    // TEMP: 시작 기능을 먼저 테스트하기 위한 임시 변수.
+    private bool _temporaryAutoReadySent;
+
     private void OnEnable()
     {
+        // TEMP: 시작 기능을 먼저 테스트하기 위한 임시 변수.
+        _temporaryAutoReadySent = false;
         PacketManager.Instance.OnEnterRoomEvent += OnEnterRoom;
         PacketManager.Instance.OnRoomMemberEnterEvent += OnRoomMemberEnter;
         PacketManager.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeave;
@@ -56,6 +61,16 @@ public class LobbyRoomClient : MonoBehaviour
     {
         _members.Clear();
         Debug.Log($"[LobbyRoomClient] 방 입장 성공: {packet.Room.RoomName} (roomId={packet.Room.RoomId})");
+
+        // TEMP: 시작 기능을 먼저 테스트하기 위한 임시 처리.
+        // 방 입장 직후 자동으로 Ready(true)를 1회 전송한다.
+        // 준비 기능 정식 구현 시 이 블록은 제거/수정 필요.
+        if (!_temporaryAutoReadySent)
+        {
+            _temporaryAutoReadySent = true;
+            NetManager.Instance.SendReady(true);
+            Debug.Log("[LobbyRoomClient] TEMP auto-ready sent: true");
+        }
 
         if (lobbyManager == null)
         {
