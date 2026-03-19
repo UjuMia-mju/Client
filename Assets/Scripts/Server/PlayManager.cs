@@ -27,7 +27,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         //PacketManager.Instance.OnCraftTableEvent += OnCraftTableItemInstantiate;
 
         // 서버에 ENTER_GAME 패킷 전송 (게임 입장 요청)
-        NetManager.Instance.SendEnterGame((ulong)NetManager.Instance._playerId);
+        PacketHandler.Instance.SendEnterGame((ulong)NetManager.Instance._playerId);
         // 로컬 플레이어 생성
         //SpawnLocalPlayer();
     }

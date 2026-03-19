@@ -59,7 +59,7 @@ public class Player : MovingObject
         lastOxygen = playerStat.GetOxygen();
 
         // 게임 입장 패킷 전송
-        NetManager.Instance.SendEnterGame(0);
+        PacketHandler.Instance.SendEnterGame(0);
 
         SendEnterPosToServer();
 
@@ -234,7 +234,7 @@ public class Player : MovingObject
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
     private void SendEnterPosToServer()
     {
-        NetManager.Instance.SendMove(transform.position, transform.rotation);
+        PacketHandler.Instance.SendMove(transform.position, transform.rotation);
 
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
@@ -254,7 +254,7 @@ public class Player : MovingObject
 
         if (posChanged || rotChanged)
         {
-            NetManager.Instance.SendMove(transform.position, transform.rotation);
+            PacketHandler.Instance.SendMove(transform.position, transform.rotation);
 
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;
@@ -272,7 +272,7 @@ public class Player : MovingObject
         // 상태가 바뀐 경우에만 전송
         if (currentState != lastAnimState)
         {
-            NetManager.Instance.SendAnimation(currentState);
+            PacketHandler.Instance.SendAnimation(currentState);
             lastAnimState = currentState;
         }
     }
@@ -280,13 +280,13 @@ public class Player : MovingObject
     // 아이템을 들어올렸을 때 RemotePlayer의 소켓에 부착시키기 위해 패킷을 1회 전송
     private void SendItemAttachedToServer(Items data)
     {
-        NetManager.Instance.SendItemAttached(data);
+        PacketHandler.Instance.SendItemAttached(data);
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
     private void SendItemDetatchedToServer(Items data)
     {
-        NetManager.Instance.SendItemDetatched(data);
+        PacketHandler.Instance.SendItemDetatched(data);
     }
 
     //private void SendPlayerStatToServer()
