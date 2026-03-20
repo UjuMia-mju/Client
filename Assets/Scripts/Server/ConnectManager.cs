@@ -20,7 +20,8 @@ public class ConnectManager : SceneSingleton<ConnectManager>
         else
         {
             //NetManager.Instance.Connect("127.0.0.1", 7777);
-            NetManager.Instance.Connect(hostIpFromServer, hostPortFromServer);
+            //NetManager.Instance.Connect(hostIpFromServer, hostPortFromServer);
+            PeerNetManager.Instance.ConnectToHost(hostIpFromServer, hostPortFromServer);
             await System.Threading.Tasks.Task.Delay(2000); // 2초 대기
 
             // Player 인스턴스가 이미 생성되어 있다고 가정

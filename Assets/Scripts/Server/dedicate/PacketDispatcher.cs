@@ -44,7 +44,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         {
             return;
         }
-        net.SendPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
+        peerNet.SendPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
         ///peerNet.
     }
 
@@ -96,7 +96,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             Rot = rotInfo
         };
 
-        net.SendPacket(PacketId.PKT_C_MOVE, movePacket);
+        peerNet.SendPacket(PacketId.PKT_C_MOVE, movePacket);
     }
 
     public void SendAnimation(AnimState animState)
@@ -117,7 +117,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         {
             State = (int)animState
         };
-        net.SendPacket(PacketId.PKT_C_PLAYER_ANIMATION, animationPacket);
+        peerNet.SendPacket(PacketId.PKT_C_PLAYER_ANIMATION, animationPacket);
     }
 
     // 패킷 보내는거 배치파일 실행해서 코드 자동생성 해야 함. 지금 안 됨.
@@ -141,7 +141,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
                 ItemId = (ulong)itemData.itemId
             }
         };
-        net.SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
+        peerNet.SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
     }
 
     public void SendItemDetatched(Items itemData)
@@ -154,7 +154,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
                 ItemId = (ulong)itemData.itemId
             }
         };
-        net.SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
+        peerNet.SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
     }
 
     public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
@@ -187,7 +187,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             Rot = rotInfo
         };
 
-        net.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
+        peerNet.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
     }
 
     public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation)
