@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Google.Protobuf;
 using Protocol;
 using UnityEngine;
+
+public class PeerSession
+{
+    public int PeerId { get; set; }
+    public Socket Socket { get; set; }
+    public RecvBuffer RecvBuffer { get; set; }
+}
 
 public class PeerNetManager : Singleton<PeerNetManager>
 {
@@ -16,10 +24,11 @@ public class PeerNetManager : Singleton<PeerNetManager>
     private const int BUFFER_SIZE = 65536; // 64KB -> netManager의 버퍼 사이즈와 동일하게 설정함.
     private bool _isHostMode = false;
     public bool IsHostMode => _isHostMode;
-    // 호스트가 상위 데디케이트 서버에 붙는 소켓은 기존 _socket 사용
-    // 하위 피어를 받기 위한 리스너/피어 목록은 별도로 사용합니다.
+    // 호스트가 상위 데디케이트 서버에 붙는 소켓은 기존 netmanager의 _socket 사용
+    // 하위 피어를 받기 위한 리스너/피어 목록은 별도로 사용함
     private Socket _peerListener;
-    private int _nextPeerId = 1;
+    private int _nextPeerId = 0;
+    private readonly int maxPeers = 3; // 최대 피어 수 (호스트 포함 총 4명)
     private readonly object _peerLock = new object();
     // 연결된 peer session 관리
     private Dictionary<int, PeerSession> _peerSessions = new Dictionary<int, PeerSession>();
@@ -34,7 +43,7 @@ public class PeerNetManager : Singleton<PeerNetManager>
             return;
         }
 
-        // 호스트 모드에서는 먼저 데디케이트 서버에 연결해야 합니다. (실제 게임에서는 로그인/매칭 후에 이 단계가 올 수 있습니다.)
+        // 호스트 모드에서는 먼저 데디케이트 서버에 연결되어있는지 확인해야함.
         // if (!_isConnected)
         // {
         //     Debug.LogWarning("Must connect to upstream server before starting host mode!");
@@ -60,7 +69,8 @@ public class PeerNetManager : Singleton<PeerNetManager>
     private void OnPeerAcceptCallback(IAsyncResult ar)
     {
         Socket peer = null;
-
+        bool accepted = false;
+        int peerId = 0;
         try
         {
             if (_peerListener == null)
@@ -70,18 +80,28 @@ public class PeerNetManager : Singleton<PeerNetManager>
 
             peer = _peerListener.EndAccept(ar); // Accept 작업 결과 가져오는 메서드
 
-            int peerId = Interlocked.Increment(ref _nextPeerId); // 락보다 성능 좋음. (찾아보니까 하드웨서 레벨에서 원자적으로 처리해준다고 함)
-
-            PeerSession session = new PeerSession
-            {
-                PeerId = peerId,
-                Socket = peer,
-                RecvBuffer = new RecvBuffer(BUFFER_SIZE)
-            };
-
             lock (_peerLock)
             {
-                _peerSessions[peerId] = session;
+                if (_peerSessions.Count < maxPeers)
+                {
+                    peerId = Interlocked.Increment(ref _nextPeerId); // 락보다 성능 좋음. (찾아보니까 c++의 atomic과 비슷한 역할)
+                    PeerSession session = new PeerSession
+                    {
+                        PeerId = peerId,
+                        Socket = peer,
+                        RecvBuffer = new RecvBuffer(BUFFER_SIZE)
+                    };
+
+                    _peerSessions[peerId] = session;
+                    accepted = true;
+                }
+            }
+
+            if (!accepted)
+            {
+                Debug.LogWarning($"Room full. reject peer={peer.RemoteEndPoint}");
+                try { peer.Close(); } catch { }
+                return;
             }
 
             Debug.Log($"Peer connected. peerId={peerId}, endpoint={peer.RemoteEndPoint}");
@@ -91,8 +111,14 @@ public class PeerNetManager : Singleton<PeerNetManager>
         catch (Exception ex)
         {
             Debug.LogError($"OnPeerAcceptCallback failed: {ex.Message}");
-
-            // 리스너가 살아있으면 accept 루프 유지
+            if (peer != null)
+            {
+                try { peer.Close(); } catch { }
+            }
+        }
+        finally
+        {
+            // 성공/거절/예외와 무관하게 다음 accept를 항상 등록
             try
             {
                 _peerListener?.BeginAccept(OnPeerAcceptCallback, null);
@@ -101,21 +127,21 @@ public class PeerNetManager : Singleton<PeerNetManager>
             {
                 // ignore
             }
-
-            if (peer != null)
-            {
-                try { peer.Close(); } catch { }
-            }
         }
     }
 
+    #region Peer Recv
     private void RegisterPeerRecv(int peerId)
     {
         PeerSession session = null;
         lock (_peerLock)
         {
             if (!_peerSessions.TryGetValue(peerId, out session))
+            {
+                Debug.LogWarning($"RegisterPeerRecv failed: peerId {peerId} not found");
                 return;
+            }
+                
         }
 
         ArraySegment<byte> segment = session.RecvBuffer.GetWriteSegment();
@@ -125,6 +151,7 @@ public class PeerNetManager : Singleton<PeerNetManager>
 
     private void OnPeerRecvCallback(IAsyncResult ar)
     {
+        Debug.Log("OnPeerRecvCallback called");
         int peerId = (int)ar.AsyncState;
 
         PeerSession session = null;
@@ -152,7 +179,7 @@ public class PeerNetManager : Singleton<PeerNetManager>
 
             // 패킷 처리
             int processedBytes = ProcessPeerPackets(peerId);
-
+            
             if (processedBytes < 0 || !session.RecvBuffer.OnRead(processedBytes))
             {
                 DisconnectPeer(peerId, "Packet processing failed");
@@ -167,6 +194,7 @@ public class PeerNetManager : Singleton<PeerNetManager>
             DisconnectPeer(peerId, $"Peer recv error: {ex.Message}");
         }
     }
+    #endregion
 
     private int ProcessPeerPackets(int peerId)
     {
@@ -183,22 +211,37 @@ public class PeerNetManager : Singleton<PeerNetManager>
         {
             int dataSize = session.RecvBuffer.DataSize - processedBytes;
             if (dataSize < PacketHeader.HeaderSize)
+            {
+                Debug.Log($"[PeerNetManager] Not enough data for header: dataSize={dataSize}");
                 break;
+            }
 
             ArraySegment<byte> buffer = session.RecvBuffer.GetReadSegment();
             PacketHeader header = PacketHeader.FromBytes(buffer.Array, buffer.Offset + processedBytes);
 
+            Debug.Log($"[PeerNetManager] header.size={header.size}, header.id={header.id}, dataSize={dataSize}");
+
             if (dataSize < header.size)
+            {
+                Debug.Log($"[PeerNetManager] Not enough data for full packet: header.size={header.size}, dataSize={dataSize}");
                 break;
+            }
 
             byte[] packetData = new byte[header.size - PacketHeader.HeaderSize];
             Array.Copy(buffer.Array, buffer.Offset + processedBytes + PacketHeader.HeaderSize,
                 packetData, 0, packetData.Length);
 
-            // ★ 핵심: PeerPacketHandler로 전달
             MainThreadDispatcher.Enqueue(() =>
             {
-                PeerPacketHandler.Instance.HandlePeerPacket(peerId, (PacketId)header.id, packetData);
+                Debug.Log($"[PeerNetManager] HandlePeerPacket called: peerId={peerId}, packetId={header.id}, dataLen={packetData.Length}");
+                try
+                {
+                    PeerPacketHandler.Instance.HandlePeerPacket(peerId, (PacketId)header.id, packetData);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[PeerNetManager] HandlePeerPacket exception: {ex}");
+                }
             });
 
             processedBytes += header.size;
@@ -248,5 +291,80 @@ public class PeerNetManager : Singleton<PeerNetManager>
         Debug.Log($"Peer disconnected. peerId={peerId}, reason={reason}");
     }
 
+    #endregion
+
+    #region Host Broadcast
+    public void BroadcastToPeers(int senderPeerId, PacketId packetId, IMessage packet, bool includeSender = false)
+    {
+        byte[] sendBuffer = BuildPacketBuffer(packetId, packet);
+
+        List<PeerSession> targets = new List<PeerSession>();
+        lock (_peerLock)
+        {
+            foreach (var kv in _peerSessions)
+            {
+                if (!includeSender && kv.Key == senderPeerId)
+                    continue;
+
+                targets.Add(kv.Value);
+            }
+        }
+
+        foreach (PeerSession session in targets)
+        {
+            TrySendToPeer(session, sendBuffer);
+        }
+    }
+
+    private byte[] BuildPacketBuffer(PacketId packetId, IMessage packet)
+    {
+        byte[] body = packet.ToByteArray();
+        byte[] buffer = new byte[4 + body.Length];
+
+        Array.Copy(BitConverter.GetBytes((ushort)(4 + body.Length)), 0, buffer, 0, 2);
+        Array.Copy(BitConverter.GetBytes((ushort)packetId), 0, buffer, 2, 2);
+        Array.Copy(body, 0, buffer, 4, body.Length);
+
+        return buffer;
+    }
+
+    private void TrySendToPeer(PeerSession session, byte[] sendBuffer)
+    {
+        try
+        {
+            session.Socket.BeginSend(sendBuffer, 0, sendBuffer.Length, SocketFlags.None, OnPeerSendCallback, session.PeerId);
+        }
+        catch (Exception ex)
+        {
+            DisconnectPeer(session.PeerId, $"Peer send register error: {ex.Message}");
+        }
+    }
+
+    private void OnPeerSendCallback(IAsyncResult ar)
+    {
+        int peerId = (int)ar.AsyncState;
+        PeerSession session = null;
+
+        lock (_peerLock)
+        {
+            _peerSessions.TryGetValue(peerId, out session);
+        }
+
+        if (session == null)
+            return;
+
+        try
+        {
+            int bytesSent = session.Socket.EndSend(ar);
+            if (bytesSent <= 0)
+            {
+                DisconnectPeer(peerId, "Peer send failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            DisconnectPeer(peerId, $"Peer send callback error: {ex.Message}");
+        }
+    }
     #endregion
 }

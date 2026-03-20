@@ -2,10 +2,23 @@ using UnityEngine;
 using Google.Protobuf;
 using Protocol;
 
-public class PacketHandler : Singleton<PacketHandler>
+public class PacketDispatcher : Singleton<PacketDispatcher>
 {
+    private bool IsHost()
+    {
+        return ConnectManager.Instance != null && ConnectManager.Instance.isHost;
+    }
+
+    private ulong GetLocalPlayerId()
+    {
+        // 로그인 후 세팅되는 값 사용
+        return (ulong)NetManager.Instance._playerId;
+    }
+
+
     // ==================== 높은 수준의 전송 메서드들 ====================
     NetManager net = NetManager.Instance;
+    PeerNetManager peerNet = PeerNetManager.Instance;
     public void SendLogin(string userId, string password)
     {
         C_LOGIN loginPacket = new C_LOGIN
@@ -19,13 +32,20 @@ public class PacketHandler : Singleton<PacketHandler>
 
     public void SendEnterGame(ulong playerIndex)
     {
-        C_ENTER_GAME enterGamePacket = new C_ENTER_GAME
+        Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
+        C_TEST_ENTER_GAME enterGamePacket = new C_TEST_ENTER_GAME
         {
             PlayerIndex = playerIndex
         };
 
-        //SendPacket(PacketId.PKT_C_ENTER_GAME, enterGamePacket);
+        //net.SendPacket(PacketId.PKT_C_ENTER_GAME, enterGamePacket);
+        //PeerNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
+        if (IsHost())
+        {
+            return;
+        }
         net.SendPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
+        ///peerNet.
     }
 
     public void SendChat(string message)
@@ -56,6 +76,20 @@ public class PacketHandler : Singleton<PacketHandler>
             W = rotation.w
         };
 
+        if (IsHost())
+        {
+            S_MOVE relay = new S_MOVE
+            {
+                PlayerId = GetLocalPlayerId(),
+                Pos = posInfo,
+                Rot = rotInfo
+            };
+
+            // senderPeerId는 호스트 자체를 의미하는 예약값(예: 0)
+            PeerNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_S_MOVE, relay);
+            return;
+        }
+
         C_MOVE movePacket = new C_MOVE
         {
             Pos = posInfo,
@@ -67,6 +101,18 @@ public class PacketHandler : Singleton<PacketHandler>
 
     public void SendAnimation(AnimState animState)
     {
+        if (IsHost())
+        {
+            S_PLAYER_ANIMATION relay = new S_PLAYER_ANIMATION
+            {
+                PlayerId = GetLocalPlayerId(),
+                State = (int)animState
+            };
+
+            PeerNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, relay);
+            return;
+        }
+
         C_PLAYER_ANIMATION animationPacket = new C_PLAYER_ANIMATION
         {
             State = (int)animState

@@ -8,13 +8,6 @@ using Protocol;
 using UnityEngine;
 using System.Threading;
 
-public class PeerSession
-{
-    public int PeerId { get; set; }
-    public Socket Socket { get; set; }
-    public RecvBuffer RecvBuffer { get; set; }
-}
-
 public class NetManager : Singleton<NetManager>
 {
     private Socket _socket; // 서버와의 연결을 위한 소켓 (데디케이트)
@@ -179,7 +172,7 @@ public class NetManager : Singleton<NetManager>
 
             MainThreadDispatcher.Enqueue(() =>
             {
-                PacketManager.Instance.HandlePacket((PacketId)header.id, packetData);
+                PacketHandler.Instance.HandlePacket((PacketId)header.id, packetData);
             });
 
             processedBytes += header.size;
@@ -197,7 +190,11 @@ public class NetManager : Singleton<NetManager>
     private void Send(ArraySegment<byte> packet)
     {
         if (!_isConnected)
+        {
+            Debug.LogWarning("Cannot send: not connected");
             return;
+        }
+            
 
         lock (_sendLock)
         {
@@ -235,6 +232,7 @@ public class NetManager : Singleton<NetManager>
         {
             // Scatter-Gather 전송
             _socket.BeginSend(segments, SocketFlags.None, OnSendCallback, segments);
+            Debug.Log($"Initiated send of {segments.Length} segments");
         }
         catch (Exception ex)
         {
@@ -293,8 +291,6 @@ public class NetManager : Singleton<NetManager>
             // 🔑 핵심: ArraySegment로 변환해서 Send 호출
             ArraySegment<byte> packet_segment = new ArraySegment<byte>(sendBuffer);
             Send(packet_segment);
-
-            Debug.Log($"Sent packet: {packetId}");
         }
         catch (Exception ex)
         {

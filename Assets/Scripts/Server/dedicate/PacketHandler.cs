@@ -3,7 +3,7 @@ using Google.Protobuf;
 using Protocol;
 using UnityEngine.SceneManagement;
 
-public class PacketManager : Singleton<PacketManager>
+public class PacketHandler : Singleton<PacketHandler>
 {
     // 이벤트
     public event System.Action<S_LOGIN> OnLoginResultEvent;

@@ -14,20 +14,26 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     void Start()
     {
-        PacketManager.Instance.OnPlayerListEvent += OnPlayerList;
-        PacketManager.Instance.OnPlayerEnterEvent += OnPlayerEnter;
-        PacketManager.Instance.OnPlayerLeaveEvent += OnPlayerLeave;
-        PacketManager.Instance.OnMoveEvent += OnPlayerMove;
-        PacketManager.Instance.OnEnterGameResultEvent += OnEnterGameResult;
-        PacketManager.Instance.OnAnimationEvent += OnAnim;
-        //PacketManager.Instance.OnStatEvent += OnPlayerStat;
-        PacketManager.Instance.OnItemAttached += OnItemAttached;
-        PacketManager.Instance.OnItemDetatched += OnItemDetatched;
-        //PacketManager.Instance.OnItemMoveEvent += OnItemMove;
-        //PacketManager.Instance.OnCraftTableEvent += OnCraftTableItemInstantiate;
+        PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
+        PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
+
+
+
+
+        PacketHandler.Instance.OnPlayerListEvent += OnPlayerList;
+        PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
+        PacketHandler.Instance.OnPlayerLeaveEvent += OnPlayerLeave;
+        PacketHandler.Instance.OnMoveEvent += OnPlayerMove;
+        PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
+        PacketHandler.Instance.OnAnimationEvent += OnAnim;
+        //PacketHandler.Instance.OnStatEvent += OnPlayerStat;
+        PacketHandler.Instance.OnItemAttached += OnItemAttached;
+        PacketHandler.Instance.OnItemDetatched += OnItemDetatched;
+        //PacketHandler.Instance.OnItemMoveEvent += OnItemMove;
+        //PacketHandler.Instance.OnCraftTableEvent += OnCraftTableItemInstantiate;
 
         // 서버에 ENTER_GAME 패킷 전송 (게임 입장 요청)
-        PacketHandler.Instance.SendEnterGame((ulong)NetManager.Instance._playerId);
+        //PacketHandler.Instance.SendEnterGame((ulong)NetManager.Instance._playerId);
         // 로컬 플레이어 생성
         //SpawnLocalPlayer();
     }
@@ -40,23 +46,66 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     void OnDestroy()
     {
-        PacketManager.Instance.OnPlayerListEvent -= OnPlayerList;
-        PacketManager.Instance.OnPlayerEnterEvent -= OnPlayerEnter;
-        PacketManager.Instance.OnPlayerLeaveEvent -= OnPlayerLeave;
-        PacketManager.Instance.OnMoveEvent -= OnPlayerMove;
-        PacketManager.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
-        PacketManager.Instance.OnAnimationEvent -= OnAnim;
-        //PacketManager.Instance.OnStatEvent -= OnPlayerStat;
-        PacketManager.Instance.OnItemAttached -= OnItemAttached;
-        PacketManager.Instance.OnItemDetatched -= OnItemDetatched;
-        //PacketManager.Instance.OnItemMoveEvent -= OnItemMove;
-        //PacketManager.Instance.OnCraftTableEvent -= OnCraftTableItemInstantiate;
+        PacketHandler.Instance.OnPlayerListEvent -= OnPlayerList;
+        PacketHandler.Instance.OnPlayerEnterEvent -= OnPlayerEnter;
+        PacketHandler.Instance.OnPlayerLeaveEvent -= OnPlayerLeave;
+        PacketHandler.Instance.OnMoveEvent -= OnPlayerMove;
+        PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
+        PacketHandler.Instance.OnAnimationEvent -= OnAnim;
+        //PacketHandler.Instance.OnStatEvent -= OnPlayerStat;
+        PacketHandler.Instance.OnItemAttached -= OnItemAttached;
+        PacketHandler.Instance.OnItemDetatched -= OnItemDetatched;
+        //PacketHandler.Instance.OnItemMoveEvent -= OnItemMove;
+        //PacketHandler.Instance.OnCraftTableEvent -= OnCraftTableItemInstantiate;
     }
     //private void SpawnLocalPlayer()
     //{
     //    _localPlayer = Instantiate(localPlayerPrefab, SpawnOffset.transform.position, Quaternion.identity);
     //    _localPlayer.name = "LocalPlayer";
     //}
+
+    private void OnPeerEnterGame(int peerId, C_TEST_ENTER_GAME packet)
+    {
+        // Peer 구조에서 입장 패킷을 받았을 때 S_PLAYER_ENTER를 직접 만들어서 OnPlayerEnter 호출
+        S_PLAYER_ENTER enterPacket = new S_PLAYER_ENTER
+        {
+            Player = new PlayerInfo
+            {
+                PlayerId = (ulong)peerId,
+                Name = "Peer", // packet.Name이 null이면 기본값
+                Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
+                Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
+            }
+        };
+        OnPlayerEnter(enterPacket);
+    }
+
+    private void OnPeerMove(int peerId, C_MOVE packet)
+    {
+        ulong playerId = (ulong)peerId;
+
+        // 내 플레이어는 무시 (이미 로컬에서 움직임)
+        if (playerId == (ulong)NetManager.Instance._playerId)
+            return;
+
+        if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+            {
+                Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+                Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+
+                remotePlayer.SetTargetPosition(pos, rot);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[PeerMove] Received move for unknown player: {playerId}");
+        }
+    }
+
+
     // 게임 입장 성공
     private void OnEnterGameResult(S_ENTER_GAME packet)
     {

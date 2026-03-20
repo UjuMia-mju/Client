@@ -32,6 +32,6 @@ public class LoginManager : SceneSingleton<LoginManager>
         Debug.Log($"저장됨 - ID: {inputId}, PW: {inputPw}");
 
         //TODO: 서버로 로그인 요청 보내기
-        TestConnectManager.Instance.SendLogin(inputId, inputPw);
+        ConnectManager.Instance.SendLogin(inputId, inputPw);
     }
 }
