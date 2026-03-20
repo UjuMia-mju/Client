@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+/// <summary>
+/// Scene 변경과 변경 시 Fade 연출
+/// </summary>
 public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 {
     [Header("페이드 설정")]

@@ -1,6 +1,9 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// PausePanel의 버튼 기능
+/// </summary>
 public class PausePanelController : MonoBehaviour
 {
     [SerializeField] private GameObject SettingsPanel;

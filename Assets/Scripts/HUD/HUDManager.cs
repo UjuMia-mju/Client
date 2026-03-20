@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 게임 내 HUD 및 UI 패널들의 생성, 제거, 연출을 관리합니다.
+/// 게임 내 HUD 및 UI 패널들의 생성, 제거, 연출을 관리
 /// </summary>
 public class HUDManager : MonoBehaviour
 {

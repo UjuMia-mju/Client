@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace Main.Panel
 {
+    /// <summary>
+    /// SettingsPanel의 Child Panel의 이동 연출 담당
+    /// </summary>
     public class SettingsPanelController : MonoBehaviour
     {
         [Header("Settings")]
