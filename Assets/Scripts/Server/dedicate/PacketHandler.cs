@@ -2,21 +2,22 @@
 using Google.Protobuf;
 using Protocol;
 using UnityEngine.SceneManagement;
+using System;
 
 public class PacketHandler : Singleton<PacketHandler>
 {
     // 이벤트
-    public event System.Action<S_LOGIN> OnLoginResultEvent;
-    public event System.Action<S_ENTER_GAME> OnEnterGameResultEvent;
-    public event System.Action<S_PLAYER_LIST> OnPlayerListEvent;
-    public event System.Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
-    public event System.Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
-    public event System.Action<S_MOVE> OnMoveEvent;
-    public event System.Action<S_CHAT> OnChatEvent;
-    public event System.Action<S_PLAYER_ANIMATION> OnAnimationEvent;
-    public event System.Action<S_PLAYER_STAT> OnStatEvent;
-    public event System.Action<S_OBJECT_PICKUP> OnItemAttached;
-    public event System.Action<S_OBJECT_DROP> OnItemDetatched;
+    public event Action<S_LOGIN> OnLoginResultEvent;
+    public event Action<S_ENTER_GAME> OnEnterGameResultEvent;
+    public event Action<S_PLAYER_LIST> OnPlayerListEvent;
+    public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
+    public event Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
+    public event Action<S_MOVE> OnMoveEvent;
+    public event Action<S_CHAT> OnChatEvent;
+    public event Action<S_PLAYER_ANIMATION> OnAnimationEvent;
+    public event Action<S_PLAYER_STAT> OnStatEvent;
+    public event Action<S_OBJECT_PICKUP> OnItemAttached;
+    public event Action<S_OBJECT_DROP> OnItemDetatched;
     //public event System.Action<S_OBJECT_MOVE> OnItemMoveEvent;
     //public event System.Action<S_WORKBENCH_LIST> OnCraftTableEvent;
 
@@ -88,6 +89,12 @@ public class PacketHandler : Singleton<PacketHandler>
         {
             Debug.LogError("✗ Login Failed!");
         }
+    }
+
+    public void OnDisconnected()
+    {
+        Debug.Log("서버와의 연결이 해제되었습니다.");
+        // TODO: UI 갱신, 재접속 안내, 게임 상태 초기화 등 필요한 작업 추가
     }
 
     private void HandleEnterGameResult(byte[] data)
