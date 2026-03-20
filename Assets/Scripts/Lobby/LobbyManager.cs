@@ -30,9 +30,6 @@ public class LobbyManager : MonoBehaviour
     {
         Debug.Log("모두 레디 완료");
 
-        // // 플레이어들의 초기 위치와 크기를 기억할 배열 준비
-        // Vector3[] startPositions = new Vector3[players.Length];
-        // Vector3[] startScales = new Vector3[players.Length];
 
         // 1. 씬에 있는 모든 플레이어 찾기 (Player태그)
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -90,6 +87,8 @@ public class LobbyManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f); 
 
         Debug.Log("인게임 씬으로 넘어갑니다.");
+        // 우주선 연출이 끝난 뒤 인게임 씬으로 전환.
+        SceneLoader.Instance.LoadScene(Define.Scene.GAME);
     }
 
     /// <summary>기존에 스폰된 로비 플레이어를 모두 제거합니다. (방 입장 시 S_ENTER_ROOM 처리 전 초기화용)</summary>
