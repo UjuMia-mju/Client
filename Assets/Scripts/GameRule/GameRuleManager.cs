@@ -3,12 +3,22 @@ using System.Collections;
 
 public class GameRuleManager : MonoBehaviour
 {
+    public static GameRuleManager Instance { get; private set; }
     private float timerDuration = 10f;
     private float remainingTime;
 
     void Start()
     {
-        StartCoroutine(StartTimer());
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+            StartCoroutine(StartTimer());
     }
 
     IEnumerator StartTimer()
@@ -30,5 +40,10 @@ public class GameRuleManager : MonoBehaviour
     {
         // 타이머가 끝났을 때 실행할 로직
         Debug.Log("게임 규칙 실행!");
+    }
+
+    public float RemainingTime()
+    {
+        return remainingTime;
     }
 }
