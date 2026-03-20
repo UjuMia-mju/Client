@@ -46,21 +46,28 @@ public class HUDManager : MonoBehaviour
             ClosePanel();
         }
     }
-    
+
     /// <summary>
-    /// 새로운 HUD 패널을 생성하고 나타나는 연출을 실행합니다.
+    /// 새로운 HUD 패널을 생성하고 나타나는 연출을 실행
     /// </summary>
-    public void OpenPanel(GameObject prefab)
+    public void OpenPanel(GameObject prefab, Vector3 customScale)
     {
         if (prefab == null) return;
-        
+
+        // 이미 열려있는 패널이 있다면 제거 (교체 로직)
         if (currentActivePanel != null)
         {
-            Destroy(currentActivePanel); 
+            Destroy(currentActivePanel);
         }
 
         currentActivePanel = Instantiate(prefab, transform);
-        StartCoroutine(FadeInSequence(currentActivePanel));
+        StartCoroutine(FadeInSequence(currentActivePanel, customScale));
+    }
+
+    // 매개변수 1개인 경우 오버로딩
+    public void OpenPanel(GameObject prefab)
+    {
+        OpenPanel(prefab, Vector3.one);
     }
 
     /// <summary>
@@ -76,15 +83,11 @@ public class HUDManager : MonoBehaviour
 
     #region UI Animations (Coroutines)
 
-    private IEnumerator FadeInSequence(GameObject panel)
+    private IEnumerator FadeInSequence(GameObject panel, Vector3 target)
     {
         isTransitioning = true;
+        CanvasGroup cg = panel.GetComponent<CanvasGroup>() ?? panel.AddComponent<CanvasGroup>();
 
-        // Alpha 조절을 위해 CanvasGroup 확인 및 추가
-        CanvasGroup cg = panel.GetComponent<CanvasGroup>();
-        if (cg == null) cg = panel.AddComponent<CanvasGroup>();
-
-        // 초기 상태 설정
         cg.alpha = 0f;
         panel.transform.localScale = Vector3.zero;
 
@@ -95,12 +98,12 @@ public class HUDManager : MonoBehaviour
             float t = Mathf.SmoothStep(0, 1, elapsed / animDuration);
 
             cg.alpha = Mathf.Lerp(0f, 1f, t);
-            panel.transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, t);
+            // 여기서 매개변수로 받은 target을 사용합니다.
+            panel.transform.localScale = Vector3.Lerp(Vector3.zero, target, t);
             yield return null;
         }
 
-        cg.alpha = 1f;
-        panel.transform.localScale = targetScale;
+        panel.transform.localScale = target;
         isTransitioning = false;
     }
 

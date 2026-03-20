@@ -687,6 +687,7 @@ GameObject:
   - component: {fileID: 3708536042140785887}
   - component: {fileID: 1522259309930924737}
   - component: {fileID: 1040295476694342672}
+  - component: {fileID: 3123150609807397599}
   m_Layer: 5
   m_Name: PausePanel
   m_TagString: Untagged
@@ -790,6 +791,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PausePanelController
   SettingsPanel: {fileID: 90857599718438145, guid: 3b5d8472ed4ee034bb2cc1c12911edba, type: 3}
+--- !u!225 &3123150609807397599
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6091618347145964930}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8784017614473743548
 GameObject:
   m_ObjectHideFlags: 0

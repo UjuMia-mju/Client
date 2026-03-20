@@ -9,7 +9,11 @@ public class PausePanelController : MonoBehaviour
     public void OnSettingsButtonClicked()
     {
         var hud = Object.FindFirstObjectByType<HUDManager>();
-        hud.OpenPanel(SettingsPanel);
+        if (hud != null)
+        {
+            // 생성과 동시에 목표 크기를 넘겨줍니다.
+            hud.OpenPanel(SettingsPanel, new Vector3(2f, 2f, 1f));
+        }
     }
 
     public void OnMainMenuButtonClicked()
