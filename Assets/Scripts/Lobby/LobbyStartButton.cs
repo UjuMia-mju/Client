@@ -10,7 +10,7 @@ using Protocol;
 public class LobbyStartButton : MonoBehaviour
 {
     [SerializeField] private Button startButton;
-    [SerializeField] private LobbyManager lobbyManager; // 우주선 연출용 (옵션)
+    [SerializeField] private LobbyManager lobbyManager; // 우주선 연출용
 
     private void OnEnable()
     {
