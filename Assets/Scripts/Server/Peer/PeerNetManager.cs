@@ -430,6 +430,7 @@ public class PeerNetManager : Singleton<PeerNetManager>
 
     private void Send(ArraySegment<byte> packet)
     {
+        bool needRegisterSend = false;
         if (!_isClientConnected || _hostSocket == null)
         {
             Debug.LogWarning("Cannot send: not connected to host");
@@ -443,8 +444,13 @@ public class PeerNetManager : Singleton<PeerNetManager>
             if (!_isSending)
             {
                 _isSending = true;
-                RegisterSend();
+                needRegisterSend = true;
             }
+        }
+
+        if (needRegisterSend)
+        {
+            RegisterSend();
         }
     }
 
@@ -481,6 +487,7 @@ public class PeerNetManager : Singleton<PeerNetManager>
 
     private void OnSendCallback(IAsyncResult ar)
     {
+        bool needRegisterSend = false;
         try
         {
             if (_hostSocket == null) return;
@@ -491,17 +498,21 @@ public class PeerNetManager : Singleton<PeerNetManager>
                 DisconnectFromHost("Send failed");
                 return;
             }
-
             lock (_sendLock)
             {
                 if (_sendQueue.Count > 0)
                 {
-                    RegisterSend();
+                    needRegisterSend = true;
                 }
                 else
                 {
                     _isSending = false;
                 }
+            }
+
+            if (needRegisterSend)
+            {
+                RegisterSend();
             }
         }
         catch (Exception ex)

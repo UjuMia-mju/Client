@@ -67,6 +67,7 @@ public class BaseNetSession
     #region send
     protected virtual void Send(ArraySegment<byte> packet)
     {
+        bool needRegisterSend = false;
         if (!_isConnected)
         {
             Debug.LogWarning("Cannot send: not connected");
@@ -80,8 +81,13 @@ public class BaseNetSession
             if (!_isSending)
             {
                 _isSending = true;
-                RegisterSend();
+                needRegisterSend = true;
             }
+        }
+
+        if (needRegisterSend)
+        {
+            RegisterSend();
         }
     }
 
@@ -119,6 +125,7 @@ public class BaseNetSession
 
     protected virtual void OnSendCallback(IAsyncResult ar)
     {
+        bool needRegisterSend = false;
         try
         {
             int bytesSent = _socket.EndSend(ar);
@@ -133,12 +140,16 @@ public class BaseNetSession
             {
                 if (_sendQueue.Count > 0)
                 {
-                    RegisterSend();
+                    needRegisterSend = true;
                 }
                 else
                 {
                     _isSending = false;
                 }
+            }
+            if (needRegisterSend)
+            {
+                RegisterSend();
             }
         }
         catch (Exception ex)
@@ -244,7 +255,7 @@ public class BaseNetSession
             // header parsing
             PacketHeader header = PacketHeader.FromBytes(buffer.Array, buffer.Offset + processedBytes);
 
-            if (dataSize < header.size)
+            if (dataSize < header.size || header.size <= 0)
             {
                 break;
             }
