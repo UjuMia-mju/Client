@@ -59,8 +59,7 @@ public class Crafting : MonoBehaviour
         // 리스트에 들어 있는 아이템 이름들을 문자열로 합치기
         string itemsText = string.Join(", ", craftItems.ConvertAll(item => item.name));
 
-        // 출력합니다.
-        // TODO : 추후 UI 담당하신 박지우님과 논의후 이것이 이미지로 표시가 가능해야 합니다. 현재는 디버그 로그로 대체합니다.
+
         Debug.Log("현재 조합대에 들어 있는 아이템들 : " + itemsText);
     }
 

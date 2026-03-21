@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// 유니티의 고유 시스템(Scene, Tag, Layer 등) 이름 관리
@@ -23,6 +24,7 @@ public static class Define
         public const string MAINBUTTON = "MainButton";
         public const string PICKAXE = "Pickaxe";
         public const string ORE = "Ore";
+        public const string FURNACE = "Furnace";
     }
 
     public static class Layer

@@ -173,6 +173,16 @@ public class Player : MovingObject
                 playerItemSystem.DetachItem();
             }
 
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로이며, 아이템을 들고 있을 때
+            // 또한 투입할 때 플레이어의 손에서 Detach
+            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isPlayerGetSomething)
+            {
+                Furnace furnace = nearestObject.GetComponent<Furnace>();
+                isPlayerGetSomething = false;
+                furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem);
+                playerItemSystem.DetachItem();
+            }
+
             // 그 외에는 처리하지 않음
         }
     }

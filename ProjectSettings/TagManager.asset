@@ -9,6 +9,7 @@ TagManager:
   - MainButton
   - Pickaxe
   - Ore
+  - Furnace
   layers:
   - Default
   - TransparentFX
