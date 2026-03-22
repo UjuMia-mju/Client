@@ -54,13 +54,14 @@ public class LobbyStartButton : MonoBehaviour
 
         Debug.Log("[LobbyStartButton] 시작 성공. 인게임으로 전환합니다.");
 
-        // (옵션) 로비 연출부터 실행하고, 연출이 끝나면 Scene 전환되도록 LobbyManager를 수정해 둔 경우에만 사용.
-        // 현재 LobbyManager가 연출만 담당하고 씬 전환을 하지 않으면 아래 씬 전환이 즉시 수행됩니다.
+        // LobbyManager: 전원 레디 검사 후에만 우주선 연출 → 연출 끝에 씬 전환
         if (lobbyManager != null)
-            lobbyManager.OnAllPlayersReady();
+        {
+            // 서버가 이미 시작 조건을 통과시킨 응답이므로 여기서는 레디 재검사 생략
+            lobbyManager.OnAllPlayersReady(skipReadyValidation: true);
+            return;
+        }
 
-        // 로비 연출과 무관하게 일단 인게임 씬으로 전환.
-        // (우주선 연출이 끝난 후 전환 로직을 넣고 싶으면 LobbyManager 쪽에서 처리하세요.)
         SceneLoader.Instance.LoadScene(Define.Scene.GAME);
     }
 }
