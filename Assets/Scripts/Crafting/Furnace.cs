@@ -21,7 +21,7 @@ public class Furnace : MonoBehaviour
     private const float ITEM_THROW_FORCE = 200f;
     private const float SMELTING_TIME = 1f;
 
-    private float remainingTime;
+    private float remainingTime = 0;
 
     private string targetItemKey;
     private Coroutine smeltingCoroutine = null;
@@ -35,29 +35,31 @@ public class Furnace : MonoBehaviour
             Debug.Log("해당 객체가 아이템이 아니거나 용광로가 작동 중입니다.");
             return false;
         }
-
-        Debug.Log("용광로실행");
-
-        // 리스트에서 해당 아이템의 smeltTime 찾기
-        // 리스트에서 해당 아이템의 smeltTime 찾기
-        SmeltedItemData smeltedData = smeltedItemList.Find(
-            item => item.originalItemPrefab != null
-                 && item.itemSmeltKey == data.GetComponent<Items>().itemSmeltKey
-        );
-
-
-        if (smeltedData != null)
-        {
-            targetItemKey = smeltedData.itemSmeltKey;
-            smeltingCoroutine = StartCoroutine(Smelt(smeltedData.smeltTime));
-            Destroy(data); // 원본 아이템 제거
-            return true;
-        }
-
         else
         {
-            Debug.Log("해당 아이템에 대한 SmeltedItemData가 없습니다: ");
-            return false;
+            Debug.Log("용광로실행");
+
+            // 리스트에서 해당 아이템의 smeltTime 찾기
+            // 리스트에서 해당 아이템의 smeltTime 찾기
+            SmeltedItemData smeltedData = smeltedItemList.Find(
+                item => item.originalItemPrefab != null
+                     && item.itemSmeltKey == data.GetComponent<Items>().itemSmeltKey
+            );
+
+
+            if (smeltedData != null)
+            {
+                targetItemKey = smeltedData.itemSmeltKey;
+                smeltingCoroutine = StartCoroutine(Smelt(smeltedData.smeltTime));
+                Destroy(data); // 원본 아이템 제거
+                return true;
+            }
+
+            else
+            {
+                Debug.Log("해당 아이템에 대한 SmeltedItemData가 없습니다: ");
+                return false;
+            }
         }
     }
 
