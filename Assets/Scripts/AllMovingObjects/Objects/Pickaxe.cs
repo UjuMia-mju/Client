@@ -11,7 +11,7 @@ public class Pickaxe : Items
 
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         // 부모 이름이 "Socket"이면 내가 손에 들고 있는 상태라고 판단
         if (transform.parent != null && transform.parent.name == SOCKET)
