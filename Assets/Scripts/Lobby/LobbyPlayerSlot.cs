@@ -11,6 +11,9 @@ public class LobbyPlayerSlot : MonoBehaviour
     [SerializeField] private TMP_Text nameLabel;       // 플레이어 이름 표시용 (오브젝트명 "Name")
     [SerializeField] private TMP_Text readyStateLabel; // "Ready" 텍스트 (오브젝트명 "ReadyState")
 
+    /// <summary>현재 레디 UI/상태 (S_READY·입장 시 SetReady로 갱신)</summary>
+    public bool IsReady { get; private set; }
+
     private void Awake()
     {
         if (nameLabel == null || readyStateLabel == null)
@@ -43,6 +46,7 @@ public class LobbyPlayerSlot : MonoBehaviour
     /// <summary>레디 상태 표시를 켜거나 끕니다.</summary>
     public void SetReady(bool ready)
     {
+        IsReady = ready;
         if (readyStateLabel == null) ResolveLabels();
         if (readyStateLabel != null)
             readyStateLabel.gameObject.SetActive(ready);
