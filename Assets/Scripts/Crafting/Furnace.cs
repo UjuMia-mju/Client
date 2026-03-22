@@ -12,26 +12,25 @@ public class SmeltedItemData
     public float smeltTime;
 }
 
-
 public class Furnace : MonoBehaviour
 {
     // Inspector에서 프리팹들을 등록
     [SerializeField] private List<SmeltedItemData> smeltedItemList;
 
-    private const float ITEM_THROW_HEIGHT = 5.5f;
+    private const float ITEM_THROW_HEIGHT = 3.5f;
     private const float ITEM_THROW_FORCE = 200f;
     private const float SMELTING_TIME = 1f;
 
     private float remainingTime;
-    private bool isSmelting = false;
 
     private string targetItemKey;
+    private Coroutine smeltingCoroutine = null;
 
     // 플레이어가 아이템을 넣을 때 호출
     // 만약 조작을 했을 때 아이템을 넣을 상태가 아니라면, bool을 반환해 현재 상태를 알려야 플레이어가 자기가 아이템을 들고 있는지를 정확하게 판단할 수 있습니다.
     public bool AddSmeltTargetItem(GameObject data)
     {
-        if (!data.CompareTag(Define.Tag.ITEM) || isSmelting)
+        if (!data.CompareTag(Define.Tag.ITEM) || smeltingCoroutine != null)
         {
             Debug.Log("해당 객체가 아이템이 아니거나 용광로가 작동 중입니다.");
             return false;
@@ -50,8 +49,7 @@ public class Furnace : MonoBehaviour
         if (smeltedData != null)
         {
             targetItemKey = smeltedData.itemSmeltKey;
-            isSmelting = true;
-            StartCoroutine(Smelt(smeltedData.smeltTime));
+            smeltingCoroutine = StartCoroutine(Smelt(smeltedData.smeltTime));
             Destroy(data); // 원본 아이템 제거
             return true;
         }
@@ -75,13 +73,13 @@ public class Furnace : MonoBehaviour
             remainingTime -= 1f;
         }
         ThrowSmeltedItem();
+        smeltingCoroutine = null;
     }
 
     public void ThrowSmeltedItem()
     {
         if (targetItemKey == null)
         {
-            Debug.Log("targetItem이 설정되지 않았습니다.");
             return;
         }
 
@@ -91,7 +89,6 @@ public class Furnace : MonoBehaviour
 
         if (smelted == null)
         {
-            Debug.Log("결과 프리팹을 찾을 수 없습니다: ");
             return;
         }
 
@@ -102,16 +99,12 @@ public class Furnace : MonoBehaviour
         Rigidbody rb = itemToThrow.GetComponent<Rigidbody>();
         if (rb == null)
         {
-            Debug.LogWarning(itemToThrow.name + "에 Rigidbody가 없습니다.");
             return;
         }
 
         // 위치와 힘 적용
         itemToThrow.transform.position = this.transform.position + this.transform.up * ITEM_THROW_HEIGHT;
         rb.AddForce((this.transform.up + this.transform.forward) * ITEM_THROW_FORCE);
-
-        isSmelting = false;
-        Debug.Log("던진 아이템 이름 : " + itemToThrow.name);
 
     }
 
