@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditorInternal.VersionControl;
 using UnityEngine;
 
 
@@ -25,12 +24,16 @@ public class Furnace : MonoBehaviour
     private const float SMELTING_TIME = 1f;
 
     private float remainingTime;
+    private bool isSmelting = false;    
 
     // 플레이어가 아이템을 넣을 때 호출
     public void AddSmeltTargetItem(GameObject data)
     {
-        if (!data.CompareTag(Define.Tag.ITEM))
+        if (!data.CompareTag(Define.Tag.ITEM) || isSmelting)
+        {
+            Debug.Log("해당 객체가 아이템이 아니거나 용광로가 작동 중입니다.");
             return;
+        }
 
         targetItemName = data.name; // 이름 저장
 
@@ -40,14 +43,14 @@ public class Furnace : MonoBehaviour
         if (smeltedData != null)
         {
             // 코루틴 시작
+            isSmelting = true;
             StartCoroutine(Smelt(smeltedData.smeltTime));
+            Destroy(data); // 원본 아이템 제거
         }
         else
         {
             Debug.Log("해당 아이템에 대한 SmeltedItemData가 없습니다: " + targetItemName);
         }
-
-        Destroy(data); // 원본 아이템 제거
     }
 
 
@@ -61,7 +64,7 @@ public class Furnace : MonoBehaviour
             yield return new WaitForSeconds(SMELTING_TIME);
             remainingTime -= 1f;
         }
-
+        isSmelting = false;
         ThrowSmeltedItem();
     }
 

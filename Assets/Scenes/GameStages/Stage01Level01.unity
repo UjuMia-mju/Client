@@ -435,8 +435,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Furnace
   smeltedItemList:
-  - prefab: {fileID: 0}
-    smeltTime: 0
+  - originalItemPrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+    smeltedPrefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
+    smeltTime: 3
 --- !u!1 &377323709
 GameObject:
   m_ObjectHideFlags: 0
