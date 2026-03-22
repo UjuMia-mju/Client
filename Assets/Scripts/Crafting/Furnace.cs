@@ -38,11 +38,11 @@ public class Furnace : MonoBehaviour
         targetItemName = data.name; // 이름 저장
 
         // 리스트에서 해당 아이템의 smeltTime 찾기
-        SmeltedItemData smeltedData = smeltedItemList.Find(item => item.originalItemPrefab != null && item.originalItemPrefab.name == targetItemName);
+        SmeltedItemData smeltedData = smeltedItemList.Find(item => item.originalItemPrefab != null && targetItemName.Contains(item.originalItemPrefab.name));
 
         if (smeltedData != null)
         {
-            // 코루틴 시작
+            // 코루틴 시작-
             isSmelting = true;
             StartCoroutine(Smelt(smeltedData.smeltTime));
             Destroy(data); // 원본 아이템 제거
@@ -78,7 +78,7 @@ public class Furnace : MonoBehaviour
 
         // targetItemName으로 대응되는 결과 프리팹 찾기
         SmeltedItemData smelted = smeltedItemList.Find(item =>
-            item.originalItemPrefab != null && item.originalItemPrefab.name == targetItemName);
+            item.originalItemPrefab != null && targetItemName.Contains(item.originalItemPrefab.name));
 
         if (smelted == null)
         {

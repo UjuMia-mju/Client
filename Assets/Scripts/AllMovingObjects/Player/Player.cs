@@ -175,15 +175,14 @@ public class Player : MovingObject
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로이며, 아이템을 들고 있을 때
             // 또한 투입할 때 플레이어의 손에서 Detach
-            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isPlayerGetSomething)
+            else if (nearestObject.CompareTag(Define.Tag.FURNACE) && isPlayerGetSomething)
             {
+                Debug.Log("용광로에 아이템 투입");
                 Furnace furnace = nearestObject.GetComponent<Furnace>();
                 isPlayerGetSomething = false;
                 furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem);
                 playerItemSystem.DetachItem();
             }
-
-            // 그 외에는 처리하지 않음
         }
     }
 
@@ -225,7 +224,7 @@ public class Player : MovingObject
 
         foreach (Collider col in colliders)
         {
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE))
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE))
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)
