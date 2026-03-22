@@ -14,11 +14,7 @@ public class PeerSession
     public RecvBuffer RecvBuffer { get; set; }
 }
 
-
-// 호스트가 피어로부터 받은 패킷을 처리하는 클래스
-// NetManager의 피어 receive 루프에서 호출됨
-// 각 C_ 패킷에 대한 이벤트를 정의하여 게임 로직에서 구독할 수 있도록 함
-// 예: 플레이어 이동, 채팅 메시지, 애니메이션 상태 변경, 아이템 상호작용 등
+// PeerNetManager는 클라이언트가 호스트에 접속할 때 사용되는 네트워크 매니저입니다.
 public class PeerNetManager : BaseNetSession
 {
     // singleton

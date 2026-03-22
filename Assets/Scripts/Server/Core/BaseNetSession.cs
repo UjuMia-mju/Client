@@ -284,7 +284,9 @@ public class BaseNetSession
     public virtual void Disconnect(string reason)
     {
         if (!_isConnected)
+        {
             return;
+        }
 
         _isConnected = false;
         Debug.Log($"Disconnected: {reason}");

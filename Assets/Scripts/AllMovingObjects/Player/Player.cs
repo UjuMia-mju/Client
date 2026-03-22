@@ -209,6 +209,11 @@ public class Player : MovingObject
 
         foreach (Collider col in colliders)
         {
+            if (col == null)
+            {
+                Debug.Log("콜라이더 null 감지");
+                continue;
+            }
             if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE))
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);

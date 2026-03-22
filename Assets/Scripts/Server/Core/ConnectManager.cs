@@ -27,7 +27,7 @@ public class ConnectManager : SceneSingleton<ConnectManager>
             var player = FindFirstObjectByType<Player>();
             if (player != null)
             {
-                player.OnNetworkReady();
+                //player.OnNetworkReady();
             }
         }
     }

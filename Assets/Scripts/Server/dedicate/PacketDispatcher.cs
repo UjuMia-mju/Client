@@ -1,8 +1,28 @@
 using UnityEngine;
 using Protocol;
 
+
+/// <summary>
+///  프로토콜 메시지를 패킷으로 변환하여 NetManager 또는 PeerNetManager를 통해 전송하는 클래스
+///  한마디로 서버에 보낼건지, 호스트한테 보낼건지 네트워크 경로를 지정해줌.
+/// </summary>
 public class PacketDispatcher : Singleton<PacketDispatcher>
 {
+
+    // 재사용 가능한 패킷 객체들 (값이 자주 바뀌는 패킷들은 매번 새로 생성하지 않고 재사용)
+    // 이동 패킷
+    private readonly PosInfo _movePosInfo = new PosInfo();
+    private readonly RotInfo _moveRotInfo = new RotInfo();
+    private readonly C_MOVE _movePacket = new C_MOVE();
+    private readonly S_MOVE _relayMove = new S_MOVE();
+
+    private Vector3 _lastSentPos;
+    private Quaternion _lastSentRot;
+
+    // 애니메이션 패킷
+    private readonly S_PLAYER_ANIMATION _relayAnim = new S_PLAYER_ANIMATION();
+    private readonly C_PLAYER_ANIMATION _animPacket = new C_PLAYER_ANIMATION();
+
     private bool IsHost()
     {
         return ConnectManager.Instance != null && ConnectManager.Instance.isHost;
@@ -13,13 +33,13 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         // 로그인 후 세팅되는 값 사용
         return (ulong)NetManager.Instance._playerId;
     }
-
-    // ==================== 높은 수준의 전송 메서드들 ====================
     NetManager net = NetManager.Instance;
     PeerNetManager peerNet = PeerNetManager.Instance;
+    HostNetManager hostNet = HostNetManager.Instance;
+
+    #region To Dedicate Server
     public void SendLogin(string userId, string password)
     {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         C_LOGIN loginPacket = new C_LOGIN
         {
             UserId = userId,
@@ -28,10 +48,13 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
         net.SendPacket(PacketId.PKT_C_LOGIN, loginPacket);
     }
+    #endregion
+
+
+    #region To Host
 
     public void SendEnterGame(ulong playerIndex)
     {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
         
         if (IsHost())
@@ -48,202 +71,200 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             peerNet.SendPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
         }
     }
+   
 
     public void SendChat(string message)
     {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
-        C_CHAT chatPacket = new C_CHAT
-        {
-            Msg = message
-        };
-
-        net.SendPacket(PacketId.PKT_C_CHAT, chatPacket);
-    }
-
-    public void SendMove(Vector3 position, Quaternion rotation)
-    {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
-        PosInfo posInfo = new PosInfo
-        {
-            X = position.x,
-            Y = position.y,
-            Z = position.z
-        };
-
-        // 이 부분에서 쿼터니언이 오일러각으로 변환되고 있었습니다. 해당 부분을 수정했습니다.
-        RotInfo rotInfo = new RotInfo
-        {
-            X = rotation.x,
-            Y = rotation.y,
-            Z = rotation.z,
-            W = rotation.w
-        };
-
         if (IsHost())
         {
-            S_MOVE relay = new S_MOVE
-            {
-                PlayerId = GetLocalPlayerId(),
-                Pos = posInfo,
-                Rot = rotInfo
-            };
-
-            // senderPeerId는 호스트 자체를 의미하는 예약값(예: 0)
-            HostNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_S_MOVE, relay);
             return;
         }
         else
         {
-            C_MOVE movePacket = new C_MOVE
+            C_CHAT chatPacket = new C_CHAT
             {
-                Pos = posInfo,
-                Rot = rotInfo
+                Msg = message
             };
 
-            peerNet.SendPacket(PacketId.PKT_C_MOVE, movePacket);
+            peerNet.SendPacket(PacketId.PKT_C_CHAT, chatPacket);
+        }
+        
+    }
+
+    public void SendMove(Vector3 position, Quaternion rotation)
+    {
+        // 값이 바뀌지 않았으면 전송하지 않음
+        if (position == _lastSentPos && rotation == _lastSentRot)
+        {
+            return;
+        }
+
+
+        _lastSentPos = position;
+        _lastSentRot = rotation;
+
+        _movePosInfo.X = position.x;
+        _movePosInfo.Y = position.y;
+        _movePosInfo.Z = position.z;
+
+        _moveRotInfo.X = rotation.x;
+        _moveRotInfo.Y = rotation.y;
+        _moveRotInfo.Z = rotation.z;
+        _moveRotInfo.W = rotation.w;
+
+        if (IsHost())
+        {
+            _relayMove.PlayerId = GetLocalPlayerId();
+            _relayMove.Pos = _movePosInfo;
+            _relayMove.Rot = _moveRotInfo;
+            hostNet.BroadcastToPeers(0, PacketId.PKT_S_MOVE, _relayMove);
+        }
+        else
+        {
+            _movePacket.Pos = _movePosInfo;
+            _movePacket.Rot = _moveRotInfo;
+            peerNet.SendPacket(PacketId.PKT_C_MOVE, _movePacket);
         }
     }
 
     public void SendAnimation(AnimState animState)
     {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         if (IsHost())
         {
-            S_PLAYER_ANIMATION relay = new S_PLAYER_ANIMATION
-            {
-                PlayerId = GetLocalPlayerId(),
-                State = (int)animState
-            };
+            _relayAnim.PlayerId = GetLocalPlayerId();
+            _relayAnim.State = (int)animState;
+            hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, _relayAnim);
+        }
+        else
+        {
+            _animPacket.State = (int)animState;
+            peerNet.SendPacket(PacketId.PKT_C_PLAYER_ANIMATION, _animPacket);
+        }
+    }
 
-            HostNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, relay);
+    public void SendItemAttached(Items itemData)
+    {
+        if (IsHost())
+        {
             return;
         }
         else
         {
-            C_PLAYER_ANIMATION animationPacket = new C_PLAYER_ANIMATION
+            C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
             {
-                State = (int)animState
+                ObjectId = new ObjectId
+                {
+                    Type = ObjectType.Item,
+                    ItemId = (ulong)itemData.itemId
+                }
             };
-            peerNet.SendPacket(PacketId.PKT_C_PLAYER_ANIMATION, animationPacket);
+            net.SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
         }
-    }
-
-    // 패킷 보내는거 배치파일 실행해서 코드 자동생성 해야 함. 지금 안 됨.
-    //public void SendPlayerStat(int hpData, float oxygenData)
-    //{
-    //    C_PLAYER_STAT_EVENT statPacket = new C_PLAYER_STAT_EVENT
-    //    {
-    //        Hp = hpData,
-    //        Oxygen = oxygenData
-    //    };
-    //    SendPacket(PacketId.PKT_C_PLAYER_STAT_EVENT, statPacket);
-    //}
-
-    public void SendItemAttached(Items itemData)
-    {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
-        C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
-        {
-            ObjectId = new ObjectId
-            {
-                Type = ObjectType.Item,
-                ItemId = (ulong)itemData.itemId
-            }
-        };
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
     }
 
     public void SendItemDetatched(Items itemData)
     {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
-        C_OBJECT_DROP packet = new C_OBJECT_DROP
+        if (IsHost())
         {
-            ObjectId = new ObjectId
+            return;
+        }
+        else
+        {
+            C_OBJECT_DROP packet = new C_OBJECT_DROP
             {
-                Type = ObjectType.Item,
-                ItemId = (ulong)itemData.itemId
-            }
-        };
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
+                ObjectId = new ObjectId
+                {
+                    Type = ObjectType.Item,
+                    ItemId = (ulong)itemData.itemId
+                }
+            };
+            peerNet.SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
+        }
+        
     }
 
     public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
     {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
-        PosInfo posInfo = new PosInfo
+        if (IsHost())
         {
-            X = position.x,
-            Y = position.y,
-            Z = position.z
-        };
-
-        RotInfo rotInfo = new RotInfo
+            return;
+        }
+        else
         {
-            X = rotation.x,
-            Y = rotation.y,
-            Z = rotation.z,
-            W = rotation.w
-        };
+            PosInfo posInfo = new PosInfo
+            {
+                X = position.x,
+                Y = position.y,
+                Z = position.z
+            };
 
-        ObjectId objectId = new ObjectId
-        {
-            Type = ObjectType.Item,
-            ItemId = (ulong)itemId
-        };
+            RotInfo rotInfo = new RotInfo
+            {
+                X = rotation.x,
+                Y = rotation.y,
+                Z = rotation.z,
+                W = rotation.w
+            };
 
-        C_OBJECT_MOVE packet = new C_OBJECT_MOVE
-        {
-            ObjectId = objectId,
-            Pos = posInfo,
-            Rot = rotInfo
-        };
+            ObjectId objectId = new ObjectId
+            {
+                Type = ObjectType.Item,
+                ItemId = (ulong)itemId
+            };
 
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
+            C_OBJECT_MOVE packet = new C_OBJECT_MOVE
+            {
+                ObjectId = objectId,
+                Pos = posInfo,
+                Rot = rotInfo
+            };
+
+            peerNet.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
+        }
+        
     }
 
     public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation)
     {
-        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
-        PosInfo posInfo = new PosInfo
+        if (IsHost())
         {
-            X = position.x,
-            Y = position.y,
-            Z = position.z
-        };
-
-        RotInfo rotInfo = new RotInfo
+            return;
+        }        
+        else
         {
-            X = rotation.x,
-            Y = rotation.y,
-            Z = rotation.z,
-            W = rotation.w
-        };
+            PosInfo posInfo = new PosInfo
+            {
+                X = position.x,
+                Y = position.y,
+                Z = position.z
+            };
 
-        ObjectId objectId = new ObjectId
-        {
-            Type = ObjectType.Tool,
-            ToolType = data
-        };
+            RotInfo rotInfo = new RotInfo
+            {
+                X = rotation.x,
+                Y = rotation.y,
+                Z = rotation.z,
+                W = rotation.w
+            };
 
-        C_OBJECT_MOVE packet = new C_OBJECT_MOVE
-        {
-            ObjectId = objectId,
-            Pos = posInfo,
-            Rot = rotInfo
-        };
+            ObjectId objectId = new ObjectId
+            {
+                Type = ObjectType.Tool,
+                ToolType = data
+            };
 
-        net.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
+            C_OBJECT_MOVE packet = new C_OBJECT_MOVE
+            {
+                ObjectId = objectId,
+                Pos = posInfo,
+                Rot = rotInfo
+            };
+
+            peerNet.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
+        }
+        
     }
 
 
-    //public void SendCraftingList(List<string> data)
-    //{
-    //    C_WORKBENCH_LIST craftingListPacket = new C_WORKBENCH_LIST();
-    //    craftingListPacket.ItemNames.AddRange(data);
-    //    SendPacket(PacketId.PKT_C_WORKBENCH, craftingListPacket);
-    //}
-
-    /// <summary>
-    /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출
-    /// </summary>
+    #endregion
 }

@@ -14,8 +14,8 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     void Start()
     {
-        PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
-        PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
+        //PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
+        //PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
 
 
 
@@ -66,6 +66,7 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void OnPeerEnterGame(int peerId, C_TEST_ENTER_GAME packet)
     {
+        return;
         // Peer 구조에서 입장 패킷을 받았을 때 S_PLAYER_ENTER를 직접 만들어서 OnPlayerEnter 호출
         S_PLAYER_ENTER enterPacket = new S_PLAYER_ENTER
         {
@@ -82,11 +83,12 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void OnPeerMove(int peerId, C_MOVE packet)
     {
+        return;
         ulong playerId = (ulong)peerId;
 
         // 내 플레이어는 무시 (이미 로컬에서 움직임)
-        if (playerId == (ulong)NetManager.Instance._playerId)
-            return;
+        // if (playerId == (ulong)NetManager.Instance._playerId)
+        //     return;
 
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
@@ -147,6 +149,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     // 플레이어 이동
     private void OnPlayerMove(S_MOVE packet)
     {
+        return;
         if (PlayManager.Instance == null)
         {
             Debug.LogWarning("PlayManager instance is null. Cannot process move packet.");
@@ -179,6 +182,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     // 플레이어 애니메이션
     private void OnAnim(S_PLAYER_ANIMATION packet)
     {
+        return;
         if (PlayManager.Instance == null)
         {
             Debug.LogWarning("PlayManager instance is null. Cannot process move packet.");
@@ -232,6 +236,7 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     public void OnItemAttached(S_OBJECT_PICKUP packet)
     {
+        return;
         if (PlayManager.Instance == null)
         {
             Debug.LogWarning("PlayManager instance is null. Cannot process stat packet.");
@@ -264,6 +269,7 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     public void OnItemDetatched(S_OBJECT_DROP packet)
     {
+        return;
         if (PlayManager.Instance == null)
         {
             Debug.LogWarning("PlayManager instance is null. Cannot process stat packet.");
@@ -336,6 +342,7 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void SpawnRemotePlayer(PlayerInfo playerInfo)
     {
+        return;
         if (_remotePlayers.ContainsKey(playerInfo.PlayerId))
         {
             Debug.LogWarning($"Player {playerInfo.PlayerId} already exists!");
@@ -367,6 +374,7 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void RemoveRemotePlayer(ulong playerId)
     {
+        return;
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
             Destroy(playerObj);

@@ -81,7 +81,7 @@ public class PlayerStat : MonoBehaviour
     {
         while (true)
         {
-            if (oxygen >= 1)
+            if (oxygen > 1)
             {
                 oxygen = 1;
             }
@@ -89,8 +89,8 @@ public class PlayerStat : MonoBehaviour
             {
                 oxygen += 0.02f;
                 Debug.Log("산소 늘어남 : " + oxygen);
-                yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
             }
+            yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
         }
     }
 
