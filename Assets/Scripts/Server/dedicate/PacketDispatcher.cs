@@ -19,6 +19,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
     PeerNetManager peerNet = PeerNetManager.Instance;
     public void SendLogin(string userId, string password)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         C_LOGIN loginPacket = new C_LOGIN
         {
             UserId = userId,
@@ -30,6 +31,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendEnterGame(ulong playerIndex)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
         
         if (IsHost())
@@ -49,6 +51,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendChat(string message)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         C_CHAT chatPacket = new C_CHAT
         {
             Msg = message
@@ -59,6 +62,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendMove(Vector3 position, Quaternion rotation)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         PosInfo posInfo = new PosInfo
         {
             X = position.x,
@@ -102,6 +106,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendAnimation(AnimState animState)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         if (IsHost())
         {
             S_PLAYER_ANIMATION relay = new S_PLAYER_ANIMATION
@@ -136,6 +141,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendItemAttached(Items itemData)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
         {
             ObjectId = new ObjectId
@@ -149,6 +155,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendItemDetatched(Items itemData)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         C_OBJECT_DROP packet = new C_OBJECT_DROP
         {
             ObjectId = new ObjectId
@@ -162,6 +169,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         PosInfo posInfo = new PosInfo
         {
             X = position.x,
@@ -195,6 +203,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation)
     {
+        return; // 테스트를 위해 일단 막아둠. 나중에 제거해야 함.
         PosInfo posInfo = new PosInfo
         {
             X = position.x,

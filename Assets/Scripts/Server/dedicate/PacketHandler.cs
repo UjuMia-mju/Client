@@ -16,8 +16,6 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
     public event Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event Action<S_OBJECT_MOVE> OnItemMoveEvent;
-    //public event Action<S_WORKBENCH_LIST> OnCraftTableEvent;
-
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");

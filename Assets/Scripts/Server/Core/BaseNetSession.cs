@@ -11,13 +11,17 @@ public delegate void PacketReceivedHandler(PacketId packetId, byte[] data);
 public class BaseNetSession
 {
     protected Socket _socket; // dedicate
-    protected RecvBuffer _recvBuffer;
-    protected Queue<ArraySegment<byte>> _sendQueue = new();
-    protected object _sendLock = new object();
-    protected bool _isSending;
-    protected bool _isConnected;
+    protected bool _isConnected = false;
     public bool IsConnected => _isConnected;
     protected const int BUFFER_SIZE = 65536; // 64KB
+
+    protected RecvBuffer _recvBuffer;
+
+    protected Queue<ArraySegment<byte>> _sendQueue = new();
+    protected object _sendLock = new object();
+    protected bool _isSending = false;
+    
+    
     public event PacketReceivedHandler OnPacketReceivedEvent;
     public Action OnDisconnected;
     // base connect, disconnect, send, receive implementation
@@ -194,7 +198,10 @@ public class BaseNetSession
     protected virtual void RegisterRecv()
     {
         if (!_isConnected)
+        {
             return;
+        }
+            
 
         ArraySegment<byte> segment = _recvBuffer.GetWriteSegment();
         _socket.BeginReceive(segment.Array, segment.Offset, segment.Count, SocketFlags.None, OnRecvCallback, null);
