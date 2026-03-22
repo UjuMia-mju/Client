@@ -16,16 +16,12 @@ public class LobbyRoomClient : MonoBehaviour
     /// <summary>현재 방에 있는 멤버 ID 집합 (중복 스폰 방지, 퇴장 시 디스폰 대상 확인)</summary>
     private readonly HashSet<int> _members = new HashSet<int>();
 
-    // TEMP: 시작 기능을 먼저 테스트하기 위한 임시 변수.
-    private bool _temporaryAutoReadySent;
-
     private void OnEnable()
     {
-        // TEMP: 시작 기능을 먼저 테스트하기 위한 임시 변수.
-        _temporaryAutoReadySent = false;
         PacketManager.Instance.OnEnterRoomEvent += OnEnterRoom;
         PacketManager.Instance.OnRoomMemberEnterEvent += OnRoomMemberEnter;
         PacketManager.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeave;
+        PacketManager.Instance.OnReadyEvent += OnReady;
 
         // 방 생성 후 로비 씬 전환 시, S_ENTER_ROOM이 로비 로드 전에 도착해 이벤트를 놓친 경우 캐시에서 복구
         S_ENTER_ROOM cached = PacketManager.GetAndClearCachedEnterRoom();
@@ -43,6 +39,7 @@ public class LobbyRoomClient : MonoBehaviour
         PacketManager.Instance.OnEnterRoomEvent -= OnEnterRoom;
         PacketManager.Instance.OnRoomMemberEnterEvent -= OnRoomMemberEnter;
         PacketManager.Instance.OnRoomMemberLeaveEvent -= OnRoomMemberLeave;
+        PacketManager.Instance.OnReadyEvent -= OnReady;
     }
 
     /// <summary>방 입장 결과 수신. 성공 시 기존 스폰 전부 제거 후 현재 멤버 목록으로 이름 표시 스폰.</summary>
@@ -62,16 +59,6 @@ public class LobbyRoomClient : MonoBehaviour
         _members.Clear();
         Debug.Log($"[LobbyRoomClient] 방 입장 성공: {packet.Room.RoomName} (roomId={packet.Room.RoomId})");
 
-        // TEMP: 시작 기능을 먼저 테스트하기 위한 임시 처리.
-        // 방 입장 직후 자동으로 Ready(true)를 1회 전송한다.
-        // 준비 기능 정식 구현 시 이 블록은 제거/수정 필요.
-        if (!_temporaryAutoReadySent)
-        {
-            _temporaryAutoReadySent = true;
-            NetManager.Instance.SendReady(true);
-            Debug.Log("[LobbyRoomClient] TEMP auto-ready sent: true");
-        }
-
         if (lobbyManager == null)
         {
             Debug.LogWarning("[LobbyRoomClient] LobbyManager가 할당되지 않았습니다.");
@@ -83,7 +70,7 @@ public class LobbyRoomClient : MonoBehaviour
         {
             _members.Add(member.Player.Id);
             Debug.Log($"[LobbyRoomClient] 멤버: {member.Player.Name}#{member.Player.Tag} (id={member.Player.Id}) ready={member.IsReady}");
-            lobbyManager.SpawnNewPlayer(member.Player.Name, member.Player.Id);
+            lobbyManager.SpawnNewPlayer(member.Player.Name, member.Player.Id, member.IsReady);
         }
     }
 
@@ -94,8 +81,15 @@ public class LobbyRoomClient : MonoBehaviour
         if (_members.Add(id))
         {
             Debug.Log($"[LobbyRoomClient] 멤버 입장: {packet.Member.Player.Name}#{packet.Member.Player.Tag} (id={id})");
-            lobbyManager?.SpawnNewPlayer(packet.Member.Player.Name, id);
+            lobbyManager?.SpawnNewPlayer(packet.Member.Player.Name, id, packet.Member.IsReady);
         }
+    }
+
+    private void OnReady(S_READY packet)
+    {
+        int pid = (int)packet.PlayerId;
+        lobbyManager?.SetPlayerReadyState(pid, packet.IsReady);
+        Debug.Log($"[LobbyRoomClient] S_READY: playerId={pid}, isReady={packet.IsReady}");
     }
 
     /// <summary>플레이어가 방을 나갔을 때. 해당 플레이어용 LobbyAstronut 디스폰.</summary>
