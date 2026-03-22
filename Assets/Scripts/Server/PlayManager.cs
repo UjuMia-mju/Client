@@ -14,17 +14,14 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     void Start()
     {
-        //PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
-        //PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
-
-
-
+        PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
+        PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
 
         // PacketHandler.Instance.OnPlayerListEvent += OnPlayerList;
-        // PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
+        //PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
         // PacketHandler.Instance.OnPlayerLeaveEvent += OnPlayerLeave;
         // PacketHandler.Instance.OnMoveEvent += OnPlayerMove;
-        // PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
+        PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
         // PacketHandler.Instance.OnAnimationEvent += OnAnim;
         //PacketHandler.Instance.OnStatEvent += OnPlayerStat;
         //PacketHandler.Instance.OnItemAttached += OnItemAttached;
@@ -64,9 +61,10 @@ public class PlayManager : SceneSingleton<PlayManager>
     //    _localPlayer.name = "LocalPlayer";
     //}
 
+    // 호스트가 피어로부터 받은 C_TEST_ENTER_GAME 패킷 처리
     private void OnPeerEnterGame(int peerId, C_TEST_ENTER_GAME packet)
     {
-        return;
+        Debug.Log($"Peer {peerId} entered the game with name:");
         // Peer 구조에서 입장 패킷을 받았을 때 S_PLAYER_ENTER를 직접 만들어서 OnPlayerEnter 호출
         S_PLAYER_ENTER enterPacket = new S_PLAYER_ENTER
         {
@@ -78,12 +76,11 @@ public class PlayManager : SceneSingleton<PlayManager>
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
             }
         };
-        OnPlayerEnter(enterPacket);
+        OnPlayerEnter(peerId, enterPacket);
     }
 
     private void OnPeerMove(int peerId, C_MOVE packet)
     {
-        return;
         ulong playerId = (ulong)peerId;
 
         // 내 플레이어는 무시 (이미 로컬에서 움직임)
@@ -133,7 +130,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     }
 
     // 새 플레이어 입장
-    private void OnPlayerEnter(S_PLAYER_ENTER packet)
+    private void OnPlayerEnter(int peerId, S_PLAYER_ENTER packet)
     {
         Debug.Log($"👤 Player {packet.Player.Name} entered!");
         SpawnRemotePlayer(packet.Player);
@@ -149,7 +146,6 @@ public class PlayManager : SceneSingleton<PlayManager>
     // 플레이어 이동
     private void OnPlayerMove(S_MOVE packet)
     {
-        return;
         if (PlayManager.Instance == null)
         {
             Debug.LogWarning("PlayManager instance is null. Cannot process move packet.");
@@ -182,7 +178,6 @@ public class PlayManager : SceneSingleton<PlayManager>
     // 플레이어 애니메이션
     private void OnAnim(S_PLAYER_ANIMATION packet)
     {
-        return;
         if (PlayManager.Instance == null)
         {
             Debug.LogWarning("PlayManager instance is null. Cannot process move packet.");
@@ -236,7 +231,6 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     public void OnItemAttached(S_OBJECT_PICKUP packet)
     {
-        return;
         if (PlayManager.Instance == null)
         {
             Debug.LogWarning("PlayManager instance is null. Cannot process stat packet.");
@@ -269,7 +263,6 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     public void OnItemDetatched(S_OBJECT_DROP packet)
     {
-        return;
         if (PlayManager.Instance == null)
         {
             Debug.LogWarning("PlayManager instance is null. Cannot process stat packet.");
@@ -342,7 +335,6 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void SpawnRemotePlayer(PlayerInfo playerInfo)
     {
-        return;
         if (_remotePlayers.ContainsKey(playerInfo.PlayerId))
         {
             Debug.LogWarning($"Player {playerInfo.PlayerId} already exists!");
@@ -374,7 +366,6 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void RemoveRemotePlayer(ulong playerId)
     {
-        return;
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
             Destroy(playerObj);

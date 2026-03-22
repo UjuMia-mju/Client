@@ -19,7 +19,7 @@ public class ConnectManager : SceneSingleton<ConnectManager>
         }
         else
         {
-            //NetManager.Instance.Connect(hostIpFromServer, hostPortFromServer);
+            //NetManager.Instance.Connect(hostIpFromServer, hostPortFromServer); -> 서버 연결하는 부분. (코드 분리는 클라분들이 해주세요)
             PeerNetManager.Instance.Connect(hostIpFromServer, hostPortFromServer);
             await System.Threading.Tasks.Task.Delay(2000); // 2초 대기 -> 테스트 단계에서 호스트 소켓에 connect된 후에 패킷을 보내야 하기 때문에 딜레이 준거임. 실제에서는 제거.
 
@@ -27,7 +27,7 @@ public class ConnectManager : SceneSingleton<ConnectManager>
             var player = FindFirstObjectByType<Player>();
             if (player != null)
             {
-                //player.OnNetworkReady();
+                player.OnNetworkReady();
             }
         }
     }

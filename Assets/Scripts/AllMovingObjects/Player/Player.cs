@@ -62,6 +62,8 @@ public class Player : MovingObject
 
     public void OnNetworkReady()
     {
+        // 이 부분은 플레이어 ID를 넘기는 부분이기 때문에. 초기에 로그인을 하고 나서 받은 ID를 기억하고 있다가 넘기면 됨.
+        // 지금은 테스트로 0으로 넘겨주고 있습니다. -> 추후 수정 필요
         PacketDispatcher.Instance.SendEnterGame(0);
         SendEnterPosToServer();
     }
