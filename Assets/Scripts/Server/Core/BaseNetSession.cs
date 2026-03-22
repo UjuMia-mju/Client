@@ -10,10 +10,10 @@ public delegate void PacketReceivedHandler(PacketId packetId, byte[] data);
 
 public class BaseNetSession
 {
-    protected Socket _socket;
+    protected Socket _socket; // dedicate
     protected RecvBuffer _recvBuffer;
     protected Queue<ArraySegment<byte>> _sendQueue = new();
-    protected object _sendLock;
+    protected object _sendLock = new object();
     protected bool _isSending;
     protected bool _isConnected;
     public bool IsConnected => _isConnected;
@@ -140,6 +140,7 @@ public class BaseNetSession
             {
                 if (_sendQueue.Count > 0)
                 {
+                    Debug.Log($"Sent {bytesSent} bytes, { _sendQueue.Count} packets left in queue");
                     needRegisterSend = true;
                 }
                 else

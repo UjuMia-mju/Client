@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using Google.Protobuf;
-using Protocol;
-using UnityEngine;
-using System.Threading;
+﻿using Protocol;
 
 public class NetManager : BaseNetSession
 {
     private static NetManager _instance;
     public static NetManager Instance => _instance ??= new NetManager();
-
     public int _playerId;
     public NetManager()
     {

@@ -70,9 +70,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         };
 
         // 2. 모든 피어에게 브로드캐스트
-        PeerNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket);
-
-        // 3. (선택) 호스트 자신도 이벤트로 처리
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket);
+        // 3. 이벤트로 처리
         OnPeerEnterGameEvent?.Invoke(peerId, packet);
     }
 
@@ -88,7 +87,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             Rot = packet.Rot?.Clone()
         };
 
-        PeerNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_MOVE, relay);
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_MOVE, relay);
     }
 
     private void HandlePeerChat(int peerId, byte[] data)
@@ -102,7 +101,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             Msg = packet.Msg
         };
 
-        PeerNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_CHAT, relay);
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_CHAT, relay);
     }
 
     private void HandlePeerAnimation(int peerId, byte[] data)
@@ -116,7 +115,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             State = packet.State
         };
 
-        PeerNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ANIMATION, relay);
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ANIMATION, relay);
     }
 
     private void HandlePeerItemAttached(int peerId, byte[] data)
@@ -132,7 +131,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             ErrorMsg = ""
         };
 
-        PeerNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_PICKUP, relay);
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_PICKUP, relay);
     }
 
     private void HandlePeerItemDetached(int peerId, byte[] data)
@@ -146,6 +145,6 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             PlayerId = (ulong)peerId
         };
 
-        PeerNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DROP, relay);
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DROP, relay);
     }
 }

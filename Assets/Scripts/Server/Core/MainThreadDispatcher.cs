@@ -18,7 +18,6 @@ public class MainThreadDispatcher : MonoBehaviorSingleton<MainThreadDispatcher>
         // Unity 메인 스레드에서 큐에 쌓인 작업 실행
         lock (_executionQueue)
         {
-            Debug.Log($"Executing {_executionQueue.Count} actions on main thread.");
             while (_executionQueue.Count > 0)
             {
                 _executionQueue.Dequeue()?.Invoke();

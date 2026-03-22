@@ -1,5 +1,4 @@
 using UnityEngine;
-using Google.Protobuf;
 using Protocol;
 
 public class PacketDispatcher : Singleton<PacketDispatcher>
@@ -14,7 +13,6 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         // 로그인 후 세팅되는 값 사용
         return (ulong)NetManager.Instance._playerId;
     }
-
 
     // ==================== 높은 수준의 전송 메서드들 ====================
     NetManager net = NetManager.Instance;
@@ -33,19 +31,20 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
     public void SendEnterGame(ulong playerIndex)
     {
         Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
-        C_TEST_ENTER_GAME enterGamePacket = new C_TEST_ENTER_GAME
-        {
-            PlayerIndex = playerIndex
-        };
-
-        //net.SendPacket(PacketId.PKT_C_ENTER_GAME, enterGamePacket);
-        //PeerNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
+        
         if (IsHost())
         {
+            // 전체한테 broadcast하는 부분을 추가해야함.
             return;
         }
-        peerNet.SendPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
-        ///peerNet.
+        else
+        {
+            C_TEST_ENTER_GAME enterGamePacket = new C_TEST_ENTER_GAME
+            {
+                PlayerIndex = playerIndex
+            };
+            peerNet.SendPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
+        }
     }
 
     public void SendChat(string message)
@@ -86,17 +85,19 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             };
 
             // senderPeerId는 호스트 자체를 의미하는 예약값(예: 0)
-            PeerNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_S_MOVE, relay);
+            HostNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_S_MOVE, relay);
             return;
         }
-
-        C_MOVE movePacket = new C_MOVE
+        else
         {
-            Pos = posInfo,
-            Rot = rotInfo
-        };
+            C_MOVE movePacket = new C_MOVE
+            {
+                Pos = posInfo,
+                Rot = rotInfo
+            };
 
-        peerNet.SendPacket(PacketId.PKT_C_MOVE, movePacket);
+            peerNet.SendPacket(PacketId.PKT_C_MOVE, movePacket);
+        }
     }
 
     public void SendAnimation(AnimState animState)
@@ -109,15 +110,17 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
                 State = (int)animState
             };
 
-            PeerNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, relay);
+            HostNetManager.Instance.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, relay);
             return;
         }
-
-        C_PLAYER_ANIMATION animationPacket = new C_PLAYER_ANIMATION
+        else
         {
-            State = (int)animState
-        };
-        peerNet.SendPacket(PacketId.PKT_C_PLAYER_ANIMATION, animationPacket);
+            C_PLAYER_ANIMATION animationPacket = new C_PLAYER_ANIMATION
+            {
+                State = (int)animState
+            };
+            peerNet.SendPacket(PacketId.PKT_C_PLAYER_ANIMATION, animationPacket);
+        }
     }
 
     // 패킷 보내는거 배치파일 실행해서 코드 자동생성 해야 함. 지금 안 됨.

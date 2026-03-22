@@ -20,15 +20,15 @@ public class PlayManager : SceneSingleton<PlayManager>
 
 
 
-        PacketHandler.Instance.OnPlayerListEvent += OnPlayerList;
-        PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
-        PacketHandler.Instance.OnPlayerLeaveEvent += OnPlayerLeave;
-        PacketHandler.Instance.OnMoveEvent += OnPlayerMove;
-        PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
-        PacketHandler.Instance.OnAnimationEvent += OnAnim;
+        // PacketHandler.Instance.OnPlayerListEvent += OnPlayerList;
+        // PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
+        // PacketHandler.Instance.OnPlayerLeaveEvent += OnPlayerLeave;
+        // PacketHandler.Instance.OnMoveEvent += OnPlayerMove;
+        // PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
+        // PacketHandler.Instance.OnAnimationEvent += OnAnim;
         //PacketHandler.Instance.OnStatEvent += OnPlayerStat;
-        PacketHandler.Instance.OnItemAttached += OnItemAttached;
-        PacketHandler.Instance.OnItemDetatched += OnItemDetatched;
+        //PacketHandler.Instance.OnItemAttached += OnItemAttached;
+        //PacketHandler.Instance.OnItemDetatched += OnItemDetatched;
         //PacketHandler.Instance.OnItemMoveEvent += OnItemMove;
         //PacketHandler.Instance.OnCraftTableEvent += OnCraftTableItemInstantiate;
 
@@ -46,15 +46,15 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     void OnDestroy()
     {
-        PacketHandler.Instance.OnPlayerListEvent -= OnPlayerList;
-        PacketHandler.Instance.OnPlayerEnterEvent -= OnPlayerEnter;
-        PacketHandler.Instance.OnPlayerLeaveEvent -= OnPlayerLeave;
-        PacketHandler.Instance.OnMoveEvent -= OnPlayerMove;
-        PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
-        PacketHandler.Instance.OnAnimationEvent -= OnAnim;
+        // PacketHandler.Instance.OnPlayerListEvent -= OnPlayerList;
+        // PacketHandler.Instance.OnPlayerEnterEvent -= OnPlayerEnter;
+        // PacketHandler.Instance.OnPlayerLeaveEvent -= OnPlayerLeave;
+        // PacketHandler.Instance.OnMoveEvent -= OnPlayerMove;
+        // PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
+        // PacketHandler.Instance.OnAnimationEvent -= OnAnim;
         //PacketHandler.Instance.OnStatEvent -= OnPlayerStat;
-        PacketHandler.Instance.OnItemAttached -= OnItemAttached;
-        PacketHandler.Instance.OnItemDetatched -= OnItemDetatched;
+        // PacketHandler.Instance.OnItemAttached -= OnItemAttached;
+        // PacketHandler.Instance.OnItemDetatched -= OnItemDetatched;
         //PacketHandler.Instance.OnItemMoveEvent -= OnItemMove;
         //PacketHandler.Instance.OnCraftTableEvent -= OnCraftTableItemInstantiate;
     }
