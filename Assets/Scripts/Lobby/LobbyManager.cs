@@ -19,10 +19,37 @@ public class LobbyManager : MonoBehaviour
     public Transform spaceshipDoor;   // 우주선 문(빨려 들어갈 목표 지점)
     public float suckDuration = 2.0f; // 빨려 들어가는 데 걸리는 시간(초)
 
-    /// <summary>전원 레디 시 호출. 우주선 빨려 들어가는 연출 후 인게임 씬 전환용 </summary>
-    public void OnAllPlayersReady()
+    /// <summary>전원 레디 시 호출. 우주선 빨려 들어가는 연출 후 인게임 씬 전환용.</summary>
+    /// <param name="skipReadyValidation">true면 클라이언트 레디 검사 생략 (서버가 S_START_ROOM 성공을 준 경우 등)</param>
+    public void OnAllPlayersReady(bool skipReadyValidation = false)
     {
+        if (!skipReadyValidation && !AreAllSpawnedPlayersReady())
+        {
+            Debug.Log("[LobbyManager] 전원 준비가 아니어서 우주선 연출(StartSpaceshipSequence)을 실행하지 않습니다.");
+            return;
+        }
+
         StartCoroutine(StartSpaceshipSequence());
+    }
+
+    /// <summary>스폰된 로비 멤버가 1명 이상이고, 모두 레디인지 여부.</summary>
+    public bool AreAllSpawnedPlayersReady()
+    {
+        if (spawnedPlayers.Count == 0)
+            return false;
+
+        foreach (var kv in spawnedPlayers)
+        {
+            GameObject go = kv.Value;
+            if (go == null)
+                continue;
+
+            var slot = go.GetComponentInChildren<LobbyPlayerSlot>();
+            if (slot == null || !slot.IsReady)
+                return false;
+        }
+
+        return true;
     }
 
     /// <summary>우주선 문으로 플레이어들이 빨려 들어가는 연출 코루틴.</summary>
