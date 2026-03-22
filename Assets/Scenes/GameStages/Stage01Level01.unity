@@ -147,13 +147,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8006656}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.54370505, y: -0, z: -0, w: 0.83927643}
-  m_LocalPosition: {x: -0.00077469525, y: 0.00358, z: 0.00908}
+  m_LocalRotation: {x: 0.53219664, y: -0.11127374, z: 0.17176491, w: 0.82151186}
+  m_LocalPosition: {x: -0.00455, y: 0.00345, z: 0.00879}
   m_LocalScale: {x: 0.0011117363, y: 0.0020799, z: 0.000809477}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4943720041582861401}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 65.872, y: 0, z: 23.619}
 --- !u!65 &8006658
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -338,13 +338,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 268140078}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4966548, y: -0.2212445, z: 0.3415185, w: 0.76664853}
-  m_LocalPosition: {x: -0.0077300114, y: 0.0023900187, z: 0.0064300876}
+  m_LocalRotation: {x: 0.5434173, y: -0.01768698, z: 0.027302112, w: 0.83883226}
+  m_LocalPosition: {x: -0.00184, y: 0.00269, z: 0.00991}
   m_LocalScale: {x: 0.0011117363, y: 0.0020799, z: 0.000809477}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4943720041582861401}
-  m_LocalEulerAnglesHint: {x: 65.872, y: 0, z: 48.023}
+  m_LocalEulerAnglesHint: {x: 65.872, y: 0, z: 3.728}
 --- !u!65 &268140081
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -435,7 +435,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Furnace
   smeltedItemList:
-  - originalItemPrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  - itemSmeltKey: TestCube
+    originalItemPrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
     smeltedPrefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
     smeltTime: 3
 --- !u!1 &377323709
@@ -1984,6 +1985,7 @@ MonoBehaviour:
   rotationSpeed: 0
   sendInterval: 0.05
   itemId: 2
+  itemSmeltKey: TestCube
   lerpSpeed: 10
 --- !u!54 &2079630442
 Rigidbody:
@@ -3529,6 +3531,7 @@ MonoBehaviour:
   rotationSpeed: 0
   sendInterval: 0.05
   itemId: 1
+  itemSmeltKey: TestCube
   lerpSpeed: 10
 --- !u!65 &4548940437494441676
 BoxCollider:
@@ -3618,6 +3621,7 @@ MonoBehaviour:
   rotationSpeed: 0
   sendInterval: 0.05
   itemId: 0
+  itemSmeltKey: 
   lerpSpeed: 10
 --- !u!4 &4943720041582861401
 Transform:
@@ -3798,6 +3802,7 @@ MonoBehaviour:
   rotationSpeed: 0
   sendInterval: 0.05
   itemId: 0
+  itemSmeltKey: 
   lerpSpeed: 10
 --- !u!4 &7720847087868846826
 Transform:

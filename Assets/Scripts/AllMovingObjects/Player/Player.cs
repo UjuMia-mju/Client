@@ -122,7 +122,7 @@ public class Player : MovingObject
     {
         // 서버로 패킷 전송
         SendPositionToServer();
-        SendAnimationToServer(); 
+        SendAnimationToServer();
         //SendPlayerStatToServer();
     }
 
@@ -144,7 +144,6 @@ public class Player : MovingObject
             // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
             if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
             {
-                Debug.Log("곡괭이질");
                 isMining = true;
             }
 
@@ -157,10 +156,10 @@ public class Player : MovingObject
             // 혹은 태그가 Tool인 것도 포함함.
             else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething || nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething)
             {
+                isPlayerGetSomething = true;
                 playerItemSystem.AttachItem(nearestObject);
                 //SendItemAttachedToServer(nearestObject.GetComponent<Items>());
                 SendItemAttachedToServer(playerItemSystem.GetCurrentEquipItemClass());
-                isPlayerGetSomething = true;
             }
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 조합대이며, 아이템을 들고 있을 때
@@ -177,11 +176,16 @@ public class Player : MovingObject
             // 또한 투입할 때 플레이어의 손에서 Detach
             else if (nearestObject.CompareTag(Define.Tag.FURNACE) && isPlayerGetSomething)
             {
-                Debug.Log("용광로에 아이템 투입");
                 Furnace furnace = nearestObject.GetComponent<Furnace>();
-                isPlayerGetSomething = false;
-                furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem);
-                playerItemSystem.DetachItem();
+                if (furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem))
+                {
+                    isPlayerGetSomething = false;
+                    playerItemSystem.DetachItem();
+                }
+                else
+                {
+                    Debug.Log("아직 용광로는 준비되지 않았다.");
+                }
             }
         }
     }

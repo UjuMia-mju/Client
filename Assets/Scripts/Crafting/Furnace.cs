@@ -6,6 +6,7 @@ using UnityEngine;
 [System.Serializable]
 public class SmeltedItemData
 {
+    public string itemSmeltKey;
     public GameObject originalItemPrefab;
     public GameObject smeltedPrefab;
     public float smeltTime;
@@ -14,42 +15,51 @@ public class SmeltedItemData
 
 public class Furnace : MonoBehaviour
 {
-    private string targetItemName; // 용광로에 굽는 아이템의 이름   
-
     // Inspector에서 프리팹들을 등록
     [SerializeField] private List<SmeltedItemData> smeltedItemList;
 
-    private const float ITEM_THROW_HEIGHT = 3.5f;
+    private const float ITEM_THROW_HEIGHT = 5.5f;
     private const float ITEM_THROW_FORCE = 200f;
     private const float SMELTING_TIME = 1f;
 
     private float remainingTime;
-    private bool isSmelting = false;    
+    private bool isSmelting = false;
+
+    private string targetItemKey;
 
     // 플레이어가 아이템을 넣을 때 호출
-    public void AddSmeltTargetItem(GameObject data)
+    // 만약 조작을 했을 때 아이템을 넣을 상태가 아니라면, bool을 반환해 현재 상태를 알려야 플레이어가 자기가 아이템을 들고 있는지를 정확하게 판단할 수 있습니다.
+    public bool AddSmeltTargetItem(GameObject data)
     {
         if (!data.CompareTag(Define.Tag.ITEM) || isSmelting)
         {
             Debug.Log("해당 객체가 아이템이 아니거나 용광로가 작동 중입니다.");
-            return;
+            return false;
         }
 
-        targetItemName = data.name; // 이름 저장
+        Debug.Log("용광로실행");
 
         // 리스트에서 해당 아이템의 smeltTime 찾기
-        SmeltedItemData smeltedData = smeltedItemList.Find(item => item.originalItemPrefab != null && targetItemName.Contains(item.originalItemPrefab.name));
+        // 리스트에서 해당 아이템의 smeltTime 찾기
+        SmeltedItemData smeltedData = smeltedItemList.Find(
+            item => item.originalItemPrefab != null
+                 && item.itemSmeltKey == data.GetComponent<Items>().itemSmeltKey
+        );
+
 
         if (smeltedData != null)
         {
-            // 코루틴 시작-
+            targetItemKey = smeltedData.itemSmeltKey;
             isSmelting = true;
             StartCoroutine(Smelt(smeltedData.smeltTime));
             Destroy(data); // 원본 아이템 제거
+            return true;
         }
+
         else
         {
-            Debug.Log("해당 아이템에 대한 SmeltedItemData가 없습니다: " + targetItemName);
+            Debug.Log("해당 아이템에 대한 SmeltedItemData가 없습니다: ");
+            return false;
         }
     }
 
@@ -64,13 +74,12 @@ public class Furnace : MonoBehaviour
             yield return new WaitForSeconds(SMELTING_TIME);
             remainingTime -= 1f;
         }
-        isSmelting = false;
         ThrowSmeltedItem();
     }
 
     public void ThrowSmeltedItem()
     {
-        if (targetItemName == null)
+        if (targetItemKey == null)
         {
             Debug.Log("targetItem이 설정되지 않았습니다.");
             return;
@@ -78,11 +87,11 @@ public class Furnace : MonoBehaviour
 
         // targetItemName으로 대응되는 결과 프리팹 찾기
         SmeltedItemData smelted = smeltedItemList.Find(item =>
-            item.originalItemPrefab != null && targetItemName.Contains(item.originalItemPrefab.name));
+            item.originalItemPrefab != null && item.itemSmeltKey == targetItemKey);
 
         if (smelted == null)
         {
-            Debug.Log("결과 프리팹을 찾을 수 없습니다: " + targetItemName);
+            Debug.Log("결과 프리팹을 찾을 수 없습니다: ");
             return;
         }
 
@@ -101,6 +110,7 @@ public class Furnace : MonoBehaviour
         itemToThrow.transform.position = this.transform.position + this.transform.up * ITEM_THROW_HEIGHT;
         rb.AddForce((this.transform.up + this.transform.forward) * ITEM_THROW_FORCE);
 
+        isSmelting = false;
         Debug.Log("던진 아이템 이름 : " + itemToThrow.name);
 
     }

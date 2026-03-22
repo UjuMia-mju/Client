@@ -158,6 +158,7 @@ MonoBehaviour:
   rotationSpeed: 0
   sendInterval: 0.05
   itemId: 2
+  itemSmeltKey: SmeltedTestCube
   lerpSpeed: 10
 --- !u!114 &4962854886086942290
 MonoBehaviour:

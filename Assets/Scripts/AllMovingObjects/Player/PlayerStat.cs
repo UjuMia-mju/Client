@@ -71,8 +71,6 @@ public class PlayerStat : MonoBehaviour
         while (true)
         {
             oxygen -= 0.01f;
-            Debug.Log("산소 줄어듬 : " + oxygen);
-
             yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
         }
     }

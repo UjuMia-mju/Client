@@ -468,7 +468,7 @@ public class NetManager : Singleton<NetManager>
             ArraySegment<byte> packet_segment = new ArraySegment<byte>(sendBuffer);
             Send(packet_segment);
 
-            Debug.Log($"Sent packet: {packetId}");
+            //Debug.Log($"Sent packet: {packetId}");
         }
         catch (Exception ex)
         {
