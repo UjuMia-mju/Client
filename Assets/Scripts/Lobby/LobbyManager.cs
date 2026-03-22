@@ -113,10 +113,21 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    /// <summary>S_READY 등으로 받은 레디 상태를 해당 플레이어 슬롯에 반영합니다.</summary>
+    public void SetPlayerReadyState(int playerId, bool isReady)
+    {
+        if (!spawnedPlayers.TryGetValue(playerId, out GameObject go) || go == null)
+            return;
+        var slot = go.GetComponentInChildren<LobbyPlayerSlot>();
+        if (slot != null)
+            slot.SetReady(isReady);
+    }
+
     /// <summary>플레이어 이름을 가진 LobbyAstronut을 스폰합니다. (로비 입장/멤버 입장 시 이름 표시)</summary>
     /// <param name="playerName">표시할 플레이어 이름 (Name 라벨에 출력)</param>
     /// <param name="playerId">플레이어 ID (퇴장 시 DespawnPlayer에 사용)</param>
-    public void SpawnNewPlayer(string playerName, int playerId)
+    /// <param name="isReady">입장 시점 서버 레디 여부 (RoomMemberInfo.is_ready)</param>
+    public void SpawnNewPlayer(string playerName, int playerId, bool isReady = false)
     {
         Vector3 safePosition = GetSafeSpawnPosition();
         GameObject newPlayer = Instantiate(playerPrefab, safePosition, Quaternion.Euler(0, 180f, 0));
@@ -127,7 +138,10 @@ public class LobbyManager : MonoBehaviour
         if (slot == null)
             slot = newPlayer.AddComponent<LobbyPlayerSlot>();
         if (slot != null)
+        {
             slot.SetPlayerName(playerName);
+            slot.SetReady(isReady);
+        }
 
         Animator anim = newPlayer.GetComponent<Animator>();
         if (anim != null)
