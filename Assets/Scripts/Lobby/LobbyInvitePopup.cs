@@ -59,7 +59,8 @@ public class LobbyInvitePopup : MonoBehaviour
         _roomId = packet.RoomId;
 
         if (messageText != null)
-            messageText.text = $"{packet.InviterName} 님이 '{packet.RoomName}' 방으로 초대했습니다.";
+            // 한글로 하면 네모로 보여서 임시로 영어로 변경
+            messageText.text = $"{packet.InviterName} invited you room: {packet.RoomId}";
 
         if (popupRoot != null)
             popupRoot.SetActive(true);
