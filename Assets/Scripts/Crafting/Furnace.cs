@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 [System.Serializable]
@@ -25,6 +26,18 @@ public class Furnace : MonoBehaviour
 
     private string targetItemKey;
     private Coroutine smeltingCoroutine = null;
+
+    private Image progressImage;
+
+    private void Start()
+    {
+        progressImage = GetComponentInChildren<Image>();
+
+        if (progressImage != null)
+        {
+            progressImage.gameObject.SetActive(false);
+        }
+    }
 
     // 플레이어가 아이템을 넣을 때 호출
     // 만약 조작을 했을 때 아이템을 넣을 상태가 아니라면, bool을 반환해 현재 상태를 알려야 플레이어가 자기가 아이템을 들고 있는지를 정확하게 판단할 수 있습니다.
@@ -68,14 +81,35 @@ public class Furnace : MonoBehaviour
     {
         remainingTime = timerDuration;
 
-        while (remainingTime > 0)
+        // 진행 이미지 켜기
+        if (progressImage != null)
+            progressImage.gameObject.SetActive(true);
+
+
+        while (remainingTime > 0f)
         {
-            Debug.Log("남은 시간: " + remainingTime + "초");
-            yield return new WaitForSeconds(SMELTING_TIME);
-            remainingTime -= 1f;
+            // 매 프레임마다 남은 시간 감소
+            remainingTime -= Time.deltaTime;
+
+            // 진행률: 0 → 1로 부드럽게 차오르게
+            if (progressImage != null)
+                progressImage.fillAmount = (timerDuration - remainingTime) / timerDuration;
+
+            yield return null; // 프레임 단위로 반복
         }
+
+
         ThrowSmeltedItem();
+
         smeltingCoroutine = null;
+
+        // 용광로 종료 시 이미지 끄기
+        if (progressImage != null)
+        {
+            progressImage.fillAmount = 0f;
+            progressImage.gameObject.SetActive(false);
+        }
+
     }
 
     public void ThrowSmeltedItem()
@@ -95,7 +129,8 @@ public class Furnace : MonoBehaviour
         }
 
         // 아이템 생성
-        GameObject itemToThrow = Instantiate(smelted.smeltedPrefab);
+        GameObject itemToThrow = Instantiate(smelted.smeltedPrefab, this.transform.position + this.transform.up * ITEM_THROW_HEIGHT,Quaternion.identity);
+
 
         // Rigidbody 가져오기
         Rigidbody rb = itemToThrow.GetComponent<Rigidbody>();
@@ -106,6 +141,8 @@ public class Furnace : MonoBehaviour
 
         // 위치와 힘 적용
         itemToThrow.transform.position = this.transform.position + this.transform.up * ITEM_THROW_HEIGHT;
+        itemToThrow.transform.rotation = Quaternion.identity;
+        Debug.Log(itemToThrow.transform.position);
         rb.AddForce((this.transform.up + this.transform.forward) * ITEM_THROW_FORCE);
 
     }
