@@ -69,8 +69,8 @@ public class LobbyInvitePopup : MonoBehaviour
     // 수락 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: true) 전송 후 방 입장 요청, 메인에 있으면 로비 씬으로 이동
     private void OnClickAccept()
     {
-        NetManager.Instance.SendInviteResponse(_inviteId, true);
-        NetManager.Instance.SendEnterRoom(_roomId);
+        PacketDispatcher.Instance.SendInviteResponse(_inviteId, true);
+        PacketDispatcher.Instance.SendEnterRoom(_roomId);
 
         if (popupRoot != null)
             popupRoot.SetActive(false);
@@ -83,7 +83,7 @@ public class LobbyInvitePopup : MonoBehaviour
     // 거절 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: false) 전송 후 팝업 숨김
     private void OnClickDecline()
     {
-        NetManager.Instance.SendInviteResponse(_inviteId, false);
+        PacketDispatcher.Instance.SendInviteResponse(_inviteId, false);
         if (popupRoot != null)
             popupRoot.SetActive(false);
     }

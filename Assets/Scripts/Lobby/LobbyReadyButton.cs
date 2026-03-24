@@ -24,7 +24,10 @@ public class LobbyReadyButton : MonoBehaviour
             readyButton.onClick.AddListener(OnClickReady);
 
         if (PacketManager.Instance != null)
+        {
             PacketManager.Instance.OnReadyEvent += OnReadyPacket;
+        }
+            
     }
 
     private void OnDisable()
@@ -45,7 +48,7 @@ public class LobbyReadyButton : MonoBehaviour
         }
 
         bool next = !_localReady;
-        NetManager.Instance.SendReady(next);
+        PacketDispatcher.Instance.SendReady(next);
         _localReady = next;
         UpdateLabel(next);
     }
