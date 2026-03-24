@@ -24,59 +24,39 @@ namespace Protocol {
     static EnumReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgpFbnVtLnByb3RvEghQcm90b2NvbCq6AQoNU3RhdEV2ZW50VHlwZRITCg9T",
-            "VEFUX0VWRU5UX05PTkUQABIQCgxEQU1BR0VfVEFLRU4QARIKCgZIRUFMRUQQ",
-            "AhIUChBIRUFMVEhfSVRFTV9VU0VEEAMSEwoPT1hZR0VOX0NPTlNVTUVEEAoS",
-            "EwoPT1hZR0VOX1JFU1RPUkVEEAsSFAoQT1hZR0VOX0lURU1fVVNFRBAMEhEK",
-            "DUZPT0RfQ09OU1VNRUQQFBINCglUT09MX1VTRUQQFSo0CgpPYmplY3RUeXBl",
-            "EhIKDk9CSkVDVF9JRF9OT05FEAASCAoEVE9PTBABEggKBElURU0QAipFCghJ",
-            "dGVtVHlwZRIICgROT05FEAASCAoEV09PRBBkEgkKBVNUT05FEGUSDAoISVJP",
-            "Tl9PUkUQZhIMCghHT0xEX09SRRBnKj8KCFRvb2xUeXBlEhIKDlRPT0xfVFlQ",
-            "RV9OT05FEAASBwoDQVhFEGQSCwoHUElDS0FYRRBlEgkKBURSSUxMEGYqSQoJ",
-            "SXRlbVN0YXRlEhMKD0lURU1fU1RBVEVfTk9ORRAAEg0KCU9OX0dST1VORBAB",
-            "EgoKBklOX0FJUhACEgwKCEVRVUlQUEVEEANiBnByb3RvMw=="));
+            "CgpFbnVtLnByb3RvEghQcm90b2NvbCplCg1TdGF0RXZlbnRUeXBlEhMKD1NU",
+            "QVRfRVZFTlRfTk9ORRAAEhAKDERBTUFHRV9UQUtFThABEgoKBkhFQUxFRBAC",
+            "Eg0KCUlURU1fVVNFRBADEhIKDk9YWUdFTl9DSEFOR0VEEAQqNAoKT2JqZWN0",
+            "VHlwZRISCg5PQkpFQ1RfSURfTk9ORRAAEggKBFRPT0wQARIICgRJVEVNEAIq",
+            "RQoISXRlbVR5cGUSCAoETk9ORRAAEggKBFdPT0QQZBIJCgVTVE9ORRBlEgwK",
+            "CElST05fT1JFEGYSDAoIR09MRF9PUkUQZyo/CghUb29sVHlwZRISCg5UT09M",
+            "X1RZUEVfTk9ORRAAEgcKA0FYRRBkEgsKB1BJQ0tBWEUQZRIJCgVEUklMTBBm",
+            "KkkKCUl0ZW1TdGF0ZRITCg9JVEVNX1NUQVRFX05PTkUQABINCglPTl9HUk9V",
+            "TkQQARIKCgZJTl9BSVIQAhIMCghFUVVJUFBFRBADKl4KDERhbWFnZVNvdXJj",
+            "ZRIWChJEQU1BR0VfU09VUkNFX05PTkUQABIPCgtTVUZGT0NBVElPThABEhEK",
+            "DUVOVklST05NRU5UQUwQAhISCg5NT05TVEVSX0FUVEFDSxADKkIKCkhlYWxT",
+            "b3VyY2USFAoQSEVBTF9TT1VSQ0VfTk9ORRAAEg0KCVJFU1RfQVJFQRABEg8K",
+            "C01FRElDQUxfS0lUEAIqeAoQT3h5Z2VuQ2hhbmdlVHlwZRIWChJPWFlHRU5f",
+            "Q0hBTkdFX05PTkUQABITCg9DT05TVU1FX05BVFVSQUwQARITCg9DT05TVU1F",
+            "X1JVTk5JTkcQAhIQCgxSRVNUT1JFX1RBTksQAxIQCgxSRVNUT1JFX0FSRUEQ",
+            "BGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Protocol.StatEventType), typeof(global::Protocol.ObjectType), typeof(global::Protocol.ItemType), typeof(global::Protocol.ToolType), typeof(global::Protocol.ItemState), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Protocol.StatEventType), typeof(global::Protocol.ObjectType), typeof(global::Protocol.ItemType), typeof(global::Protocol.ToolType), typeof(global::Protocol.ItemState), typeof(global::Protocol.DamageSource), typeof(global::Protocol.HealSource), typeof(global::Protocol.OxygenChangeType), }, null, null));
     }
     #endregion
 
   }
   #region Enums
+  /// <summary>
+  /// ==================== 플레이어 스탯 이벤트 타입 ====================
+  /// </summary>
   public enum StatEventType {
     [pbr::OriginalName("STAT_EVENT_NONE")] StatEventNone = 0,
-    /// <summary>
-    /// HP 관련
-    /// </summary>
     [pbr::OriginalName("DAMAGE_TAKEN")] DamageTaken = 1,
-    /// <summary>
-    /// 회복
-    /// </summary>
     [pbr::OriginalName("HEALED")] Healed = 2,
-    /// <summary>
-    /// 회복 아이템 사용
-    /// </summary>
-    [pbr::OriginalName("HEALTH_ITEM_USED")] HealthItemUsed = 3,
-    /// <summary>
-    /// 산소 관련
-    /// </summary>
-    [pbr::OriginalName("OXYGEN_CONSUMED")] OxygenConsumed = 10,
-    /// <summary>
-    /// 산소 회복
-    /// </summary>
-    [pbr::OriginalName("OXYGEN_RESTORED")] OxygenRestored = 11,
-    /// <summary>
-    /// 산소통 사용
-    /// </summary>
-    [pbr::OriginalName("OXYGEN_ITEM_USED")] OxygenItemUsed = 12,
-    /// <summary>
-    /// 아이템 사용
-    /// </summary>
-    [pbr::OriginalName("FOOD_CONSUMED")] FoodConsumed = 20,
-    /// <summary>
-    /// 도구 사용
-    /// </summary>
-    [pbr::OriginalName("TOOL_USED")] ToolUsed = 21,
+    [pbr::OriginalName("ITEM_USED")] ItemUsed = 3,
+    [pbr::OriginalName("OXYGEN_CHANGED")] OxygenChanged = 4,
   }
 
   public enum ObjectType {
@@ -147,6 +127,57 @@ namespace Protocol {
     /// 플레이어가 장착한 상태
     /// </summary>
     [pbr::OriginalName("EQUIPPED")] Equipped = 3,
+  }
+
+  /// <summary>
+  /// ==================== 데미지 원인 ====================
+  /// </summary>
+  public enum DamageSource {
+    [pbr::OriginalName("DAMAGE_SOURCE_NONE")] None = 0,
+    /// <summary>
+    /// 산소 부족
+    /// </summary>
+    [pbr::OriginalName("SUFFOCATION")] Suffocation = 1,
+    /// <summary>
+    /// 환경 (가시, 함정)
+    /// </summary>
+    [pbr::OriginalName("ENVIRONMENTAL")] Environmental = 2,
+    /// <summary>
+    /// 몬스터 공격
+    /// </summary>
+    [pbr::OriginalName("MONSTER_ATTACK")] MonsterAttack = 3,
+  }
+
+  /// <summary>
+  /// ==================== 회복 원인 ====================
+  /// </summary>
+  public enum HealSource {
+    [pbr::OriginalName("HEAL_SOURCE_NONE")] None = 0,
+    [pbr::OriginalName("REST_AREA")] RestArea = 1,
+    [pbr::OriginalName("MEDICAL_KIT")] MedicalKit = 2,
+  }
+
+  /// <summary>
+  /// ==================== 산소 변화 타입 ====================
+  /// </summary>
+  public enum OxygenChangeType {
+    [pbr::OriginalName("OXYGEN_CHANGE_NONE")] OxygenChangeNone = 0,
+    /// <summary>
+    /// 자연 소모
+    /// </summary>
+    [pbr::OriginalName("CONSUME_NATURAL")] ConsumeNatural = 1,
+    /// <summary>
+    /// 달리기
+    /// </summary>
+    [pbr::OriginalName("CONSUME_RUNNING")] ConsumeRunning = 2,
+    /// <summary>
+    /// 산소통 사용
+    /// </summary>
+    [pbr::OriginalName("RESTORE_TANK")] RestoreTank = 3,
+    /// <summary>
+    /// 안전 구역
+    /// </summary>
+    [pbr::OriginalName("RESTORE_AREA")] RestoreArea = 4,
   }
 
   #endregion
