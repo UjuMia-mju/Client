@@ -8,14 +8,14 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     void Start()
     {
         // 패킷 이벤트 구독
-        PacketManager.Instance.OnLoginResultEvent += OnLoginResult;
+        PacketHandler.Instance.OnLoginResultEvent += OnLoginResult;
     }
 
     void OnDestroy()
     {
-        if (PacketManager.Instance != null)
+        if (PacketHandler.Instance != null)
         {
-            PacketManager.Instance.OnLoginResultEvent -= OnLoginResult;
+            PacketHandler.Instance.OnLoginResultEvent -= OnLoginResult;
         }
     }
     private void OnLoginResult(S_LOGIN packet)

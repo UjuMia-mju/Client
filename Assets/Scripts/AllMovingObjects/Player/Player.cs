@@ -33,7 +33,6 @@ public class Player : MovingObject
     private AnimState lastAnimState;
     private int lastHP;
     private float lastOxygen;
-
     // 초기화
     protected override void Awake()
     {
@@ -51,20 +50,22 @@ public class Player : MovingObject
 
     private void Start()
     {
-
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
 
         lastHP = playerStat.GetHp();
         lastOxygen = playerStat.GetOxygen();
 
-        // 게임 입장 패킷 전송
-        NetManager.Instance.SendEnterGame(0);
-
-        SendEnterPosToServer();
-
         // 산소가 줄어들기 시작함
-        StartCoroutine(playerStat.OxygenDecrease());
+        //StartCoroutine(playerStat.OxygenDecrease());
+    }
+
+    public void OnNetworkReady()
+    {
+        // 이 부분은 플레이어 ID를 넘기는 부분이기 때문에. 초기에 로그인을 하고 나서 받은 ID를 기억하고 있다가 넘기면 됨.
+        // 지금은 테스트로 0으로 넘겨주고 있습니다. -> 추후 수정 필요
+        PacketDispatcher.Instance.SendEnterGame(0);
+        SendEnterPosToServer();
     }
 
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
@@ -228,7 +229,16 @@ public class Player : MovingObject
 
         foreach (Collider col in colliders)
         {
+<<<<<<< HEAD
             if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE))
+=======
+            if (col == null)
+            {
+                Debug.Log("콜라이더 null 감지");
+                continue;
+            }
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE))
+>>>>>>> origin/feat/peerhost
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)
@@ -266,7 +276,7 @@ public class Player : MovingObject
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
     private void SendEnterPosToServer()
     {
-        NetManager.Instance.SendMove(transform.position, transform.rotation);
+        PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
 
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
@@ -286,7 +296,7 @@ public class Player : MovingObject
 
         if (posChanged || rotChanged)
         {
-            NetManager.Instance.SendMove(transform.position, transform.rotation);
+            PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
 
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;
@@ -304,7 +314,7 @@ public class Player : MovingObject
         // 상태가 바뀐 경우에만 전송
         if (currentState != lastAnimState)
         {
-            NetManager.Instance.SendAnimation(currentState);
+            PacketDispatcher.Instance.SendAnimation(currentState);
             lastAnimState = currentState;
         }
     }
@@ -312,13 +322,13 @@ public class Player : MovingObject
     // 아이템을 들어올렸을 때 RemotePlayer의 소켓에 부착시키기 위해 패킷을 1회 전송
     private void SendItemAttachedToServer(Items data)
     {
-        NetManager.Instance.SendItemAttached(data);
+        PacketDispatcher.Instance.SendItemAttached(data);
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
     private void SendItemDetatchedToServer(Items data)
     {
-        NetManager.Instance.SendItemDetatched(data);
+        PacketDispatcher.Instance.SendItemDetatched(data);
     }
 
     //private void SendPlayerStatToServer()
