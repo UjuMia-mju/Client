@@ -3994,7 +3994,7 @@ MonoBehaviour:
   distance: 10
   cameraOffset: {fileID: 1820163869}
   planet: {fileID: 4943720041582861401}
-  hudManager: {fileID: 879607235}
+  hudManager: {fileID: 0}
 --- !u!23 &160277262357987934
 MeshRenderer:
   m_ObjectHideFlags: 0
