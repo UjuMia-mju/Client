@@ -19,8 +19,7 @@ public class Player : MovingObject
     public bool isMining { get; private set; } = false;
 
     public GameObject playerBoneModel;
-
-    // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
+    
     private PlayerStat playerStat;
 
 
@@ -33,6 +32,7 @@ public class Player : MovingObject
     private AnimState lastAnimState;
     private int lastHP;
     private float lastOxygen;
+
     // 초기화
     protected override void Awake()
     {
@@ -50,31 +50,56 @@ public class Player : MovingObject
 
     private void Start()
     {
+
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
 
-        lastHP = playerStat.GetHp();
-        lastOxygen = playerStat.GetOxygen();
+        // 이벤트 구독 0324 (추가)
+        playerStat.OnHpChanged += HandleHpChanged;
+        playerStat.OnOxygenChanged += HandleOxygenChanged;
 
-        // 산소가 줄어들기 시작함
-        //StartCoroutine(playerStat.OxygenDecrease());
-    }
+        // 게임 입장 패킷 전송
+        NetManager.Instance.SendEnterGame(0);
 
-    public void OnNetworkReady()
-    {
-        // 이 부분은 플레이어 ID를 넘기는 부분이기 때문에. 초기에 로그인을 하고 나서 받은 ID를 기억하고 있다가 넘기면 됨.
-        // 지금은 테스트로 0으로 넘겨주고 있습니다. -> 추후 수정 필요
-        PacketDispatcher.Instance.SendEnterGame(0);
         SendEnterPosToServer();
     }
 
+    // 이벤트 구독 해제 0324 (추가)
+    private void OnDestroy()
+    {
+        if (playerStat != null)
+        {
+            playerStat.OnHpChanged -= HandleHpChanged;
+            playerStat.OnOxygenChanged -= HandleOxygenChanged;
+        }
+    }
+    
+    // 체력 변경 이벤트 핸들러 0324 (추가)
+    private void HandleHpChanged(int newHp)
+    {
+        if (lastHP != newHp)
+        {
+            lastHP = newHp;
+        }
+    }
+
+    // 산소 변경 이벤트 핸들러 0324 (추가)
+    private void HandleOxygenChanged(float newOxygen)
+    {
+        // 서버 부하를 줄이기 위해 소수점 단위 변화가 클 때만 보낼 수도 있습니다.
+        if (Mathf.Abs(lastOxygen - newOxygen) > 0.01f)
+        {
+            lastOxygen = newOxygen;
+        }
+    }
+    
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
     private void Update()
     {
         playerInput.InputProcess(); // 인풋, 충돌 감지는 Input이 되지 않으면 레이캐스트가 멈추므로 가장 먼저 처리합니다.
 
         // 충돌 감지
-        inputFreeze = CollisionDetectWithRaycast(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir), wallMask, walkable);
+        inputFreeze = CollisionDetectWithRaycast(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir), wallMask);
 
         if (!inputFreeze)
         {
@@ -100,16 +125,15 @@ public class Player : MovingObject
     // 물리 작용 업데이트
     private void FixedUpdate()
     {
-        RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
         if (!inputFreeze)
         {
             Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
+            RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
 
             if (playerInput.GetIsJumping() && isGrounded && !isMining)
             {
                 Jump();
                 playerInput.SetIsJumping(false);
-                EndMining();
             }
             else if (!isGrounded)
             {
@@ -123,17 +147,14 @@ public class Player : MovingObject
     {
         // 서버로 패킷 전송
         SendPositionToServer();
-        SendAnimationToServer();
+        SendAnimationToServer(); 
         //SendPlayerStatToServer();
     }
 
     protected override void Moving(Vector3 movDir)
     {
-        if (movDir != Vector3.zero)
-        {
-            EndMining();
-        }
         base.Moving(movDir);
+        isMining = false; // 이동하면 광질이 멈춥니다.
     }
 
     // E키 상호작용
@@ -157,10 +178,10 @@ public class Player : MovingObject
             // 혹은 태그가 Tool인 것도 포함함.
             else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething || nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething)
             {
-                isPlayerGetSomething = true;
                 playerItemSystem.AttachItem(nearestObject);
                 //SendItemAttachedToServer(nearestObject.GetComponent<Items>());
                 SendItemAttachedToServer(playerItemSystem.GetCurrentEquipItemClass());
+                isPlayerGetSomething = true;
             }
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 조합대이며, 아이템을 들고 있을 때
@@ -173,21 +194,7 @@ public class Player : MovingObject
                 playerItemSystem.DetachItem();
             }
 
-            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로이며, 아이템을 들고 있을 때
-            // 또한 투입할 때 플레이어의 손에서 Detach
-            else if (nearestObject.CompareTag(Define.Tag.FURNACE) && isPlayerGetSomething)
-            {
-                Furnace furnace = nearestObject.GetComponent<Furnace>();
-                if (furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem))
-                {
-                    isPlayerGetSomething = false;
-                    playerItemSystem.DetachItem();
-                }
-                else
-                {
-                    Debug.Log("아직 용광로는 준비되지 않았다.");
-                }
-            }
+            // 그 외에는 처리하지 않음
         }
     }
 
@@ -229,16 +236,7 @@ public class Player : MovingObject
 
         foreach (Collider col in colliders)
         {
-<<<<<<< HEAD
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE))
-=======
-            if (col == null)
-            {
-                Debug.Log("콜라이더 null 감지");
-                continue;
-            }
             if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE))
->>>>>>> origin/feat/peerhost
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)
@@ -259,24 +257,10 @@ public class Player : MovingObject
         Gizmos.DrawWireSphere(transform.position, DETECT_RADIUS);
     }
 
-    public void EndMining()
-    {
-        if (playerItemSystem.currentEquipItem != null && playerItemSystem.currentEquipItem.CompareTag(Define.Tag.PICKAXE))
-        {
-            Pickaxe tempP = playerItemSystem.currentEquipItem.GetComponent<Pickaxe>();
-            if (tempP != null)
-            {
-                tempP.ResetHasMined();
-            }
-        }
-
-        isMining = false;
-    }
-
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
     private void SendEnterPosToServer()
     {
-        PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+        NetManager.Instance.SendMove(transform.position, transform.rotation);
 
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
@@ -296,7 +280,7 @@ public class Player : MovingObject
 
         if (posChanged || rotChanged)
         {
-            PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+            NetManager.Instance.SendMove(transform.position, transform.rotation);
 
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;
@@ -314,7 +298,7 @@ public class Player : MovingObject
         // 상태가 바뀐 경우에만 전송
         if (currentState != lastAnimState)
         {
-            PacketDispatcher.Instance.SendAnimation(currentState);
+            NetManager.Instance.SendAnimation(currentState);
             lastAnimState = currentState;
         }
     }
@@ -322,13 +306,13 @@ public class Player : MovingObject
     // 아이템을 들어올렸을 때 RemotePlayer의 소켓에 부착시키기 위해 패킷을 1회 전송
     private void SendItemAttachedToServer(Items data)
     {
-        PacketDispatcher.Instance.SendItemAttached(data);
+        NetManager.Instance.SendItemAttached(data);
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
     private void SendItemDetatchedToServer(Items data)
     {
-        PacketDispatcher.Instance.SendItemDetatched(data);
+        NetManager.Instance.SendItemDetatched(data);
     }
 
     //private void SendPlayerStatToServer()
