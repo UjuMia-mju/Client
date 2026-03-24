@@ -28,6 +28,10 @@ public class NetManager : Singleton<NetManager>
 
     // 임시로 정보 저장 (실제 게임에서는 별도의 로그인 관리 필요)
     public int _playerId;
+    public string PlayerName { get; set; } = "";
+    public int PlayerTag { get; set; } = 0;
+    /// <summary>로그인 시 수신한 유저 상세 정보 (S_LOGIN.player_info, 0.2v~)</summary>
+    public Protocol.PlayerInfo PlayerInfo { get; set; }
 
     #region Connect
     public void Connect(string ip, int port)
@@ -325,125 +329,81 @@ public class NetManager : Singleton<NetManager>
         SendPacket(PacketId.PKT_C_MOVE, movePacket);
     }
 
-    public void SendAnimation(AnimState animState)
+    // ==================== Lobby/Room ====================
+
+    public void SendCreateRoom()
     {
-        C_PLAYER_ANIMATION animationPacket = new C_PLAYER_ANIMATION
-        {
-            State = (int)animState
-        };
-        SendPacket(PacketId.PKT_C_PLAYER_ANIMATION, animationPacket);
+        C_CREATE_ROOM packet = new C_CREATE_ROOM();
+        SendPacket(PacketId.PKT_C_CREATE_ROOM, packet);
     }
 
-    // 패킷 보내는거 배치파일 실행해서 코드 자동생성 해야 함. 지금 안 됨.
-    //public void SendPlayerStat(int hpData, float oxygenData)
-    //{
-    //    C_PLAYER_STAT_EVENT statPacket = new C_PLAYER_STAT_EVENT
-    //    {
-    //        Hp = hpData,
-    //        Oxygen = oxygenData
-    //    };
-    //    SendPacket(PacketId.PKT_C_PLAYER_STAT_EVENT, statPacket);
-    //}
-
-    public void SendItemAttached(Items itemData)
+    public void SendRoomList()
     {
-        C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
-        {
-            ObjectId = new ObjectId
-            {
-                Type = ObjectType.Item,
-                ItemId = (ulong)itemData.itemId
-            }
-        };
-        SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
+        C_ROOM_LIST packet = new C_ROOM_LIST();
+        SendPacket(PacketId.PKT_C_ROOM_LIST, packet);
     }
 
-    public void SendItemDetatched(Items itemData)
+    public void SendEnterRoom(ulong roomId)
     {
-        C_OBJECT_DROP packet = new C_OBJECT_DROP
+        C_ENTER_ROOM packet = new C_ENTER_ROOM
         {
-            ObjectId = new ObjectId
-            {
-                Type = ObjectType.Item,
-                ItemId = (ulong)itemData.itemId
-            }
+            RoomId = roomId
         };
-        SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
+        SendPacket(PacketId.PKT_C_ENTER_ROOM, packet);
     }
 
-    public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
+    public void SendLeaveRoom()
     {
-        PosInfo posInfo = new PosInfo
-        {
-            X = position.x,
-            Y = position.y,
-            Z = position.z
-        };
-
-        RotInfo rotInfo = new RotInfo
-        {
-            X = rotation.x,
-            Y = rotation.y,
-            Z = rotation.z,
-            W = rotation.w
-        };
-
-        ObjectId objectId = new ObjectId
-        {
-            Type = ObjectType.Item,
-            ItemId = (ulong)itemId
-        };
-
-        C_OBJECT_MOVE packet = new C_OBJECT_MOVE
-        {
-            ObjectId = objectId,
-            Pos = posInfo,
-            Rot = rotInfo
-        };
-
-        SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
+        C_LEAVE_ROOM packet = new C_LEAVE_ROOM();
+        SendPacket(PacketId.PKT_C_LEAVE_ROOM, packet);
     }
 
-    public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation)
+    public void SendReady(bool isReady)
     {
-        PosInfo posInfo = new PosInfo
+        C_READY packet = new C_READY
         {
-            X = position.x,
-            Y = position.y,
-            Z = position.z
+            IsReady = isReady
         };
-
-        RotInfo rotInfo = new RotInfo
-        {
-            X = rotation.x,
-            Y = rotation.y,
-            Z = rotation.z,
-            W = rotation.w
-        };
-
-        ObjectId objectId = new ObjectId
-        {
-            Type = ObjectType.Tool,
-            ToolType = data
-        };
-
-        C_OBJECT_MOVE packet = new C_OBJECT_MOVE
-        {
-            ObjectId = objectId,
-            Pos = posInfo,
-            Rot = rotInfo
-        };
-
-        SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
+        SendPacket(PacketId.PKT_C_READY, packet);
     }
 
+    public void SendStartRoom()
+    {
+        C_START_ROOM packet = new C_START_ROOM();
+        SendPacket(PacketId.PKT_C_START_ROOM, packet);
+    }
 
-    //public void SendCraftingList(List<string> data)
-    //{
-    //    C_WORKBENCH_LIST craftingListPacket = new C_WORKBENCH_LIST();
-    //    craftingListPacket.ItemNames.AddRange(data);
-    //    SendPacket(PacketId.PKT_C_WORKBENCH, craftingListPacket);
-    //}
+    /// <summary>
+    /// 특정 유저를 방으로 초대한다. player_name + player_tag로 대상 식별.
+    /// </summary>
+    /// <param name="playerName">초대할 유저의 이름</param>
+    /// <param name="playerTag">초대할 유저의 태그 (고유 번호, 예: 1234)</param>
+    public void SendInvitePlayer(string playerName, int playerTag)
+    {
+        C_INVITE_PLAYER invitePlayerPacket = new C_INVITE_PLAYER
+        {
+            PlayerName = playerName,
+            PlayerTag = playerTag
+        };
+
+        SendPacket(PacketId.PKT_C_INVITE_PLAYER, invitePlayerPacket);
+    }
+
+    /// <summary>
+    /// 받은 초대에 대해 수락/거절 응답을 보낸다.
+    /// </summary>
+    /// <param name="inviteId">S_INVITE_NOTIFICATION으로 받은 invite_id</param>
+    /// <param name="accept">true: 수락, false: 거절</param>
+    public void SendInviteResponse(ulong inviteId, bool accept)
+    {
+        C_INVITE_RESPONSE inviteResponsePacket = new C_INVITE_RESPONSE
+        {
+            InviteId = inviteId,
+            Accept = accept
+        };
+
+        SendPacket(PacketId.PKT_C_INVITE_RESPONSE, inviteResponsePacket);
+    }
 
     /// <summary>
     /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출

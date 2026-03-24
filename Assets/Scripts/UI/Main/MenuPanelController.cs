@@ -49,13 +49,13 @@ public class MenuPanelController : MonoBehaviour
         if (singlePlayButton != null)
         {
             _buttonOriginScales[singlePlayButton] = singlePlayButton.transform.localScale;
-            InitSceneButton(singlePlayButton);
+            InitSinglePlayButton(singlePlayButton);
         }
 
         if (multiPlayButton != null)
         {
             _buttonOriginScales[multiPlayButton] = multiPlayButton.transform.localScale;
-            InitSceneButton(multiPlayButton);
+            InitMultiPlayButton(multiPlayButton);
         }
 
         // 3. 패널 오픈 버튼 초기화 (기존 MenuSet)
@@ -68,17 +68,30 @@ public class MenuPanelController : MonoBehaviour
     }
     
     /// <summary>
-    /// 씬 이동 전용 버튼 초기화 (Single, Multi)
+    /// 싱글플레이: 게임 씬으로 이동
     /// </summary>
-    private void InitSceneButton(Button btn)
+    private void InitSinglePlayButton(Button btn)
     {
         btn.onClick.AddListener(() => {
             SoundManager.Instance.PlaySFX("Click2");
-            // Lobby 씬 완성 시 Define.Scene.Lobby 로 변경
-            SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_1); 
+            SceneLoader.Instance.LoadScene(Define.Scene.GAME);
         });
+        AddHoverEvents(btn);
+    }
 
-        AddHoverEvents(btn); // 공통 호버 이벤트 연결
+    /// <summary>
+    /// 멀티플레이: 방 생성 요청 → MainMultiPlayHandler가 S_CREATE_ROOM 수신 시 로비 씬으로 이동
+    /// </summary>
+    private void InitMultiPlayButton(Button btn)
+    {
+        btn.onClick.AddListener(() => {
+            SoundManager.Instance.PlaySFX("Click2");
+            if (NetManager.Instance != null && NetManager.Instance.IsConnected)
+                NetManager.Instance.SendCreateRoom();
+            else
+                Debug.LogWarning("[MenuPanelController] 서버에 연결되지 않았습니다. 로그인 후 멀티플레이를 이용하세요.");
+        });
+        AddHoverEvents(btn);
     }
 
     /// <summary>
