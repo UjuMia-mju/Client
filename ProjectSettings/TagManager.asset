@@ -9,6 +9,7 @@ TagManager:
   - MainButton
   - Pickaxe
   - Ore
+  - Furnace
   - ClickOff
   layers:
   - Default

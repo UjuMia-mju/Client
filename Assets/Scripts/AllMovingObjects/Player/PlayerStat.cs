@@ -24,6 +24,9 @@ public class PlayerStat : MonoBehaviour
     private List<Coroutine> fadeCoroutines = new List<Coroutine>();
 
 
+    private Coroutine oxygenCoroutine;
+
+
     private void Start()
     {
         hpImageList = new List<Image>();
@@ -71,9 +74,24 @@ public class PlayerStat : MonoBehaviour
         while (true)
         {
             oxygen -= 0.01f;
-            Debug.Log("산소 줄어듬 : " + oxygen);
-
             yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
+        }
+    }
+
+    public void StartOxygenRecover()
+    {
+        if (oxygenCoroutine == null)
+        {
+            oxygenCoroutine = StartCoroutine(OxygenIncrease());
+        }
+    }
+
+    public void StopOxygenRecover()
+    {
+        if (oxygenCoroutine != null)
+        {
+            StopCoroutine(oxygenCoroutine);
+            oxygenCoroutine = null;
         }
     }
 
@@ -81,16 +99,9 @@ public class PlayerStat : MonoBehaviour
     {
         while (true)
         {
-            if (oxygen >= 1)
-            {
-                oxygen = 1;
-            }
-            else
-            {
-                oxygen += 0.02f;
-                Debug.Log("산소 늘어남 : " + oxygen);
-                yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
-            }
+            oxygen = Mathf.Min(oxygen + 0.06f, 1f);
+            Debug.Log("산소 늘어남 : " + oxygen);
+            yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
         }
     }
 

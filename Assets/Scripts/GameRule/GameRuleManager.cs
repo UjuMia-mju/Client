@@ -27,7 +27,6 @@ public class GameRuleManager : MonoBehaviour
 
         while (remainingTime > 0)
         {
-            Debug.Log("남은 시간: " + remainingTime + "초");
             yield return new WaitForSeconds(1f); // 1초마다 감소
             remainingTime -= 1f;
         }

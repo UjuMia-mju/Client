@@ -73,7 +73,7 @@ public class Player : MovingObject
         playerInput.InputProcess(); // 인풋, 충돌 감지는 Input이 되지 않으면 레이캐스트가 멈추므로 가장 먼저 처리합니다.
 
         // 충돌 감지
-        inputFreeze = CollisionDetectWithRaycast(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir), wallMask);
+        inputFreeze = CollisionDetectWithRaycast(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir), wallMask, walkable);
 
         if (!inputFreeze)
         {
@@ -99,10 +99,10 @@ public class Player : MovingObject
     // 물리 작용 업데이트
     private void FixedUpdate()
     {
+        RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
         if (!inputFreeze)
         {
             Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
-            RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
 
             if (playerInput.GetIsJumping() && isGrounded && !isMining)
             {
@@ -122,7 +122,7 @@ public class Player : MovingObject
     {
         // 서버로 패킷 전송
         SendPositionToServer();
-        SendAnimationToServer(); 
+        SendAnimationToServer();
         //SendPlayerStatToServer();
     }
 
@@ -144,7 +144,6 @@ public class Player : MovingObject
             // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
             if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
             {
-                Debug.Log("곡괭이질");
                 isMining = true;
             }
 
@@ -157,10 +156,10 @@ public class Player : MovingObject
             // 혹은 태그가 Tool인 것도 포함함.
             else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething || nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething)
             {
+                isPlayerGetSomething = true;
                 playerItemSystem.AttachItem(nearestObject);
                 //SendItemAttachedToServer(nearestObject.GetComponent<Items>());
                 SendItemAttachedToServer(playerItemSystem.GetCurrentEquipItemClass());
-                isPlayerGetSomething = true;
             }
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 조합대이며, 아이템을 들고 있을 때
@@ -173,7 +172,21 @@ public class Player : MovingObject
                 playerItemSystem.DetachItem();
             }
 
-            // 그 외에는 처리하지 않음
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로이며, 아이템을 들고 있을 때
+            // 또한 투입할 때 플레이어의 손에서 Detach
+            else if (nearestObject.CompareTag(Define.Tag.FURNACE) && isPlayerGetSomething)
+            {
+                Furnace furnace = nearestObject.GetComponent<Furnace>();
+                if (furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem))
+                {
+                    isPlayerGetSomething = false;
+                    playerItemSystem.DetachItem();
+                }
+                else
+                {
+                    Debug.Log("아직 용광로는 준비되지 않았다.");
+                }
+            }
         }
     }
 
@@ -215,7 +228,7 @@ public class Player : MovingObject
 
         foreach (Collider col in colliders)
         {
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE))
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE))
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)

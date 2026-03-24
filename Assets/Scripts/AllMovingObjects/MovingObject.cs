@@ -69,27 +69,28 @@ public class MovingObject : MonoBehaviour
         }
     }
 
-    // 벽 충돌을 레이캐스트로 감지
-    protected bool CollisionDetectWithRaycast(Vector3 dirData, LayerMask maskData)
+    // 여러 LayerMask를 받을 수 있게 수정
+    protected bool CollisionDetectWithRaycast(Vector3 dirData, params LayerMask[] masks)
     {
         if (dirData.sqrMagnitude < 0.01f)
             return false;
 
-
         Ray ray = new Ray(this.transform.position, dirData.normalized);
         RaycastHit hit;
 
-        Debug.DrawLine(ray.origin, ray.origin + dirData.normalized * (2.1f), Color.red);
+        Debug.DrawLine(ray.origin, ray.origin + dirData.normalized * 2.1f, Color.red);
 
-        if (Physics.Raycast(ray, out hit, RAY_LENGTH, maskData))
+        foreach (var mask in masks)
         {
-            return true;
+            if (Physics.Raycast(ray, out hit, RAY_LENGTH, mask))
+            {
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
+
 
     // 땅에 닿았는지 레이캐스트로 감지
     protected void GroundDetectingWithRaycast(LayerMask maskData)

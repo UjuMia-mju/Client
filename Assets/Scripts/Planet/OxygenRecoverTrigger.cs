@@ -2,15 +2,15 @@
 
 public class OxygenRecoverTrigger : MonoBehaviour
 {
-    private Coroutine oxygenCoroutine;
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(Define.Tag.PLAYER))
         {
-            PlayerStat tempStat = other.GetComponent<PlayerStat>();
-            oxygenCoroutine = StartCoroutine(tempStat.OxygenIncrease());
-            Debug.Log("트리거 : 산소");
+            PlayerStat stat = other.GetComponent<PlayerStat>();
+            if (stat != null)
+            {
+                stat.StartOxygenRecover();
+            }
         }
     }
 
@@ -18,12 +18,11 @@ public class OxygenRecoverTrigger : MonoBehaviour
     {
         if (other.CompareTag(Define.Tag.PLAYER))
         {
-            if (oxygenCoroutine != null)
+            PlayerStat stat = other.GetComponent<PlayerStat>();
+            if (stat != null)
             {
-                StopCoroutine(oxygenCoroutine);
-                oxygenCoroutine = null;
+                stat.StopOxygenRecover();
             }
-            Debug.Log("트리거 : 산소 나감");
         }
     }
 }
