@@ -23,6 +23,7 @@ public static class Define
         public const string MAINBUTTON = "MainButton";
         public const string PICKAXE = "Pickaxe";
         public const string ORE = "Ore";
+        public const string CLICKOFF = "ClickOff";
     }
 
     public static class Layer

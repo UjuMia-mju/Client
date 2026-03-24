@@ -9,6 +9,7 @@ TagManager:
   - MainButton
   - Pickaxe
   - Ore
+  - ClickOff
   layers:
   - Default
   - TransparentFX
