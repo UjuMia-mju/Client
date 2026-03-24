@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 5248076910442429696}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.88, y: 22.64001, z: -0}
+  m_LocalPosition: {x: -7.2198806, y: 19.517971, z: 10.95574}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -157,6 +157,8 @@ MonoBehaviour:
   jumpForce: 0
   rotationSpeed: 0
   sendInterval: 0.05
+  itemId: 0
+  lerpSpeed: 10
 --- !u!114 &2981278035017433657
 MonoBehaviour:
   m_ObjectHideFlags: 0

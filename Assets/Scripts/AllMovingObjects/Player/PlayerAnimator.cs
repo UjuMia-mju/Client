@@ -55,4 +55,6 @@ public class PlayerAnimator : MonoBehaviour
     {
         return state;
     }
+
+    
 }
