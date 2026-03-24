@@ -9,10 +9,6 @@ public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public StageNode targetNode;
     public Transform orbitCenter;
 
-    [Header("Text Settings")] 
-    public TextMeshPro orbitText;
-    public Color textHoverColor = Color.yellow;
-
     [Header("Line Settings")] 
     public int segments = 60;
     public float lineWidth = 0.05f;
@@ -35,22 +31,8 @@ public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _lineRenderer = GetComponent<LineRenderer>();
         _originalGradient = _lineRenderer.colorGradient;
 
-        // NOTE: 이 부분이 있어야 마우스가 나갔을 때 텍스트 색상이 원래대로 잘 돌아와!
-        if (orbitText != null)
-        {
-            _originalTextColor = orbitText.color;
-        }
-
         DrawOrbit();
         GenerateMeshCollider();
-    }
-
-    private void Update()
-    {
-        if (orbitText != null && Camera.main != null)
-        {
-            orbitText.transform.rotation = Quaternion.LookRotation(orbitText.transform.position - Camera.main.transform.position);
-        }
     }
 
     private void DrawOrbit()
@@ -96,14 +78,12 @@ public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerEnter(PointerEventData eventData)
     {
         SetLineColor(hoverColor);
-        if (orbitText != null) orbitText.color = textHoverColor;
         if (targetNode != null) targetNode.OnPointerEnter(eventData);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         _lineRenderer.colorGradient = _originalGradient;
-        if (orbitText != null) orbitText.color = _originalTextColor;
         if (targetNode != null) targetNode.OnPointerExit(eventData);
     }
 

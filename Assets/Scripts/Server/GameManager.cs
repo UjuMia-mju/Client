@@ -23,12 +23,8 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         if (packet.Success)
         {
             Debug.Log($"✓ Login Success! Player ID: {packet.Player.Id}, Name: {packet.Player.Name}");
-            NetManager.Instance._playerId = packet.Player.Id;
-            NetManager.Instance.PlayerName = packet.Player.Name;
-            NetManager.Instance.PlayerTag = packet.Player.Tag;
-            NetManager.Instance.PlayerInfo = packet.PlayerInfo;
-            // 로그인 성공 → Splash → Main → (멀티플레이 버튼 시 방 생성 후 로비)
-            SceneLoader.Instance.LoadScene(Define.Scene.SPLASH);
+            NetManager.Instance._playerId = (int)packet.Player.Id; //  이런 캐스팅 부분 나중에 수정해야함.
+            SceneManager.LoadScene("StageSelect");  // 로그인 성공 시 게임 씬으로 이동
         }
         else
         {

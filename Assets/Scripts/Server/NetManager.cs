@@ -66,12 +66,6 @@ public class NetManager : Singleton<NetManager>
             _isConnected = true;
             Debug.Log("Connected to server!");
 
-            // Unity 메인 스레드에서 처리
-            // MainThreadDispatcher.Enqueue(() =>
-            // {
-            //     PacketManager.Instance.OnConnected();
-            // });
-
             // 수신 시작
             RegisterRecv();
         }
@@ -82,6 +76,7 @@ public class NetManager : Singleton<NetManager>
     }
 
     #endregion
+    
     // ------------------- Receive -------------------
     #region Receive
     private void RegisterRecv()
@@ -115,7 +110,7 @@ public class NetManager : Singleton<NetManager>
                 return;
             }
 
-            // 패킷 처리 (C++ PacketSession::OnRecv와 동일)
+            // 패킷 처리 
             int processedBytes = ProcessPackets();
 
             if (processedBytes < 0)
@@ -142,7 +137,6 @@ public class NetManager : Singleton<NetManager>
         }
     }
 
-    // 패킷 파싱 (C++ PacketSession::OnRecv 로직)
     private int ProcessPackets()
     {
         Debug.Log($"Processing packets in buffer. DataSize: {_recvBuffer.DataSize} bytes");  // 로그
@@ -180,12 +174,10 @@ public class NetManager : Singleton<NetManager>
         return processedBytes;
     }
 
-    // ==================== 높은 수준의 Recv 메서드들 ====================
-
     #endregion
+    
     // ------------------- Send -------------------
     #region Send
-    // 송신 (C++ Session::Send와 동일)
     public void Send(ArraySegment<byte> packet)
     {
         if (!_isConnected)
@@ -203,7 +195,6 @@ public class NetManager : Singleton<NetManager>
         }
     }
 
-    // 송신 등록 (C++ Session::RegisterSend와 동일)
     private void RegisterSend()
     {
         if (!_isConnected)
@@ -266,8 +257,6 @@ public class NetManager : Singleton<NetManager>
         }
     }
 
-    //---------------
-
     // ==================== 높은 수준의 전송 메서드들 ====================
 
     public void SendLogin(string userId, string password)
@@ -329,85 +318,17 @@ public class NetManager : Singleton<NetManager>
         SendPacket(PacketId.PKT_C_MOVE, movePacket);
     }
 
-    // ==================== Lobby/Room ====================
-
-    public void SendCreateRoom()
+    public void SendShowStage(int stageLevel, int stageIndex)
     {
-        C_CREATE_ROOM packet = new C_CREATE_ROOM();
-        SendPacket(PacketId.PKT_C_CREATE_ROOM, packet);
-    }
-
-    public void SendRoomList()
-    {
-        C_ROOM_LIST packet = new C_ROOM_LIST();
-        SendPacket(PacketId.PKT_C_ROOM_LIST, packet);
-    }
-
-    public void SendEnterRoom(ulong roomId)
-    {
-        C_ENTER_ROOM packet = new C_ENTER_ROOM
+        C_SHOW_STAGE packet = new C_SHOW_STAGE
         {
-            RoomId = roomId
-        };
-        SendPacket(PacketId.PKT_C_ENTER_ROOM, packet);
-    }
-
-    public void SendLeaveRoom()
-    {
-        C_LEAVE_ROOM packet = new C_LEAVE_ROOM();
-        SendPacket(PacketId.PKT_C_LEAVE_ROOM, packet);
-    }
-
-    public void SendReady(bool isReady)
-    {
-        C_READY packet = new C_READY
-        {
-            IsReady = isReady
-        };
-        SendPacket(PacketId.PKT_C_READY, packet);
-    }
-
-    public void SendStartRoom()
-    {
-        C_START_ROOM packet = new C_START_ROOM();
-        SendPacket(PacketId.PKT_C_START_ROOM, packet);
-    }
-
-    /// <summary>
-    /// 특정 유저를 방으로 초대한다. player_name + player_tag로 대상 식별.
-    /// </summary>
-    /// <param name="playerName">초대할 유저의 이름</param>
-    /// <param name="playerTag">초대할 유저의 태그 (고유 번호, 예: 1234)</param>
-    public void SendInvitePlayer(string playerName, int playerTag)
-    {
-        C_INVITE_PLAYER invitePlayerPacket = new C_INVITE_PLAYER
-        {
-            PlayerName = playerName,
-            PlayerTag = playerTag
+            StageLevel = stageLevel,
+            StageIndex = stageIndex
         };
 
-        SendPacket(PacketId.PKT_C_INVITE_PLAYER, invitePlayerPacket);
+        SendPacket(PacketId.PKT_C_SHOW_STAGE, packet);
     }
 
-    /// <summary>
-    /// 받은 초대에 대해 수락/거절 응답을 보낸다.
-    /// </summary>
-    /// <param name="inviteId">S_INVITE_NOTIFICATION으로 받은 invite_id</param>
-    /// <param name="accept">true: 수락, false: 거절</param>
-    public void SendInviteResponse(ulong inviteId, bool accept)
-    {
-        C_INVITE_RESPONSE inviteResponsePacket = new C_INVITE_RESPONSE
-        {
-            InviteId = inviteId,
-            Accept = accept
-        };
-
-        SendPacket(PacketId.PKT_C_INVITE_RESPONSE, inviteResponsePacket);
-    }
-
-    /// <summary>
-    /// 핵심: 프로토콜 메시지를 패킷으로 변환하고 Send 호출
-    /// </summary>
     private void SendPacket<T>(PacketId packetId, T packet) where T : IMessage
     {
         try
@@ -437,6 +358,7 @@ public class NetManager : Singleton<NetManager>
     }
 
     #endregion
+    
     // ------------------- Disconnect -------------------
     #region Disconnect Handler
     public void Disconnect(string reason)
@@ -449,11 +371,6 @@ public class NetManager : Singleton<NetManager>
 
         _socket?.Close();
         _socket = null;
-
-        // MainThreadDispatcher.Enqueue(() =>
-        // {
-        //     PacketManager.Instance.OnDisconnected();
-        // });
     }
 
     private void OnApplicationQuit()

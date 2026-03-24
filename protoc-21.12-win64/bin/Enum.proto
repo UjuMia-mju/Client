@@ -5,10 +5,20 @@ package Protocol;
 enum StatEventType
 {
 	STAT_EVENT_NONE = 0;
-	DAMAGE_TAKEN = 1;
-	HEALED = 2;
-	ITEM_USED = 3;
-	OXYGEN_CHANGED = 4;
+
+	// HP 관련
+	DAMAGE_TAKEN = 1;      // 데미지 받음
+	HEALED = 2;            // 회복
+	HEALTH_ITEM_USED = 3;  // 회복 아이템 사용
+
+	// 산소 관련
+	OXYGEN_CONSUMED = 10;  // 산소 소모
+	OXYGEN_RESTORED = 11;  // 산소 회복
+	OXYGEN_ITEM_USED = 12; // 산소통 사용
+
+	// 아이템 사용
+	FOOD_CONSUMED = 20;    // 음식 섭취
+	TOOL_USED = 21;        // 도구 사용
 }
 
 // ==================== 아이템 타입 ====================
@@ -22,54 +32,27 @@ enum ObjectType
 
 enum ItemType
 {
-    NONE = 0;
-    WOOD = 100;             // 나무
-    STONE = 101;            // 돌
-    IRON_ORE = 102;         // 철광석
-    GOLD_ORE = 103;         // 금광석
+	NONE = 0;
+	WOOD = 100;             // 나무
+	STONE = 101;            // 돌
+	IRON_ORE = 102;         // 철광석
+	GOLD_ORE = 103;         // 금광석
 }
 
 // ==================== 도구 타입 ====================
 enum ToolType
 {
-    TOOL_TYPE_NONE = 0;
-    AXE = 100;                  // 도끼 - 나무 채집
-    PICKAXE = 101;              // 곡괭이 - 돌/광석 채집
-    DRILL = 102;                // 드릴 - 등급 높은 광석 채집
+	TOOL_TYPE_NONE = 0;
+	AXE = 100;                  // 도끼 - 나무 채집
+	PICKAXE = 101;              // 곡괭이 - 돌/광석 채집
+	DRILL = 102;                // 드릴 - 등급 높은 광석 채집
 }
 
 // ==================== 아이템/도구 상태 ====================
 enum ItemState
 {
-    ITEM_STATE_NONE = 0;
-    ON_GROUND = 1;         // 바닥에 떨어진 상태
-    IN_AIR = 2;            // 공중에 떠있는 상태 (던져진 직후)
-    EQUIPPED = 3;          // 플레이어가 장착한 상태
-}
-
-// ==================== 데미지 원인 ====================
-enum DamageSource
-{
-	DAMAGE_SOURCE_NONE = 0;
-	SUFFOCATION = 1;           // 산소 부족
-	ENVIRONMENTAL = 2;         // 환경 (가시, 함정)
-	MONSTER_ATTACK = 3;        // 몬스터 공격
-}
-
-// ==================== 회복 원인 ====================
-enum HealSource
-{
-	HEAL_SOURCE_NONE = 0;
-    REST_AREA = 1;
-	MEDICAL_KIT = 2;
-}
-
-// ==================== 산소 변화 타입 ====================
-enum OxygenChangeType
-{
-	OXYGEN_CHANGE_NONE = 0;
-	CONSUME_NATURAL = 1;       // 자연 소모
-	CONSUME_RUNNING = 2;       // 달리기
-	RESTORE_TANK = 3;          // 산소통 사용
-	RESTORE_AREA = 4;          // 안전 구역
+	ITEM_STATE_NONE = 0;
+	ON_GROUND = 1;         // 바닥에 떨어진 상태
+	IN_AIR = 2;            // 공중에 떠있는 상태 (던져진 직후)
+	EQUIPPED = 3;          // 플레이어가 장착한 상태
 }
