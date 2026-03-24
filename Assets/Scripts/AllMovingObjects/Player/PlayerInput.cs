@@ -18,8 +18,7 @@ public class PlayerInput : MonoBehaviour
 
     private void Awake()
     {
-        inputActions = new PlayerInputSystem();
-        inputActions.Player.Enable();
+        inputActions = InputManager.Instance.Actions;
     }
 
     private void Start()

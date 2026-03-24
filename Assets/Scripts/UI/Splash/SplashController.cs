@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// 스플래시 로고의 페이드 인/아웃 연출을 담당하는 클래스
+/// Splash씬에서 로고 페이드 인/아웃 연출을 담당하는 클래스
 /// </summary>
 public class SplashController : MonoBehaviour
 {

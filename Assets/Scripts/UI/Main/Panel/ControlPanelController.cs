@@ -127,7 +127,7 @@ public class ControlPanelController : MonoBehaviour
     {
         foreach (var item in keyBindings)
         {
-            InputAction action = DataManager.Instance.InputAsset.FindAction(item.actionName);
+            InputAction action = DataManager.Instance.playerInput.FindAction(item.actionName);
             if (action != null)
             {
                 item.buttonText.text = GetKeyName(action, item.bindingIndex);
@@ -169,7 +169,7 @@ public class ControlPanelController : MonoBehaviour
         if (listIndex < 0 || listIndex >= keyBindings.Count) return;
 
         KeyBindingItem item = keyBindings[listIndex];
-        InputAction action = DataManager.Instance.InputAsset.FindAction(item.actionName);
+        InputAction action = DataManager.Instance.playerInput.FindAction(item.actionName);
         if (action == null) return;
 
         string oldOverridePath = action.bindings[item.bindingIndex].overridePath;

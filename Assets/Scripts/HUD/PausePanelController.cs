@@ -1,0 +1,31 @@
+using Unity.VisualScripting;
+using UnityEngine;
+
+/// <summary>
+/// PausePanel의 버튼 기능
+/// </summary>
+public class PausePanelController : MonoBehaviour
+{
+    [SerializeField] private GameObject SettingsPanel;
+
+    public void OnSettingsButtonClicked()
+    {
+        var hud = Object.FindFirstObjectByType<HUDManager>();
+        if (hud != null)
+        {
+            // 생성과 동시에 목표 크기를 넘겨줍니다.
+            hud.OpenPanel(SettingsPanel, new Vector3(2f, 2f, 1f));
+        }
+    }
+
+    public void OnMainMenuButtonClicked()
+    {
+        SceneLoader.Instance.LoadScene("Main");
+    }
+
+    public void OnExitButtonClicked()
+    {
+        // 1. 실제 빌드된 게임 종료
+        Application.Quit();
+    }
+}

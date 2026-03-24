@@ -29,23 +29,27 @@ public class PlayerTPCamera : MonoBehaviour
 
     private Transform playerMovingOffset;
 
-    // 
     // 20260207 수정본
     private float lastX = 0.0f;
 
     private const float MIN_LIMIT = 0.01f;
 
+    [SerializeField] private HUDManager hudManager;
+
     private void Awake()
     {
         playerMovingOffset = transform.GetChild(0);
 
-        inputActions = new PlayerInputSystem();
+        inputActions = InputManager.Instance.Actions;
         inputActions.Player.Enable();
     }
 
-
     private void Update()
     {
+        // HUD 패널이 열려있다면 마우스 회전 입력을 처리하지 않음
+        if (hudManager != null && hudManager.IsPanelOpen) return; 
+        
+        // 기존 마우스 입력 로직
         Vector2 look = inputActions.Player.Look.ReadValue<Vector2>();
 
         currentX += look.x * SENSITIVITY;

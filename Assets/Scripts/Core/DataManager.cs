@@ -8,11 +8,8 @@ using System.Collections.Generic;
 /// </summary>
 public class DataManager : MonoBehaviorSingleton<DataManager>
 {
-    [Header("Input System")]
-    [SerializeField] private InputActionAsset playerInput;
-
     // InputAction
-    public InputActionAsset InputAsset => playerInput;
+    public InputActionAsset playerInput;
     
     // 현재 게임 데이터
     public SettingsData data = new SettingsData();
@@ -43,26 +40,12 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
 
     public void Load()
     {
-        // 1. 일반 설정 로드
-        if (File.Exists(settingsPath))
+        string json = PlayerPrefs.GetString("rebinds");
+        if (!string.IsNullOrEmpty(json))
         {
-            string json = File.ReadAllText(settingsPath);
-            data = JsonUtility.FromJson<SettingsData>(json);
+            // InputManager의 Actions에 바로 바인딩 정보를 덮어씌움
+            InputManager.Instance.Actions.LoadBindingOverridesFromJson(json);
         }
-        else
-        {
-            data = new SettingsData(); 
-        }
-
-        // 2. 키 설정 로드
-        if (File.Exists(keybindPath))
-        {
-            string keyJson = File.ReadAllText(keybindPath);
-            playerInput.LoadBindingOverridesFromJson(keyJson);
-        }
-
-        // 3. 적용
-        ApplyDataToSystem();
     }
 
     // ★ 데이터를 실제 게임 시스템에 적용하는 함수
