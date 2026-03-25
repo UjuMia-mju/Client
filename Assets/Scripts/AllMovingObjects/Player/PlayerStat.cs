@@ -52,8 +52,6 @@ public class PlayerStat : MonoBehaviour
 
         // UI 갱신
         OnHpChanged?.Invoke(hp);
-
-        Debug.Log($"체력 회복: {hp}");
     }
     #endregion
 

@@ -10,8 +10,8 @@ public class HPUIController : MonoBehaviour
     
     private List<Coroutine> fadeCoroutines = new List<Coroutine>();
     private Color originalColor;
-    private const float FADE_DURATION = 1.5f;
-    private const float DISPLAY_DURATION = 1.0f;
+    public float FADE_DURATION = 1.5f;
+    public float DISPLAY_DURATION = 1.0f;
 
     private void Awake()
     {
