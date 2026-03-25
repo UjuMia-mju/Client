@@ -2238,10 +2238,7 @@ MonoBehaviour:
   rotationSpeed: 0
   sendInterval: 0.05
   itemId: 2
-<<<<<<< HEAD
   itemSmeltKey: TestCube
-=======
->>>>>>> origin/feat/peerhost
   lerpSpeed: 10
 --- !u!54 &2079630442
 Rigidbody:
@@ -2362,8 +2359,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &2115642774
 GameObject:
   m_ObjectHideFlags: 0
@@ -2536,7 +2531,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
->>>>>>> origin/feat/peerhost
 --- !u!124 &29851735837444181
 Behaviour:
   m_ObjectHideFlags: 0
@@ -3962,10 +3956,7 @@ MonoBehaviour:
   rotationSpeed: 0
   sendInterval: 0.05
   itemId: 1
-<<<<<<< HEAD
   itemSmeltKey: TestCube
-=======
->>>>>>> origin/feat/peerhost
   lerpSpeed: 10
 --- !u!65 &4548940437494441676
 BoxCollider:
@@ -4351,10 +4342,7 @@ SceneRoots:
   - {fileID: 4943720041582861401}
   - {fileID: 130923350922639482}
   - {fileID: 1025038043}
-<<<<<<< HEAD
   - {fileID: 229907645}
-=======
   - {fileID: 669581821}
   - {fileID: 560856788}
   - {fileID: 1686717108}
->>>>>>> origin/feat/peerhost

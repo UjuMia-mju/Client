@@ -115,7 +115,7 @@ public class LobbyManager : MonoBehaviour
 
         Debug.Log("인게임 씬으로 넘어갑니다.");
         // 우주선 연출이 끝난 뒤 인게임 씬으로 전환.
-        SceneLoader.Instance.LoadScene(Define.Scene.GAME);
+        SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_1);
     }
 
     /// <summary>기존에 스폰된 로비 플레이어를 모두 제거합니다. (방 입장 시 S_ENTER_ROOM 처리 전 초기화용)</summary>

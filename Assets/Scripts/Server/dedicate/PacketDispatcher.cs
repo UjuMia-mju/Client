@@ -48,6 +48,83 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
         net.SendPacket(PacketId.PKT_C_LOGIN, loginPacket);
     }
+
+    // ==================== Lobby/Room ====================
+
+    public void SendCreateRoom()
+    {
+        C_CREATE_ROOM packet = new C_CREATE_ROOM();
+        net.SendPacket(PacketId.PKT_C_CREATE_ROOM, packet);
+    }
+
+    public void SendRoomList()
+    {
+        C_ROOM_LIST packet = new C_ROOM_LIST();
+        net.SendPacket(PacketId.PKT_C_ROOM_LIST, packet);
+    }
+
+    public void SendEnterRoom(ulong roomId)
+    {
+        C_ENTER_ROOM packet = new C_ENTER_ROOM
+        {
+            RoomId = roomId
+        };
+        net.SendPacket(PacketId.PKT_C_ENTER_ROOM, packet);
+    }
+
+    public void SendLeaveRoom()
+    {
+        C_LEAVE_ROOM packet = new C_LEAVE_ROOM();
+        net.SendPacket(PacketId.PKT_C_LEAVE_ROOM, packet);
+    }
+
+    public void SendReady(bool isReady)
+    {
+        C_READY packet = new C_READY
+        {
+            IsReady = isReady
+        };
+        net.SendPacket(PacketId.PKT_C_READY, packet);
+    }
+
+    public void SendStartRoom()
+    {
+        C_START_ROOM packet = new C_START_ROOM();
+        net.SendPacket(PacketId.PKT_C_START_ROOM, packet);
+    }
+
+    /// <summary>
+    /// 특정 유저를 방으로 초대한다. player_name + player_tag로 대상 식별.
+    /// </summary>
+    /// <param name="playerName">초대할 유저의 이름</param>
+    /// <param name="playerTag">초대할 유저의 태그 (고유 번호, 예: 1234)</param>
+    public void SendInvitePlayer(string playerName, int playerTag)
+    {
+        C_INVITE_PLAYER invitePlayerPacket = new C_INVITE_PLAYER
+        {
+            PlayerName = playerName,
+            PlayerTag = playerTag
+        };
+
+        net.SendPacket(PacketId.PKT_C_INVITE_PLAYER, invitePlayerPacket);
+    }
+
+    /// <summary>
+    /// 받은 초대에 대해 수락/거절 응답을 보낸다.
+    /// </summary>
+    /// <param name="inviteId">S_INVITE_NOTIFICATION으로 받은 invite_id</param>
+    /// <param name="accept">true: 수락, false: 거절</param>
+    public void SendInviteResponse(ulong inviteId, bool accept)
+    {
+        C_INVITE_RESPONSE inviteResponsePacket = new C_INVITE_RESPONSE
+        {
+            InviteId = inviteId,
+            Accept = accept
+        };
+
+        net.SendPacket(PacketId.PKT_C_INVITE_RESPONSE, inviteResponsePacket);
+    }
+
     #endregion
 
 

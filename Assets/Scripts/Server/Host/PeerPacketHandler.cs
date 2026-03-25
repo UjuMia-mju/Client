@@ -60,9 +60,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         // 1. S_PLAYER_ENTER 패킷 생성
         S_PLAYER_ENTER enterPacket = new S_PLAYER_ENTER
         {
-            Player = new PlayerInfo
+            Player = new PlayerGameInfo
             {
-                PlayerId = (ulong)peerId,
+                PlayerId = peerId,
                 Name = "Peer", // packet.Name이 null이면 기본값
                 Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }

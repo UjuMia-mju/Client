@@ -5,6 +5,8 @@ public class NetManager : BaseNetSession
     private static NetManager _instance;
     public static NetManager Instance => _instance ??= new NetManager();
     public int _playerId;
+    public string PlayerName { get; private set; }
+    public int PlayerTag { get; private set; }
     public NetManager()
     {
         // 이벤트 구독: 패킷 도착 시 HandlePacket 호출
