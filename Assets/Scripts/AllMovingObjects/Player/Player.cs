@@ -151,7 +151,6 @@ public class Player : MovingObject
 
             else if (nearestObject == null)
             {
-                Debug.Log(22222);
                 return;
             }
 
@@ -237,7 +236,7 @@ public class Player : MovingObject
                 Debug.Log("콜라이더 null 감지");
                 continue;
             }
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE))
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE))
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)
