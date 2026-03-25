@@ -46,7 +46,7 @@ public class MainMultiPlayHandler : MonoBehaviour
         PacketManager.SetCachedEnterRoom(synthetic);
 
 
-        NetManager.Instance.SendEnterRoom(packet.Room.RoomId);
+        PacketDispatcher.Instance.SendEnterRoom(packet.Room.RoomId);
 
         SceneLoader.Instance.LoadScene(Define.Scene.LOBBY);
     }

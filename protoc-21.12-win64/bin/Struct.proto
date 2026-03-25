@@ -13,8 +13,8 @@ message Player
 // 유저 상세 정보
 message PlayerInfo
 {
-	int32 player_id = 1;
-	int32 coin = 2;
+    int32 player_id = 1;
+    int32 coin = 2;
 	int32 gem = 3;
 	repeated int32 owned_skins = 4;
 }
@@ -24,8 +24,8 @@ message PlayerGameInfo
 {
 	int32 player_id = 1;
 	string name = 2;
-	PosInfo pos = 3;
-	RotInfo rot = 4;
+    PosInfo pos = 3;
+    RotInfo rot = 4; 
 }
 
 
@@ -114,7 +114,7 @@ message StageClearInfo
 message ObjectId
 {
 	ObjectType type = 1; // TOOL 또는 ITEM
-
+	
 	// oneof로 둘 중 하나만 사용
 	oneof id {
 		ToolType tool_type = 2;  // 도구인 경우

@@ -294,7 +294,7 @@ message C_PLAYER_STAT_EVENT
 {
 	uint64 target_player_id = 1;  // 대상 플레이어 (누가 영향 받는지)
 	StatEventType event_type = 2;
-
+	
 	// 이벤트별 추가 정보
 	oneof event_data {
 		DamageEventData damage = 10;
@@ -306,9 +306,9 @@ message C_PLAYER_STAT_EVENT
 
 message S_PLAYER_STAT
 {
-	uint64 playerId = 1;
-	int32 hp = 2;
-	float oxygen = 3;
+    uint64 playerId = 1;
+    int32 hp = 2;
+    float oxygen = 3;
 }
 
 // ==================== 오브젝트 시스템 (도구 + 아이템 통합) ====================

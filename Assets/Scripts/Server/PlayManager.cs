@@ -68,9 +68,9 @@ public class PlayManager : SceneSingleton<PlayManager>
         // Peer 구조에서 입장 패킷을 받았을 때 S_PLAYER_ENTER를 직접 만들어서 OnPlayerEnter 호출
         S_PLAYER_ENTER enterPacket = new S_PLAYER_ENTER
         {
-            Player = new PlayerInfo
+            Player = new PlayerGameInfo
             {
-                PlayerId = (ulong)peerId,
+                PlayerId = peerId,
                 Name = "Peer", // packet.Name이 null이면 기본값
                 Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
@@ -146,14 +146,12 @@ public class PlayManager : SceneSingleton<PlayManager>
     // 플레이어 이동
     private void OnPlayerMove(S_MOVE packet)
     {
-        if (PlayManager.Instance == null)
-        {
-            Debug.LogWarning("PlayManager instance is null. Cannot process move packet.");
-            return;
-        }
         // 내 플레이어는 무시 (이미 로컬에서 움직임)
         if (packet.PlayerId == (ulong)NetManager.Instance._playerId)
+        {
             return;
+        }
+            
 
         if (_remotePlayers.TryGetValue(packet.PlayerId, out GameObject playerObj))
         {

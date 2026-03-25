@@ -38,7 +38,7 @@ public class LobbyStartButton : MonoBehaviour
         if (startButton != null)
             startButton.interactable = false;
 
-        NetManager.Instance.SendStartRoom();
+        PacketDispatcher.Instance.SendStartRoom();
     }
 
     private void OnStartRoomResult(S_START_ROOM packet)
@@ -62,7 +62,7 @@ public class LobbyStartButton : MonoBehaviour
             return;
         }
 
-        SceneLoader.Instance.LoadScene(Define.Scene.GAME);
+        SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_1);
     }
 }
 

@@ -145,6 +145,7 @@ public class Player : MovingObject
             // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
             if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
             {
+                Debug.Log(11111);
                 isMining = true;
             }
 
@@ -180,6 +181,7 @@ public class Player : MovingObject
                 Furnace furnace = nearestObject.GetComponent<Furnace>();
                 if (furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem))
                 {
+                    Debug.Log(3333);
                     isPlayerGetSomething = false;
                     playerItemSystem.DetachItem();
                 }
@@ -229,16 +231,12 @@ public class Player : MovingObject
 
         foreach (Collider col in colliders)
         {
-<<<<<<< HEAD
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE))
-=======
             if (col == null)
             {
                 Debug.Log("콜라이더 null 감지");
                 continue;
             }
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE))
->>>>>>> origin/feat/peerhost
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE))
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)

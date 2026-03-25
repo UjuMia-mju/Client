@@ -74,7 +74,7 @@ public class MenuPanelController : MonoBehaviour
     {
         btn.onClick.AddListener(() => {
             SoundManager.Instance.PlaySFX("Click2");
-            SceneLoader.Instance.LoadScene(Define.Scene.GAME);
+            SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_1);
         });
         AddHoverEvents(btn);
     }
@@ -87,7 +87,7 @@ public class MenuPanelController : MonoBehaviour
         btn.onClick.AddListener(() => {
             SoundManager.Instance.PlaySFX("Click2");
             if (NetManager.Instance != null && NetManager.Instance.IsConnected)
-                NetManager.Instance.SendCreateRoom();
+                PacketDispatcher.Instance.SendCreateRoom();
             else
                 Debug.LogWarning("[MenuPanelController] 서버에 연결되지 않았습니다. 로그인 후 멀티플레이를 이용하세요.");
         });
