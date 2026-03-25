@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Protocol;
 using UnityEngine;
 
@@ -19,6 +19,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         switch (packetId)
         {
+            
             case PacketId.PKT_S_CHAT:
                 HandleChat(data);
                 break;

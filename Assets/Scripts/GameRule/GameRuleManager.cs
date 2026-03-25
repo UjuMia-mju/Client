@@ -18,7 +18,7 @@ public class GameRuleManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-            StartCoroutine(StartTimer());
+        StartCoroutine(StartTimer());
     }
 
     IEnumerator StartTimer()

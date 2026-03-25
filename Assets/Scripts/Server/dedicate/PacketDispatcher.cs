@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Protocol;
 
 
@@ -137,6 +137,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         if (IsHost())
         {
             // 전체한테 broadcast하는 부분을 추가해야함.
+
             return;
         }
         else
