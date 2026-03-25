@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -20,17 +20,28 @@ public class PeerNetManager : BaseNetSession
     // singleton
     private static PeerNetManager _instance;
     public static PeerNetManager Instance => _instance ??= new PeerNetManager();
+
     public PeerNetManager()
     {
-        // 이벤트 구독: 패킷 도착 시 HandlePeerPacket 호출
-        this.OnPacketReceivedEvent += (packetId, data) => HandlePeerPacket(1, packetId, data);
+        Debug.Log($"[PeerNetManager] ctor called. Instance hash={this.GetHashCode()}");
+        // 이벤트 구독: 패킷 도착 시 HandleHostPacket 호출
+        this.OnPacketReceivedEvent += HandleHostPacket;
+        Debug.Log($"[PeerNetManager] Subscribed HandleHostPacket to OnPacketReceivedEvent. Instance hash={this.GetHashCode()}");
     }
 
-    private void HandlePeerPacket(int peerId, PacketId packetId, byte[] data)
+    private void HandleHostPacket(PacketId packetId, byte[] data)
     {
+        Debug.Log($"[PeerNetManager] HandleHostPacket invoked on instance hash={this.GetHashCode()}: id={packetId}, len={data?.Length ?? 0}");
         MainThreadDispatcher.Enqueue(() =>
         {
-            PeerPacketHandler.Instance.HandlePeerPacket(peerId, packetId, data);
+            try
+            {
+                HostPacketHandler.Instance.HandlePacket(packetId, data);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"HandleHostPacket exception: {ex}");
+            }
         });
     }
 }

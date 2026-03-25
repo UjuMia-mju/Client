@@ -3,7 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -23,11 +23,11 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\peer\\hostpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\server\\dedicate\\packethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dedicate\\packethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dedicate\\packethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\server\\host\\hostnetmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\host\\hostnetmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\host\\hostnetmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -35,7 +35,7 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\server\\testplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\testplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\testplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -43,7 +43,7 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\core\\basenetsession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\server\\packetmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\packetmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\packetmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -170,8 +170,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\TestPlayer.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAASwBIAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T12:32:58.424Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T12:32:58.424Z"
             },
             {
               "$type": "Document",
@@ -183,8 +182,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAIwEoAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T11:24:33.373Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T11:24:33.373Z"
             },
             {
               "$type": "Document",
@@ -196,8 +194,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
               "ViewState": "AgIAACsAAAAAAAAAAAAAwD8AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T10:50:20.484Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T10:50:20.484Z"
             },
             {
               "$type": "Document",
@@ -209,8 +206,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAArwBIAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T10:03:07.511Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T10:03:07.511Z"
             },
             {
               "$type": "Document",
@@ -222,8 +218,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
               "ViewState": "AgIAAH4AAAAAAAAAAAAWwIoAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T10:07:15.524Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T10:07:15.524Z"
             },
             {
               "$type": "Document",
@@ -233,7 +228,7 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\PlayManager.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PlayManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\Server\\PlayManager.cs",
-              "ViewState": "AgIAALUAAAAAAAAAAAAWwMEAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAAGAAAAAAAAAAAADgv3IAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-09T15:56:50.268Z",
               "EditorCaption": ""
@@ -248,8 +243,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T12:57:26.077Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T12:57:26.077Z"
             },
             {
               "$type": "Document",
@@ -261,8 +255,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Host\\HostNetManager.cs",
               "ViewState": "AgIAABsBAAAAAAAAAAAawDABAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T12:28:58.174Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T12:28:58.174Z"
             },
             {
               "$type": "Document",
@@ -274,8 +267,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
               "ViewState": "AgIAAEwAAAAAAAAAAAASwGEAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T09:57:36.814Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-05T09:57:36.814Z"
             },
             {
               "$type": "Document",
@@ -299,8 +291,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\BaseNetSession.cs",
               "ViewState": "AgIAAJMAAAAAAAAAAAAawKYAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T10:38:30.928Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T10:38:30.928Z"
             },
             {
               "$type": "Document",
@@ -324,8 +315,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\PacketManager.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T15:40:35.964Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-09T15:40:35.964Z"
             },
             {
               "$type": "Document",
