@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: "\uAE30\uBCF8 \uC6B0\uC8FC\uD5EC\uBA67"
   m_EditorClassIdentifier: Assembly-CSharp::GachaItem
   itemName: "\uAE30\uBCF8 \uC6B0\uC8FC\uD5EC\uBA67"
-  icon: {fileID: -830063711, guid: efb3ad43b82c0e44c848561ae128bba6, type: 3}
+  icon: {fileID: 21300000, guid: e1e95b4995dd0d441b15888d7e7a1d2f, type: 3}
   rarity: 0
   weight: 10
