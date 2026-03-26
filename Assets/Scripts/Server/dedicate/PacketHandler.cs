@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Google.Protobuf;
 using Protocol;
 using UnityEngine.SceneManagement;
@@ -11,6 +11,9 @@ public class PacketHandler : Singleton<PacketHandler>
 {
     // 이벤트
     public event Action<S_LOGIN> OnLoginResultEvent;
+    public event Action<S_GACHA> OnGachaResultEvent;
+    public event Action<S_GACHA_POOL_LIST> OnGachaPoolListEvent;
+    public event Action<S_MY_SKINS> OnMySkinsEvent;
     public event Action<S_ENTER_GAME> OnEnterGameResultEvent;
     public event Action<S_PLAYER_LIST> OnPlayerListEvent;
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
@@ -23,6 +26,15 @@ public class PacketHandler : Singleton<PacketHandler>
         {
             case PacketId.PKT_S_LOGIN: 
                 HandleLoginResult(data);
+                break;
+            case PacketId.PKT_S_GACHA:
+                HandleGachaResult(data);
+                break;
+            case PacketId.PKT_S_GACHA_POOL_LIST:
+                HandleGachaPoolList(data);
+                break;
+            case PacketId.PKT_S_MY_SKINS:
+                HandleMySkins(data);
                 break;
             case PacketId.PKT_S_ENTER_GAME: 
                 HandleEnterGameResult(data);
@@ -81,6 +93,24 @@ public class PacketHandler : Singleton<PacketHandler>
         {
             Debug.LogError(" Failed to Enter Game!");
         }
+    }
+
+    private void HandleGachaResult(byte[] data)
+    {
+        S_GACHA result = S_GACHA.Parser.ParseFrom(data);
+        OnGachaResultEvent?.Invoke(result);
+    }
+
+    private void HandleGachaPoolList(byte[] data)
+    {
+        S_GACHA_POOL_LIST result = S_GACHA_POOL_LIST.Parser.ParseFrom(data);
+        OnGachaPoolListEvent?.Invoke(result);
+    }
+
+    private void HandleMySkins(byte[] data)
+    {
+        S_MY_SKINS result = S_MY_SKINS.Parser.ParseFrom(data);
+        OnMySkinsEvent?.Invoke(result);
     }
 
     private void HandlePlayerList(byte[] payloadData)
