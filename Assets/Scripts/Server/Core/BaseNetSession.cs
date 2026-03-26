@@ -24,6 +24,12 @@ public class BaseNetSession
     
     public event PacketReceivedHandler OnPacketReceivedEvent;
     public Action OnDisconnected;
+
+    public BaseNetSession()
+    {
+        _recvBuffer = new RecvBuffer(BUFFER_SIZE);
+    }
+
     // base connect, disconnect, send, receive implementation
     #region Connect
     public void Connect(string ip, int port)
@@ -36,6 +42,9 @@ public class BaseNetSession
 
         try
         {
+            if (_recvBuffer == null)
+                _recvBuffer = new RecvBuffer(BUFFER_SIZE);
+
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             _socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
