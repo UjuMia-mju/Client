@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cd5506b0081dc0e4d88fe62aa332f925
+guid: dcbf93351beb692438655261233c2a6f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TitleLogo 1_0
+      name: TitleLogo_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 7742
-        height: 1160
+        width: 1000
+        height: 984
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 04e290138a258b04499c7f3966f783f5
-      internalID: -583606582
+      spriteID: 13fbea775d84b4e498b0cb9713ebe5dc
+      internalID: -1165398724
       vertices: []
       indices: 
       edges: []
@@ -122,7 +122,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a1823bdec7e49854498eeb9ce2894c4a
+    spriteID: f895ba0d19b10d141a1ee1a88db58af6
     internalID: 0
     vertices: []
     indices: 
@@ -132,9 +132,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":7742.0,"y":1160.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":1000.0,"y":984.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      TitleLogo 1_0: -583606582
+      TitleLogo_0: -1165398724
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
