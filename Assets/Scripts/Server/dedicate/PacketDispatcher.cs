@@ -49,6 +49,28 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_LOGIN, loginPacket);
     }
 
+    public void SendGachaPoolList()
+    {
+        C_GACHA_POOL_LIST packet = new C_GACHA_POOL_LIST();
+        net.SendPacket(PacketId.PKT_C_GACHA_POOL_LIST, packet);
+    }
+
+    public void SendGacha(int poolId, int pullCount)
+    {
+        C_GACHA packet = new C_GACHA
+        {
+            PoolId = poolId,
+            PullCount = pullCount
+        };
+        net.SendPacket(PacketId.PKT_C_GACHA, packet);
+    }
+
+    public void SendMySkins()
+    {
+        C_MY_SKINS packet = new C_MY_SKINS();
+        net.SendPacket(PacketId.PKT_C_MY_SKINS, packet);
+    }
+
     // ==================== Lobby/Room ====================
 
     public void SendCreateRoom()
