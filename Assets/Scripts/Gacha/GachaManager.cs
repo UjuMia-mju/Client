@@ -10,6 +10,7 @@ public class GachaManager : MonoBehaviour
     // 획득한 아이템 목록
     private List<GachaItem> obtainedItems;
     private readonly List<GachaPoolInfo> serverPools = new List<GachaPoolInfo>();
+    private bool isGachaRequestPending;
 
     [Header("Server Gacha Settings")]
     public int selectedPoolId = 1;
@@ -59,6 +60,18 @@ public class GachaManager : MonoBehaviour
     // 뽑기 요청은 로컬 RNG가 아니라 서버에 위임
     public void PullItem()
     {
+        if (isGachaRequestPending)
+        {
+            Debug.LogWarning("이미 가챠 요청을 보냈습니다. 서버 응답을 기다려주세요.");
+            return;
+        }
+
+        if (spinnerUI != null && spinnerUI.IsSpinning)
+        {
+            Debug.LogWarning("스핀 애니메이션 진행 중입니다.");
+            return;
+        }
+
         if (defaultPullCount <= 0)
             defaultPullCount = 1;
 
@@ -68,6 +81,7 @@ public class GachaManager : MonoBehaviour
             return;
         }
 
+        isGachaRequestPending = true;
         PacketDispatcher.Instance.SendGacha(selectedPoolId, defaultPullCount);
     }
 
@@ -96,6 +110,8 @@ public class GachaManager : MonoBehaviour
 
     private void OnGachaResult(S_GACHA packet)
     {
+        isGachaRequestPending = false;
+
         if (!packet.Success)
         {
             Debug.LogError($"가챠 실패: {packet.ErrorMsg}");
@@ -118,7 +134,17 @@ public class GachaManager : MonoBehaviour
         }
 
         obtainedItems.Add(selectedItem);
-        spinnerUI.StartSpinAnimation(selectedItem);
+        if (spinnerUI == null)
+        {
+            Debug.LogWarning("Spinner UI가 연결되지 않아 연출을 생략합니다.");
+            return;
+        }
+
+        if (!spinnerUI.StartSpinAnimation(selectedItem))
+        {
+            Debug.LogWarning("스핀 시작에 실패했습니다. 진행 중인 연출이 끝난 뒤 다시 시도하세요.");
+            return;
+        }
 
         Debug.Log($"가챠 성공: {packet.Result.ObtainedSkins.Count}개, gems={packet.Result.RemainingGems}, coins={packet.Result.RemainingCoins}");
     }
