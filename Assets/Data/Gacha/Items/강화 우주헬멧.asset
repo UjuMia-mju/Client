@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: "\uAC15\uD654 \uC6B0\uC8FC\uD5EC\uBA67"
   m_EditorClassIdentifier: Assembly-CSharp::GachaItem
   itemName: "\uAC15\uD654 \uC6B0\uC8FC\uD5EC\uBA67"
+  descriptionText: Enhanced
   icon: {fileID: 21300000, guid: 496437215e272c54cb1866a12e6ab022, type: 3}
   rarity: 1
   weight: 0
