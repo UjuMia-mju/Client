@@ -7,8 +7,6 @@ public class GachaManager : MonoBehaviour
     // 서버 결과를 UI 아이콘/이름과 매칭할 때 사용하는 로컬 마스터 데이터
     public List<GachaItem> allItems;
 
-    // 획득한 아이템 목록
-    private List<GachaItem> obtainedItems;
     private readonly List<GachaPoolInfo> serverPools = new List<GachaPoolInfo>();
     private bool isGachaRequestPending;
 
@@ -29,9 +27,6 @@ public class GachaManager : MonoBehaviour
         if (spinnerUI != null)
             spinnerUI.OnSpinFinished += OnSpinFinished;
 
-        // 게임 시작 시 초기화(테스트용으로 자동 리셋)
-        ResetGacha();
-
         // 테스트 편의를 위해 진입 즉시 기본 데이터 요청
         PacketDispatcher.Instance.SendGachaPoolList();
         PacketDispatcher.Instance.SendMySkins();
@@ -48,13 +43,6 @@ public class GachaManager : MonoBehaviour
         PacketHandler.Instance.OnMySkinsEvent -= OnMySkins;
         if (spinnerUI != null)
             spinnerUI.OnSpinFinished -= OnSpinFinished;
-    }
-
-    // 가챠 시스템 초기화 (리셋)
-    public void ResetGacha()
-    {
-        obtainedItems = new List<GachaItem>();
-        Debug.Log("가챠 시스템이 초기화되었습니다.");
     }
 
     // 뽑기 요청은 로컬 RNG가 아니라 서버에 위임
@@ -133,7 +121,6 @@ public class GachaManager : MonoBehaviour
             return;
         }
 
-        obtainedItems.Add(selectedItem);
         if (spinnerUI == null)
         {
             Debug.LogWarning("Spinner UI가 연결되지 않아 연출을 생략합니다.");
