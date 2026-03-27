@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GachaSpinnerUI : MonoBehaviour
 {
     public event System.Action<GachaItem> OnSpinFinished;
+    public bool IsSpinning { get; private set; }
 
     [Header("UI References")]
     public RectTransform contentReel;   // 움직일 긴 띠 (Content)
@@ -37,13 +38,21 @@ public class GachaSpinnerUI : MonoBehaviour
     }
 
     // 외부(GachaManager)에서 이 함수를 호출하여 연출 시작
-    public void StartSpinAnimation(GachaItem winningItem)
+    public bool StartSpinAnimation(GachaItem winningItem)
     {
+        if (IsSpinning)
+        {
+            Debug.LogWarning("이미 스핀 애니메이션 진행 중입니다.");
+            return false;
+        }
+
         StartCoroutine(SpinRoutine(winningItem));
+        return true;
     }
 
     IEnumerator SpinRoutine(GachaItem winner)
     {
+        IsSpinning = true;
         // 1. 기존 슬롯 초기화
         foreach (var slot in spawnedSlots) Destroy(slot);
         spawnedSlots.Clear();
@@ -116,6 +125,7 @@ public class GachaSpinnerUI : MonoBehaviour
         // 5. 최종 위치 보정 및 결과 발표
         contentReel.anchoredPosition = endPosition;
         Debug.Log("애니메이션 종료! 최종 획득: " + winner.itemName);
+        IsSpinning = false;
         OnSpinFinished?.Invoke(winner);
     }
 }
