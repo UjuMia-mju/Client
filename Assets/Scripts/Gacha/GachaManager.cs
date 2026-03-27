@@ -17,6 +17,7 @@ public class GachaManager : MonoBehaviour
 
     [Header("UI Connection")]
     public GachaSpinnerUI spinnerUI; // 인스펙터에서 연결
+    public GachaResultPopupUI resultPopupUI; // 스핀 종료 후 결과 표시
 
     void Start()
     {
@@ -24,6 +25,8 @@ public class GachaManager : MonoBehaviour
         PacketHandler.Instance.OnGachaPoolListEvent += OnGachaPoolList;
         PacketHandler.Instance.OnGachaResultEvent += OnGachaResult;
         PacketHandler.Instance.OnMySkinsEvent += OnMySkins;
+        if (spinnerUI != null)
+            spinnerUI.OnSpinFinished += OnSpinFinished;
 
         // 게임 시작 시 초기화(테스트용으로 자동 리셋)
         ResetGacha();
@@ -42,6 +45,8 @@ public class GachaManager : MonoBehaviour
         PacketHandler.Instance.OnGachaPoolListEvent -= OnGachaPoolList;
         PacketHandler.Instance.OnGachaResultEvent -= OnGachaResult;
         PacketHandler.Instance.OnMySkinsEvent -= OnMySkins;
+        if (spinnerUI != null)
+            spinnerUI.OnSpinFinished -= OnSpinFinished;
     }
 
     // 가챠 시스템 초기화 (리셋)
@@ -121,6 +126,12 @@ public class GachaManager : MonoBehaviour
     private void OnMySkins(S_MY_SKINS packet)
     {
         Debug.Log($"보유 스킨 {packet.Skins.Count}개 수신");
+    }
+
+    private void OnSpinFinished(GachaItem item)
+    {
+        if (resultPopupUI != null)
+            resultPopupUI.Show(item);
     }
 
     private GachaItem FindItemBySkin(SkinInfo skin)
