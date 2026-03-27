@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GachaSpinnerUI : MonoBehaviour
 {
+    public event System.Action<GachaItem> OnSpinFinished;
+
     [Header("UI References")]
     public RectTransform contentReel;   // 움직일 긴 띠 (Content)
     public GameObject itemSlotPrefab;   // 아이템 슬롯 프리팹
@@ -114,6 +116,6 @@ public class GachaSpinnerUI : MonoBehaviour
         // 5. 최종 위치 보정 및 결과 발표
         contentReel.anchoredPosition = endPosition;
         Debug.Log("애니메이션 종료! 최종 획득: " + winner.itemName);
-        // 여기서 결과창 팝업 등을 띄우면 됨
+        OnSpinFinished?.Invoke(winner);
     }
 }
