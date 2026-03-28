@@ -11,16 +11,23 @@ public class PlayerStat : MonoBehaviour
     public event Action<float> OnOxygenChanged;
     public event Action<int> OnHpChanged;
     public event Action OnPlayerDead; // 사망 이벤트
+    public event Action OnPlayerRevive; // 부활 이벤트
 
     private Coroutine oxygenRoutine;
     
     public float GetOxygen() => oxygen;
     public int GetHp() => hp;
 
+    private GameObject RespawnPos;  // 플레이어가 부활할 위치
+    [SerializeField] private float respawnDelay = 5f; // 부활까지의 지연 시간
+    private bool isRespawning = false; // 현재 부활 중인지 여부
+
     private void Start()
     {
         OnOxygenChanged?.Invoke(oxygen);
         OnHpChanged?.Invoke(hp);
+
+        RespawnPos = GameObject.FindWithTag(Define.Tag.RESPAWN_SPOT); // "RespawnPos" 태그를 가진 오브젝트를 찾아서 RespawnPos에 할당
 
         // 게임 시작 시 기본적으로 산소가 줄어들도록 설정
         StopOxygenRecovery(); 
@@ -39,6 +46,7 @@ public class PlayerStat : MonoBehaviour
         {
             OnPlayerDead?.Invoke();
             Debug.Log("플레이어 사망");
+            BeginRespawn();
         }
     }
     
@@ -53,6 +61,17 @@ public class PlayerStat : MonoBehaviour
         // UI 갱신
         OnHpChanged?.Invoke(hp);
     }
+
+    // 상태 초기화
+    private void ResetStats()
+    {
+        hp = MAX_HP;
+        oxygen = 1f;
+        OnHpChanged?.Invoke(hp);
+        OnOxygenChanged?.Invoke(oxygen);
+    }
+
+
     #endregion
 
     #region Oxygen 증/감소 로직
@@ -64,8 +83,17 @@ public class PlayerStat : MonoBehaviour
             OnOxygenChanged?.Invoke(oxygen);
             yield return new WaitForSeconds(1.0f);
         }
-        
+
         // TODO: 산소가 0이 되었을 때 우주선으로 되돌아가는 로직
+        if (!isRespawning)
+        {
+            // 산소가 0이 되었을 때 사망 및 리스폰 시작
+            oxygen = 0f;
+            OnOxygenChanged?.Invoke(oxygen);
+            OnPlayerDead?.Invoke();
+            Debug.Log("플레이어 사망 : 산소가 부족함");
+            BeginRespawn();
+        }
     }
 
     public IEnumerator OxygenIncrease()
@@ -90,5 +118,65 @@ public class PlayerStat : MonoBehaviour
         if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
         oxygenRoutine = StartCoroutine(OxygenDecrease());
     }
+    #endregion
+
+    #region 부활 로직
+    private void BeginRespawn()
+    {
+        if (isRespawning) return;
+        isRespawning = true;
+
+        // 멈춰야 할 것들 정리
+        if (oxygenRoutine != null)
+        {
+            try { StopCoroutine(oxygenRoutine); } catch { }
+            oxygenRoutine = null;
+        }
+
+
+
+        GameObject playerGO = this.gameObject;
+        
+
+        //playerGO.SetActive(false);
+
+        // MainThreadDispatcher는 씬에 항상 존재하도록 설계되어 있으므로 예외처리 없이 사용
+        if (MainThreadDispatcher.Instance != null)
+        {
+            MainThreadDispatcher.Instance.StartCoroutine(RespawnCoroutine(playerGO));
+        }
+    }
+
+    private IEnumerator RespawnCoroutine(GameObject playerGO)
+    {
+        float remaining = respawnDelay;
+        while (remaining > 0f)
+        {
+            // 1초 단위로 대기
+            yield return new WaitForSeconds(1f);
+            remaining -= 1f;
+        }
+
+        // 리스폰 위치 결정
+        Vector3 spawnPos = Vector3.zero;
+        if (RespawnPos != null)
+            spawnPos = RespawnPos.transform.position;
+
+        // 위치 복구
+        playerGO.transform.position = spawnPos;
+
+        // 상태 리셋
+        ResetStats();
+
+        // 활성화
+        OnPlayerRevive?.Invoke();
+        //playerGO.SetActive(true);
+
+        // 리스폰 완료
+        isRespawning = false;
+
+        StopOxygenRecovery();
+    }
+
     #endregion
 }

@@ -53,10 +53,9 @@ public class Furnace : MonoBehaviour
             Debug.Log("용광로실행");
 
             // 리스트에서 해당 아이템의 smeltTime 찾기
-            // 리스트에서 해당 아이템의 smeltTime 찾기
             SmeltedItemData smeltedData = smeltedItemList.Find(
                 item => item.originalItemPrefab != null
-                     && item.itemSmeltKey == data.GetComponent<Items>().itemSmeltKey
+                     && item.itemSmeltKey == data.GetComponent<Items>().itemStringKey
             );
 
 
