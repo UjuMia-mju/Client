@@ -14,7 +14,13 @@ public class PlayerStat : MonoBehaviour
     public event Action OnPlayerRevive; // 부활 이벤트
 
     private Coroutine oxygenRoutine;
-    
+    private Coroutine oxygenHpDrainRoutine;
+
+    // 산소가 0일 때 체력이 감소하는 간격 (초 단위이며 산소보다는 느리게 소모되어야 할 것입니다.)
+    // 이것도 레벨 디자인 단계에서 조절되어야 합니다.
+    private float oxygenHpDrainInterval = 5f;
+
+
     public float GetOxygen() => oxygen;
     public int GetHp() => hp;
 
@@ -84,15 +90,17 @@ public class PlayerStat : MonoBehaviour
             yield return new WaitForSeconds(1.0f);
         }
 
-        // TODO: 산소가 0이 되었을 때 우주선으로 되돌아가는 로직
+        // 산소가 0이 되면 HP를 바로 소모하지 않고, 별도 코루틴으로 주기적 소모 시작
         if (!isRespawning)
         {
-            // 산소가 0이 되었을 때 사망 및 리스폰 시작
             oxygen = 0f;
             OnOxygenChanged?.Invoke(oxygen);
-            OnPlayerDead?.Invoke();
-            Debug.Log("플레이어 사망 : 산소가 부족함");
-            BeginRespawn();
+            Debug.Log("산소 고갈: HP를 주기적으로 소모 시작");
+            // 이미 실행중이면 다시 시작하지 않음
+            if (oxygenHpDrainRoutine == null)
+            {
+                oxygenHpDrainRoutine = StartCoroutine(OxygenHpDrainCoroutine());
+            }
         }
     }
 
@@ -107,6 +115,27 @@ public class PlayerStat : MonoBehaviour
         oxygen = 1f;
     }
 
+    private IEnumerator OxygenHpDrainCoroutine()
+    {
+        // 산소 고갈 상태 동안 주기적으로 HP 소모
+        while (oxygen <= 0f && !isRespawning && hp > 0)
+        {
+            // HP 소모
+            DecreaseHp(1);
+
+            // 소모 후 즉시 죽었는지 확인 (DecreaseHp가 BeginRespawn을 호출함)
+            if (isRespawning || hp <= 0)
+            {
+                break;
+            }
+
+            yield return new WaitForSeconds(oxygenHpDrainInterval);
+        }
+
+        // 코루틴 종료 시 리셋
+        oxygenHpDrainRoutine = null;
+    }
+
     public void StartOxygenRecovery()
     {
         if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
@@ -118,6 +147,7 @@ public class PlayerStat : MonoBehaviour
         if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
         oxygenRoutine = StartCoroutine(OxygenDecrease());
     }
+
     #endregion
 
     #region 부활 로직
