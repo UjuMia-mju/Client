@@ -3846,7 +3846,6 @@ MonoBehaviour:
   walkSpeed: 10
   jumpForce: 5
   rotationSpeed: 10
-  PlayerMesh: {fileID: 130923350922601510}
   sendInterval: 0.05
 --- !u!114 &130923350922639491
 MonoBehaviour:

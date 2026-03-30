@@ -61,13 +61,17 @@ public class GameRuleManager : MonoBehaviour
 
         Debug.Log("게임 종료! 승리 여부: " + isVictory);
 
-        if (SceneLoader.Instance != null)
-        {
-            SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
-        }
-        else
-        {
-            Debug.LogWarning("SceneLoader가 없습니다. 씬을 단독으로 실행해 테스트중일 가능성이 있습니다.");
-        }
+        // HACK : 현재 MonoBehaviorSingleton.cs에서 어떤 인스턴스가 null이면 자동으로 이를 생성하도록 하는 로직이 있습니다.
+        // 해당 부분이 씬을 단독으로 실행시켰을 때 프리팹이 할당되어 있지 않은 문제로 오류를 일으키도록 하고 있으므로, 레벨 디자인 기간동안 이 부분은 주석화하겠습니다.
+
+        //if (SceneLoader.Instance != null)
+        //{
+        //    Debug.Log("SceneLoader가 있으므로 스테이지 선택 씬으로 돌아갑니다.");
+        //    SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
+        //}
+        //else
+        //{
+        //    Debug.Log("SceneLoader가 없습니다. 씬을 단독으로 실행해 테스트중일 가능성이 있습니다.");
+        //}
     }
 }
