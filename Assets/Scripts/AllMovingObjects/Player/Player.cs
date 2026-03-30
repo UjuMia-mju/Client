@@ -19,8 +19,7 @@ public class Player : MovingObject
     public bool isMining { get; private set; } = false;
 
     public GameObject playerBoneModel;
-
-    // TODO : 기초 플레이어 능력치 시스템 구현 완료 - 실제로 표시되는 방식은 UI담당과 상의 필요
+    
     private PlayerStat playerStat;
 
 
@@ -33,6 +32,7 @@ public class Player : MovingObject
     private AnimState lastAnimState;
     private int lastHP;
     private float lastOxygen;
+
     // 초기화
     protected override void Awake()
     {
@@ -53,11 +53,42 @@ public class Player : MovingObject
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
 
+        // 산소/HP 이벤트 기반 로직
         lastHP = playerStat.GetHp();
         lastOxygen = playerStat.GetOxygen();
 
-        // 산소가 줄어들기 시작함
-        //StartCoroutine(playerStat.OxygenDecrease());
+        // 이벤트 구독 0324 (추가)
+        playerStat.OnHpChanged += HandleHpChanged;
+        playerStat.OnOxygenChanged += HandleOxygenChanged;
+    }
+
+    // 이벤트 구독 해제 0324 (추가)
+    private void OnDestroy()
+    {
+        if (playerStat != null)
+        {
+            playerStat.OnHpChanged -= HandleHpChanged;
+            playerStat.OnOxygenChanged -= HandleOxygenChanged;
+        }
+    }
+
+    // 체력 변경 이벤트 핸들러 0324 (추가)
+    private void HandleHpChanged(int newHp)
+    {
+        if (lastHP != newHp)
+        {
+            lastHP = newHp;
+        }
+    }
+
+    // 산소 변경 이벤트 핸들러 0324 (추가)
+    private void HandleOxygenChanged(float newOxygen)
+    {
+        // 서버 부하를 줄이기 위해 소수점 단위 변화가 클 때만 보낼 수도 있습니다.
+        if (Mathf.Abs(lastOxygen - newOxygen) > 0.01f)
+        {
+            lastOxygen = newOxygen;
+        }
     }
 
     public void OnNetworkReady()
@@ -328,17 +359,4 @@ public class Player : MovingObject
     {
         PacketDispatcher.Instance.SendItemDetatched(data);
     }
-
-    //private void SendPlayerStatToServer()
-    //{
-    //    float currentOxygen = playerStat.GetOxygen();
-    //    int currentHp = playerStat.GetHp();
-
-    //    if (currentOxygen != lastOxygen && currentHp != lastHP)
-    //    {
-    //        NetManager.Instance.SendPlayerStat(currentHp, currentOxygen);
-    //        lastOxygen = currentOxygen;
-    //        lastHP = currentHp;
-    //    }
-    //}
 }
