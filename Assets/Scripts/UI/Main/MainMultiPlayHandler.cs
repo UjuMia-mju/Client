@@ -9,13 +9,13 @@ public class MainMultiPlayHandler : MonoBehaviour
 {
     private void OnEnable()
     {
-        PacketManager.Instance.OnCreateRoomEvent += OnCreateRoomResult;
+        PacketHandler.Instance.OnCreateRoomEvent += OnCreateRoomResult;
     }
 
     private void OnDisable()
     {
-        if (PacketManager.Instance != null)
-            PacketManager.Instance.OnCreateRoomEvent -= OnCreateRoomResult;
+        if (PacketHandler.Instance != null)
+            PacketHandler.Instance.OnCreateRoomEvent -= OnCreateRoomResult;
     }
 
     private void OnCreateRoomResult(S_CREATE_ROOM packet)
