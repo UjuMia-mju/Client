@@ -43,21 +43,40 @@ public class Furnace : MonoBehaviour
     // 만약 조작을 했을 때 아이템을 넣을 상태가 아니라면, bool을 반환해 현재 상태를 알려야 플레이어가 자기가 아이템을 들고 있는지를 정확하게 판단할 수 있습니다.
     public bool AddSmeltTargetItem(GameObject data)
     {
-        if (!data.CompareTag(Define.Tag.ITEM) || smeltingCoroutine != null)
+        if (!data.CompareTag(Define.Tag.ITEM))
         {
-            Debug.Log("해당 객체가 아이템이 아니거나 용광로가 작동 중입니다.");
+            Debug.Log("해당 객체가 아이템이 아닙니다.");
             return false;
         }
+
+        else if (smeltingCoroutine != null)
+        {
+            Debug.Log("용광로가 작동 중입니다.");
+            return false;
+        }
+
         else
         {
-            Debug.Log("용광로실행");
+            Debug.Log("용광로 실행");
 
-            // 리스트에서 해당 아이템의 smeltTime 찾기
+            Items itemComponent = data.GetComponent<Items>();
+
+            // 이미 제련된 아이템인지 체크
+            if (smeltedItemList.Exists(item =>
+                    item.smeltedPrefab != null &&
+                    item.smeltedPrefab.GetComponent<Items>().itemStringKey == itemComponent.itemStringKey))
+            {
+                Debug.Log("이미 제련된 아이템은 넣을 수 없습니다.");
+                return false;
+            }
+
+
+
+            // 리스트에서 해당 아이템의 SmeltedItemData 찾기
             SmeltedItemData smeltedData = smeltedItemList.Find(
                 item => item.originalItemPrefab != null
                      && item.itemSmeltKey == data.GetComponent<Items>().itemStringKey
             );
-
 
             if (smeltedData != null)
             {
@@ -66,6 +85,8 @@ public class Furnace : MonoBehaviour
                 Destroy(data); // 원본 아이템 제거
                 return true;
             }
+
+
 
             else
             {
