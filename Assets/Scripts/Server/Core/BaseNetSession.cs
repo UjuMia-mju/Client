@@ -36,6 +36,8 @@ public class BaseNetSession
 
         try
         {
+            // 소켓 연결 완료 직후 RegisterRecv에서 바로 사용하므로 선초기화
+            _recvBuffer = new RecvBuffer(BUFFER_SIZE);
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             _socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -201,7 +203,10 @@ public class BaseNetSession
         {
             return;
         }
-            
+        if (_recvBuffer == null)
+        {
+            _recvBuffer = new RecvBuffer(BUFFER_SIZE);
+        }
 
         ArraySegment<byte> segment = _recvBuffer.GetWriteSegment();
         _socket.BeginReceive(segment.Array, segment.Offset, segment.Count, SocketFlags.None, OnRecvCallback, null);
