@@ -23,9 +23,9 @@ public class LobbyReadyButton : MonoBehaviour
         if (readyButton != null)
             readyButton.onClick.AddListener(OnClickReady);
 
-        if (PacketManager.Instance != null)
+        if (PacketHandler.Instance != null)
         {
-            PacketManager.Instance.OnReadyEvent += OnReadyPacket;
+            PacketHandler.Instance.OnReadyEvent += OnReadyPacket;
         }
             
     }
@@ -35,8 +35,8 @@ public class LobbyReadyButton : MonoBehaviour
         if (readyButton != null)
             readyButton.onClick.RemoveListener(OnClickReady);
 
-        if (PacketManager.Instance != null)
-            PacketManager.Instance.OnReadyEvent -= OnReadyPacket;
+        if (PacketHandler.Instance != null)
+            PacketHandler.Instance.OnReadyEvent -= OnReadyPacket;
     }
 
     private void OnClickReady()
