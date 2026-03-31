@@ -3,6 +3,7 @@ package Protocol;
 
 import "Enum.proto";
 
+// 유저 간단 정보
 message Player
 {
 	int32 id = 1;
@@ -53,10 +54,13 @@ message GachaPoolInfo
 	string pool_name = 2;
 	string pool_type = 3; // ex) "normal", "event"
 	int32 cost_gem = 4;
-	int32 max_pull = 5; // 1회 최대 뽑기 개수 (없어도 될듯 한데.. 일단 구현)
-	bool is_active = 6;
-	int64 start_at = 7;
-	int64 end_at = 8;
+	int32 cost_coin = 5;
+	int32 max_pull = 6; // 1회 최대 뽑기 개수 (없어도 될듯 한데.. 일단 구현)
+	bool is_active = 7;
+	int64 start_at = 8;
+	int64 end_at = 9;
+
+	repeated SkinInfo skins = 10; // 해당 풀에서 뽑을 수 있는 스킨 목록
 }
 
 message PosInfo
@@ -95,20 +99,22 @@ message RoomMemberInfo
 // 스테이지 정보
 message StageInfo
 {
-	int32 stage_level = 1;      // 스테이지 레벨 (월드)
-	int32 stage_index = 2;      // 스테이지 번호
-	string stage_name = 3;      // 스테이지 이름 (예: "화산 던전")
-	string description = 4;     // 스테이지 설명
-	int32 difficulty = 5;       // 난이도 (1~5)
+	int32 map_id = 1;				// 맵 ID
+	int32 chapter = 2;				// 챕터
+	int32 stage = 3;				// 스테이지 번호
+	string stage_name = 4;			// 스테이지 이름 (예: "화산 던전")
+	string description = 5;			// 스테이지 설명
+	int32 difficulty = 6;			// 난이도 (1~5)
+	bool isBossStage = 7;			// 보스 스테이지 여부
+	int32 estimated_clear_time = 8; // 예상 클리어 시간 (초)
 }
 
 // 스테이지 클리어 정보
 message StageClearInfo
 {
-	int32 stage = 1;           // 스테이지 번호
-	int32 level = 2;           // 난이도
-	int32 star = 3;            // 별점 (1~3)
-	int64 clear_time = 4;      // 클리어 시간 (유닉스 타임스탬프)
+	int32 map_id = 1;			// 스테이지 ID
+	int32 star = 2;				// 별점 (1~3)
+	int64 clear_time = 3;		// 클리어 시간 (유닉스 타임스탬프)
 }
 
 message ObjectId
