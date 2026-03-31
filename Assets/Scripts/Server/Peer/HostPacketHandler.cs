@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class HostPacketHandler : Singleton<HostPacketHandler>
 {
-    public event Action<S_MOVE> OnMoveEvent;
+    public event Action<ulong, S_MOVE> OnMoveEvent;
     public event Action<S_CHAT> OnChatEvent;
     public event Action<S_PLAYER_ANIMATION> OnAnimationEvent;
     public event Action<S_PLAYER_STAT> OnStatEvent;
@@ -26,6 +26,8 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
             case PacketId.PKT_S_CHAT:
                 HandleChat(data);
                 break;
+
+            // HACK : 서버에 호스트가 2명이 생길수는 없으므로 일단 임시 숫자인 99로 대체합니다. 추후 수정합니다.
             case PacketId.PKT_S_MOVE:
                 HandleMove(data);
                 break;
@@ -52,7 +54,6 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
 
     private void HandleServerPlayerEnter(byte[] payloadData)
     {
-
         S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
         OnPlayerEnterEvent?.Invoke(packet);
     }
@@ -60,7 +61,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     private void HandleMove(byte[] payloadData)
     {
         S_MOVE packet = S_MOVE.Parser.ParseFrom(payloadData);
-        OnMoveEvent?.Invoke(packet);
+        OnMoveEvent?.Invoke(packet.PlayerId, packet);
     }
 
     private void HandleChat(byte[] payloadData)

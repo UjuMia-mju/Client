@@ -17,6 +17,9 @@ public class ConnectManager : SceneSingleton<ConnectManager>
         {
             HostNetManager.Instance.StartHost(hostPortFromServer);
 
+            // 피어가 입장할 때마다 호스트 Enter 정보를 전송
+            PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEntered;
+
             // Player 인스턴스가 이미 생성되어 있다고 가정
             var player = FindFirstObjectByType<Player>();
             if (player != null)
@@ -36,6 +39,27 @@ public class ConnectManager : SceneSingleton<ConnectManager>
             {
                 player.OnNetworkReady();
             }
+        }
+    }
+
+    /// <summary>
+    /// 피어가 입장했을 때 호스트의 현재 위치를 전송
+    /// </summary>
+    private void OnPeerEntered(int peerId, Protocol.C_TEST_ENTER_GAME packet)
+    {
+        // 호스트의 현재 위치를 즉시 전송 (Enter 패킷은 PeerPacketHandler에서 처리됨)
+        var player = FindFirstObjectByType<Player>();
+        if (player != null)
+        {
+            PacketDispatcher.Instance.SendMove(player.transform.position, player.transform.rotation, force: true);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (isHost)
+        {
+            PeerPacketHandler.Instance.OnPeerEnterGameEvent -= OnPeerEntered;
         }
     }
 

@@ -33,6 +33,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         // 로그인 후 세팅되는 값 사용
         return (ulong)NetManager.Instance._playerId;
     }
+
     NetManager net = NetManager.Instance;
     PeerNetManager peerNet = PeerNetManager.Instance;
     HostNetManager hostNet = HostNetManager.Instance;
@@ -133,7 +134,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
     public void SendEnterGame(ulong playerIndex)
     {
         Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
-        
+
         if (IsHost())
         {
             // 전체한테 broadcast하는 부분을 추가해야함.
@@ -141,7 +142,10 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             {
                 Player = new PlayerGameInfo
                 {
-                    PlayerId = 99
+                    PlayerId = (int)GetLocalPlayerId(),
+                    Name = "Host", // packet.Name이 null이면 기본값
+                    Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
+                    Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
                 }
             });
             return;
@@ -155,7 +159,6 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             peerNet.SendPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
         }
     }
-   
 
     public void SendChat(string message)
     {
@@ -175,10 +178,10 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         
     }
 
-    public void SendMove(Vector3 position, Quaternion rotation)
+    public void SendMove(Vector3 position, Quaternion rotation, bool force = false)
     {
         // 값이 바뀌지 않았으면 전송하지 않음
-        if (position == _lastSentPos && rotation == _lastSentRot)
+        if (!force && position == _lastSentPos && rotation == _lastSentRot)
         {
             return;
         }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Google.Protobuf;
 using Protocol;
 using System;
@@ -57,7 +57,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     {
         C_TEST_ENTER_GAME packet = C_TEST_ENTER_GAME.Parser.ParseFrom(data);
 
-        // 1. S_PLAYER_ENTER 패킷 생성
+        // 1. 피어의 S_PLAYER_ENTER 패킷 생성
         S_PLAYER_ENTER enterPacket = new S_PLAYER_ENTER
         {
             Player = new PlayerGameInfo
@@ -69,9 +69,23 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             }
         };
 
-        // 2. 모든 피어에게 브로드캐스트
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket);
-        // 3. 이벤트로 처리
+        // 2. 다른 피어들에게만 새 피어 입장 브로드캐스트 (본인 제외)
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket, includeSender: false);
+
+        // 3. 새로 들어온 피어에게 호스트 정보 전송
+        S_PLAYER_ENTER hostEnterPacket = new S_PLAYER_ENTER
+        {
+            Player = new PlayerGameInfo
+            {
+                PlayerId = (int)NetManager.Instance._playerId,
+                Name = "Host",
+                Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
+                Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
+            }
+        };
+        HostNetManager.Instance.SendToPeer(peerId, PacketId.PKT_S_PLAYER_ENTER, hostEnterPacket);
+
+        // 4. 이벤트로 처리 (호스트 측 PlayManager에서 피어의 remotePlayer 생성)
         OnPeerEnterGameEvent?.Invoke(peerId, packet);
     }
 
@@ -87,7 +101,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             Rot = packet.Rot?.Clone()
         };
 
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_MOVE, relay);
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_MOVE, relay, includeSender: false);
     }
 
     private void HandlePeerChat(int peerId, byte[] data)

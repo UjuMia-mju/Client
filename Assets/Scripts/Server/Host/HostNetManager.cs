@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -363,5 +363,21 @@ public class HostNetManager
     }
 
     #endregion
+
+    public void SendToPeer(int peerId, PacketId packetId, IMessage packet)
+    {
+        byte[] sendBuffer = BuildPacketBuffer(packetId, packet);
+
+        PeerSession session = null;
+        lock (_sendLock)
+        {
+            _peerSessions.TryGetValue(peerId, out session);
+        }
+
+        if (session != null)
+        {
+            TrySendToPeer(session, sendBuffer);
+        }
+    }
 }
 

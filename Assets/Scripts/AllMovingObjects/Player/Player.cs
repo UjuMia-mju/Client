@@ -84,55 +84,6 @@ public class Player : MovingObject
         }
     }
 
-    private void HandlePlayerDead()
-    {
-        if (playerMesh != null)
-            playerMesh.SetActive(false);
-
-        if (playerInput != null)
-            playerInput.SetInputEnabled(false);
-    }
-
-    private void HandlePlayerRevive()
-    {
-        if (playerMesh != null)
-            playerMesh.SetActive(true);
-
-        if (playerInput != null)
-            playerInput.SetInputEnabled(true);
-    }
-
-    // 체력 변경 이벤트 핸들러 0324 (추가)
-    private void HandleHpChanged(int newHp)
-    {
-        if (lastHP != newHp)
-        {
-            lastHP = newHp;
-        }
-    }
-
-    // 산소 변경 이벤트 핸들러 0324 (추가)
-    private void HandleOxygenChanged(float newOxygen)
-    {
-        // 서버 부하를 줄이기 위해 소수점 단위 변화가 클 때만 보낼 수도 있습니다.
-        if (Mathf.Abs(lastOxygen - newOxygen) > 0.01f)
-        {
-            lastOxygen = newOxygen;
-        }
-    }
-
-    public void OnNetworkReady()
-    {
-        // 호스트 자신이 로컬 플레이어를 생성할 때는 네트워크로 EnterGame을 보낼 필요가 없습니다.
-        // 피어(클라이언트)만 호스트에 C_TEST_ENTER_GAME(=SendEnterGame)를 전송해서
-        // 호스트가 받은 뒤 S_PLAYER_ENTER로 브로드캐스트하게 해야 패킷 순서가 맞습니다.
-        if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
-        {
-            PacketDispatcher.Instance.SendEnterGame(0);
-        }
-        // 위치/애니메이션 전송은 계속 수행
-        SendEnterPosToServer();
-    }
 
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
     private void Update()
@@ -348,6 +299,57 @@ public class Player : MovingObject
         }
 
         isMining = false;
+    }
+
+
+    private void HandlePlayerDead()
+    {
+        if (playerMesh != null)
+            playerMesh.SetActive(false);
+
+        if (playerInput != null)
+            playerInput.SetInputEnabled(false);
+    }
+
+    private void HandlePlayerRevive()
+    {
+        if (playerMesh != null)
+            playerMesh.SetActive(true);
+
+        if (playerInput != null)
+            playerInput.SetInputEnabled(true);
+    }
+
+    // 체력 변경 이벤트 핸들러 0324 (추가)
+    private void HandleHpChanged(int newHp)
+    {
+        if (lastHP != newHp)
+        {
+            lastHP = newHp;
+        }
+    }
+
+    // 산소 변경 이벤트 핸들러 0324 (추가)
+    private void HandleOxygenChanged(float newOxygen)
+    {
+        // 서버 부하를 줄이기 위해 소수점 단위 변화가 클 때만 보낼 수도 있습니다.
+        if (Mathf.Abs(lastOxygen - newOxygen) > 0.01f)
+        {
+            lastOxygen = newOxygen;
+        }
+    }
+
+    public void OnNetworkReady()
+    {
+        // 호스트 자신이 로컬 플레이어를 생성할 때는 네트워크로 EnterGame을 보낼 필요가 없습니다.
+        // 피어(클라이언트)만 호스트에 C_TEST_ENTER_GAME(=SendEnterGame)를 전송해서
+        // 호스트가 받은 뒤 S_PLAYER_ENTER로 브로드캐스트하게 해야 패킷 순서가 맞습니다.
+        if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
+        {
+            PacketDispatcher.Instance.SendEnterGame(0);
+        }
+        // 위치/애니메이션 전송은 계속 수행
+        SendEnterPosToServer();
     }
 
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.

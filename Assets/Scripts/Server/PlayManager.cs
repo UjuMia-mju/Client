@@ -18,6 +18,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
+        HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
 
         // PacketHandler.Instance.OnPlayerListEvent += OnPlayerList;
         //PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
@@ -63,10 +64,38 @@ public class PlayManager : SceneSingleton<PlayManager>
     //    _localPlayer.name = "LocalPlayer";
     //}
 
+    #region 인게임 호스트 -> 피어 패킷
+
+    // 피어가 호스트로부터 받은 S_PLAYER_ENTER 패킷 처리 (호스트가 피어에게 보낸 패킷)
     private void OnServerPlayerEnter(S_PLAYER_ENTER packet)
     {
-        Instantiate(remotePlayerPrefab, new Vector3(0,0,0), Quaternion.identity);
+        //Instantiate(remotePlayerPrefab);
+        OnPlayerEnter((int)packet.Player.PlayerId, packet);
     }
+
+    // Move 패킷 처리
+    private void OnHostMove(ulong playerId, S_MOVE packet)
+    {
+        if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+            {
+                Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+                Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+
+                remotePlayer.SetTargetPosition(pos, rot);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[HostMove] Received move for unknown player: {playerId}");
+        }
+    }
+
+    #endregion
+
+    #region 인게임 피어 -> 호스트 패킷 
 
     // 호스트가 피어로부터 받은 C_TEST_ENTER_GAME 패킷 처리
     private void OnPeerEnterGame(int peerId, C_TEST_ENTER_GAME packet)
@@ -110,7 +139,7 @@ public class PlayManager : SceneSingleton<PlayManager>
             Debug.LogWarning($"[PeerMove] Received move for unknown player: {playerId}");
         }
     }
-
+    #endregion
 
     // 게임 입장 성공
     private void OnEnterGameResult(S_ENTER_GAME packet)
@@ -150,34 +179,35 @@ public class PlayManager : SceneSingleton<PlayManager>
         RemoveRemotePlayer((ulong)packet.Player.PlayerId);
     }
 
+    // HACK : 이전 이동 로직, 다른 상황에 대비해 주석화하고 새로 개발한 Peer 및 Host 용 로직으로 대체하고 테스트합니다.
     // 플레이어 이동
-    private void OnPlayerMove(S_MOVE packet)
-    {
-        // 내 플레이어는 무시 (이미 로컬에서 움직임)
-        if (packet.PlayerId == (ulong)NetManager.Instance._playerId)
-        {
-            return;
-        }
+    //private void OnPlayerMove(S_MOVE packet)
+    //{
+    //    // 내 플레이어는 무시 (이미 로컬에서 움직임)
+    //    if (packet.PlayerId == (ulong)NetManager.Instance._playerId)
+    //    {
+    //        return;
+    //    }
             
 
-        if (_remotePlayers.TryGetValue(packet.PlayerId, out GameObject playerObj))
-        {
-            // 기존 플레이어 위치 업데이트
-            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
-            if (remotePlayer != null)
-            {
-                Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
-                Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+    //    if (_remotePlayers.TryGetValue(packet.PlayerId, out GameObject playerObj))
+    //    {
+    //        // 기존 플레이어 위치 업데이트
+    //        OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+    //        if (remotePlayer != null)
+    //        {
+    //            Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+    //            Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
 
-                remotePlayer.SetTargetPosition(pos, rot);
-            }
-        }
-        else
-        {
-            // 아직 생성되지 않은 플레이어 (패킷 순서 문제)
-            Debug.LogWarning($"Received move for unknown player: {packet.PlayerId}");
-        }
-    }
+    //            remotePlayer.SetTargetPosition(pos, rot);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        // 아직 생성되지 않은 플레이어 (패킷 순서 문제)
+    //        Debug.LogWarning($"Received move for unknown player: {packet.PlayerId}");
+    //    }
+    //}
 
     private void SpawnRemotePlayer(PlayerGameInfo playerInfo)
     {
