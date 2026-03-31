@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using Google.Protobuf;
 using Protocol;
 using UnityEngine;
@@ -24,6 +25,13 @@ public class BaseNetSession
     
     public event PacketReceivedHandler OnPacketReceivedEvent;
     public Action OnDisconnected;
+
+    // 생성자: RecvBuffer 초기화 추가
+    public BaseNetSession()
+    {
+        _recvBuffer = new RecvBuffer(BUFFER_SIZE);
+    }
+
     // base connect, disconnect, send, receive implementation
     #region Connect
     public void Connect(string ip, int port)
@@ -257,7 +265,6 @@ public class BaseNetSession
                 break;
             }
                 
-
             // 패킷 헤더 읽기
             ArraySegment<byte> buffer = _recvBuffer.GetReadSegment();
             // header parsing
@@ -270,6 +277,25 @@ public class BaseNetSession
                 
             byte[] packetData = new byte[header.size - PacketHeader.HeaderSize];
             Array.Copy(buffer.Array, buffer.Offset + processedBytes + PacketHeader.HeaderSize, packetData, 0, packetData.Length);
+
+            // 진단 로그: 어떤 인스턴스에서 발생하는지, 이벤트 구독자 수 확인
+            int subscriberCount = 0;
+            try
+            {
+                // 리플렉션으로 이벤트에 연결된 델리게이트 확인
+                FieldInfo evtField = typeof(BaseNetSession).GetField("OnPacketReceivedEvent", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                if (evtField != null)
+                {
+                    Delegate d = evtField.GetValue(this) as Delegate;
+                    subscriberCount = d?.GetInvocationList().Length ?? 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[BaseNetSession] Failed to inspect subscribers: {ex}");
+            }
+
+            Debug.Log($"[BaseNetSession] InstanceHash={this.GetHashCode()}, Type={this.GetType().Name}, packet id={(PacketId)header.id}, header.size={header.size}, bodyLen={packetData.Length}, subscribers={subscriberCount}");
 
             OnPacketReceivedEvent?.Invoke((PacketId)header.id, packetData);
             processedBytes += header.size;

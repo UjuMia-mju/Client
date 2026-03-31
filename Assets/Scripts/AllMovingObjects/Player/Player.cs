@@ -17,10 +17,10 @@ public class Player : MovingObject
 
     public bool isPlayerGetSomething { get; private set; } = false;
     public bool isMining { get; private set; } = false;
-
-    public GameObject playerBoneModel;
     
     private PlayerStat playerStat;
+
+    private GameObject playerMesh;
 
 
     // 서버 관련 변수들
@@ -53,13 +53,23 @@ public class Player : MovingObject
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
 
+        // 자동으로 자식 중 PlayerMesh를 찾아 할당 (Inspector에 없으면)
+        if (playerMesh == null)
+        {
+            Transform t = transform.Find("PlayerMesh");
+            if (t != null)
+                playerMesh = t.gameObject;
+        }
+
+
         // 산소/HP 이벤트 기반 로직
         lastHP = playerStat.GetHp();
         lastOxygen = playerStat.GetOxygen();
 
-        // 이벤트 구독 0324 (추가)
         playerStat.OnHpChanged += HandleHpChanged;
         playerStat.OnOxygenChanged += HandleOxygenChanged;
+        playerStat.OnPlayerDead += HandlePlayerDead;
+        playerStat.OnPlayerRevive += HandlePlayerRevive;
     }
 
     // 이벤트 구독 해제 0324 (추가)
@@ -69,7 +79,27 @@ public class Player : MovingObject
         {
             playerStat.OnHpChanged -= HandleHpChanged;
             playerStat.OnOxygenChanged -= HandleOxygenChanged;
+            playerStat.OnPlayerDead -= HandlePlayerDead;
+            playerStat.OnPlayerRevive -= HandlePlayerRevive;
         }
+    }
+
+    private void HandlePlayerDead()
+    {
+        if (playerMesh != null)
+            playerMesh.SetActive(false);
+
+        if (playerInput != null)
+            playerInput.SetInputEnabled(false);
+    }
+
+    private void HandlePlayerRevive()
+    {
+        if (playerMesh != null)
+            playerMesh.SetActive(true);
+
+        if (playerInput != null)
+            playerInput.SetInputEnabled(true);
     }
 
     // 체력 변경 이벤트 핸들러 0324 (추가)
@@ -93,9 +123,14 @@ public class Player : MovingObject
 
     public void OnNetworkReady()
     {
-        // 이 부분은 플레이어 ID를 넘기는 부분이기 때문에. 초기에 로그인을 하고 나서 받은 ID를 기억하고 있다가 넘기면 됨.
-        // 지금은 테스트로 0으로 넘겨주고 있습니다. -> 추후 수정 필요
-        PacketDispatcher.Instance.SendEnterGame(0);
+        // 호스트 자신이 로컬 플레이어를 생성할 때는 네트워크로 EnterGame을 보낼 필요가 없습니다.
+        // 피어(클라이언트)만 호스트에 C_TEST_ENTER_GAME(=SendEnterGame)를 전송해서
+        // 호스트가 받은 뒤 S_PLAYER_ENTER로 브로드캐스트하게 해야 패킷 순서가 맞습니다.
+        if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
+        {
+            PacketDispatcher.Instance.SendEnterGame(0);
+        }
+        // 위치/애니메이션 전송은 계속 수행
         SendEnterPosToServer();
     }
 
@@ -168,6 +203,7 @@ public class Player : MovingObject
     }
 
     // E키 상호작용
+    // NOTE : nearestObject는 항상 SphereTriggerFunc로 트리거 감지합니다. 뭔가 만들었는데 안된다 싶으면, 해당 함수에서 태그를 검사하고 있는지 확인해주세요!
     private void KeyEInteract()
     {
         if (playerInput.GetIsInteract())
@@ -176,7 +212,6 @@ public class Player : MovingObject
             // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
             if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
             {
-                Debug.Log(11111);
                 isMining = true;
             }
 
@@ -212,13 +247,25 @@ public class Player : MovingObject
                 Furnace furnace = nearestObject.GetComponent<Furnace>();
                 if (furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem))
                 {
-                    Debug.Log(3333);
                     isPlayerGetSomething = false;
                     playerItemSystem.DetachItem();
                 }
                 else
                 {
                     Debug.Log("아직 용광로는 준비되지 않았다.");
+                }
+            }
+
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 우주선이며, 아이템을 들고 있을 때
+            // 또한 투입할 때 플레이어의 손에서 Detach
+            else if (nearestObject.CompareTag(Define.Tag.SPACESHIP) && isPlayerGetSomething)
+            {
+                SpaceshipAssembly spaceshipAssembly = nearestObject.GetComponent<SpaceshipAssembly>();
+                if (spaceshipAssembly != null)
+                {
+                    spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
+                    isPlayerGetSomething = false;
+                    playerItemSystem.DetachItem();
                 }
             }
         }
@@ -267,7 +314,8 @@ public class Player : MovingObject
                 Debug.Log("콜라이더 null 감지");
                 continue;
             }
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE))
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE)
+                || col.CompareTag(Define.Tag.SPACESHIP))
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)

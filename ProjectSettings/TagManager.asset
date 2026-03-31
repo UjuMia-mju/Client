@@ -11,6 +11,8 @@ TagManager:
   - Ore
   - Furnace
   - ClickOff
+  - Spaceship
+  - RespawnSpot
   layers:
   - Default
   - TransparentFX
