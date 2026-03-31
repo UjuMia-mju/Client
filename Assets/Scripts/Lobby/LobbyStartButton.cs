@@ -20,8 +20,8 @@ public class LobbyStartButton : MonoBehaviour
             startButton.interactable = true;
         }
 
-        if (PacketManager.Instance != null)
-            PacketManager.Instance.OnStartRoomEvent += OnStartRoomResult;
+        if (PacketHandler.Instance != null)
+            PacketHandler.Instance.OnStartRoomEvent += OnStartRoomResult;
     }
 
     private void OnDisable()
@@ -29,8 +29,8 @@ public class LobbyStartButton : MonoBehaviour
         if (startButton != null)
             startButton.onClick.RemoveListener(OnClickStart);
 
-        if (PacketManager.Instance != null)
-            PacketManager.Instance.OnStartRoomEvent -= OnStartRoomResult;
+        if (PacketHandler.Instance != null)
+            PacketHandler.Instance.OnStartRoomEvent -= OnStartRoomResult;
     }
 
     private void OnClickStart()
