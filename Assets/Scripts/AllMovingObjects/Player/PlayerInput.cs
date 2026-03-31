@@ -16,11 +16,6 @@ public class PlayerInput : MonoBehaviour
 
     private PlayerInputSystem inputActions; 
 
-    private void Awake()
-    {
-        inputActions = InputManager.Instance.Actions;
-    }
-
     private void Start()
     {
         //string updatedKeys = DataManager.Instance.InputAsset.SaveBindingOverridesAsJson();
@@ -29,6 +24,11 @@ public class PlayerInput : MonoBehaviour
 
     private void OnEnable()
     {
+        if (inputActions == null)
+        {
+            inputActions = InputManager.Instance.Actions;
+        }
+        
         inputActions.Player.Enable();
         inputActions.Player.Jump.performed += OnJump;
         inputActions.Player.Interact.performed += OnInteract;
