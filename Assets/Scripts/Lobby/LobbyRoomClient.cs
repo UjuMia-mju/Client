@@ -19,6 +19,7 @@ public class LobbyRoomClient : MonoBehaviour
     private void OnEnable()
     {
         PacketHandler.Instance.OnEnterRoomEvent += OnEnterRoom;
+        PacketHandler.Instance.OnLeaveRoomEvent += OnLeaveRoom;
         PacketHandler.Instance.OnRoomMemberEnterEvent += OnRoomMemberEnter;
         PacketHandler.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeave;
         PacketHandler.Instance.OnReadyEvent += OnReady;
@@ -37,6 +38,7 @@ public class LobbyRoomClient : MonoBehaviour
         if (PacketHandler.Instance == null)
             return;
         PacketHandler.Instance.OnEnterRoomEvent -= OnEnterRoom;
+        PacketHandler.Instance.OnLeaveRoomEvent -= OnLeaveRoom;
         PacketHandler.Instance.OnRoomMemberEnterEvent -= OnRoomMemberEnter;
         PacketHandler.Instance.OnRoomMemberLeaveEvent -= OnRoomMemberLeave;
         PacketHandler.Instance.OnReadyEvent -= OnReady;
@@ -90,6 +92,16 @@ public class LobbyRoomClient : MonoBehaviour
         int pid = (int)packet.PlayerId;
         lobbyManager?.SetPlayerReadyState(pid, packet.IsReady);
         Debug.Log($"[LobbyRoomClient] S_READY: playerId={pid}, isReady={packet.IsReady}");
+    }
+
+    /// <summary>내가 방을 떠났을 때 로컬 스폰 상태를 정리합니다.</summary>
+    private void OnLeaveRoom(S_LEAVE_ROOM packet)
+    {
+        if (!packet.Success)
+            return;
+
+        _members.Clear();
+        lobbyManager?.ClearSpawnedPlayers();
     }
 
     /// <summary>플레이어가 방을 나갔을 때. 해당 플레이어용 LobbyAstronut 디스폰.</summary>
