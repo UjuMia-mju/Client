@@ -16,7 +16,7 @@ public class Items : MovingObject
 
     public int itemId; // 아이템 고유 ID
 
-    public string itemSmeltKey;
+    public string itemStringKey;
 
     [SerializeField] private float lerpSpeed = 10f;
 

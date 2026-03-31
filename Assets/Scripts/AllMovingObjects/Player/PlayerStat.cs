@@ -1,166 +1,212 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
+using System;
+using System.Collections;
 
 public class PlayerStat : MonoBehaviour
 {
-    private float oxygen = 1;
+    private float oxygen = 1f;
     private int hp = 5;
+    private const int MAX_HP = 5;
 
-    //public GameObject hpParent;
-    private List<Image> hpImageList = new List<Image>();
+    public event Action<float> OnOxygenChanged;
+    public event Action<int> OnHpChanged;
+    public event Action OnPlayerDead; // 사망 이벤트
+    public event Action OnPlayerRevive; // 부활 이벤트
 
-    private Image oxygenImage;
-    private Color originalHPColor;
+    private Coroutine oxygenRoutine;
+    private Coroutine oxygenHpDrainRoutine;
 
-    private const float FADE_DURATION = 1.5f;
-    private const float OXYGEN_DECREASE_INTERVAL = 1f;
-    private const float HP_DISPLAY_DURATION = 1f;
-
-    private const string HP = "HP";
-    private const string OXYGEN = "Oxygen";
-
-    private List<Coroutine> fadeCoroutines = new List<Coroutine>();
+    // 산소가 0일 때 체력이 감소하는 간격 (초 단위이며 산소보다는 느리게 소모되어야 할 것입니다.)
+    // 이것도 레벨 디자인 단계에서 조절되어야 합니다.
+    private float oxygenHpDrainInterval = 5f;
 
 
-    private Coroutine oxygenCoroutine;
+    public float GetOxygen() => oxygen;
+    public int GetHp() => hp;
 
+    private GameObject RespawnPos;  // 플레이어가 부활할 위치
+    [SerializeField] private float respawnDelay = 5f; // 부활까지의 지연 시간
+    private bool isRespawning = false; // 현재 부활 중인지 여부
 
     private void Start()
     {
-        hpImageList = new List<Image>();
-        foreach (Image img in GetComponentsInChildren<Image>(true))
+        OnOxygenChanged?.Invoke(oxygen);
+        OnHpChanged?.Invoke(hp);
+
+        RespawnPos = GameObject.FindWithTag(Define.Tag.RESPAWN_SPOT); // "RespawnPos" 태그를 가진 오브젝트를 찾아서 RespawnPos에 할당
+
+        // 게임 시작 시 기본적으로 산소가 줄어들도록 설정
+        StopOxygenRecovery(); 
+    }
+    
+    #region HP 증/감소 로직
+    public void DecreaseHp(int damage)
+    {
+        if (hp <= 0) return; // 이미 죽었다면 무시
+
+        hp = Mathf.Clamp(hp - damage, 0, MAX_HP);
+        OnHpChanged?.Invoke(hp);
+
+        // [추가] 사망 판정
+        if (hp <= 0)
         {
-            if (img.name.StartsWith(HP))
-            {
-                originalHPColor = img.color;
-                hpImageList.Add(img);
-                StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
-            }
-            else if (img.name.StartsWith(OXYGEN))
-            {
-                oxygenImage = img;
-            }
+            OnPlayerDead?.Invoke();
+            Debug.Log("플레이어 사망");
+            BeginRespawn();
         }
     }
-
-    private void Update()
+    
+    public void IncreaseHp(int amount)
     {
-        oxygenImage.fillAmount = oxygen;
+        // 이미 최대 체력이면 무시
+        if (hp >= MAX_HP) return;
+
+        // 체력 증가 (최대치 MAX_HP를 넘지 않도록 Clamp)
+        hp = Mathf.Clamp(hp + amount, 0, MAX_HP);
+
+        // UI 갱신
+        OnHpChanged?.Invoke(hp);
+    }
+
+    // 상태 초기화
+    private void ResetStats()
+    {
+        hp = MAX_HP;
+        oxygen = 1f;
+        OnHpChanged?.Invoke(hp);
+        OnOxygenChanged?.Invoke(oxygen);
     }
 
 
-    private IEnumerator FadeOutCoroutine(Image img, float duration)
-    {
-        float elapsed = 0f;
+    #endregion
 
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
-            img.color = new Color(originalHPColor.r, originalHPColor.g, originalHPColor.b, alpha);
-            yield return null;
-        }
-    }
-
-    private void ReturnHPImageAlpha(Image img)
-    {
-        img.color = new Color(originalHPColor.r, originalHPColor.g, originalHPColor.b, 1);
-    }
-
+    #region Oxygen 증/감소 로직
     public IEnumerator OxygenDecrease()
     {
-        while (true)
+        while (oxygen > 0) // 0이 되면 멈춤
         {
-            oxygen -= 0.01f;
-            yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
+            oxygen = Mathf.Clamp01(oxygen - 0.01f);
+            OnOxygenChanged?.Invoke(oxygen);
+            yield return new WaitForSeconds(1.0f);
         }
-    }
 
-    public void StartOxygenRecover()
-    {
-        if (oxygenCoroutine == null)
+        // 산소가 0이 되면 HP를 바로 소모하지 않고, 별도 코루틴으로 주기적 소모 시작
+        if (!isRespawning)
         {
-            oxygenCoroutine = StartCoroutine(OxygenIncrease());
-        }
-    }
-
-    public void StopOxygenRecover()
-    {
-        if (oxygenCoroutine != null)
-        {
-            StopCoroutine(oxygenCoroutine);
-            oxygenCoroutine = null;
+            oxygen = 0f;
+            OnOxygenChanged?.Invoke(oxygen);
+            Debug.Log("산소 고갈: HP를 주기적으로 소모 시작");
+            // 이미 실행중이면 다시 시작하지 않음
+            if (oxygenHpDrainRoutine == null)
+            {
+                oxygenHpDrainRoutine = StartCoroutine(OxygenHpDrainCoroutine());
+            }
         }
     }
 
     public IEnumerator OxygenIncrease()
     {
-        while (true)
+        while (oxygen < 1f)
         {
-            oxygen = Mathf.Min(oxygen + 0.06f, 1f);
-            Debug.Log("산소 늘어남 : " + oxygen);
-            yield return new WaitForSeconds(OXYGEN_DECREASE_INTERVAL);
+            oxygen = Mathf.Clamp01(oxygen + 0.02f);
+            OnOxygenChanged?.Invoke(oxygen);
+            yield return new WaitForSeconds(1.0f);
         }
+        oxygen = 1f;
     }
 
-    // TODO : 체력이 줄어들면, 잠깐 체력 이미지를 보여주고, 1초 후에 다시 사라지도록 합니다.
-    // 또 현재 체력 수치에 맞게 이미지를 없애야 합니다.
-    // 공격에 따라 데미지를 더 받을 수도 있는지 정해야 합니다.
-    public IEnumerator DecreaseHp(int damage)
+    private IEnumerator OxygenHpDrainCoroutine()
     {
-        hp -= damage;
-        Debug.Log("체력 줄어듬 : " + hp);
-
-        foreach (Coroutine c in fadeCoroutines)
+        // 산소 고갈 상태 동안 주기적으로 HP 소모
+        while (oxygen <= 0f && !isRespawning && hp > 0)
         {
-            if (c != null)
+            // HP 소모
+            DecreaseHp(1);
+
+            // 소모 후 즉시 죽었는지 확인 (DecreaseHp가 BeginRespawn을 호출함)
+            if (isRespawning || hp <= 0)
             {
-                StopCoroutine(c);
-            }
-        }
-
-        fadeCoroutines.Clear();
-
-
-        foreach (Image img in hpImageList)
-        {
-            if (img != null)
-            {
-                ReturnHPImageAlpha(img);
-            }
-        }
-
-        // 가장 오른쪽에 있는 이미지를 비활성화
-        for (int i = hpImageList.Count - 1; i >= 0; i--)
-        {
-            if (hpImageList[i].IsActive())
-            {
-                hpImageList[i].gameObject.SetActive(false);
                 break;
             }
+
+            yield return new WaitForSeconds(oxygenHpDrainInterval);
         }
 
-        yield return new WaitForSeconds(HP_DISPLAY_DURATION); // 체력 이미지가 보이는 시간
+        // 코루틴 종료 시 리셋
+        oxygenHpDrainRoutine = null;
+    }
 
-        foreach (Image img in hpImageList)
+    public void StartOxygenRecovery()
+    {
+        if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
+        oxygenRoutine = StartCoroutine(OxygenIncrease());
+    }
+
+    public void StopOxygenRecovery()
+    {
+        if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
+        oxygenRoutine = StartCoroutine(OxygenDecrease());
+    }
+
+    #endregion
+
+    #region 부활 로직
+    private void BeginRespawn()
+    {
+        if (isRespawning) return;
+        isRespawning = true;
+
+        // 멈춰야 할 것들 정리
+        if (oxygenRoutine != null)
         {
-            if (img != null)
-            {
-                Coroutine c = StartCoroutine(FadeOutCoroutine(img, FADE_DURATION));
-                fadeCoroutines.Add(c);
-            }
+            try { StopCoroutine(oxygenRoutine); } catch { }
+            oxygenRoutine = null;
+        }
+
+
+
+        GameObject playerGO = this.gameObject;
+        
+
+        //playerGO.SetActive(false);
+
+        // MainThreadDispatcher는 씬에 항상 존재하도록 설계되어 있으므로 예외처리 없이 사용
+        if (MainThreadDispatcher.Instance != null)
+        {
+            MainThreadDispatcher.Instance.StartCoroutine(RespawnCoroutine(playerGO));
         }
     }
 
-    public float GetOxygen()
+    private IEnumerator RespawnCoroutine(GameObject playerGO)
     {
-        return oxygen; 
+        float remaining = respawnDelay;
+        while (remaining > 0f)
+        {
+            // 1초 단위로 대기
+            yield return new WaitForSeconds(1f);
+            remaining -= 1f;
+        }
+
+        // 리스폰 위치 결정
+        Vector3 spawnPos = Vector3.zero;
+        if (RespawnPos != null)
+            spawnPos = RespawnPos.transform.position;
+
+        // 위치 복구
+        playerGO.transform.position = spawnPos;
+
+        // 상태 리셋
+        ResetStats();
+
+        // 활성화
+        OnPlayerRevive?.Invoke();
+        //playerGO.SetActive(true);
+
+        // 리스폰 완료
+        isRespawning = false;
+
+        StopOxygenRecovery();
     }
 
-    public int GetHp()
-    {
-        return hp;
-    }
+    #endregion
 }

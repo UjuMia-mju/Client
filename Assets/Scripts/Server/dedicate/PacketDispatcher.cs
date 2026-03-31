@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Protocol;
 
 
@@ -159,6 +159,13 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         if (IsHost())
         {
             // 전체한테 broadcast하는 부분을 추가해야함.
+            hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ENTER, new S_PLAYER_ENTER
+            {
+                Player = new PlayerGameInfo
+                {
+                    PlayerId = 99
+                }
+            });
             return;
         }
         else

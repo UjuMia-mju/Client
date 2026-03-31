@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class ConnectManager : SceneSingleton<ConnectManager>
@@ -19,6 +19,13 @@ public class ConnectManager : SceneSingleton<ConnectManager>
         if (isHost)
         {
             HostNetManager.Instance.StartHost(hostPortFromServer);
+
+            // Player 인스턴스가 이미 생성되어 있다고 가정
+            var player = FindFirstObjectByType<Player>();
+            if (player != null)
+            {
+                player.OnNetworkReady();
+            }
         }
         else
         {

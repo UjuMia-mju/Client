@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5324012318622392531
+--- !u!1 &3051826493472676880
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4110525117522877504}
-  - component: {fileID: 215225237704464002}
-  - component: {fileID: 4997565483454548003}
-  - component: {fileID: 5766069765698571170}
-  - component: {fileID: 8396711296501849100}
-  - component: {fileID: 4968315204903869244}
-  - component: {fileID: 4962854886086942290}
-  m_Layer: 0
-  m_Name: SmeltedTestCube
-  m_TagString: Item
+  - component: {fileID: 3842143799885192731}
+  - component: {fileID: 622145929790432117}
+  - component: {fileID: 7107053541562452291}
+  - component: {fileID: 741101727136149679}
+  - component: {fileID: 5491518155437382526}
+  m_Layer: 7
+  m_Name: InteractCube
+  m_TagString: CraftTable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4110525117522877504
+--- !u!4 &3842143799885192731
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5324012318622392531}
+  m_GameObject: {fileID: 3051826493472676880}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalRotation: {x: 0.5084181, y: -0.19268142, z: 0.29742786, w: 0.78480667}
+  m_LocalPosition: {x: -0.00717, y: 0.00272, z: 0.00716}
+  m_LocalScale: {x: 0.0011117363, y: 0.0020799, z: 0.000809477}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &215225237704464002
+  m_LocalEulerAnglesHint: {x: 65.872, y: 0, z: 41.512}
+--- !u!33 &622145929790432117
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5324012318622392531}
+  m_GameObject: {fileID: 3051826493472676880}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &4997565483454548003
+--- !u!23 &7107053541562452291
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5324012318622392531}
+  m_GameObject: {fileID: 3051826493472676880}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -70,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 36c070231083a854ba99de4a41181ad4, type: 2}
+  - {fileID: 2100000, guid: 339d478a574b427459c7e829752aba07, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,13 +91,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5766069765698571170
+--- !u!65 &741101727136149679
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5324012318622392531}
+  m_GameObject: {fileID: 3051826493472676880}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -114,62 +112,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &8396711296501849100
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5324012318622392531}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 0
-  m_CollisionDetection: 1
---- !u!114 &4968315204903869244
+--- !u!114 &5491518155437382526
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5324012318622392531}
+  m_GameObject: {fileID: 3051826493472676880}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4864c3880af022b46af9dcea4be68ab7, type: 3}
+  m_Script: {fileID: 11500000, guid: 3019f72bc0007a848aedae95e93095d0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Objects
-  walkSpeed: 0
-  jumpForce: 0
-  rotationSpeed: 0
-  sendInterval: 0.05
-  itemId: 2
-  itemStringKey: SmeltedTestCube
-  lerpSpeed: 10
---- !u!114 &4962854886086942290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5324012318622392531}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 044a1b2d540faed458e80fd8582aa7c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectsGravityController
-  planet: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::Crafting
+  itemPrefabList:
+  - {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}

@@ -65,7 +65,7 @@ public class MovingObject : MonoBehaviour
         {
             movDir.Normalize();
             Quaternion targetRot = Quaternion.LookRotation(movDir, this.transform.position);
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed*Time.fixedDeltaTime));
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
         }
     }
 
@@ -135,5 +135,4 @@ public class MovingObject : MonoBehaviour
     {
         return rb.linearVelocity.magnitude * VELOCITY_HUNDRED;
     }
-
 }

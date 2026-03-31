@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Protocol;
 using UnityEngine;
 
@@ -14,11 +14,15 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_PLAYER_STAT> OnStatEvent;
     public event Action<S_OBJECT_PICKUP> OnItemAttached;
     public event Action<S_OBJECT_DROP> OnItemDetatched;
+    public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         switch (packetId)
         {
+            case PacketId.PKT_S_PLAYER_ENTER:
+                HandleServerPlayerEnter(data);
+                break;
             case PacketId.PKT_S_CHAT:
                 HandleChat(data);
                 break;
@@ -44,6 +48,13 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 //    HandleCraftTable(data);
                 //    break;
         }
+    }
+
+    private void HandleServerPlayerEnter(byte[] payloadData)
+    {
+
+        S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
+        OnPlayerEnterEvent?.Invoke(packet);
     }
 
     private void HandleMove(byte[] payloadData)
