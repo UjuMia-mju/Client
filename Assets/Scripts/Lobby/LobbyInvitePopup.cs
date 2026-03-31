@@ -26,17 +26,17 @@ public class LobbyInvitePopup : MonoBehaviour
     // 활성화 시 이벤트 구독. S_INVITE_NOTIFICATION 수신 시 OnInviteNotification 호출됨.
     private void OnEnable()
     {
-        PacketManager.Instance.OnInviteNotificationEvent += OnInviteNotification;
-        PacketManager.Instance.OnInviteResponseResultEvent += OnInviteResponseResult;
+        PacketHandler.Instance.OnInviteNotificationEvent += OnInviteNotification;
+        PacketHandler.Instance.OnInviteResponseResultEvent += OnInviteResponseResult;
     }
 
     // 비활성화 시 이벤트 구독 해제
     private void OnDisable()
     {
-        if (PacketManager.Instance != null)
+        if (PacketHandler.Instance != null)
         {
-            PacketManager.Instance.OnInviteNotificationEvent -= OnInviteNotification;
-            PacketManager.Instance.OnInviteResponseResultEvent -= OnInviteResponseResult;
+            PacketHandler.Instance.OnInviteNotificationEvent -= OnInviteNotification;
+            PacketHandler.Instance.OnInviteResponseResultEvent -= OnInviteResponseResult;
         }
     }
 
