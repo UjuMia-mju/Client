@@ -15,7 +15,8 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     {
         // 중앙서버로 연결
         NetManager.Instance.Connect(centralServerIp, centralServerPort);
-        
+        return;
+
         if (isHost)
         {
             HostNetManager.Instance.StartHost(hostPortFromServer);
