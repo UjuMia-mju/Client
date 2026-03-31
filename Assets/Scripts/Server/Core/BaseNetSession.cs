@@ -44,6 +44,9 @@ public class BaseNetSession
 
         try
         {
+            if (_recvBuffer == null)
+                _recvBuffer = new RecvBuffer(BUFFER_SIZE);
+
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             _socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 

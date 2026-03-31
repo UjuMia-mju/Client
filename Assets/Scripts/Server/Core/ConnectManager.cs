@@ -13,6 +13,9 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     public int hostPortFromServer = 7788;
     private async void Start()
     {
+        // 테스트라 중앙 서버에 연결하는 부분
+        NetManager.Instance.Connect(centralServerIp, centralServerPort);
+        return;
         if (isHost)
         {
             HostNetManager.Instance.StartHost(hostPortFromServer);
