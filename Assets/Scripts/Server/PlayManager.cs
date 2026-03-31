@@ -16,9 +16,11 @@ public class PlayManager : SceneSingleton<PlayManager>
     {
         PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
         PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
+        PeerPacketHandler.Instance.OnPeerAnimationEvent += OnPeerAnimation;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
+        HostPacketHandler.Instance.OnAnimationEvent += OnHostAnimation;
 
         // PacketHandler.Instance.OnPlayerListEvent += OnPlayerList;
         //PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
@@ -93,6 +95,22 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
     }
 
+    private void OnHostAnimation(ulong playerId, S_PLAYER_ANIMATION packet)
+    {
+        if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+            {
+                remotePlayer.SetAnimState(packet.State);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[HostMove] Received move for unknown player: {playerId}");
+        }
+    }
+
     #endregion
 
     #region 인게임 피어 -> 호스트 패킷 
@@ -139,6 +157,23 @@ public class PlayManager : SceneSingleton<PlayManager>
             Debug.LogWarning($"[PeerMove] Received move for unknown player: {playerId}");
         }
     }
+
+    private void OnPeerAnimation(int peerId, C_PLAYER_ANIMATION packet)
+    {
+        if (_remotePlayers.TryGetValue((ulong)peerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+            {
+                remotePlayer.SetAnimState(packet.State);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[HostMove] Received move for unknown player: {peerId}");
+        }
+    }
+
     #endregion
 
     // 게임 입장 성공

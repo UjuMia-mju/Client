@@ -10,7 +10,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
 {
     public event Action<ulong, S_MOVE> OnMoveEvent;
     public event Action<S_CHAT> OnChatEvent;
-    public event Action<S_PLAYER_ANIMATION> OnAnimationEvent;
+    public event Action<ulong, S_PLAYER_ANIMATION> OnAnimationEvent;
     public event Action<S_PLAYER_STAT> OnStatEvent;
     public event Action<S_OBJECT_PICKUP> OnItemAttached;
     public event Action<S_OBJECT_DROP> OnItemDetatched;
@@ -73,7 +73,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     private void HandleAnimation(byte[] payloadData)
     {
         S_PLAYER_ANIMATION packet = S_PLAYER_ANIMATION.Parser.ParseFrom(payloadData);
-        OnAnimationEvent?.Invoke(packet);
+        OnAnimationEvent?.Invoke(packet.PlayerId, packet);
     }
 
     //private void HandleStat(byte[] payloadData)

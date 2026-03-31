@@ -129,7 +129,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             State = packet.State
         };
 
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ANIMATION, relay);
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ANIMATION, relay, includeSender: false);
     }
 
     private void HandlePeerItemAttached(int peerId, byte[] data)
