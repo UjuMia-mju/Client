@@ -61,11 +61,11 @@ public class GachaResultPopupUI : MonoBehaviour
         switch (rarity)
         {
             case ItemRarity.Rare:
-                return new Color.Blue;
+                return Color.blue;
             case ItemRarity.Epic:
-                return new Color.Purple;
+                return Color.purple;
             case ItemRarity.Legendary:
-                return new Color.Yellow;
+                return Color.yellow;
             // 만약 후에 신화 등급과 같은 새로운 등급을 추가해야 한다면
             // case ItemRarity.Mythic:
             //     return new Color.Red;
