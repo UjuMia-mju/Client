@@ -13,6 +13,10 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     public int hostPortFromServer = 7788;
     private async void Start()
     {
+        // 중앙서버로 연결
+        HostNetManager.Instance.Connect(centralServerIp, centralServerPort);
+        return;
+        
         if (isHost)
         {
             HostNetManager.Instance.StartHost(hostPortFromServer);
