@@ -24,8 +24,31 @@ public class ObjectsGravityController : MonoBehaviour
     // 중력을 적용
     private void FixedUpdate()
     {
-        planet.Attract(objects);
         gravityUp = planet.GetGravityUp(objects.gameObject.transform);
         objects.rb.useGravity = false;
+
+        bool grounded = IsGrounded();
+        float linVel = objects.rb.linearVelocity.sqrMagnitude;
+        float angVel = objects.rb.angularVelocity.sqrMagnitude;
+
+        // 바닥에 닿아있고 거의 정지 상태면 속도만 제거, 중력은 계속 적용
+        if (grounded && linVel < 0.05f && angVel < 0.05f)
+        {
+            objects.rb.linearVelocity = Vector3.zero;
+            objects.rb.angularVelocity = Vector3.zero;
+            // return 제거 → Attract()는 계속 호출해서 지면에 붙어있게 함
+        }
+
+        planet.Attract(objects);
+    }
+
+    private bool IsGrounded()
+    {
+        Vector3 gravityDir = (planet.transform.position - objects.transform.position).normalized;
+        LayerMask groundMask = LayerMask.GetMask(Define.Layer.GROUND, Define.Layer.WALKABLE_COLLIDER);
+        
+        bool hit = Physics.Raycast(objects.transform.position, gravityDir, 2.0f, groundMask);
+        Debug.DrawLine(objects.transform.position, objects.transform.position + gravityDir * 2.0f, hit ? Color.green : Color.red);
+        return hit;
     }
 }

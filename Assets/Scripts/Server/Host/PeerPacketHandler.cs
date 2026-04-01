@@ -18,6 +18,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_OBJECT_PICKUP> OnPeerItemAttachedEvent;
     public event Action<int, C_OBJECT_DROP> OnPeerItemDetachedEvent;
     public event Action<int, C_TEST_ENTER_GAME> OnPeerEnterGameEvent;
+    public event Action<int, C_OBJECT_MOVE> OnPeerObjectMoveEvent;
+
     /// <summary>
     /// 호스트가 피어로부터 받은 패킷 처리
     /// NetManager의 피어 receive 루프에서 호출됨
@@ -46,6 +48,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 break;
             case PacketId.PKT_C_OBJECT_DROP:
                 HandlePeerItemDetached(peerId, data);
+                break;
+            case PacketId.PKT_C_OBJECT_MOVE:
+                HandlePeerObjectMove(peerId, data);
                 break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
@@ -160,5 +165,18 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         };
 
         HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DROP, relay);
+    }
+
+    private void HandlePeerObjectMove(int peerId, byte[] data)
+    {
+        C_OBJECT_MOVE packet = C_OBJECT_MOVE.Parser.ParseFrom(data);
+        OnPeerObjectMoveEvent?.Invoke(peerId, packet);
+        S_OBJECT_MOVE relay = new S_OBJECT_MOVE
+        {
+            ObjectId = packet.ObjectId?.Clone(),
+            Pos = packet.Pos?.Clone(),
+            Rot = packet.Rot?.Clone()
+        };
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_MOVE, relay, includeSender: false);
     }
 }

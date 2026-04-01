@@ -230,9 +230,10 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
     }
 
     // 플레이어의 아이템 부착을 송신합니다.
-    // HACK : ObjectId의 ToolType은 현재 사용하지 않습니다.
+    // NOTE : ObjectId의 ToolType은 현재 사용하지 않습니다.
     // 곡괭이 등 도구도 ItemManager에서 고유 itemId를 부여받으므로 ItemId로 통일합니다.
     // Type 필드는 아이템 / 도구 종류 분기용으로만 사용합니다.
+    // 이하 움직임 패킷도 동일합니다. 의견공유 바랍니다.
     public void SendItemAttached(Items itemData)
     {
         // 전달받은 아이템의 태그가 "Item"인지 확인
@@ -381,86 +382,30 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         }
     }
 
-    public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
+    public void SendItemOrToolMove(Items itemData, Vector3 position, Quaternion rotation)
     {
+        bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+
+        if (!isItem && !isTool) return;
+
+        ObjectType type = isItem ? ObjectType.Item : ObjectType.Tool;
+
+        PosInfo posInfo = new PosInfo { X = position.x, Y = position.y, Z = position.z };
+        RotInfo rotInfo = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w };
+        ObjectId objectId = new ObjectId { Type = type, ItemId = (ulong)itemData.itemId };
+
         if (IsHost())
         {
-            return;
+            S_OBJECT_MOVE packet = new S_OBJECT_MOVE { ObjectId = objectId, Pos = posInfo, Rot = rotInfo };
+            hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_MOVE, packet);
         }
         else
         {
-            PosInfo posInfo = new PosInfo
-            {
-                X = position.x,
-                Y = position.y,
-                Z = position.z
-            };
-
-            RotInfo rotInfo = new RotInfo
-            {
-                X = rotation.x,
-                Y = rotation.y,
-                Z = rotation.z,
-                W = rotation.w
-            };
-
-            ObjectId objectId = new ObjectId
-            {
-                Type = ObjectType.Item,
-                ItemId = (ulong)itemId
-            };
-
-            C_OBJECT_MOVE packet = new C_OBJECT_MOVE
-            {
-                ObjectId = objectId,
-                Pos = posInfo,
-                Rot = rotInfo
-            };
-
+            C_OBJECT_MOVE packet = new C_OBJECT_MOVE { ObjectId = objectId, Pos = posInfo, Rot = rotInfo };
             peerNet.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
         }
-        
-    }
 
-    public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation)
-    {
-        if (IsHost())
-        {
-            return;
-        }        
-        else
-        {
-            PosInfo posInfo = new PosInfo
-            {
-                X = position.x,
-                Y = position.y,
-                Z = position.z
-            };
-
-            RotInfo rotInfo = new RotInfo
-            {
-                X = rotation.x,
-                Y = rotation.y,
-                Z = rotation.z,
-                W = rotation.w
-            };
-
-            ObjectId objectId = new ObjectId
-            {
-                Type = ObjectType.Tool,
-                ToolType = data
-            };
-
-            C_OBJECT_MOVE packet = new C_OBJECT_MOVE
-            {
-                ObjectId = objectId,
-                Pos = posInfo,
-                Rot = rotInfo
-            };
-
-            peerNet.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
-        }
-        
     }
 
 

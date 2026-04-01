@@ -14,6 +14,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_PLAYER_STAT> OnStatEvent;
     public event Action<ulong, S_OBJECT_PICKUP> OnItemAttached;
     public event Action<ulong, S_OBJECT_DROP> OnItemDetatched;
+    public event Action<S_OBJECT_MOVE> OnItemMoveEvent;  
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
@@ -43,9 +44,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
             case PacketId.PKT_S_OBJECT_DROP:
                 HandleItemDetatched(data);
                 break;
-                //case PacketId.PKT_S_OBJECT_MOVE:
-                //    HandleItemMove(data);
-                //    break;
+            case PacketId.PKT_S_OBJECT_MOVE:
+                HandleItemMove(data);
+                break;
                 //case PacketId.PKT_S_WORKBENCH:
                 //    HandleCraftTable(data);
                 //    break;
@@ -94,11 +95,11 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
         OnItemDetatched?.Invoke(packet.PlayerId, packet);
     }
 
-    //private void HandleItemMove(byte[] payloadData)
-    //{
-    //    S_OBJECT_MOVE packet = S_OBJECT_MOVE.Parser.ParseFrom(payloadData);
-    //    OnItemMoveEvent?.Invoke(packet);
-    //}
+    private void HandleItemMove(byte[] payloadData)
+    {
+        S_OBJECT_MOVE packet = S_OBJECT_MOVE.Parser.ParseFrom(payloadData);
+        OnItemMoveEvent?.Invoke(packet);
+    }
 
     //private void HandleCraftTable(byte[] payloadData)
     //{

@@ -19,12 +19,14 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerAnimationEvent += OnPeerAnimation;
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent += OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent += OnPeerItemDetach;
+        PeerPacketHandler.Instance.OnPeerObjectMoveEvent += OnPeerObjectMove;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
         HostPacketHandler.Instance.OnAnimationEvent += OnHostAnimation;
         HostPacketHandler.Instance.OnItemAttached += OnHostItemPickup;
         HostPacketHandler.Instance.OnItemDetatched += OnHostItemDetach;
+        HostPacketHandler.Instance.OnItemMoveEvent += OnHostItemMove;
 
 
         PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
@@ -37,12 +39,14 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerAnimationEvent -= OnPeerAnimation;
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent -= OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent -= OnPeerItemDetach;
+        PeerPacketHandler.Instance.OnPeerObjectMoveEvent -= OnPeerObjectMove;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent -= OnHostMove;
         HostPacketHandler.Instance.OnAnimationEvent -= OnHostAnimation;
         HostPacketHandler.Instance.OnItemAttached -= OnHostItemPickup;
         HostPacketHandler.Instance.OnItemDetatched -= OnHostItemDetach;
+        HostPacketHandler.Instance.OnItemMoveEvent -= OnHostItemMove;
 
         PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
     }
@@ -135,6 +139,21 @@ public class PlayManager : SceneSingleton<PlayManager>
         else
         {
             Debug.LogWarning($"[HostItemPickup] Received move for unknown player: {playerId}");
+        }
+    }
+
+    private void OnHostItemMove(S_OBJECT_MOVE packet)
+    {
+        Items item = ItemManager.Instance.GetItem((int)packet.ObjectId.ItemId);
+        if (item != null)
+        {
+            Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+            Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+            item.SetPos(pos, rot);
+        }
+        else
+        {
+            Debug.LogWarning($"[HostItemMove] Item not found: {packet.ObjectId.ItemId}");
         }
     }
 
@@ -235,6 +254,21 @@ public class PlayManager : SceneSingleton<PlayManager>
         else
         {
             Debug.LogWarning($"[HostItemPickup] Received move for unknown player: {playerId}");
+        }
+    }
+
+    private void OnPeerObjectMove(int playerId, C_OBJECT_MOVE packet)
+    {
+        Items item = ItemManager.Instance.GetItem((int)packet.ObjectId.ItemId);
+        if (item != null)
+        {
+            Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+            Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+            item.SetPos(pos, rot);
+        }
+        else
+        {
+            Debug.LogWarning($"[PeerObjectMove] Item not found: {packet.ObjectId.ItemId}");
         }
     }
 
