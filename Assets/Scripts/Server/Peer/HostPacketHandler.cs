@@ -32,9 +32,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
             case PacketId.PKT_S_PLAYER_ANIMATION:
                 HandleAnimation(data);
                 break;
-            //case PacketId.PKT_S_PLAYER_STAT:
-            //    HandleStat(data);
-            //    break;
+            case PacketId.PKT_S_PLAYER_STAT:
+                HandleStat(data);
+                break;
             case PacketId.PKT_S_OBJECT_PICKUP:
                 HandleItemAttached(data);
                 break;
@@ -75,11 +75,12 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
         OnAnimationEvent?.Invoke(packet);
     }
 
-    //private void HandleStat(byte[] payloadData)
-    //{
-    //    S_PLAYER_STAT packet = S_PLAYER_STAT.Parser.ParseFrom(payloadData);
-    //    OnStatEvent?.Invoke(packet);
-    //}
+    private void HandleStat(byte[] payloadData)
+    {
+       S_PLAYER_STAT packet = S_PLAYER_STAT.Parser.ParseFrom(payloadData);
+       Debug.Log($"Received PlayerStat packet: PlayerId={packet.PlayerId}, Hp={packet.Hp}, Oxygen={packet.Oxygen}");
+       OnStatEvent?.Invoke(packet);
+    }
 
     private void HandleItemAttached(byte[] payloadData)
     {

@@ -47,6 +47,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             case PacketId.PKT_C_OBJECT_DROP:
                 HandlePeerItemDetached(peerId, data);
                 break;
+            case PacketId.PKT_C_PLAYER_STAT_EVENT:
+                HandlePeerStatEvent(peerId, data);
+                break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
                 break;
@@ -146,5 +149,42 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         };
 
         HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DROP, relay);
+    }
+
+    private void HandlePeerStatEvent(int peerId, byte[] data)
+    {
+        var packet = C_PLAYER_STAT_EVENT.Parser.ParseFrom(data);
+
+        var statManager = HostPlayerStatManager.Instance;
+
+        if (packet.EventType == StatEventType.OxygenChanged && packet.Oxygen != null)
+        {
+            if (packet.Oxygen.ChangeType == OxygenChangeType.ConsumeNatural)
+            {
+                statManager.DecreaseOxygen(packet.TargetPlayerId, packet.Oxygen.Amount);
+            }
+            else if (packet.Oxygen.ChangeType == OxygenChangeType.RestoreArea)
+            {
+                statManager.IncreaseOxygen(packet.TargetPlayerId, packet.Oxygen.Amount);
+            }
+            else
+            {
+                Debug.LogWarning($"Unknown oxygen change type: {packet.Oxygen.ChangeType}");
+            }
+                
+        }
+
+        // 상태 변경 후 브로드캐스트
+        var stat = statManager.GetPlayerStat(packet.TargetPlayerId);
+        if (stat != null)
+        {
+            var syncPacket = new S_PLAYER_STAT
+            {
+                PlayerId = packet.TargetPlayerId,
+                Hp = stat.Value.hp,
+                Oxygen = stat.Value.oxygen
+            };
+            HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_STAT, syncPacket, true);
+        }
     }
 }

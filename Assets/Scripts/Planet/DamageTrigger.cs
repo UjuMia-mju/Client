@@ -6,7 +6,7 @@ public class DamageTrigger : MonoBehaviour
     {
         if (other.CompareTag(Define.Tag.PLAYER))
         {
-            PlayerStat tempStat = other.GetComponent<PlayerStat>();
+            PeerPlayerStat tempStat = other.GetComponent<PeerPlayerStat>();
             tempStat.DecreaseHp(1);
             Debug.Log("트리거 : 데미지");
         }

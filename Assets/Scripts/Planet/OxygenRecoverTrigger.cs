@@ -6,7 +6,7 @@ public class OxygenRecoverTrigger : MonoBehaviour
     {
         if (other.CompareTag(Define.Tag.PLAYER))
         {
-            PlayerStat tempStat = other.GetComponent<PlayerStat>();
+            PeerPlayerStat tempStat = other.GetComponent<PeerPlayerStat>();
             tempStat.StartOxygenRecovery();
         }
     }
@@ -15,7 +15,7 @@ public class OxygenRecoverTrigger : MonoBehaviour
     {
         if (other.CompareTag(Define.Tag.PLAYER))
         {
-            PlayerStat tempStat = other.GetComponent<PlayerStat>();
+            PeerPlayerStat tempStat = other.GetComponent<PeerPlayerStat>();
             tempStat.StopOxygenRecovery();
         }
     }

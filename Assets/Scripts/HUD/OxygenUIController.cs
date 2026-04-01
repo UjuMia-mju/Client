@@ -3,17 +3,17 @@ using UnityEngine.UI;
 
 public class OxygenUIController : MonoBehaviour
 {
-    [SerializeField] private PlayerStat playerStat;
+    [SerializeField] private PeerPlayerStat playerStat;
     [SerializeField] private Image oxygenImage;
 
     private void OnEnable()
     {
-        playerStat.OnOxygenChanged += UpdateOxygenFill;
+        //playerStat.OnOxygenChanged += UpdateOxygenFill;
     }
 
     private void OnDisable()
     {
-        playerStat.OnOxygenChanged -= UpdateOxygenFill;
+        //playerStat.OnOxygenChanged -= UpdateOxygenFill;
     }
 
     private void UpdateOxygenFill(float amount)

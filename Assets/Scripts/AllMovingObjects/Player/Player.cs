@@ -18,7 +18,7 @@ public class Player : MovingObject
     public bool isPlayerGetSomething { get; private set; } = false;
     public bool isMining { get; private set; } = false;
     
-    private PlayerStat playerStat;
+    private PeerPlayerStat playerStat;
 
     private GameObject playerMesh;
 
@@ -42,7 +42,7 @@ public class Player : MovingObject
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
         playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
-        playerStat = GetComponent<PlayerStat>();
+        playerStat = GetComponent<PeerPlayerStat>();
 
         playerAnimator.Initialize();
         lastAnimState = AnimState.Idle;
@@ -63,8 +63,8 @@ public class Player : MovingObject
 
 
         // 산소/HP 이벤트 기반 로직
-        lastHP = playerStat.GetHp();
-        lastOxygen = playerStat.GetOxygen();
+        // lastHP = playerStat.GetHp();
+        // lastOxygen = playerStat.GetOxygen();
 
         playerStat.OnHpChanged += HandleHpChanged;
         playerStat.OnOxygenChanged += HandleOxygenChanged;
@@ -128,7 +128,7 @@ public class Player : MovingObject
         // 호스트가 받은 뒤 S_PLAYER_ENTER로 브로드캐스트하게 해야 패킷 순서가 맞습니다.
         if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
         {
-            PacketDispatcher.Instance.SendEnterGame(0);
+            PacketSender.Instance.SendEnterGame(0);
         }
         // 위치/애니메이션 전송은 계속 수행
         SendEnterPosToServer();
@@ -353,7 +353,7 @@ public class Player : MovingObject
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
     private void SendEnterPosToServer()
     {
-        PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+        PacketSender.Instance.SendMove(transform.position, transform.rotation);
 
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
@@ -373,7 +373,7 @@ public class Player : MovingObject
 
         if (posChanged || rotChanged)
         {
-            PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+            PacketSender.Instance.SendMove(transform.position, transform.rotation);
 
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;
@@ -391,7 +391,7 @@ public class Player : MovingObject
         // 상태가 바뀐 경우에만 전송
         if (currentState != lastAnimState)
         {
-            PacketDispatcher.Instance.SendAnimation(currentState);
+            PacketSender.Instance.SendAnimation(currentState);
             lastAnimState = currentState;
         }
     }
@@ -399,12 +399,12 @@ public class Player : MovingObject
     // 아이템을 들어올렸을 때 RemotePlayer의 소켓에 부착시키기 위해 패킷을 1회 전송
     private void SendItemAttachedToServer(Items data)
     {
-        PacketDispatcher.Instance.SendItemAttached(data);
+        PacketSender.Instance.SendItemAttached(data);
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
     private void SendItemDetatchedToServer(Items data)
     {
-        PacketDispatcher.Instance.SendItemDetatched(data);
+        PacketSender.Instance.SendItemDetatched(data);
     }
 }
