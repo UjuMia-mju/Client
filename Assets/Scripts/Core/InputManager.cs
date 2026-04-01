@@ -1,33 +1,50 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviorSingleton<InputManager>
 {
-    private static InputManager instance;
-    
-    // 외부에서 접근할 실제 Input Actions
-    public PlayerInputSystem Actions { get; private set; }
+    private PlayerInputSystem _actions;
 
-    private void Awake()
+    // 외부에서 접근할 때 없으면 바로 생성해서 반환합니다.
+    public PlayerInputSystem Actions 
+    { 
+        get
+        {
+            if (_actions == null)
+            {
+                _actions = new PlayerInputSystem();
+                _actions.Enable(); // 생성 시점에 바로 활성화
+            }
+            return _actions;
+        }
+    }
+
+    protected override void Awake()
     {
-        Actions = new PlayerInputSystem();
-        Actions.Enable();
+        // 부모(MonoBehaviorSingleton)의 Awake를 호출하여 DontDestroyOnLoad 등을 처리
+        base.Awake();
+
+        // 이미 get을 통해 생성되었을 수도 있으니 null 체크 후 초기화
+        if (_actions == null)
+        {
+            _actions = new PlayerInputSystem();
+            _actions.Enable();
+        }
     }
 
     private void OnEnable()
     {
-        Actions?.Enable();
+        _actions?.Enable();
     }
 
     private void OnDisable()
     {
-        // 앱이 꺼지거나 오브젝트가 비활성화될 때 안전하게 정리
-        Actions?.Disable();
+        _actions?.Disable();
     }
 
     private void OnDestroy()
     {
-        Actions?.Disable();
-        Actions = null;
+        // 싱글톤 인스턴스가 파괴될 때만 정리
+        _actions?.Disable();
+        _actions = null;
     }
 }
