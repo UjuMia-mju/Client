@@ -3,6 +3,10 @@ package Protocol;
 
 import "Enum.proto";
 import "Struct.proto";
+message C_GET_DB_DATA
+{
+
+}
 
 message C_LOGIN
 {
@@ -15,6 +19,18 @@ message S_LOGIN
 	bool success = 1;
 	Player player = 2;
 	PlayerInfo player_info = 3;
+}
+
+message C_GET_CURRENCY
+{
+
+}
+
+message S_GET_CURRENCY
+{
+	bool success = 1;
+	int32 coin = 2;
+	int32 gem = 3;
 }
 
 // ==================== 가챠 뽑기 ====================
@@ -40,6 +56,11 @@ message C_GACHA_POOL_LIST
 message S_GACHA_POOL_LIST
 {
 	repeated GachaPoolInfo pools = 1;
+}
+
+message S_SKIN_LIST
+{
+	repeated SkinInfo skins = 1;
 }
 
 // ==================== 플레이어 보유 스킨 목록 ====================
@@ -148,7 +169,7 @@ message S_ROOM_MEMBER_LEAVE
 {
 	uint64 player_id = 1;
 	string player_name = 2;
-	uint64 new_owner_id = 3; // 방장이 퇴장할 경우 새로운 방장 ID (0이면 방이 삭제됨)
+	uint64 new_owner_id = 3; // 방장이 퇴장할 경우 새로운 방장 ID (0이면 방장 그대로)
 }
 
 // ==================== 준비 상태 변경 ====================
@@ -207,10 +228,16 @@ message C_TEST_ENTER_GAME
 
 // ==================== 스테이지 정보 ====================
 
+message S_STAGE_INFO
+{
+	repeated StageInfo stages = 1;
+}
+
 message C_SHOW_STAGE
 {
-	int32 stageLevel = 1;
-	int32 stageIndex = 2;
+	int32 map_id = 1;
+	int32 chapter = 2;
+	int32 stageIndex = 3;
 }
 
 message S_SHOW_STAGE
@@ -294,7 +321,7 @@ message C_PLAYER_STAT_EVENT
 {
 	uint64 target_player_id = 1;  // 대상 플레이어 (누가 영향 받는지)
 	StatEventType event_type = 2;
-	
+
 	// 이벤트별 추가 정보
 	oneof event_data {
 		DamageEventData damage = 10;
@@ -306,9 +333,9 @@ message C_PLAYER_STAT_EVENT
 
 message S_PLAYER_STAT
 {
-    uint64 playerId = 1;
-    int32 hp = 2;
-    float oxygen = 3;
+	uint64 playerId = 1;
+	int32 hp = 2;
+	float oxygen = 3;
 }
 
 // ==================== 오브젝트 시스템 (도구 + 아이템 통합) ====================
