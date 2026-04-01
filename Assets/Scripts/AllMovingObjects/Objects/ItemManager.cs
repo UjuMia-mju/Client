@@ -7,6 +7,7 @@ public class ItemManager : MonoBehaviour
     public static ItemManager Instance { get; private set; }
 
     private Dictionary<int, Items> itemDic = new Dictionary<int, Items>();
+    private static int _nextItemId = 1; // 씬 재시작 시에도 증가
 
     private void Awake()
     {
@@ -20,6 +21,7 @@ public class ItemManager : MonoBehaviour
 
     public void RegisterItem(Items item)
     {
+        item.itemId = _nextItemId++; // 등록 시 고유 ID 자동 부여
         if (!itemDic.ContainsKey(item.itemId))
         {
             itemDic.Add(item.itemId, item);
@@ -42,6 +44,4 @@ public class ItemManager : MonoBehaviour
             return item;
         return null;
     }
-
-
 }

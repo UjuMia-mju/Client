@@ -17,55 +17,44 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
         PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
         PeerPacketHandler.Instance.OnPeerAnimationEvent += OnPeerAnimation;
+        PeerPacketHandler.Instance.OnPeerItemAttachedEvent += OnPeerItemPickup;
+        PeerPacketHandler.Instance.OnPeerItemDetachedEvent += OnPeerItemDetach;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
         HostPacketHandler.Instance.OnAnimationEvent += OnHostAnimation;
+        HostPacketHandler.Instance.OnItemAttached += OnHostItemPickup;
+        HostPacketHandler.Instance.OnItemDetatched += OnHostItemDetach;
 
-        // PacketHandler.Instance.OnPlayerListEvent += OnPlayerList;
-        //PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
-        // PacketHandler.Instance.OnPlayerLeaveEvent += OnPlayerLeave;
-        // PacketHandler.Instance.OnMoveEvent += OnPlayerMove;
+
         PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
-        // PacketHandler.Instance.OnAnimationEvent += OnAnim;
-        //PacketHandler.Instance.OnStatEvent += OnPlayerStat;
-        //PacketHandler.Instance.OnItemAttached += OnItemAttached;
-        //PacketHandler.Instance.OnItemDetatched += OnItemDetatched;
-        //PacketHandler.Instance.OnItemMoveEvent += OnItemMove;
-        //PacketHandler.Instance.OnCraftTableEvent += OnCraftTableItemInstantiate;
-
-        // 서버에 ENTER_GAME 패킷 전송 (게임 입장 요청)
-        //PacketHandler.Instance.SendEnterGame((ulong)NetManager.Instance._playerId);
-        // 로컬 플레이어 생성
-        //SpawnLocalPlayer();
-    }
-
-    // HACK : 애니메이션은 실시간으로 처리해야되기때문에 Update에서 처리하도록 했습니다. 올바른 처리일까요?
-    private void Update()
-    {
-        
     }
 
     void OnDestroy()
     {
-        // PacketHandler.Instance.OnPlayerListEvent -= OnPlayerList;
-        // PacketHandler.Instance.OnPlayerEnterEvent -= OnPlayerEnter;
-        // PacketHandler.Instance.OnPlayerLeaveEvent -= OnPlayerLeave;
-        // PacketHandler.Instance.OnMoveEvent -= OnPlayerMove;
-        // PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
-        // PacketHandler.Instance.OnAnimationEvent -= OnAnim;
-        //PacketHandler.Instance.OnStatEvent -= OnPlayerStat;
-        // PacketHandler.Instance.OnItemAttached -= OnItemAttached;
-        // PacketHandler.Instance.OnItemDetatched -= OnItemDetatched;
-        //PacketHandler.Instance.OnItemMoveEvent -= OnItemMove;
-        //PacketHandler.Instance.OnCraftTableEvent -= OnCraftTableItemInstantiate;
+        PeerPacketHandler.Instance.OnPeerEnterGameEvent -= OnPeerEnterGame;
+        PeerPacketHandler.Instance.OnPeerMoveEvent -= OnPeerMove;
+        PeerPacketHandler.Instance.OnPeerAnimationEvent -= OnPeerAnimation;
+        PeerPacketHandler.Instance.OnPeerItemAttachedEvent -= OnPeerItemPickup;
+        PeerPacketHandler.Instance.OnPeerItemDetachedEvent -= OnPeerItemDetach;
+
+        HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
+        HostPacketHandler.Instance.OnMoveEvent -= OnHostMove;
+        HostPacketHandler.Instance.OnAnimationEvent -= OnHostAnimation;
+        HostPacketHandler.Instance.OnItemAttached -= OnHostItemPickup;
+        HostPacketHandler.Instance.OnItemDetatched -= OnHostItemDetach;
+
+        PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
     }
+
     //private void SpawnLocalPlayer()
     //{
     //    _localPlayer = Instantiate(localPlayerPrefab, SpawnOffset.transform.position, Quaternion.identity);
     //    _localPlayer.name = "LocalPlayer";
     //}
 
+    // 다음과 같이 명명합니다 - 서버에 들어가는 함수 제외하고
+    // OnHost기능명, OnPeer기능명
     #region 인게임 호스트 -> 피어 패킷
 
     // 피어가 호스트로부터 받은 S_PLAYER_ENTER 패킷 처리 (호스트가 피어에게 보낸 패킷)
@@ -107,7 +96,45 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
         else
         {
-            Debug.LogWarning($"[HostMove] Received move for unknown player: {playerId}");
+            Debug.LogWarning($"[HostAnimation] Received move for unknown player: {playerId}");
+        }
+    }
+
+    private void OnHostItemPickup(ulong playerId, S_OBJECT_PICKUP packet)
+    {
+        // 아이템을 집는 패킷 처리 로직
+        if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+            {
+                Items item = ItemManager.Instance.GetItem((int)packet.ObjectId.ItemId);
+                if (item != null)
+                    remotePlayer.SetEquipItem(item);
+                else
+                    Debug.LogWarning($"[HostItemPickup] Item not found: {packet.ObjectId.ItemId}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[HostItemPickup] Received move for unknown player: {playerId}");
+        }
+    }
+
+    private void OnHostItemDetach(ulong playerId, S_OBJECT_DROP packet)
+    {
+        // 아이템을 빼는 패킷 처리 로직
+        if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+            {
+                remotePlayer.DetachEquipItem();
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[HostItemPickup] Received move for unknown player: {playerId}");
         }
     }
 
@@ -171,6 +198,43 @@ public class PlayManager : SceneSingleton<PlayManager>
         else
         {
             Debug.LogWarning($"[HostMove] Received move for unknown player: {peerId}");
+        }
+    }
+
+    private void OnPeerItemPickup(int peerId, C_OBJECT_PICKUP packet)
+    {
+        if (_remotePlayers.TryGetValue((ulong)peerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+            {
+                Items item = ItemManager.Instance.GetItem((int)packet.ObjectId.ItemId);
+                if (item != null)
+                    remotePlayer.SetEquipItem(item);
+                else
+                    Debug.LogWarning($"[PeerItemPickup] Item not found: {packet.ObjectId.ItemId}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[PeerItemPickup] Unknown player: {peerId}");
+        }
+    }
+
+    private void OnPeerItemDetach(int playerId, C_OBJECT_DROP packet)
+    {
+        // 아이템을 빼는 패킷 처리 로직
+        if (_remotePlayers.TryGetValue((ulong)playerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+            {
+                remotePlayer.DetachEquipItem();
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[HostItemPickup] Received move for unknown player: {playerId}");
         }
     }
 

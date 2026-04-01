@@ -14,7 +14,8 @@ public class Items : MovingObject
     protected Vector3 _lastSendPos;
     protected Quaternion _lastSendRot;
 
-    public int itemId; // 아이템 고유 ID
+    // 이제 ItemManager에서 자동부여하며 이전에 테스트했던 방식대로 인스펙터에서 특정 값 줘서 작동하지 않습니다.
+    [HideInInspector] public int itemId; // 아이템 고유 ID
 
     public string itemStringKey;
 

@@ -229,45 +229,156 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         }
     }
 
+    // 플레이어의 아이템 부착을 송신합니다.
+    // HACK : ObjectId의 ToolType은 현재 사용하지 않습니다.
+    // 곡괭이 등 도구도 ItemManager에서 고유 itemId를 부여받으므로 ItemId로 통일합니다.
+    // Type 필드는 아이템 / 도구 종류 분기용으로만 사용합니다.
     public void SendItemAttached(Items itemData)
     {
-        if (IsHost())
+        // 전달받은 아이템의 태그가 "Item"인지 확인
+        if (itemData.gameObject.CompareTag(Define.Tag.ITEM))
         {
-            return;
-        }
-        else
-        {
-            C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
+            if (IsHost())
             {
-                ObjectId = new ObjectId
+                S_OBJECT_PICKUP packet = new S_OBJECT_PICKUP
                 {
-                    Type = ObjectType.Item,
-                    ItemId = (ulong)itemData.itemId
-                }
-            };
-            net.SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
+                    Success = true,
+                    ObjectId = new ObjectId
+                    {
+                        Type = ObjectType.Item,
+                        ItemId = (ulong)itemData.itemId
+                    },
+                    PlayerId = GetLocalPlayerId(),
+
+                    ErrorMsg = ""
+                };
+
+                hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_PICKUP, packet);
+                return;
+            }
+
+            else
+            {
+                C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
+                {
+                    ObjectId = new ObjectId
+                    {
+                        Type = ObjectType.Item,
+                        ItemId = (ulong)itemData.itemId
+                    }
+                };
+                peerNet.SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
+            }
+        }
+
+        // 그것이 아니면 곡괭이 등의 도구임.
+
+        // 1. 곡괭이
+        else if (itemData.gameObject.CompareTag(Define.Tag.PICKAXE))
+        {
+            if (IsHost())
+            {
+                S_OBJECT_PICKUP packet = new S_OBJECT_PICKUP
+                {
+                    Success = true,
+                    ObjectId = new ObjectId
+                    {
+                        Type = ObjectType.Tool,
+                        ItemId = (ulong)itemData.itemId
+                    },
+                    PlayerId = GetLocalPlayerId(),
+
+                    ErrorMsg = ""
+                };
+
+                hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_PICKUP, packet);
+                return;
+            }
+
+            else
+            {
+                C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
+                {
+                    ObjectId = new ObjectId
+                    {
+                        Type = ObjectType.Tool,
+                        ItemId = (ulong)itemData.itemId
+                    }
+                };
+                peerNet.SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
+            }
         }
     }
 
     public void SendItemDetatched(Items itemData)
     {
-        if (IsHost())
+        // 전달받은 아이템의 태그가 "Item"인지 확인
+        if (itemData.gameObject.CompareTag(Define.Tag.ITEM))
         {
-            return;
-        }
-        else
-        {
-            C_OBJECT_DROP packet = new C_OBJECT_DROP
+            if (IsHost())
             {
-                ObjectId = new ObjectId
+                S_OBJECT_DROP packet = new S_OBJECT_DROP
                 {
-                    Type = ObjectType.Item,
-                    ItemId = (ulong)itemData.itemId
-                }
-            };
-            peerNet.SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
+                    ObjectId = new ObjectId
+                    {
+                        Type = ObjectType.Item,
+                        ItemId = (ulong)itemData.itemId
+                    },
+                    PlayerId = GetLocalPlayerId()
+                };
+
+                hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DROP, packet);
+                return;
+            }
+
+            else
+            {
+                C_OBJECT_DROP packet = new C_OBJECT_DROP
+                {
+                    ObjectId = new ObjectId
+                    {
+                        Type = ObjectType.Item,
+                        ItemId = (ulong)itemData.itemId
+                    }
+                };
+                peerNet.SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
+            }
         }
-        
+
+        // 그것이 아니면 곡괭이 등의 도구임.
+
+        // 1. 곡괭이
+        else if (itemData.gameObject.CompareTag(Define.Tag.PICKAXE))
+        {
+            if (IsHost())
+            {
+                S_OBJECT_DROP packet = new S_OBJECT_DROP
+                {
+                    ObjectId = new ObjectId
+                    {
+                        Type = ObjectType.Tool,
+                        ItemId = (ulong)itemData.itemId
+                    },
+                    PlayerId = GetLocalPlayerId()
+                };
+
+                hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DROP, packet);
+                return;
+            }
+
+            else
+            {
+                C_OBJECT_DROP packet = new C_OBJECT_DROP
+                {
+                    ObjectId = new ObjectId
+                    {
+                        Type = ObjectType.Tool,
+                        ItemId = (ulong)itemData.itemId
+                    }
+                };
+                peerNet.SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
+            }
+        }
     }
 
     public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)

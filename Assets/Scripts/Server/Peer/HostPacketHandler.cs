@@ -12,8 +12,8 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_CHAT> OnChatEvent;
     public event Action<ulong, S_PLAYER_ANIMATION> OnAnimationEvent;
     public event Action<S_PLAYER_STAT> OnStatEvent;
-    public event Action<S_OBJECT_PICKUP> OnItemAttached;
-    public event Action<S_OBJECT_DROP> OnItemDetatched;
+    public event Action<ulong, S_OBJECT_PICKUP> OnItemAttached;
+    public event Action<ulong, S_OBJECT_DROP> OnItemDetatched;
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
@@ -85,13 +85,13 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     private void HandleItemAttached(byte[] payloadData)
     {
         S_OBJECT_PICKUP packet = S_OBJECT_PICKUP.Parser.ParseFrom(payloadData);
-        OnItemAttached?.Invoke(packet);
+        OnItemAttached?.Invoke(packet.PlayerId, packet);
     }
 
     private void HandleItemDetatched(byte[] payloadData)
     {
         S_OBJECT_DROP packet = S_OBJECT_DROP.Parser.ParseFrom(payloadData);
-        OnItemDetatched?.Invoke(packet);
+        OnItemDetatched?.Invoke(packet.PlayerId, packet);
     }
 
     //private void HandleItemMove(byte[] payloadData)

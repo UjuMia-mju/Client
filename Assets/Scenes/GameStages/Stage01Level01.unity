@@ -1120,7 +1120,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 560856787}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69afb27bc9a488b4c812904a58f10e89, type: 3}
   m_Name: 
@@ -4076,7 +4076,6 @@ GameObject:
   - component: {fileID: 1793020093810405345}
   - component: {fileID: 7583031920352039202}
   - component: {fileID: 1718077516630245648}
-  - component: {fileID: 4818406448908982992}
   - component: {fileID: 676083655188794231}
   - component: {fileID: 7583031920352039203}
   m_Layer: 8
@@ -4176,25 +4175,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4818406448908982992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1967378443194029695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4864c3880af022b46af9dcea4be68ab7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Items
-  walkSpeed: 0
-  jumpForce: 0
-  rotationSpeed: 0
-  sendInterval: 0.05
-  itemId: 0
-  itemStringKey: 
-  lerpSpeed: 10
 --- !u!4 &4943720041582861401
 Transform:
   m_ObjectHideFlags: 0
@@ -4373,7 +4353,7 @@ MonoBehaviour:
   rotationSpeed: 0
   sendInterval: 0.05
   itemId: 0
-  itemStringKey: 
+  itemStringKey: Pickaxe
   lerpSpeed: 10
 --- !u!4 &7720847087868846826
 Transform:

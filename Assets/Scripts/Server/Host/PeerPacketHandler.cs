@@ -145,7 +145,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             ErrorMsg = ""
         };
 
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_PICKUP, relay);
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_PICKUP, relay, includeSender: false);
     }
 
     private void HandlePeerItemDetached(int peerId, byte[] data)
