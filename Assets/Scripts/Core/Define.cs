@@ -15,6 +15,7 @@ public static class Define
         public const string LOBBY  = "Lobby";
         public const string GAME_1_1   = "Stage01Level01";
         public const string STAGE_SELECT = "StageSelect";
+        public const string LOGIN = "Login";
     }
 
     public static class Tag

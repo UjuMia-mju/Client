@@ -12,8 +12,6 @@ public class SplashController : MonoBehaviour
     private float fadeInTime = 1.2f;
     private float stayTime = 2.0f;
     private float fadeOutTime = 1.0f;
-    
-    private string nextSceneName = Define.Scene.MAIN;
 
     private void Start()
     {
@@ -37,8 +35,8 @@ public class SplashController : MonoBehaviour
         // 3. 로고 사라짐
         yield return StartCoroutine(Fade(1f, 0f, fadeOutTime));
 
-        // 4. 로고가 완전히 사라지면 SceneLoader에게 모든 권한 위임
-        SceneLoader.Instance.LoadScene(nextSceneName);
+        // 4. 로고가 완전히 사라지면 Load Scene
+        SceneLoader.Instance.LoadScene(Define.Scene.LOGIN);
     }
 
     /// <summary>
