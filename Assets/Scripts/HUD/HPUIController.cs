@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class HPUIController : MonoBehaviour
 {
-    [SerializeField] private PeerPlayerStat playerStat;
+    public PlayerStat playerStat;
     [SerializeField] private List<Image> hpImageList = new List<Image>();
     
     private List<Coroutine> fadeCoroutines = new List<Coroutine>();
@@ -20,12 +20,12 @@ public class HPUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        //playerStat.OnHpChanged += UpdateHPUI;
+        playerStat.OnHpChanged += UpdateHPUI;
     }
 
     private void OnDisable()
     {
-        //playerStat.OnHpChanged -= UpdateHPUI;
+        playerStat.OnHpChanged -= UpdateHPUI;
     }
 
     private void UpdateHPUI(int currentHp)

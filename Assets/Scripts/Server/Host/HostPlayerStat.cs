@@ -4,11 +4,11 @@ using System.Collections;
 using Protocol;
 public class HostPlayerStat : PlayerStat
 {
-    [SerializeField] private int maxHp = 5;
     public ulong PlayerId { get; set; } // 네트워크 playerId
     #region HP 증/감소 로직
     public override void DecreaseHp(int damage)
     {
+        base.DecreaseHp(damage);
         var Damage = new DamageEventData
         {
             DamageAmount = damage

@@ -18,7 +18,7 @@ public class Player : MovingObject
     public bool isPlayerGetSomething { get; private set; } = false;
     public bool isMining { get; private set; } = false;
     
-    private PeerPlayerStat playerStat;
+    private PlayerStat playerStat;
 
     private GameObject playerMesh;
 
@@ -33,6 +33,10 @@ public class Player : MovingObject
     private int lastHP;
     private float lastOxygen;
 
+    // 임시 UI 객체
+    [SerializeField] private HPUIController hpUIController;
+    [SerializeField] private OxygenUIController oxygenUIController;
+
     // 초기화
     protected override void Awake()
     {
@@ -42,10 +46,26 @@ public class Player : MovingObject
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
         playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
-        playerStat = GetComponent<PeerPlayerStat>();
 
         playerAnimator.Initialize();
         lastAnimState = AnimState.Idle;
+
+        if (ConnectManager.Instance.isHost)
+        {
+            playerStat = gameObject.AddComponent<HostPlayerStat>();
+        }
+        else
+        {
+            playerStat = gameObject.AddComponent<PeerPlayerStat>();
+        }
+
+        // ===수정 요함.
+        hpUIController.playerStat = playerStat;
+        oxygenUIController.playerStat = playerStat;
+
+        hpUIController.gameObject.SetActive(true);
+        oxygenUIController.gameObject.SetActive(true);
+        // =====
     }
 
     private void Start()
