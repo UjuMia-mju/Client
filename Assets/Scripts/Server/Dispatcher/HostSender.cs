@@ -100,9 +100,9 @@ public class HostSender : IPcaketDispatcher
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
     {
         _eventPacket.PlayerId = targetPlayerId;
-        //Debug.Log($"저 보냅니다!!!! ={targetPlayerId}, hp={hp}, oxygen={oxygen}");
         _eventPacket.Hp = hp;
         _eventPacket.Oxygen = oxygen;
+        Debug.Log($"Broadcasting stat result for Player {targetPlayerId}: HP={hp}, Oxygen={oxygen}");
 
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_STAT, _eventPacket);
     }

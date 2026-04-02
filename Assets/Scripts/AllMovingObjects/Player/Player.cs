@@ -59,7 +59,7 @@ public class Player : MovingObject
             playerStat = gameObject.AddComponent<PeerPlayerStat>();
         }
 
-        // ===수정 요함.
+        // ==== 임시 UI 초기화 ===
         hpUIController.playerStat = playerStat;
         oxygenUIController.playerStat = playerStat;
 

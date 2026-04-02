@@ -8,12 +8,12 @@ public class HostPlayerStat : PlayerStat
     public override void DecreaseHp(int damage)
     {
         base.DecreaseHp(damage);
-        HostPlayerStatManager.Instance.DecreaseHp(playerId, damage);
+        HostStatManager.Instance.DecreaseHp(playerId, damage);
     }
 
     public override void IncreaseHp(int amount)
     {
-        HostPlayerStatManager.Instance.IncreaseHp(playerId, amount);
+        HostStatManager.Instance.IncreaseHp(playerId, amount);
     }
     #endregion
 
@@ -22,7 +22,7 @@ public class HostPlayerStat : PlayerStat
     {
         while (statData.oxygen > 0)
         {
-            HostPlayerStatManager.Instance.DecreaseOxygen(playerId);
+            HostStatManager.Instance.DecreaseOxygen(playerId);
             yield return new WaitForSeconds(1.0f);
         }
 
@@ -38,19 +38,19 @@ public class HostPlayerStat : PlayerStat
 
     public override IEnumerator IncreaseOxygen()
     {
-        float oxygen = HostPlayerStatManager.Instance.GetPlayerStat(playerId).statData.oxygen;
+        float oxygen = HostStatManager.Instance.GetPlayerStat(playerId).statData.oxygen;
         while (oxygen < 1f)
         {
-            HostPlayerStatManager.Instance.IncreaseOxygen(playerId);
+            HostStatManager.Instance.IncreaseOxygen(playerId);
             yield return new WaitForSeconds(1.0f);
         }
     }
 
     public override IEnumerator OxygenHpDrainCoroutine()
     {
-        float oxygen = HostPlayerStatManager.Instance.GetPlayerStat(playerId).statData.oxygen;
-        int hp = HostPlayerStatManager.Instance.GetPlayerStat(playerId).statData.hp;
-        
+        float oxygen = HostStatManager.Instance.GetPlayerStat(playerId).statData.oxygen;
+        int hp = HostStatManager.Instance.GetPlayerStat(playerId).statData.hp;
+
         while (oxygen <= 0f && !isRespawning && hp > 0)
         {
             DecreaseHp(1);
@@ -58,17 +58,6 @@ public class HostPlayerStat : PlayerStat
         }
         oxygenHpDrainRoutine = null;
     }
-
-    public override void StartOxygenRecovery()
-    {
-        if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
-        oxygenRoutine = StartCoroutine(IncreaseOxygen());
-    }
-
-    public override void StopOxygenRecovery()
-    {
-        if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
-        oxygenRoutine = StartCoroutine(DecreaseOxygen());
-    }
+    
     #endregion
 }

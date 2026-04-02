@@ -79,7 +79,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         // 3. 이벤트로 처리
         OnPeerEnterGameEvent?.Invoke(peerId, packet);
         // 4. 
-        HostPlayerStatManager.Instance?.AddPlayer((ulong)peerId);
+        HostStatManager.Instance?.AddPlayer((ulong)peerId);
     }
 
     private void HandlePeerMove(int peerId, byte[] data)
@@ -159,7 +159,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     {
         var packet = C_PLAYER_STAT_EVENT.Parser.ParseFrom(data);
 
-        var statManager = HostPlayerStatManager.Instance;
+        var statManager = HostStatManager.Instance;
 
         if (packet.EventType == StatEventType.OxygenChanged && packet.Oxygen != null)
         {

@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
-public class PeerStatManager : MonoBehaviorSingleton<PeerStatManager>
+public class PeerStatManager : BaseStatManager<PeerStatManager>
 {
-    // 참여자 플레어들의 스탯
-    private Dictionary<ulong, PlayerStat> _playerStats = new();
     ulong currPlayerId = 1; // 이 부분 바꿔야 함.
     void Start()
     {
@@ -16,40 +14,10 @@ public class PeerStatManager : MonoBehaviorSingleton<PeerStatManager>
         _playerStats.Add(0, new PlayerStat()); // 호스트 플레이어 초기화
         _playerStats.Add(currPlayerId, new PlayerStat()); // 자기 자신 초기화
     }
-    public void UpdateStat(ulong playerId, int hp, float oxygen)
-    {
-        _playerStats[playerId].ChangeData(hp, oxygen);
-        _playerStats[playerId].CallOnHpChanged();
-        _playerStats[playerId].CallOnOxygenChanged();
-    }
-
-    public PlayerStat GetPlayerStat(ulong playerId)
-    {
-        if (_playerStats.TryGetValue(playerId, out var stat))
-        {
-            return stat;
-        }
-
-        string currentKeys = string.Join(", ", _playerStats.Keys);
-        Debug.LogError($"[GetPlayerStat] Player {playerId} not found! Current IDs in dict: [{currentKeys}]");
-        return null;
-    }
 
     public IReadOnlyDictionary<ulong, PlayerStat> GetAllRemoteStats()
     {
         return _playerStats;
-    }
-
-    // packet to PlayerStatData
-    public PlayerStatData ConvertToPlayerStatData(Protocol.S_PLAYER_STAT packet)
-    {
-        PlayerStatData statData = new PlayerStatData
-        {
-            oxygen = packet.Oxygen,
-            hp = packet.Hp
-        };
-
-        return statData;
     }
 
     #region each player stat update methods

@@ -1,39 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HostPlayerStatManager : MonoBehaviorSingleton<HostPlayerStatManager>
+public class HostStatManager : BaseStatManager<HostStatManager>
 {
-    // 참여자 플레어들의 스탯
-    Dictionary<ulong, PlayerStat> _playerStats = new();
     void Start()
     {
+        // 임시 코드임. 나중에 방에 참여한 플레이어들의 ID정보들을 받아와서 전부다 초기화 해주고,
+        // 추후에 새로운 플레이어가 참여하면 새롭게 추가해줘야함.
         _playerStats.Add(NetManager.Instance._playerId, new PlayerStat()); // 호스트 플레이어 초기화
     }
-
-    // packet to PlayerStatData
-    public PlayerStatData ConvertToPlayerStatData(Protocol.S_PLAYER_STAT packet)
-    {
-        PlayerStatData statData = new PlayerStatData
-        {
-            oxygen = packet.Oxygen,
-            hp = packet.Hp
-        };
-
-        return statData;
-    }
     
-    //
-    public void UpdateStat(ulong playerId, int hp, float oxygen)
-    {
-        _playerStats[playerId].ChangeData(hp, oxygen);
-        _playerStats[playerId].CallOnHpChanged();
-        _playerStats[playerId].CallOnOxygenChanged();
-
-        //Debug.Log($"[HostPlayerStatManager] Updated stat for Player {playerId}: HP={hp}, Oxygen={oxygen}");
-
-        //TODO 전체 관리하는 부분은 바뀌는데 실질적으로 Plyaer객체에 붙어있는 stat이 바뀌고 있지 않음.
-    }
-
     // 플레이어 입장
     public void AddPlayer(ulong playerId, int maxHp = 5)
     {
@@ -41,24 +17,6 @@ public class HostPlayerStatManager : MonoBehaviorSingleton<HostPlayerStatManager
         {
             _playerStats[playerId] = new PlayerStat();
         }
-    }
-
-    // 플레이어 퇴장
-    public void RemovePlayer(ulong playerId)
-    {
-        _playerStats.Remove(playerId);
-    }
-
-    public PlayerStat GetPlayerStat(ulong playerId)
-    {
-        if (_playerStats.TryGetValue(playerId, out var stat))
-        {
-            return stat;
-        }
-
-        string currentKeys = string.Join(", ", _playerStats.Keys);
-        Debug.LogError($"[GetPlayerStat] Player {playerId} not found! Current IDs in dict: [{currentKeys}]");
-        return null;
     }
 
     #region each player stat update methods
@@ -126,12 +84,6 @@ public class HostPlayerStatManager : MonoBehaviorSingleton<HostPlayerStatManager
         UpdateStat(playerId, hp, oxygen);
 
         PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
-    }
-
-    // 전체 플레이어 상태 반환 (동기화용)
-    public IReadOnlyDictionary<ulong, PlayerStat> GetAllStats()
-    {
-        return _playerStats;
     }
     #endregion
 }

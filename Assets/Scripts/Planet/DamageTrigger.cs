@@ -8,7 +8,6 @@ public class DamageTrigger : MonoBehaviour
         {
             PlayerStat tempStat = other.GetComponent<PlayerStat>();
             tempStat.DecreaseHp(1);
-            Debug.Log("트리거 : 데미지");
         }
     }
 }

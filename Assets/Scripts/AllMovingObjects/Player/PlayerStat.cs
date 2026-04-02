@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
+// 순수 데이터 및 기본 연산
 public struct PlayerStatData
 {
     public float oxygen;
@@ -54,12 +56,8 @@ public class PlayerStat : MonoBehaviour
 {
     public PlayerStatData statData = new (5);
     public ulong playerId = NetManager.Instance._playerId; // NetManager에서 playerId 가져오기
-
     public event Action<float> OnOxygenChanged;
     public event Action<int> OnHpChanged;
-    public event Action OnPlayerDead; // 사망 이벤트
-    public event Action OnPlayerRevive; // 부활 이벤트
-
     protected Coroutine oxygenRoutine;
     protected Coroutine oxygenHpDrainRoutine;
     protected float oxygenHpDrainInterval = 5f;
@@ -67,6 +65,9 @@ public class PlayerStat : MonoBehaviour
     public float GetOxygen() => statData.oxygen;
     public int GetHp() => statData.hp;
 
+    // 부활 관련 변수 및 이벤트
+    public event Action OnPlayerDead; // 사망 이벤트
+    public event Action OnPlayerRevive; // 부활 이벤트
     private GameObject RespawnPos;  // 플레이어가 부활할 위치
     protected float respawnDelay = 5f; // 부활까지의 지연 시간
     protected bool isRespawning = false; // 현재 부활 중인지 여부
@@ -117,19 +118,7 @@ public class PlayerStat : MonoBehaviour
 
     public virtual IEnumerator IncreaseOxygen() { yield break; }
 
-    public virtual IEnumerator OxygenHpDrainCoroutine()
-    {
-        while (statData.oxygen <= 0f && !isRespawning && statData.hp > 0)
-        {
-            DecreaseHp(1);
-            if (isRespawning || statData.hp <= 0)
-            {
-                break;
-            }
-            yield return new WaitForSeconds(oxygenHpDrainInterval);
-        }
-        oxygenHpDrainRoutine = null;
-    }
+    public virtual IEnumerator OxygenHpDrainCoroutine() { yield break; }
 
     public virtual void StartOxygenRecovery()
     {

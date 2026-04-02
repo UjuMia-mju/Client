@@ -4,15 +4,7 @@ using System.Collections;
 using Protocol;
 public class PeerPlayerStat : PlayerStat
 {
-    [SerializeField] private int maxHp = 5;
     ulong currPlayerId = 1; // 이 부분 바꿔야 함.
-    private void OnDestroy()
-    {
-        // if (HostPacketHandler.Instance != null)
-        // {
-        //     HostPacketHandler.Instance.OnStatEvent -= OnStatSync;
-        // } 
-    }
     
     #region HP 증/감소 로직
     public override void DecreaseHp(int damage)
@@ -70,17 +62,6 @@ public class PeerPlayerStat : PlayerStat
         oxygenHpDrainRoutine = null;
     }
 
-    public override void StartOxygenRecovery()
-    {
-        if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
-        oxygenRoutine = StartCoroutine(IncreaseOxygen());
-    }
-
-    public override void StopOxygenRecovery()
-    {
-        if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
-        oxygenRoutine = StartCoroutine(DecreaseOxygen());
-    }
     #endregion
 
     #region 부활 로직
