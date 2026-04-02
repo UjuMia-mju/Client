@@ -7,7 +7,7 @@ public class ItemManager : MonoBehaviour
     public static ItemManager Instance { get; private set; }
 
     private Dictionary<int, Items> itemDic = new Dictionary<int, Items>();
-    private static int _nextItemId = 1; // 씬 재시작 시에도 증가
+    private static int _nextItemId = 1; // Awake에서 초기화되므로 씬마다 1부터 시작
 
     private void Awake()
     {
@@ -17,6 +17,7 @@ public class ItemManager : MonoBehaviour
             return;
         }
         Instance = this;
+        _nextItemId = 1; // 씬 로드 시 항상 1부터 초기화
     }
 
     public void RegisterItem(Items item)

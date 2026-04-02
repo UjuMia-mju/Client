@@ -27,8 +27,6 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
             case PacketId.PKT_S_CHAT:
                 HandleChat(data);
                 break;
-
-            // HACK : 서버에 호스트가 2명이 생길수는 없으므로 일단 임시 숫자인 99로 대체합니다. 추후 수정합니다.
             case PacketId.PKT_S_MOVE:
                 HandleMove(data);
                 break;
