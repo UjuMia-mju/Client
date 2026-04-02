@@ -43,6 +43,7 @@ public struct PlayerStatData
 public class PlayerStat : MonoBehaviour
 {
     protected PlayerStatData statData = new (5);
+    public ulong playerId = NetManager.Instance._playerId; // NetManager에서 playerId 가져오기
 
     public event Action<float> OnOxygenChanged;
     public event Action<int> OnHpChanged;

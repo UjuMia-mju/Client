@@ -298,8 +298,6 @@ public class BaseNetSession
                 Debug.LogWarning($"[BaseNetSession] Failed to inspect subscribers: {ex}");
             }
 
-            Debug.Log($"[BaseNetSession] InstanceHash={this.GetHashCode()}, Type={this.GetType().Name}, packet id={(PacketId)header.id}, header.size={header.size}, bodyLen={packetData.Length}, subscribers={subscriberCount}");
-
             OnPacketReceivedEvent?.Invoke((PacketId)header.id, packetData);
             processedBytes += header.size;
         }

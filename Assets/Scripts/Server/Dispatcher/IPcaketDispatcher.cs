@@ -19,4 +19,5 @@ public interface IPcaketDispatcher
         OxygenEventData oxygen = null,
         ItemUseEventData itemUse = null
     );
+    void BroadcastStatResult(ulong targetId, int hp, float oxygen);
 }

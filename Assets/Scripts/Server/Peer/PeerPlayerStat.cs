@@ -5,7 +5,6 @@ using Protocol;
 public class PeerPlayerStat : PlayerStat
 {
     [SerializeField] private int maxHp = 5;
-    public ulong PlayerId { get; set; } // 네트워크 playerId
 
     private void OnDestroy()
     {
@@ -23,8 +22,9 @@ public class PeerPlayerStat : PlayerStat
         {
             DamageAmount = damage
         };
-
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.DamageTaken, PlayerId, Damage);
+        playerId = NetManager.Instance._playerId; // NetManager에서 playerId 가져오기
+        Debug.Log($"=============ID: {playerId} HP 감소: {damage}, 남은 HP: {statData.hp}================"); // 여기가 0이 나오고 있음.
+        PacketSender.Instance.SendPlayerStatEvent(StatEventType.DamageTaken, playerId, Damage);
     }
 
     public override void IncreaseHp(int amount)
@@ -34,7 +34,7 @@ public class PeerPlayerStat : PlayerStat
             HealAmount = amount
         };
 
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.Healed, PlayerId, null, Heal);
+        PacketSender.Instance.SendPlayerStatEvent(StatEventType.Healed, playerId, null, Heal);
     }
     #endregion
 
@@ -49,7 +49,7 @@ public class PeerPlayerStat : PlayerStat
                 ChangeType = OxygenChangeType.ConsumeNatural,
                 Amount = 0.01f
             };
-            PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, PlayerId, null, null, Oxygen);
+            PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, Oxygen);
             yield return new WaitForSeconds(1.0f);
         }
 
@@ -72,7 +72,7 @@ public class PeerPlayerStat : PlayerStat
                 ChangeType = OxygenChangeType.RestoreArea,
                 Amount = 0.02f
             };
-            PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, PlayerId, null, null, Oxygen);
+            PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, Oxygen);
 
             yield return new WaitForSeconds(1.0f);
         }

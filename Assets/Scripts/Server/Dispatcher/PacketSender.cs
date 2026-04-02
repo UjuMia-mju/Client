@@ -67,4 +67,9 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     {
         _sender.SendPlayerStatEvent(eventType, targetPlayerId, damage, heal, oxygen, itemUse);
     }
+
+    public void BroadcastStatResult(ulong targetId, int hp, float oxygen)
+    {
+        _sender.BroadcastStatResult(targetId, hp, oxygen);
+    }
 }

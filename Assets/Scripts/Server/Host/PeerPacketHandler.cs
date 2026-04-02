@@ -24,7 +24,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     /// </summary>
     public void HandlePeerPacket(int peerId, PacketId packetId, byte[] data)
     {
-        Debug.Log($"[Peer {peerId}] Received packet: {packetId}, Size: {data.Length} bytes");
+        //Debug.Log($"[Peer {peerId}] Received packet: {packetId}, Size: {data.Length} bytes");
 
         switch (packetId)
         {
@@ -72,10 +72,14 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             }
         };
 
+        Debug.Log($"[Peer {peerId}] Created S_PLAYER_ENTER packet for new player");
+
         // 2. 모든 피어에게 브로드캐스트
         HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket);
         // 3. 이벤트로 처리
         OnPeerEnterGameEvent?.Invoke(peerId, packet);
+        // 4. 
+        HostPlayerStatManager.Instance?.AddPlayer(peerId);
     }
 
     private void HandlePeerMove(int peerId, byte[] data)
@@ -153,6 +157,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
 
     private void HandlePeerStatEvent(int peerId, byte[] data)
     {
+
         var packet = C_PLAYER_STAT_EVENT.Parser.ParseFrom(data);
 
         var statManager = HostPlayerStatManager.Instance;
@@ -161,11 +166,11 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         {
             if (packet.Oxygen.ChangeType == OxygenChangeType.ConsumeNatural)
             {
-                statManager.DecreaseOxygen(packet.TargetPlayerId, packet.Oxygen.Amount);
+                statManager.DecreaseOxygen((int)packet.TargetPlayerId, packet.Oxygen.Amount);
             }
             else if (packet.Oxygen.ChangeType == OxygenChangeType.RestoreArea)
             {
-                statManager.IncreaseOxygen(packet.TargetPlayerId, packet.Oxygen.Amount);
+                statManager.IncreaseOxygen((int)packet.TargetPlayerId, packet.Oxygen.Amount);
             }
             else
             {
@@ -174,8 +179,19 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 
         }
 
+        if (packet.EventType == StatEventType.DamageTaken && packet.Damage != null)
+        {
+            statManager.DecreaseHp((int)packet.TargetPlayerId, packet.Damage.DamageAmount);
+        }
+        else if (packet.EventType == StatEventType.Healed && packet.Heal != null)
+        {
+            statManager.IncreaseHp((int)packet.TargetPlayerId, packet.Heal.HealAmount);
+        }
+
         // 상태 변경 후 브로드캐스트
-        var stat = statManager.GetPlayerStat(packet.TargetPlayerId);
+        var stat = statManager.GetPlayerStat((int)packet.TargetPlayerId);
+        Debug.Log("packet player Id:" + packet.TargetPlayerId);
+        Debug.Log("stat??:" + (stat != null ? $"HP={stat.Value.hp}, Oxygen={stat.Value.oxygen}" : "null"));
         if (stat != null)
         {
             var syncPacket = new S_PLAYER_STAT
@@ -184,6 +200,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 Hp = stat.Value.hp,
                 Oxygen = stat.Value.oxygen
             };
+
+            Debug.Log($"Broadcasting updated stat for Player {packet.TargetPlayerId}: HP={syncPacket.Hp}, Oxygen={syncPacket.Oxygen}");
             HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_STAT, syncPacket, true);
         }
     }

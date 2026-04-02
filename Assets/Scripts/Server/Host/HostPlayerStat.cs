@@ -4,27 +4,16 @@ using System.Collections;
 using Protocol;
 public class HostPlayerStat : PlayerStat
 {
-    public ulong PlayerId { get; set; } // 네트워크 playerId
     #region HP 증/감소 로직
     public override void DecreaseHp(int damage)
     {
         base.DecreaseHp(damage);
-        var Damage = new DamageEventData
-        {
-            DamageAmount = damage
-        };
-
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.DamageTaken, PlayerId, Damage);
+        HostPlayerStatManager.Instance.DecreaseHp((int)playerId, damage);
     }
 
     public override void IncreaseHp(int amount)
     {
-        var Heal = new HealEventData
-        {
-            HealAmount = amount
-        };
-
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.Healed, PlayerId, null, Heal);
+        HostPlayerStatManager.Instance.IncreaseHp((int)playerId, amount);
     }
     #endregion
 
@@ -33,13 +22,7 @@ public class HostPlayerStat : PlayerStat
     {
         while (statData.oxygen > 0)
         {
-            // 산소 감소 패킷 전송
-            var Oxygen = new OxygenEventData
-            {
-                ChangeType = OxygenChangeType.ConsumeNatural,
-                Amount = 0.01f
-            };
-            PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, PlayerId, null, null, Oxygen);
+            HostPlayerStatManager.Instance.DecreaseOxygen((int)playerId, 0.01f);
             yield return new WaitForSeconds(1.0f);
         }
 
@@ -57,12 +40,7 @@ public class HostPlayerStat : PlayerStat
     {
         while (statData.oxygen < 1f)
         {
-            var Oxygen = new OxygenEventData
-            {
-                ChangeType = OxygenChangeType.RestoreArea,
-                Amount = 0.02f
-            };
-            PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, PlayerId, null, null, Oxygen);
+            HostPlayerStatManager.Instance.IncreaseOxygen((int)playerId, 0.02f);
 
             yield return new WaitForSeconds(1.0f);
         }

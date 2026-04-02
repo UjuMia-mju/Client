@@ -94,6 +94,16 @@ public class HostSender : IPcaketDispatcher
         ItemUseEventData itemUse = null
     )
     {
-        //
+        //권한 없음
+        Debug.LogWarning("HostSender.SendPlayerStatEvent called, but stat events should be sent by the HostPlayerStat component.");
+    }
+    public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
+    {
+        _eventPacket.PlayerId = targetPlayerId;
+        Debug.Log($"저 보냅니다!!!! ={targetPlayerId}, hp={hp}, oxygen={oxygen}");
+        _eventPacket.Hp = hp;
+        _eventPacket.Oxygen = oxygen;
+
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_STAT, _eventPacket);
     }
 }

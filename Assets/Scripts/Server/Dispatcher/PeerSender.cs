@@ -105,7 +105,13 @@ public class PeerSender : IPcaketDispatcher
                 if (itemUse != null) _eventPacket.ItemUse = itemUse;
                 break;
         }
-
+        Debug.Log("저도 보냅니다!!!!" + targetPlayerId + ", eventType=" + eventType); // 여기가 0이 나오고 있음,
         peerNet.SendPacket(PacketId.PKT_C_PLAYER_STAT_EVENT, _eventPacket);
+    }
+
+    public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
+    {
+        // Peer는 Broadcast할 권한이 없으므로 이 메서드는 빈 구현으로 남겨둡니다.
+        Debug.LogWarning("PeerSender.BroadcastStatResult called, but peers should not broadcast stat results.");
     }
 }

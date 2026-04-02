@@ -52,8 +52,14 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
 
     private void HandleServerPlayerEnter(byte[] payloadData)
     {
-
         S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
+
+        // === 임시
+        int newPlayerId = packet.Player.PlayerId;
+        NetManager.Instance._playerId = (ulong)newPlayerId; // NetManager에 새로 할당된 playerId 저장
+        Debug.Log($"[HostPacketHandler] Received S_PLAYER_ENTER for PlayerId: {NetManager.Instance._playerId}");
+        // ===
+
         OnPlayerEnterEvent?.Invoke(packet);
     }
 
