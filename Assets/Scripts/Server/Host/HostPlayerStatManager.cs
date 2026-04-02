@@ -3,40 +3,68 @@ using UnityEngine;
 
 public class HostPlayerStatManager : MonoBehaviorSingleton<HostPlayerStatManager>
 {
-    Dictionary<int, PlayerStatData> _playerStats = new();
-
+    // 참여자 플레어들의 스탯
+    Dictionary<ulong, PlayerStat> _playerStats = new();
     void Start()
     {
-        _playerStats.Add((int)NetManager.Instance._playerId, new PlayerStatData(5)); // 호스트 플레이어 초기화
+        _playerStats.Add(NetManager.Instance._playerId, new PlayerStat()); // 호스트 플레이어 초기화
+    }
+
+    // packet to PlayerStatData
+    public PlayerStatData ConvertToPlayerStatData(Protocol.S_PLAYER_STAT packet)
+    {
+        PlayerStatData statData = new PlayerStatData
+        {
+            oxygen = packet.Oxygen,
+            hp = packet.Hp
+        };
+
+        return statData;
+    }
+    
+    //
+    public void UpdateStat(ulong playerId, int hp, float oxygen)
+    {
+        _playerStats[playerId].ChangeData(hp, oxygen);
+        _playerStats[playerId].CallOnHpChanged();
+        _playerStats[playerId].CallOnOxygenChanged();
+
+        //Debug.Log($"[HostPlayerStatManager] Updated stat for Player {playerId}: HP={hp}, Oxygen={oxygen}");
+
+        //TODO 전체 관리하는 부분은 바뀌는데 실질적으로 Plyaer객체에 붙어있는 stat이 바뀌고 있지 않음.
     }
 
     // 플레이어 입장
-    public void AddPlayer(int playerId, int maxHp = 5)
+    public void AddPlayer(ulong playerId, int maxHp = 5)
     {
         if (!_playerStats.ContainsKey(playerId))
         {
-            _playerStats[playerId] = new PlayerStatData(maxHp);
+            _playerStats[playerId] = new PlayerStat();
         }
     }
 
     // 플레이어 퇴장
-    public void RemovePlayer(int playerId)
+    public void RemovePlayer(ulong playerId)
     {
         _playerStats.Remove(playerId);
     }
 
-    // 개별 플레이어 상태 조회
-    public PlayerStatData? GetPlayerStat(int playerId)
+    public PlayerStat GetPlayerStat(ulong playerId)
     {
         if (_playerStats.TryGetValue(playerId, out var stat))
         {
             return stat;
         }
+
+        string currentKeys = string.Join(", ", _playerStats.Keys);
+        Debug.LogError($"[GetPlayerStat] Player {playerId} not found! Current IDs in dict: [{currentKeys}]");
         return null;
     }
 
-    // 개별 플레이어 상태 변경 (예: HP 감소)
-    public void DecreaseHp(int playerId, int amount)
+    #region each player stat update methods
+
+    // ==========================체력============================
+    public void DecreaseHp(ulong playerId, int amount)
     {
         if (_playerStats.TryGetValue(playerId, out var stat))
         {
@@ -44,10 +72,15 @@ public class HostPlayerStatManager : MonoBehaviorSingleton<HostPlayerStatManager
             _playerStats[playerId] = stat; // struct라면 다시 할당 필요
         }
 
-        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.hp, stat.oxygen);
+        int hp = stat.GetHp();
+        float oxygen = stat.GetOxygen();
+        
+        UpdateStat(playerId, hp, oxygen);
+
+        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
     }
 
-    public void IncreaseHp(int playerId, int amount)
+    public void IncreaseHp(ulong playerId, int amount)
     {
         if (_playerStats.TryGetValue(playerId, out var stat))
         {
@@ -55,34 +88,50 @@ public class HostPlayerStatManager : MonoBehaviorSingleton<HostPlayerStatManager
             _playerStats[playerId] = stat;
         }
 
-        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.hp, stat.oxygen);
+        int hp = stat.GetHp();
+        float oxygen = stat.GetOxygen();
+
+        UpdateStat(playerId, hp, oxygen);
+
+        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
     }
 
-    public void DecreaseOxygen(int playerId, float amount)
+    // =========================산소============================
+    public void DecreaseOxygen(ulong playerId)
     {
         if (_playerStats.TryGetValue(playerId, out var stat))
         {
-            stat.DecreaseOxygen(amount);
+            stat.statData.DecreaseOxygen(0.01f); // 매 초마다 0.01씩 감소
             _playerStats[playerId] = stat;
         }
+        
+        int hp = stat.GetHp();
+        float oxygen = stat.GetOxygen();
 
-        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.hp, stat.oxygen);
+        UpdateStat(playerId, hp, oxygen);
+
+        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
     }
-
-    public void IncreaseOxygen(int playerId, float amount)
+    public void IncreaseOxygen(ulong playerId)
     {
         if (_playerStats.TryGetValue(playerId, out var stat))
         {
-            stat.IncreaseOxygen(amount);
+            stat.statData.IncreaseOxygen(0.02f); // 매 초마다 0.02씩 증가
             _playerStats[playerId] = stat;
         }
 
-        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.hp, stat.oxygen);
+        int hp = stat.GetHp();
+        float oxygen = stat.GetOxygen();
+
+        UpdateStat(playerId, hp, oxygen);
+
+        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
     }
 
     // 전체 플레이어 상태 반환 (동기화용)
-    public IReadOnlyDictionary<int, PlayerStatData> GetAllStats()
+    public IReadOnlyDictionary<ulong, PlayerStat> GetAllStats()
     {
         return _playerStats;
     }
+    #endregion
 }

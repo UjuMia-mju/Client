@@ -39,7 +39,7 @@ public class PlayManager : SceneSingleton<PlayManager>
 
 
         // 스탯 관련
-        HostPacketHandler.Instance.OnStatEvent += PeerStatManager.Instance.OnStatChanged;
+        //HostPacketHandler.Instance.OnStatEvent += PeerStatManager.Instance.OnStatChanged;
     }
 
     // HACK : 애니메이션은 실시간으로 처리해야되기때문에 Update에서 처리하도록 했습니다. 올바른 처리일까요?

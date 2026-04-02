@@ -8,21 +8,21 @@ public class HostPlayerStat : PlayerStat
     public override void DecreaseHp(int damage)
     {
         base.DecreaseHp(damage);
-        HostPlayerStatManager.Instance.DecreaseHp((int)playerId, damage);
+        HostPlayerStatManager.Instance.DecreaseHp(playerId, damage);
     }
 
     public override void IncreaseHp(int amount)
     {
-        HostPlayerStatManager.Instance.IncreaseHp((int)playerId, amount);
+        HostPlayerStatManager.Instance.IncreaseHp(playerId, amount);
     }
     #endregion
 
     #region Oxygen 증/감소 로직
-    public override IEnumerator OxygenDecrease()
+    public override IEnumerator DecreaseOxygen()
     {
         while (statData.oxygen > 0)
         {
-            HostPlayerStatManager.Instance.DecreaseOxygen((int)playerId, 0.01f);
+            HostPlayerStatManager.Instance.DecreaseOxygen(playerId);
             yield return new WaitForSeconds(1.0f);
         }
 
@@ -36,22 +36,24 @@ public class HostPlayerStat : PlayerStat
         }
     }
 
-    public override IEnumerator OxygenIncrease()
+    public override IEnumerator IncreaseOxygen()
     {
-        while (statData.oxygen < 1f)
+        float oxygen = HostPlayerStatManager.Instance.GetPlayerStat(playerId).statData.oxygen;
+        while (oxygen < 1f)
         {
-            HostPlayerStatManager.Instance.IncreaseOxygen((int)playerId, 0.02f);
-
+            HostPlayerStatManager.Instance.IncreaseOxygen(playerId);
             yield return new WaitForSeconds(1.0f);
         }
     }
 
     public override IEnumerator OxygenHpDrainCoroutine()
     {
-        while (statData.oxygen <= 0f && !isRespawning && statData.hp > 0)
+        float oxygen = HostPlayerStatManager.Instance.GetPlayerStat(playerId).statData.oxygen;
+        int hp = HostPlayerStatManager.Instance.GetPlayerStat(playerId).statData.hp;
+        
+        while (oxygen <= 0f && !isRespawning && hp > 0)
         {
             DecreaseHp(1);
-
             yield return new WaitForSeconds(oxygenHpDrainInterval);
         }
         oxygenHpDrainRoutine = null;
@@ -60,13 +62,13 @@ public class HostPlayerStat : PlayerStat
     public override void StartOxygenRecovery()
     {
         if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
-        oxygenRoutine = StartCoroutine(OxygenIncrease());
+        oxygenRoutine = StartCoroutine(IncreaseOxygen());
     }
 
     public override void StopOxygenRecovery()
     {
         if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
-        oxygenRoutine = StartCoroutine(OxygenDecrease());
+        oxygenRoutine = StartCoroutine(DecreaseOxygen());
     }
     #endregion
 }

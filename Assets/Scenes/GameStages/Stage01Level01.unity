@@ -1228,6 +1228,7 @@ GameObject:
   - component: {fileID: 815630919}
   - component: {fileID: 815630918}
   - component: {fileID: 815630920}
+  - component: {fileID: 815630921}
   m_Layer: 0
   m_Name: TestPacketSender
   m_TagString: Untagged
@@ -1274,6 +1275,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e0edcc18bc9d54b9f6bf7fe6632cd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HostPlayerStatManager
+--- !u!114 &815630921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815630917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d0c853d53e03ad4b8fe2cd840b741ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PeerStatManager
 --- !u!1 &819753110
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using Protocol;
 public class PeerPlayerStat : PlayerStat
 {
     [SerializeField] private int maxHp = 5;
-
+    ulong currPlayerId = 1; // 이 부분 바꿔야 함.
     private void OnDestroy()
     {
         // if (HostPacketHandler.Instance != null)
@@ -18,38 +18,22 @@ public class PeerPlayerStat : PlayerStat
     public override void DecreaseHp(int damage)
     {
         base.DecreaseHp(damage);
-        var Damage = new DamageEventData
-        {
-            DamageAmount = damage
-        };
-        playerId = NetManager.Instance._playerId; // NetManager에서 playerId 가져오기
-        Debug.Log($"=============ID: {playerId} HP 감소: {damage}, 남은 HP: {statData.hp}================"); // 여기가 0이 나오고 있음.
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.DamageTaken, playerId, Damage);
+        PeerStatManager.Instance.DecreaseHp(currPlayerId, damage);
     }
 
     public override void IncreaseHp(int amount)
     {
-        var Heal = new HealEventData
-        {
-            HealAmount = amount
-        };
-
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.Healed, playerId, null, Heal);
+        base.IncreaseHp(amount);
+        PeerStatManager.Instance.IncreaseHp(currPlayerId, amount);
     }
     #endregion
 
     #region Oxygen 증/감소 로직
-    public override IEnumerator OxygenDecrease() 
+    public override IEnumerator DecreaseOxygen() 
     {
         while (statData.oxygen > 0)
         {
-            // 산소 감소 패킷 전송
-            var Oxygen = new OxygenEventData
-            {
-                ChangeType = OxygenChangeType.ConsumeNatural,
-                Amount = 0.01f
-            };
-            PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, Oxygen);
+            PeerStatManager.Instance.DecreaseOxygen(currPlayerId);
             yield return new WaitForSeconds(1.0f);
         }
 
@@ -63,24 +47,21 @@ public class PeerPlayerStat : PlayerStat
         }
     }
 
-    public override IEnumerator OxygenIncrease()
+    public override IEnumerator IncreaseOxygen()
     {
-        while (statData.oxygen < 1f)
+        float oxygen = PeerStatManager.Instance.GetPlayerStat(currPlayerId).statData.oxygen;
+        while (oxygen < 1f)
         {
-            var Oxygen = new OxygenEventData
-            {
-                ChangeType = OxygenChangeType.RestoreArea,
-                Amount = 0.02f
-            };
-            PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, Oxygen);
-
+            PeerStatManager.Instance.IncreaseOxygen(currPlayerId);
             yield return new WaitForSeconds(1.0f);
         }
     }
 
     public override IEnumerator OxygenHpDrainCoroutine()
     {
-        while (statData.oxygen <= 0f && !isRespawning && statData.hp > 0)
+        float oxygen = PeerStatManager.Instance.GetPlayerStat(currPlayerId).statData.oxygen;
+        int hp = PeerStatManager.Instance.GetPlayerStat(currPlayerId).statData.hp;
+        while (oxygen <= 0f && !isRespawning && hp > 0)
         {
             DecreaseHp(1);
 
@@ -92,13 +73,13 @@ public class PeerPlayerStat : PlayerStat
     public override void StartOxygenRecovery()
     {
         if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
-        oxygenRoutine = StartCoroutine(OxygenIncrease());
+        oxygenRoutine = StartCoroutine(IncreaseOxygen());
     }
 
     public override void StopOxygenRecovery()
     {
         if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
-        oxygenRoutine = StartCoroutine(OxygenDecrease());
+        oxygenRoutine = StartCoroutine(DecreaseOxygen());
     }
     #endregion
 

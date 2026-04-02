@@ -105,7 +105,7 @@ public class PeerSender : IPcaketDispatcher
                 if (itemUse != null) _eventPacket.ItemUse = itemUse;
                 break;
         }
-        Debug.Log("저도 보냅니다!!!!" + targetPlayerId + ", eventType=" + eventType); // 여기가 0이 나오고 있음,
+        //Debug.Log("저도 보냅니다!!!!" + targetPlayerId + ", eventType=" + eventType); // 여기가 0이 나오고 있음,
         peerNet.SendPacket(PacketId.PKT_C_PLAYER_STAT_EVENT, _eventPacket);
     }
 

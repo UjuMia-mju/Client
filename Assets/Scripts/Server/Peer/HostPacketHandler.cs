@@ -85,7 +85,8 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
        S_PLAYER_STAT packet = S_PLAYER_STAT.Parser.ParseFrom(payloadData);
        Debug.Log($"Received PlayerStat packet: PlayerId={packet.PlayerId}, Hp={packet.Hp}, Oxygen={packet.Oxygen}");
-       OnStatEvent?.Invoke(packet);
+       PeerStatManager.Instance.UpdateStat(packet.PlayerId, packet.Hp, packet.Oxygen);
+       OnStatEvent?.Invoke(packet); // 여기서 받은 데이터 기반으로 UI 업데이트 하면 됨.
     }
 
     private void HandleItemAttached(byte[] payloadData)

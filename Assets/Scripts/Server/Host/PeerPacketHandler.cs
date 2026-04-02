@@ -79,7 +79,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         // 3. 이벤트로 처리
         OnPeerEnterGameEvent?.Invoke(peerId, packet);
         // 4. 
-        HostPlayerStatManager.Instance?.AddPlayer(peerId);
+        HostPlayerStatManager.Instance?.AddPlayer((ulong)peerId);
     }
 
     private void HandlePeerMove(int peerId, byte[] data)
@@ -157,7 +157,6 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
 
     private void HandlePeerStatEvent(int peerId, byte[] data)
     {
-
         var packet = C_PLAYER_STAT_EVENT.Parser.ParseFrom(data);
 
         var statManager = HostPlayerStatManager.Instance;
@@ -166,11 +165,15 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         {
             if (packet.Oxygen.ChangeType == OxygenChangeType.ConsumeNatural)
             {
-                statManager.DecreaseOxygen((int)packet.TargetPlayerId, packet.Oxygen.Amount);
+                if (packet.TargetPlayerId == NetManager.Instance._playerId)
+                {
+                    return;
+                }
+                statManager.DecreaseOxygen(packet.TargetPlayerId);
             }
             else if (packet.Oxygen.ChangeType == OxygenChangeType.RestoreArea)
             {
-                statManager.IncreaseOxygen((int)packet.TargetPlayerId, packet.Oxygen.Amount);
+                statManager.IncreaseOxygen(packet.TargetPlayerId);
             }
             else
             {
@@ -181,27 +184,25 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
 
         if (packet.EventType == StatEventType.DamageTaken && packet.Damage != null)
         {
-            statManager.DecreaseHp((int)packet.TargetPlayerId, packet.Damage.DamageAmount);
+            statManager.DecreaseHp(packet.TargetPlayerId, packet.Damage.DamageAmount);
         }
         else if (packet.EventType == StatEventType.Healed && packet.Heal != null)
         {
-            statManager.IncreaseHp((int)packet.TargetPlayerId, packet.Heal.HealAmount);
+            statManager.IncreaseHp(packet.TargetPlayerId, packet.Heal.HealAmount);
         }
 
         // 상태 변경 후 브로드캐스트
-        var stat = statManager.GetPlayerStat((int)packet.TargetPlayerId);
-        Debug.Log("packet player Id:" + packet.TargetPlayerId);
-        Debug.Log("stat??:" + (stat != null ? $"HP={stat.Value.hp}, Oxygen={stat.Value.oxygen}" : "null"));
+        var stat = statManager.GetPlayerStat(packet.TargetPlayerId);
         if (stat != null)
         {
             var syncPacket = new S_PLAYER_STAT
             {
                 PlayerId = packet.TargetPlayerId,
-                Hp = stat.Value.hp,
-                Oxygen = stat.Value.oxygen
+                Hp = stat.GetHp(),
+                Oxygen = stat.GetOxygen()
             };
 
-            Debug.Log($"Broadcasting updated stat for Player {packet.TargetPlayerId}: HP={syncPacket.Hp}, Oxygen={syncPacket.Oxygen}");
+            Debug.Log($"전체 참여자에게 정보를 전달: {packet.TargetPlayerId}: HP={syncPacket.Hp}, Oxygen={syncPacket.Oxygen}");
             HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_STAT, syncPacket, true);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 public struct PlayerStatData
 {
     public float oxygen;
@@ -31,18 +32,27 @@ public struct PlayerStatData
 
     public void IncreaseOxygen(float amount)
     {
-        oxygen = Mathf.Clamp01(oxygen + amount);
+        float rawOxygen = oxygen + amount;
+        // 소수점 4번째 자리에서 반올림하여 오차 보정
+        oxygen = Mathf.Round(rawOxygen * 10000f) / 10000f;
+        oxygen = Mathf.Clamp01(oxygen);
     }
 
     public void DecreaseOxygen(float amount)
     {
-        oxygen = Mathf.Clamp01(oxygen - amount);
+        float rawOxygen = oxygen - amount;
+        // 소수점 4번째 자리에서 반올림하여 오차 보정
+        oxygen = Mathf.Round(rawOxygen * 10000f) / 10000f;
+        oxygen = Mathf.Clamp01(oxygen);
     }
 }
 
+/// <summary>
+/// 플레이어의 HP와 산소 상태를 관리하는 클래스
+/// </summary>
 public class PlayerStat : MonoBehaviour
 {
-    protected PlayerStatData statData = new (5);
+    public PlayerStatData statData = new (5);
     public ulong playerId = NetManager.Instance._playerId; // NetManager에서 playerId 가져오기
 
     public event Action<float> OnOxygenChanged;
@@ -54,7 +64,7 @@ public class PlayerStat : MonoBehaviour
     protected Coroutine oxygenHpDrainRoutine;
     protected float oxygenHpDrainInterval = 5f;
 
-    protected float GetOxygen() => statData.oxygen;
+    public float GetOxygen() => statData.oxygen;
     public int GetHp() => statData.hp;
 
     private GameObject RespawnPos;  // 플레이어가 부활할 위치
@@ -66,11 +76,23 @@ public class PlayerStat : MonoBehaviour
         statData = new PlayerStatData(5);
     }
 
+    void Start()
+    {
+        StartOxygenDecrease(); // 게임 시작과 동시에 산소 감소 시작
+    }
+
+    public void ChangeData(int hp, float oxygen)
+    {
+        statData.hp = hp;
+        statData.oxygen = oxygen;
+    }
+
     #region HP 증/감소 로직
+    public void CallOnHpChanged() => OnHpChanged?.Invoke(statData.hp);
     public virtual void DecreaseHp(int damage)
     {
         statData.DecreaseHp(damage);
-        OnHpChanged?.Invoke(statData.hp);
+        CallOnHpChanged();
         if (statData.hp <= 0)
         {
             OnPlayerDead?.Invoke();
@@ -80,38 +102,20 @@ public class PlayerStat : MonoBehaviour
     public virtual void IncreaseHp(int amount)
     {
         statData.IncreaseHp(amount);
-        OnHpChanged?.Invoke(statData.hp);
+        CallOnHpChanged();
     }
     #endregion
 
     #region Oxygen 증/감소 로직
-    public virtual IEnumerator OxygenDecrease()
+    public void CallOnOxygenChanged() => OnOxygenChanged?.Invoke(statData.oxygen);
+    public void StartOxygenDecrease()
     {
-        while (statData.oxygen > 0)
-        {
-            statData.DecreaseOxygen(0.01f);
-            OnOxygenChanged?.Invoke(statData.oxygen);
-            yield return new WaitForSeconds(1.0f);
-        }
-        if (!isRespawning)
-        {
-            if (oxygenHpDrainRoutine == null)
-            {
-                oxygenHpDrainRoutine = StartCoroutine(OxygenHpDrainCoroutine());
-            }
-        }
+        if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
+        oxygenRoutine = StartCoroutine(DecreaseOxygen());
     }
+    public virtual IEnumerator DecreaseOxygen() { yield break; }
 
-    public virtual IEnumerator OxygenIncrease()
-    {
-        while (statData.oxygen < 1f)
-        {
-            statData.IncreaseOxygen(0.02f);
-            OnOxygenChanged?.Invoke(statData.oxygen);
-            yield return new WaitForSeconds(1.0f);
-        }
-        statData.oxygen = 1f;
-    }
+    public virtual IEnumerator IncreaseOxygen() { yield break; }
 
     public virtual IEnumerator OxygenHpDrainCoroutine()
     {
@@ -133,7 +137,7 @@ public class PlayerStat : MonoBehaviour
         {
             StopCoroutine(oxygenRoutine);
         }
-        oxygenRoutine = StartCoroutine(OxygenIncrease());
+        oxygenRoutine = StartCoroutine(IncreaseOxygen());
     }
 
     public virtual void StopOxygenRecovery()
@@ -142,7 +146,7 @@ public class PlayerStat : MonoBehaviour
         {
             StopCoroutine(oxygenRoutine);
         }
-        oxygenRoutine = StartCoroutine(OxygenDecrease());
+        oxygenRoutine = StartCoroutine(DecreaseOxygen());
     }
     #endregion
 }

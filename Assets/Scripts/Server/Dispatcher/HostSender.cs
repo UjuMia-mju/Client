@@ -100,7 +100,7 @@ public class HostSender : IPcaketDispatcher
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
     {
         _eventPacket.PlayerId = targetPlayerId;
-        Debug.Log($"저 보냅니다!!!! ={targetPlayerId}, hp={hp}, oxygen={oxygen}");
+        //Debug.Log($"저 보냅니다!!!! ={targetPlayerId}, hp={hp}, oxygen={oxygen}");
         _eventPacket.Hp = hp;
         _eventPacket.Oxygen = oxygen;
 
