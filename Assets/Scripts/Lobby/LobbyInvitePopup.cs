@@ -20,7 +20,7 @@ public class LobbyInvitePopup : MonoBehaviour
 
     // 현재 초대의 invite_id (C_INVITE_RESPONSE 전송 시 사용)
     private ulong _inviteId;
-    // 초대된 방 ID (수락 시 C_ENTER_ROOM 전송에 사용 가능)
+    // 초대된 방 ID (표시용; 수락 시 서버가 입장 처리)
     private ulong _roomId;
 
     // 활성화 시 이벤트 구독. S_INVITE_NOTIFICATION 수신 시 OnInviteNotification 호출됨.
@@ -66,11 +66,10 @@ public class LobbyInvitePopup : MonoBehaviour
             popupRoot.SetActive(true);
     }
 
-    // 수락 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: true) 전송 후 방 입장 요청, 메인에 있으면 로비 씬으로 이동
+    // 수락 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: true) 전송 (서버가 방 입장 처리), 메인에 있으면 로비 씬으로 이동
     private void OnClickAccept()
     {
         PacketDispatcher.Instance.SendInviteResponse(_inviteId, true);
-        PacketDispatcher.Instance.SendEnterRoom(_roomId);
 
         if (popupRoot != null)
             popupRoot.SetActive(false);
