@@ -11,6 +11,8 @@ public class PlayerItemSystem : MonoBehaviour
     private const float CONTROL_RUNNINGAMOUNT = 0.15f;
     private const float MIN_RUNNINGAMOUNT = 0.01f;
 
+    private GameObject _lastThrownItem; // 마지막으로 던진 아이템
+
     private void Start()
     {
         foreach (Transform child in this.transform.GetComponentsInChildren<Transform>(true))
@@ -53,7 +55,6 @@ public class PlayerItemSystem : MonoBehaviour
 
     public void ThrowItem(float runningAmount)
     {
-        // 비활성화된 요소들을 활성화
         Rigidbody rb = currentEquipItem.GetComponent<Rigidbody>();
         rb.isKinematic = false;
 
@@ -76,16 +77,19 @@ public class PlayerItemSystem : MonoBehaviour
             forwardVec = transform.forward * runningAmount * CONTROL_RUNNINGAMOUNT;
         }
 
-
         Vector3 force = (this.transform.up + forwardVec) * THROW_FORCE;
-
         float clampedMagnitude = Mathf.Clamp(force.magnitude, MIN_THROW_FORCE, MAX_THROW_FORCE);
-
         force = force.normalized * clampedMagnitude;
 
         rb.AddForce(force, ForceMode.Impulse);
 
-        // 참조 끊기
+        _lastThrownItem = currentEquipItem;
+
+        // 던질 때 즉시 위치 동기화 강제
+        Items itemClass = currentEquipItem.GetComponent<Items>();
+        if (itemClass != null)
+            itemClass.OnDetached();
+
         DetachItem();
     }
 
@@ -112,5 +116,10 @@ public class PlayerItemSystem : MonoBehaviour
             return currentEquipItem.GetComponent <Items>();
 
         return null;
+    }
+
+    public GameObject GetLastThrownItem()
+    {
+        return _lastThrownItem;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class Player : MovingObject
 {
@@ -13,10 +14,12 @@ public class Player : MovingObject
 
     public GameObject nearestObject { get; private set; } // 플레이어에게서 가장 가까운 오브젝트
 
-    private const float DETECT_RADIUS = 5.5f; // 구형 트리거 반지름 
+    private const float DETECT_RADIUS = 2.2f; // 구형 트리거 반지름 
+    private const float THROW_IGNORE_COLLISION_DURATION = 0.65f; // 던진 후 충돌 무시 시간
 
     public bool isPlayerGetSomething { get; private set; } = false;
     public bool isMining { get; private set; } = false;
+    private bool isPlayerThrowSomething = false;    // 무언가를 던지는 플래그
     
     private PlayerStat playerStat;
 
@@ -161,7 +164,7 @@ public class Player : MovingObject
         {
             playerInput.MakeIsInteractFalse();
             // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
-            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
+            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething && !isPlayerThrowSomething)
             {
                 isMining = true;
             }
@@ -173,7 +176,8 @@ public class Player : MovingObject
 
             // 플레이어에게서 가장 가까운 오브젝트의 태그가 아이템이며, 빈 손일 때
             // 혹은 태그가 Tool인 것도 포함함.
-            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething || nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething)
+            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething && !isPlayerThrowSomething ||
+                nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething && !isPlayerThrowSomething)
             {
                 isPlayerGetSomething = true;
                 playerItemSystem.AttachItem(nearestObject);
@@ -237,7 +241,7 @@ public class Player : MovingObject
                     isPlayerGetSomething = false;
                     SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
                     playerItemSystem.ThrowItem(GetMovingAmount());
-                    playerItemSystem.DetachItem();
+                    StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
                 }
                 return;
             }
@@ -301,6 +305,21 @@ public class Player : MovingObject
         isMining = false;
     }
 
+    private IEnumerator IgnoreItemCollisionAfterThrow(GameObject thrownItem)
+    {
+        if (thrownItem == null) yield break;
+
+        Collider playerCollider = GetComponent<Collider>();
+        Collider itemCollider = thrownItem.GetComponent<Collider>();
+
+        if (playerCollider == null || itemCollider == null) yield break;
+
+        isPlayerThrowSomething = true;
+        Physics.IgnoreCollision(playerCollider, itemCollider, true);
+        yield return new WaitForSeconds(THROW_IGNORE_COLLISION_DURATION);
+        Physics.IgnoreCollision(playerCollider, itemCollider, false);
+        isPlayerThrowSomething = false;
+    }
 
     private void HandlePlayerDead()
     {

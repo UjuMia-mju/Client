@@ -60,19 +60,20 @@ public class Items : MovingObject
 
     private void LateUpdate()
     {
-        // 부모 이름이 "Socket"이면 내가 손에 들고 있는 상태라고 판단
         if (transform.parent != null && transform.parent.name == SOCKET)
         {
             this.transform.localPosition = Vector3.zero;
             this.transform.localRotation = Quaternion.identity;
-            IsOwnedByMe = true;
+
+            // 내 로컬 플레이어의 소켓인지 확인
+            Player localPlayer = transform.parent.GetComponentInParent<Player>();
+            IsOwnedByMe = localPlayer != null;
         }
         else
         {
             IsOwnedByMe = false;
         }
 
-        // 내가 들고 있지 않을 때만 위치 패킷을 서버로 전송
         if (!IsOwnedByMe)
         {
             SendPositionToServer();
@@ -105,13 +106,19 @@ public class Items : MovingObject
     // 서버에서 받은 위치와 회전을 적용
     public void SetPos(Vector3 pos, Quaternion rot)
     {
-        // 내가 들고 있는 아이템이면 서버 위치를 무시하고,
-        // 다른 플레이어가 들고 있는 아이템만 위치를 갱신
         if (!IsOwnedByMe)
         {
             _targetPos = pos;
             _targetRot = rot;
         }
+    }
+
+    // 아이템을 놓을 때 즉시 위치 동기화 강제 전송
+    public void OnDetached()
+    {
+        _lastSendPos = Vector3.zero; // 강제로 변화 감지되게 초기화
+        _lastSendRot = Quaternion.identity;
+        _lastSendTime = 0f;
     }
 
     protected override void Moving(Vector3 movDir)
