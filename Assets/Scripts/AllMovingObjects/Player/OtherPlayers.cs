@@ -7,7 +7,7 @@ public class OtherPlayers : MovingObject
     public ulong PlayerId { get; set; }
     public string PlayerName { get; set; }
 
-    [SerializeField] private float lerpSpeed = 10f;
+    [SerializeField] private float lerpSpeed = 100f;
 
     private Vector3 _targetPos;
     private Quaternion _targetRot;
@@ -24,7 +24,10 @@ public class OtherPlayers : MovingObject
         otherPlayerAnimator = GetComponent<Animator>();
         otherPlayerStats = GetComponent<OtherPlayerStats>();
         otherPlayerItemSystem = GetComponent<PlayerItemSystem>();
-        //playerStat = GetComponent<PlayerStat>();
+
+        // 물리 충돌로 밀려 떨리는 현상 방지
+        rb.isKinematic = true;
+
     }
 
     private void FixedUpdate()
