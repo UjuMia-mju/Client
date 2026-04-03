@@ -1,4 +1,4 @@
-﻿using Protocol;
+using Protocol;
 
 public class NetManager : BaseNetSession
 {
@@ -23,5 +23,4 @@ public class NetManager : BaseNetSession
         });
     }
 }
-
 

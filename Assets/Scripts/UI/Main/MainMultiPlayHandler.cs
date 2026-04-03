@@ -3,19 +3,20 @@ using Protocol;
 
 /// <summary>
 /// Main 씬에서 멀티플레이 버튼으로 SendCreateRoom() 후,
-/// S_CREATE_ROOM 성공 시 C_ENTER_ROOM을 보내고 로비 씬으로 이동한다.
+/// S_CREATE_ROOM 성공 시 서버가 이미 방 입장 처리하므로 C_ENTER_ROOM은 보내지 않는다.
+/// 로비 씬 로드 전 S_ENTER_ROOM 이벤트 유실 대비 합성 캐시만 남긴다.
 /// </summary>
 public class MainMultiPlayHandler : MonoBehaviour
 {
     private void OnEnable()
     {
-        PacketManager.Instance.OnCreateRoomEvent += OnCreateRoomResult;
+        PacketHandler.Instance.OnCreateRoomEvent += OnCreateRoomResult;
     }
 
     private void OnDisable()
     {
-        if (PacketManager.Instance != null)
-            PacketManager.Instance.OnCreateRoomEvent -= OnCreateRoomResult;
+        if (PacketHandler.Instance != null)
+            PacketHandler.Instance.OnCreateRoomEvent -= OnCreateRoomResult;
     }
 
     private void OnCreateRoomResult(S_CREATE_ROOM packet)
@@ -44,9 +45,6 @@ public class MainMultiPlayHandler : MonoBehaviour
             IsReady = false
         });
         PacketManager.SetCachedEnterRoom(synthetic);
-
-
-        PacketDispatcher.Instance.SendEnterRoom(packet.Room.RoomId);
 
         SceneLoader.Instance.LoadScene(Define.Scene.LOBBY);
     }

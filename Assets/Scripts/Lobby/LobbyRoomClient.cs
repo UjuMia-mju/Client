@@ -18,10 +18,11 @@ public class LobbyRoomClient : MonoBehaviour
 
     private void OnEnable()
     {
-        PacketManager.Instance.OnEnterRoomEvent += OnEnterRoom;
-        PacketManager.Instance.OnRoomMemberEnterEvent += OnRoomMemberEnter;
-        PacketManager.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeave;
-        PacketManager.Instance.OnReadyEvent += OnReady;
+        PacketHandler.Instance.OnEnterRoomEvent += OnEnterRoom;
+        PacketHandler.Instance.OnLeaveRoomEvent += OnLeaveRoom;
+        PacketHandler.Instance.OnRoomMemberEnterEvent += OnRoomMemberEnter;
+        PacketHandler.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeave;
+        PacketHandler.Instance.OnReadyEvent += OnReady;
 
         // 방 생성 후 로비 씬 전환 시, S_ENTER_ROOM이 로비 로드 전에 도착해 이벤트를 놓친 경우 캐시에서 복구
         S_ENTER_ROOM cached = PacketManager.GetAndClearCachedEnterRoom();
@@ -34,12 +35,13 @@ public class LobbyRoomClient : MonoBehaviour
 
     private void OnDisable()
     {
-        if (PacketManager.Instance == null)
+        if (PacketHandler.Instance == null)
             return;
-        PacketManager.Instance.OnEnterRoomEvent -= OnEnterRoom;
-        PacketManager.Instance.OnRoomMemberEnterEvent -= OnRoomMemberEnter;
-        PacketManager.Instance.OnRoomMemberLeaveEvent -= OnRoomMemberLeave;
-        PacketManager.Instance.OnReadyEvent -= OnReady;
+        PacketHandler.Instance.OnEnterRoomEvent -= OnEnterRoom;
+        PacketHandler.Instance.OnLeaveRoomEvent -= OnLeaveRoom;
+        PacketHandler.Instance.OnRoomMemberEnterEvent -= OnRoomMemberEnter;
+        PacketHandler.Instance.OnRoomMemberLeaveEvent -= OnRoomMemberLeave;
+        PacketHandler.Instance.OnReadyEvent -= OnReady;
     }
 
     /// <summary>방 입장 결과 수신. 성공 시 기존 스폰 전부 제거 후 현재 멤버 목록으로 이름 표시 스폰.</summary>
@@ -90,6 +92,16 @@ public class LobbyRoomClient : MonoBehaviour
         int pid = (int)packet.PlayerId;
         lobbyManager?.SetPlayerReadyState(pid, packet.IsReady);
         Debug.Log($"[LobbyRoomClient] S_READY: playerId={pid}, isReady={packet.IsReady}");
+    }
+
+    /// <summary>내가 방을 떠났을 때 로컬 스폰 상태를 정리합니다.</summary>
+    private void OnLeaveRoom(S_LEAVE_ROOM packet)
+    {
+        if (!packet.Success)
+            return;
+
+        _members.Clear();
+        lobbyManager?.ClearSpawnedPlayers();
     }
 
     /// <summary>플레이어가 방을 나갔을 때. 해당 플레이어용 LobbyAstronut 디스폰.</summary>

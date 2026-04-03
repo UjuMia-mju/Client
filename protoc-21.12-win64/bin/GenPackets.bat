@@ -1,14 +1,18 @@
 @echo off
 setlocal
 
-REM protoc.exe 절대경로
-set PROTOC=C:\Users\Admin\Desktop\UjuMia\protoc-21.12-win64\bin\protoc.exe
+REM 배치파일 기준 경로
+set SCRIPT_DIR=%~dp0
+set ROOT_DIR=%SCRIPT_DIR%..\..
 
-REM proto 파일 디렉터리 (bin 폴더에 있음)
-set PROTO_DIR=C:\Users\Admin\Desktop\UjuMia\protoc-21.12-win64\bin
+REM protoc.exe 경로
+set PROTOC=%SCRIPT_DIR%protoc.exe
 
-REM 출력 디렉터리 (필요시 폴더 생성)
-set OUTPUT_DIR=C:\Users\Admin\Desktop\UjuMia\Assets\Scripts\Server\Proto
+REM proto 파일 디렉터리 (bin 폴더)
+set PROTO_DIR=%SCRIPT_DIR%
+
+REM 출력 디렉터리
+set OUTPUT_DIR=%ROOT_DIR%\Assets\Scripts\Server\Proto
 
 
 if not exist "%OUTPUT_DIR%" mkdir "%OUTPUT_DIR%"

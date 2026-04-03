@@ -67,16 +67,16 @@ public class LobbyInviteUI : MonoBehaviour
 
     private void OnEnable()
     {
-        PacketManager.Instance.OnInvitePlayerResultEvent += OnInvitePlayerResult;
-        PacketManager.Instance.OnEnterRoomEvent += OnEnterRoom;
+        PacketHandler.Instance.OnInvitePlayerResultEvent += OnInvitePlayerResult;
+        PacketHandler.Instance.OnEnterRoomEvent += OnEnterRoom;
     }
 
     private void OnDisable()
     {
-        if (PacketManager.Instance != null)
+        if (PacketHandler.Instance != null)
         {
-            PacketManager.Instance.OnInvitePlayerResultEvent -= OnInvitePlayerResult;
-            PacketManager.Instance.OnEnterRoomEvent -= OnEnterRoom;
+            PacketHandler.Instance.OnInvitePlayerResultEvent -= OnInvitePlayerResult;
+            PacketHandler.Instance.OnEnterRoomEvent -= OnEnterRoom;
         }
     }
 
