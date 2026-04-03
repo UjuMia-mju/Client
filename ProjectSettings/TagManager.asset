@@ -13,6 +13,7 @@ TagManager:
   - ClickOff
   - Spaceship
   - RespawnSpot
+  - RemotePlayer
   layers:
   - Default
   - TransparentFX

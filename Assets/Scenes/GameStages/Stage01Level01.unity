@@ -1954,7 +1954,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d74415d63ef6b24458e392cca3486372, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConnectManager
-  isHost: 0
+  isHost: 1
   centralServerIp: 127.0.0.1
   centralServerPort: 7777
   hostIpFromServer: 127.0.0.1
