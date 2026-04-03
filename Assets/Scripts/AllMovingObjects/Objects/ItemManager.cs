@@ -7,7 +7,11 @@ public class ItemManager : MonoBehaviour
     public static ItemManager Instance { get; private set; }
 
     private Dictionary<int, Items> itemDic = new Dictionary<int, Items>();
-    private static int _nextItemId = 1; // Awake에서 초기화되므로 씬마다 1부터 시작
+
+    // TODO : 현재는 씬 로드 시 Start() 호출 순서대로 ID를 부여하는 임시 방식입니다.
+    // 추후 호스트가 아이템 ID를 부여하고 S_OBJECT_SPAWN 패킷으로 전체 클라이언트에 브로드캐스트하는 방식으로 변경 예정입니다.
+    // 변경 시 이 필드는 제거하고 호스트로부터 받은 ID를 직접 사용하면 됩니다.
+    private static int _nextItemId = 1;
 
     private void Awake()
     {
@@ -22,7 +26,7 @@ public class ItemManager : MonoBehaviour
 
     public void RegisterItem(Items item)
     {
-        item.itemId = _nextItemId++; // 등록 시 고유 ID 자동 부여
+        item.itemId = _nextItemId++;
         if (!itemDic.ContainsKey(item.itemId))
         {
             itemDic.Add(item.itemId, item);
