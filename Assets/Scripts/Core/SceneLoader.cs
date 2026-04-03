@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -47,19 +47,22 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 
         if (Mathf.Approximately(fadeCanvasGroup.alpha, targetAlpha))
         {
-            fadeCanvasGroup.alpha = targetAlpha;
-            if (targetAlpha <= 0f)
+            if (targetAlpha <= 0.01f) // 부동소수점 오차 고려
             {
+                fadeCanvasGroup.alpha = 0f;
                 isFading = false;
                 fadeCanvasGroup.blocksRaycasts = false;
-                fadeInstance.SetActive(false);
+                if (fadeInstance != null) fadeInstance.SetActive(false);
+            }
+            else if (targetAlpha >= 0.99f)
+            {
+                fadeCanvasGroup.alpha = 1f;
             }
         }
     }
 
     public void LoadScene(string sceneName)
     {
-        // 씬 로더 자체가 파괴되었다면 다시 초기화 시도
         if (fadeInstance == null) InitFadeCanvas();
         
         StopAllCoroutines();
@@ -68,26 +71,42 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 
     private IEnumerator LoadAsyncSequence(string sceneName)
     {
-        fadeInstance.SetActive(true);
+        // 1. 페이드 인 시작
+        if (fadeInstance != null) fadeInstance.SetActive(true);
         fadeCanvasGroup.blocksRaycasts = true;
         targetAlpha = 1.0f;
         isFading = true;
 
-        while (fadeCanvasGroup.alpha < 1.0f) yield return null;
+        // 페이드가 완전히 찰 때까지 대기
+        while (fadeCanvasGroup.alpha < 0.99f) yield return null;
 
+        // [중요 수정 포인트] 
+        // 씬을 넘기기 전 딱 한 프레임을 쉬어줍니다. 
+        // 이 한 프레임 사이에 Splash 씬에 새로 배치된 다른 매니저들의 Awake가 실행되어 
+        // DontDestroyOnLoad가 안전하게 처리됩니다.
+        yield return null; 
+
+        // 2. 비동기 씬 로드 시작
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         op.allowSceneActivation = false;
 
         while (!op.isDone)
         {
+            // progress가 0.9일 때 로딩 완료로 간주
             if (op.progress >= 0.9f)
             {
+                // 약간의 여유를 주고 씬 전환 허용
+                yield return new WaitForSecondsRealtime(0.1f);
                 op.allowSceneActivation = true;
             }
             yield return null;
         }
 
+        // 3. 씬 전환 후 잠시 대기했다가 페이드 아웃
         yield return new WaitForSecondsRealtime(0.2f);
         targetAlpha = 0.0f;
+        
+        // 페이드 아웃이 끝날 때까지 대기 (Update에서 isFading을 false로 바꿈)
+        while (isFading) yield return null;
     }
 }

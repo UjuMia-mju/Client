@@ -12,13 +12,45 @@ public class MainManager : MonoBehaviour
     
     private float fadeDuration = 0.5f;
 
+    // 앱 실행 후 딱 한 번만 false이고 이후엔 계속 true 유지
+    private static bool _hasSeenIntro = false;
+
     private void Start()
     {
-        SoundManager.Instance.PlayBGM("Intro");
-        
-        // 초기 UI 상태 설정 (introPanel: On / menuPanel: Off)
-        if (introPanel != null) { introPanel.alpha = 1; introPanel.gameObject.SetActive(true); }
-        if (menuPanel != null) { menuPanel.alpha = 0; menuPanel.gameObject.SetActive(false); }
+        // 이미 인트로를 본 상태라면 (다른 씬에서 돌아온 경우)
+        if (_hasSeenIntro)
+        {
+            // 인트로를 건너뛰고 바로 메뉴 패널을 활성화
+            if (introPanel != null)
+            {
+                introPanel.alpha = 0;
+                introPanel.gameObject.SetActive(false);
+            }
+
+            if (menuPanel != null)
+            {
+                menuPanel.alpha = 1;
+                menuPanel.gameObject.SetActive(true);
+            }
+        }
+        else // 소프트웨어를 처음 켰을 때
+        {
+            // 기존처럼 인트로 패널 활성화
+            if (introPanel != null)
+            {
+                introPanel.alpha = 1;
+                introPanel.gameObject.SetActive(true);
+            }
+
+            if (menuPanel != null)
+            {
+                menuPanel.alpha = 0;
+                menuPanel.gameObject.SetActive(false);
+            }
+
+            // 다음 씬 진입부터는 인트로를 스킵하도록 상태 변경
+            _hasSeenIntro = true;
+        }
     }
 
     /// <summary>

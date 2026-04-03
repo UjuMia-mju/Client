@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MonoBehaviorSingleton<T> : MonoBehaviour where T : MonoBehaviorSingleton<T>
 {
@@ -10,15 +10,15 @@ public class MonoBehaviorSingleton<T> : MonoBehaviour where T : MonoBehaviorSing
             if (instance == null) 
             {
                 instance = FindFirstObjectByType<T>();
+            
                 if (instance == null) 
                 {
                     Debug.LogWarning($"Instance of {typeof(T).Name} not found. Creating a new instance.");
                     var obj = new GameObject(typeof(T).Name);
                     instance = obj.AddComponent<T>();
-                } 
-                else 
-                {
-                    return instance;
+                    
+                    // [수정] 해당 부분 누락으로 DontDestory가 되지 않는 오류가 발생했었습니다
+                    DontDestroyOnLoad(obj); 
                 }
             }
             return instance;

@@ -17,6 +17,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
         PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
 
+        HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
+
         // PacketHandler.Instance.OnPlayerListEvent += OnPlayerList;
         //PacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnter;
         // PacketHandler.Instance.OnPlayerLeaveEvent += OnPlayerLeave;
@@ -60,6 +62,11 @@ public class PlayManager : SceneSingleton<PlayManager>
     //    _localPlayer = Instantiate(localPlayerPrefab, SpawnOffset.transform.position, Quaternion.identity);
     //    _localPlayer.name = "LocalPlayer";
     //}
+
+    private void OnServerPlayerEnter(S_PLAYER_ENTER packet)
+    {
+        Instantiate(remotePlayerPrefab, new Vector3(0,0,0), Quaternion.identity);
+    }
 
     // 호스트가 피어로부터 받은 C_TEST_ENTER_GAME 패킷 처리
     private void OnPeerEnterGame(int peerId, C_TEST_ENTER_GAME packet)

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class ConnectManager : SceneSingleton<ConnectManager>
@@ -13,13 +13,19 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     public int hostPortFromServer = 7788;
     private async void Start()
     {
-        // 중앙서버로 연결
+        // 테스트라 중앙 서버에 연결하는 부분
         NetManager.Instance.Connect(centralServerIp, centralServerPort);
         return;
-
         if (isHost)
         {
             HostNetManager.Instance.StartHost(hostPortFromServer);
+
+            // Player 인스턴스가 이미 생성되어 있다고 가정
+            var player = FindFirstObjectByType<Player>();
+            if (player != null)
+            {
+                player.OnNetworkReady();
+            }
         }
         else
         {

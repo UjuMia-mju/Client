@@ -39,7 +39,10 @@ public class PlayerTPCamera : MonoBehaviour
     private void Awake()
     {
         playerMovingOffset = transform.GetChild(0);
+    }
 
+    private void Start()
+    {
         inputActions = InputManager.Instance.Actions;
         inputActions.Player.Enable();
     }

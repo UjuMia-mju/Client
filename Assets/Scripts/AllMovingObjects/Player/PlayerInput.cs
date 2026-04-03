@@ -14,12 +14,9 @@ public class PlayerInput : MonoBehaviour
     private bool isInteract = false;
     private bool isThrowOrCancel = false;
 
-    private PlayerInputSystem inputActions; 
+    private PlayerInputSystem inputActions;
 
-    private void Awake()
-    {
-        inputActions = InputManager.Instance.Actions;
-    }
+    private bool inputEnabled = true;
 
     private void Start()
     {
@@ -29,6 +26,11 @@ public class PlayerInput : MonoBehaviour
 
     private void OnEnable()
     {
+        if (inputActions == null)
+        {
+            inputActions = InputManager.Instance.Actions;
+        }
+        
         inputActions.Player.Enable();
         inputActions.Player.Jump.performed += OnJump;
         inputActions.Player.Interact.performed += OnInteract;
@@ -98,5 +100,32 @@ public class PlayerInput : MonoBehaviour
     public void MakeIsThrowOrCancelFalse()
     {
         isThrowOrCancel = false;
+    }
+
+    // 외부에서 입력 전체 활성/비활성 토글
+    public void SetInputEnabled(bool enabled)
+    {
+        inputEnabled = enabled;
+
+        if (!inputEnabled)
+        {
+            // 즉시 모든 입력 초기화
+            isJumping = false;
+            isInteract = false;
+            isThrowOrCancel = false;
+            axisX = 0f;
+            axisY = 0f;
+            axisResultDir = Vector3.zero;
+
+            // 비활성화된 상태에서는 액션맵을 비활성화하여 입력 트리거를 방지
+            inputActions.Player.Disable();
+        }
+        else
+        {
+            // 활성화 시 맵 다시 켬
+            inputActions.Player.Enable();
+        }
+
+        Debug.Log($"[PlayerInput] SetInputEnabled -> {inputEnabled}");
     }
 }

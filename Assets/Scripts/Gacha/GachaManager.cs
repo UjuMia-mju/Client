@@ -1,84 +1,164 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Protocol;
 
 public class GachaManager : MonoBehaviour
 {
-    // 초기 전체 아이템 목록 (인스펙터에서 할당)
+    // 서버 결과를 UI 아이콘/이름과 매칭할 때 사용하는 로컬 마스터 데이터
     public List<GachaItem> allItems;
 
-    // 현재 뽑을 수 있는 남은 아이템 목록
-    private List<GachaItem> currentPool;
+    private readonly List<GachaPoolInfo> serverPools = new List<GachaPoolInfo>();
+    private bool isGachaRequestPending;
 
-    // 획득한 아이템 목록
-    private List<GachaItem> obtainedItems;
+    [Header("Server Gacha Settings")]
+    public int selectedPoolId = 1;
+    public int defaultPullCount = 1;
 
     [Header("UI Connection")]
     public GachaSpinnerUI spinnerUI; // 인스펙터에서 연결
+    public GachaResultPopupUI resultPopupUI; // 스핀 종료 후 결과 표시
 
     void Start()
     {
-        // 게임 시작 시 초기화(테스트용으로 자동 리셋)
-        ResetGacha();
+        // dedicate 서버 수신 이벤트 구독
+        PacketHandler.Instance.OnGachaPoolListEvent += OnGachaPoolList;
+        PacketHandler.Instance.OnGachaResultEvent += OnGachaResult;
+        PacketHandler.Instance.OnMySkinsEvent += OnMySkins;
+        if (spinnerUI != null)
+            spinnerUI.OnSpinFinished += OnSpinFinished;
+
+        // 테스트 편의를 위해 진입 즉시 기본 데이터 요청
+        PacketDispatcher.Instance.SendGachaPoolList();
+        PacketDispatcher.Instance.SendMySkins();
     }
 
-    // 가챠 시스템 초기화 (리셋)
-    public void ResetGacha()
+    void OnDestroy()
     {
-        // 원본 리스트를 복사해서 현재 풀을 만듦 (원본 보호)
-        currentPool = new List<GachaItem>(allItems);
-        obtainedItems = new List<GachaItem>();
-        Debug.Log("가챠 시스템이 초기화되었습니다.");
+        if (PacketHandler.Instance == null)
+            return;
+
+        // 씬 전환/오브젝트 제거 시 중복 수신 방지
+        PacketHandler.Instance.OnGachaPoolListEvent -= OnGachaPoolList;
+        PacketHandler.Instance.OnGachaResultEvent -= OnGachaResult;
+        PacketHandler.Instance.OnMySkinsEvent -= OnMySkins;
+        if (spinnerUI != null)
+            spinnerUI.OnSpinFinished -= OnSpinFinished;
     }
 
-    // 아이템 뽑기 함수
+    // 뽑기 요청은 로컬 RNG가 아니라 서버에 위임
     public void PullItem()
     {
-        if (currentPool.Count == 0)
+        if (isGachaRequestPending)
         {
-            Debug.LogWarning("더 이상 뽑을 아이템이 없습니다!");
+            Debug.LogWarning("이미 가챠 요청을 보냈습니다. 서버 응답을 기다려주세요.");
             return;
         }
 
-        // 1. 남은 아이템들의 가중치 총합 계산
-        int totalWeight = 0;
-        foreach (var item in currentPool)
+        if (spinnerUI != null && spinnerUI.IsSpinning)
         {
-            totalWeight += item.weight;
+            Debug.LogWarning("스핀 애니메이션 진행 중입니다.");
+            return;
         }
 
-        // 2. 랜덤 값 생성 (0 ~ 총 가중치)
-        int randomValue = Random.Range(0, totalWeight);
+        if (defaultPullCount <= 0)
+            defaultPullCount = 1;
 
-        // 3. 가중치 기반 아이템 선택
-        GachaItem selectedItem = null;
-        int currentWeightSum = 0;
-
-        for (int i = 0; i < currentPool.Count; i++)
+        if (selectedPoolId <= 0)
         {
-            currentWeightSum += currentPool[i].weight;
-            
-            // 랜덤 값이 현재 구간에 해당하면 당첨
-            if (randomValue < currentWeightSum)
-            {
-                selectedItem = currentPool[i];
-                
-                // 중복 방지를 위해 풀에서 제거
-                currentPool.RemoveAt(i);
-                break;
-            }
+            Debug.LogWarning("유효한 가챠 풀 ID가 없습니다. 풀 목록을 먼저 받아오세요.");
+            return;
         }
 
-        // 4. 결과 처리
-        if (selectedItem != null)
-        {
-            obtainedItems.Add(selectedItem); //<- 애니메이션 끝난 후로 미뤄도 됨
-
-            Debug.Log($"결과 결정됨: {selectedItem.itemName}. 애니메이션 시작...");
-            
-            // UI 스피너 돌리기 시작
-            spinnerUI.StartSpinAnimation(selectedItem);
-        }
+        isGachaRequestPending = true;
+        PacketDispatcher.Instance.SendGacha(selectedPoolId, defaultPullCount);
     }
 
-    
+    public void RequestPoolList()
+    {
+        PacketDispatcher.Instance.SendGachaPoolList();
+    }
+
+    public void RequestMySkins()
+    {
+        PacketDispatcher.Instance.SendMySkins();
+    }
+
+    private void OnGachaPoolList(S_GACHA_POOL_LIST packet)
+    {
+        // 서버가 내려준 활성 풀 스냅샷으로 교체
+        serverPools.Clear();
+        foreach (var pool in packet.Pools)
+            serverPools.Add(pool);
+
+        if (serverPools.Count > 0 && selectedPoolId <= 0)
+            selectedPoolId = serverPools[0].PoolId;
+
+        Debug.Log($"가챠 풀 {serverPools.Count}개 수신. 현재 poolId={selectedPoolId}");
+    }
+
+    private void OnGachaResult(S_GACHA packet)
+    {
+        isGachaRequestPending = false;
+
+        if (!packet.Success)
+        {
+            Debug.LogError($"가챠 실패: {packet.ErrorMsg}");
+            return;
+        }
+
+        if (packet.Result == null || packet.Result.ObtainedSkins.Count == 0)
+        {
+            Debug.LogWarning("가챠 결과에 획득 스킨이 없습니다.");
+            return;
+        }
+
+        // 현재 스피너 UI가 단일 결과 연출이라 첫 번째 스킨 기준으로 표시
+        var firstSkin = packet.Result.ObtainedSkins[0];
+        var selectedItem = FindItemBySkin(firstSkin);
+        if (selectedItem == null)
+        {
+            Debug.LogWarning($"매칭되는 로컬 아이템이 없어 연출을 생략합니다. skin={firstSkin.SkinName}");
+            return;
+        }
+
+        if (spinnerUI == null)
+        {
+            Debug.LogWarning("Spinner UI가 연결되지 않아 연출을 생략합니다.");
+            return;
+        }
+
+        if (!spinnerUI.StartSpinAnimation(selectedItem))
+        {
+            Debug.LogWarning("스핀 시작에 실패했습니다. 진행 중인 연출이 끝난 뒤 다시 시도하세요.");
+            return;
+        }
+
+        Debug.Log($"가챠 성공: {packet.Result.ObtainedSkins.Count}개, gems={packet.Result.RemainingGems}, coins={packet.Result.RemainingCoins}");
+    }
+
+    private void OnMySkins(S_MY_SKINS packet)
+    {
+        Debug.Log($"보유 스킨 {packet.Skins.Count}개 수신");
+    }
+
+    private void OnSpinFinished(GachaItem item)
+    {
+        if (resultPopupUI != null)
+            resultPopupUI.Show(item);
+    }
+
+    private GachaItem FindItemBySkin(SkinInfo skin)
+    {
+        if (allItems == null)
+            return null;
+
+        // 서버 스킨명과 로컬 에셋명을 1:1 매칭
+        foreach (var item in allItems)
+        {
+            if (item != null && item.itemName == skin.SkinName)
+                return item;
+        }
+
+        return null;
+    }
 }
