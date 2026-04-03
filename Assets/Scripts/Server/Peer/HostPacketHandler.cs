@@ -33,9 +33,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
             case PacketId.PKT_S_PLAYER_ANIMATION:
                 HandleAnimation(data);
                 break;
-            //case PacketId.PKT_S_PLAYER_STAT:
-            //    HandleStat(data);
-            //    break;
+            case PacketId.PKT_S_PLAYER_STAT:
+                HandleStat(data);
+                break;
             case PacketId.PKT_S_OBJECT_PICKUP:
                 HandleItemAttached(data);
                 break;
@@ -54,6 +54,13 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     private void HandleServerPlayerEnter(byte[] payloadData)
     {
         S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
+
+        // === 임시
+        int newPlayerId = packet.Player.PlayerId;
+        NetManager.Instance._playerId = (ulong)newPlayerId; // NetManager에 새로 할당된 playerId 저장
+        Debug.Log($"[HostPacketHandler] Received S_PLAYER_ENTER for PlayerId: {NetManager.Instance._playerId}");
+        // ===
+
         OnPlayerEnterEvent?.Invoke(packet);
     }
 
@@ -75,11 +82,13 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
         OnAnimationEvent?.Invoke(packet.PlayerId, packet);
     }
 
-    //private void HandleStat(byte[] payloadData)
-    //{
-    //    S_PLAYER_STAT packet = S_PLAYER_STAT.Parser.ParseFrom(payloadData);
-    //    OnStatEvent?.Invoke(packet);
-    //}
+    private void HandleStat(byte[] payloadData)
+    {
+       S_PLAYER_STAT packet = S_PLAYER_STAT.Parser.ParseFrom(payloadData);
+       Debug.Log($"Received PlayerStat packet: PlayerId={packet.PlayerId}, Hp={packet.Hp}, Oxygen={packet.Oxygen}");
+       PeerStatManager.Instance.UpdateStat(packet.PlayerId, packet.Hp, packet.Oxygen);
+       OnStatEvent?.Invoke(packet); // 여기서 받은 데이터 기반으로 UI 업데이트 하면 됨.
+    }
 
     private void HandleItemAttached(byte[] payloadData)
     {

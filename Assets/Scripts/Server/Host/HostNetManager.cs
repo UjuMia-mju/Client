@@ -98,7 +98,6 @@ public class HostNetManager
                 return;
             }
 
-            Debug.Log($"Peer connected. peerId={peerId}, endpoint={peer.RemoteEndPoint}");
             // 피어 수신 시작
             RegisterPeerRecv(peerId);
         }
@@ -146,7 +145,6 @@ public class HostNetManager
 
     private void OnPeerRecvCallback(IAsyncResult ar)
     {
-        Debug.Log("OnPeerRecvCallback called");
         int peerId = (int)ar.AsyncState;
 
         PeerSession session = null;
@@ -206,18 +204,14 @@ public class HostNetManager
             int dataSize = session.RecvBuffer.DataSize - processedBytes;
             if (dataSize < PacketHeader.HeaderSize)
             {
-                Debug.Log($"[PeerNetManager] Not enough data for header: dataSize={dataSize}");
                 break;
             }
 
             ArraySegment<byte> buffer = session.RecvBuffer.GetReadSegment();
             PacketHeader header = PacketHeader.FromBytes(buffer.Array, buffer.Offset + processedBytes);
 
-            Debug.Log($"[PeerNetManager] header.size={header.size}, header.id={header.id}, dataSize={dataSize}");
-
             if (dataSize < header.size)
             {
-                Debug.Log($"[PeerNetManager] Not enough data for full packet: header.size={header.size}, dataSize={dataSize}");
                 break;
             }
 
@@ -227,7 +221,6 @@ public class HostNetManager
 
             MainThreadDispatcher.Enqueue(() =>
             {
-                Debug.Log($"[PeerNetManager] HandlePeerPacket called: peerId={peerId}, packetId={header.id}, dataLen={packetData.Length}");
                 try
                 {
                     PeerPacketHandler.Instance.HandlePeerPacket(peerId, (PacketId)header.id, packetData);

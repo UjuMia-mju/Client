@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class HPUIController : MonoBehaviour
 {
-    [SerializeField] private PlayerStat playerStat;
+    public PlayerStat playerStat;
     [SerializeField] private List<Image> hpImageList = new List<Image>();
     
     private List<Coroutine> fadeCoroutines = new List<Coroutine>();

@@ -31,7 +31,6 @@ public class PeerNetManager : BaseNetSession
 
     private void HandleHostPacket(PacketId packetId, byte[] data)
     {
-        Debug.Log($"[PeerNetManager] HandleHostPacket invoked on instance hash={this.GetHashCode()}: id={packetId}, len={data?.Length ?? 0}");
         MainThreadDispatcher.Enqueue(() =>
         {
             try

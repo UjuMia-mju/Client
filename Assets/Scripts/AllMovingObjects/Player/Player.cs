@@ -36,6 +36,10 @@ public class Player : MovingObject
     private int lastHP;
     private float lastOxygen;
 
+    // 임시 UI 객체
+    [SerializeField] private HPUIController hpUIController;
+    [SerializeField] private OxygenUIController oxygenUIController;
+
     // 초기화
     protected override void Awake()
     {
@@ -45,10 +49,26 @@ public class Player : MovingObject
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
         playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
-        playerStat = GetComponent<PlayerStat>();
 
         playerAnimator.Initialize();
         lastAnimState = AnimState.Idle;
+
+        if (ConnectManager.Instance.isHost)
+        {
+            playerStat = gameObject.AddComponent<HostPlayerStat>();
+        }
+        else
+        {
+            playerStat = gameObject.AddComponent<PeerPlayerStat>();
+        }
+
+        // ==== 임시 UI 초기화 ===
+        hpUIController.playerStat = playerStat;
+        oxygenUIController.playerStat = playerStat;
+
+        hpUIController.gameObject.SetActive(true);
+        oxygenUIController.gameObject.SetActive(true);
+        // =====
     }
 
     private void Start()
@@ -66,8 +86,8 @@ public class Player : MovingObject
 
 
         // 산소/HP 이벤트 기반 로직
-        lastHP = playerStat.GetHp();
-        lastOxygen = playerStat.GetOxygen();
+        // lastHP = playerStat.GetHp();
+        // lastOxygen = playerStat.GetOxygen();
 
         playerStat.OnHpChanged += HandleHpChanged;
         playerStat.OnOxygenChanged += HandleOxygenChanged;
@@ -85,6 +105,57 @@ public class Player : MovingObject
             playerStat.OnPlayerDead -= HandlePlayerDead;
             playerStat.OnPlayerRevive -= HandlePlayerRevive;
         }
+    }
+
+
+    private void HandlePlayerDead()
+    {
+        if (playerMesh != null)
+            playerMesh.SetActive(false);
+
+        if (playerInput != null)
+            playerInput.SetInputEnabled(false);
+    }
+
+    private void HandlePlayerRevive()
+    {
+        if (playerMesh != null)
+            playerMesh.SetActive(true);
+
+        if (playerInput != null)
+            playerInput.SetInputEnabled(true);
+    }
+
+    // 체력 변경 이벤트 핸들러 0324 (추가)
+    private void HandleHpChanged(int newHp)
+    {
+        if (lastHP != newHp)
+        {
+            lastHP = newHp;
+        }
+    }
+
+    // 산소 변경 이벤트 핸들러 0324 (추가)
+    private void HandleOxygenChanged(float newOxygen)
+    {
+        // 서버 부하를 줄이기 위해 소수점 단위 변화가 클 때만 보낼 수도 있습니다.
+        if (Mathf.Abs(lastOxygen - newOxygen) > 0.01f)
+        {
+            lastOxygen = newOxygen;
+        }
+    }
+
+    public void OnNetworkReady()
+    {
+        // 호스트 자신이 로컬 플레이어를 생성할 때는 네트워크로 EnterGame을 보낼 필요가 없습니다.
+        // 피어(클라이언트)만 호스트에 C_TEST_ENTER_GAME(=SendEnterGame)를 전송해서
+        // 호스트가 받은 뒤 S_PLAYER_ENTER로 브로드캐스트하게 해야 패킷 순서가 맞습니다.
+        if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
+        {
+            PacketSender.Instance.SendEnterGame(0);
+        }
+        // 위치/애니메이션 전송은 계속 수행
+        SendEnterPosToServer();
     }
 
 
@@ -374,7 +445,7 @@ public class Player : MovingObject
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
     private void SendEnterPosToServer()
     {
-        PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+        PacketSender.Instance.SendMove(transform.position, transform.rotation);
 
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
@@ -394,7 +465,7 @@ public class Player : MovingObject
 
         if (posChanged || rotChanged)
         {
-            PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+            PacketSender.Instance.SendMove(transform.position, transform.rotation);
 
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;
@@ -412,7 +483,7 @@ public class Player : MovingObject
         // 상태가 바뀐 경우에만 전송
         if (currentState != lastAnimState)
         {
-            PacketDispatcher.Instance.SendAnimation(currentState);
+            PacketSender.Instance.SendAnimation(currentState);
             lastAnimState = currentState;
         }
     }
@@ -420,12 +491,12 @@ public class Player : MovingObject
     // 아이템을 들어올렸을 때 RemotePlayer의 소켓에 부착시키기 위해 패킷을 1회 전송
     private void SendItemAttachedToServer(Items data)
     {
-        PacketDispatcher.Instance.SendItemAttached(data);
+        PacketSender.Instance.SendItemAttached(data);
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
     private void SendItemDetatchedToServer(Items data)
     {
-        PacketDispatcher.Instance.SendItemDetatched(data);
+        PacketSender.Instance.SendItemDetatched(data);
     }
 }

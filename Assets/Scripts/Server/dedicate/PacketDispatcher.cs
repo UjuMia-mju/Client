@@ -8,35 +8,13 @@ using Protocol;
 /// </summary>
 public class PacketDispatcher : Singleton<PacketDispatcher>
 {
-
-    // 재사용 가능한 패킷 객체들 (값이 자주 바뀌는 패킷들은 매번 새로 생성하지 않고 재사용)
-    // 이동 패킷
-    private readonly PosInfo _movePosInfo = new PosInfo();
-    private readonly RotInfo _moveRotInfo = new RotInfo();
-    private readonly C_MOVE _movePacket = new C_MOVE();
-    private readonly S_MOVE _relayMove = new S_MOVE();
-
-    private Vector3 _lastSentPos;
-    private Quaternion _lastSentRot;
-
-    // 애니메이션 패킷
-    private readonly S_PLAYER_ANIMATION _relayAnim = new S_PLAYER_ANIMATION();
-    private readonly C_PLAYER_ANIMATION _animPacket = new C_PLAYER_ANIMATION();
-
-    private bool IsHost()
-    {
-        return ConnectManager.Instance != null && ConnectManager.Instance.isHost;
-    }
-
     private ulong GetLocalPlayerId()
     {
-        // 로그인 후 세팅되는 값 사용
         return (ulong)NetManager.Instance._playerId;
     }
 
     NetManager net = NetManager.Instance;
-    PeerNetManager peerNet = PeerNetManager.Instance;
-    HostNetManager hostNet = HostNetManager.Instance;
+    
 
     #region To Dedicate Server
     public void SendLogin(string userId, string password)
@@ -48,6 +26,28 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         };
 
         net.SendPacket(PacketId.PKT_C_LOGIN, loginPacket);
+    }
+
+    public void SendGachaPoolList()
+    {
+        C_GACHA_POOL_LIST packet = new C_GACHA_POOL_LIST();
+        net.SendPacket(PacketId.PKT_C_GACHA_POOL_LIST, packet);
+    }
+
+    public void SendGacha(int poolId, int pullCount)
+    {
+        C_GACHA packet = new C_GACHA
+        {
+            PoolId = poolId,
+            PullCount = pullCount
+        };
+        net.SendPacket(PacketId.PKT_C_GACHA, packet);
+    }
+
+    public void SendMySkins()
+    {
+        C_MY_SKINS packet = new C_MY_SKINS();
+        net.SendPacket(PacketId.PKT_C_MY_SKINS, packet);
     }
 
     // ==================== Lobby/Room ====================
@@ -127,6 +127,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
     }
 
     #endregion
+
 
 
     #region To Host
@@ -410,4 +411,5 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
 
     #endregion
+
 }

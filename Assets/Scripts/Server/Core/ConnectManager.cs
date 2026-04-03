@@ -15,6 +15,15 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     {
         if (isHost)
         {
+            PacketSender.Instance.Init(true);
+        }
+        else
+        {
+            PacketSender.Instance.Init(false);
+        }
+        
+        if (isHost)
+        {
             HostNetManager.Instance.StartHost(hostPortFromServer);
 
             // 피어가 입장할 때마다 호스트 Enter 정보를 전송
@@ -40,6 +49,8 @@ public class ConnectManager : SceneSingleton<ConnectManager>
                 player.OnNetworkReady();
             }
         }
+
+        
     }
 
     /// <summary>

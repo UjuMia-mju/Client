@@ -4,7 +4,7 @@ public class NetManager : BaseNetSession
 {
     private static NetManager _instance;
     public static NetManager Instance => _instance ??= new NetManager();
-    public int _playerId;
+    public ulong _playerId;
     public string PlayerName { get; private set; }
     public int PlayerTag { get; private set; }
     public NetManager()
