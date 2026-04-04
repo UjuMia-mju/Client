@@ -55,7 +55,8 @@ public struct PlayerStatData
 public class PlayerStat : MonoBehaviour
 {
     public PlayerStatData statData = new (5);
-    public ulong playerId = NetManager.Instance._playerId; // NetManager에서 playerId 가져오기
+    public ulong playerId;
+
     public event Action<float> OnOxygenChanged;
     public event Action<int> OnHpChanged;
     protected Coroutine oxygenRoutine;
@@ -75,11 +76,12 @@ public class PlayerStat : MonoBehaviour
     protected virtual void Awake()
     {
         statData = new PlayerStatData(5);
+        playerId = NetManager.Instance._playerId;
     }
 
     void Start()
     {
-        StartOxygenDecrease(); // 게임 시작과 동시에 산소 감소 시작
+        // StartOxygenDecrease()는 OnNetworkReady() 이후에 호출됩니다.
     }
 
     public void ChangeData(int hp, float oxygen)
@@ -138,4 +140,6 @@ public class PlayerStat : MonoBehaviour
         oxygenRoutine = StartCoroutine(DecreaseOxygen());
     }
     #endregion
+
+    public void CallOnPlayerDead() => OnPlayerDead?.Invoke();
 }

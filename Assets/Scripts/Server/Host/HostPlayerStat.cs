@@ -1,13 +1,12 @@
-using UnityEngine;
-using System;
+﻿using UnityEngine;
 using System.Collections;
 using Protocol;
+
 public class HostPlayerStat : PlayerStat
 {
     #region HP 증/감소 로직
     public override void DecreaseHp(int damage)
     {
-        base.DecreaseHp(damage);
         HostStatManager.Instance.DecreaseHp(playerId, damage);
     }
 
@@ -28,11 +27,8 @@ public class HostPlayerStat : PlayerStat
 
         if (!isRespawning)
         {
-            // 산소 고갈 시 HP 소모 코루틴 시작
             if (oxygenHpDrainRoutine == null)
-            {
                 oxygenHpDrainRoutine = StartCoroutine(OxygenHpDrainCoroutine());
-            }
         }
     }
 
@@ -58,6 +54,5 @@ public class HostPlayerStat : PlayerStat
         }
         oxygenHpDrainRoutine = null;
     }
-    
     #endregion
 }

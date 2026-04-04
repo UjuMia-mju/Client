@@ -56,6 +56,7 @@ public class Player : MovingObject
         if (ConnectManager.Instance.isHost)
         {
             playerStat = gameObject.AddComponent<HostPlayerStat>();
+            HostStatManager.Instance.RegisterPlayer(playerStat.playerId, playerStat);
         }
         else
         {
@@ -147,15 +148,14 @@ public class Player : MovingObject
 
     public void OnNetworkReady()
     {
-        // 호스트 자신이 로컬 플레이어를 생성할 때는 네트워크로 EnterGame을 보낼 필요가 없습니다.
-        // 피어(클라이언트)만 호스트에 C_TEST_ENTER_GAME(=SendEnterGame)를 전송해서
-        // 호스트가 받은 뒤 S_PLAYER_ENTER로 브로드캐스트하게 해야 패킷 순서가 맞습니다.
         if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
         {
             PacketSender.Instance.SendEnterGame(0);
         }
-        // 위치/애니메이션 전송은 계속 수행
         SendEnterPosToServer();
+
+        // 네트워크 준비 후 산소 감소 시작 (EnterGame 패킷 이후에 산소 패킷이 전송되도록)
+        playerStat.StartOxygenDecrease();
     }
 
 
@@ -245,7 +245,7 @@ public class Player : MovingObject
                 return;
             }
 
-            // 플레이어에게서 가장 가까운 오브젝트의 태그가 아이템이며, 빈 손일 때
+            // 플레이어에게서 가장.closest오브젝트의 태그가 아이템이며, 빈 손일 때
             // 혹은 태그가 Tool인 것도 포함함.
             else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething && !isPlayerThrowSomething ||
                 nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething && !isPlayerThrowSomething)

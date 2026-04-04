@@ -1,89 +1,71 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class HostStatManager : BaseStatManager<HostStatManager>
 {
     void Start()
     {
-        // 임시 코드임. 나중에 방에 참여한 플레이어들의 ID정보들을 받아와서 전부다 초기화 해주고,
-        // 추후에 새로운 플레이어가 참여하면 새롭게 추가해줘야함.
-        _playerStats.Add(NetManager.Instance._playerId, new PlayerStat()); // 호스트 플레이어 초기화
+        // RegisterPlayer로 이미 등록된 경우 덮어쓰지 않음
+        if (!_playerStats.ContainsKey(NetManager.Instance._playerId))
+        {
+            _playerStats.Add(NetManager.Instance._playerId, new PlayerStat());
+        }
     }
-    
-    // 플레이어 입장
+
     public void AddPlayer(ulong playerId, int maxHp = 5)
     {
         if (!_playerStats.ContainsKey(playerId))
-        {
             _playerStats[playerId] = new PlayerStat();
-        }
     }
 
-    #region each player stat update methods
-
-    // ==========================체력============================
     public void DecreaseHp(ulong playerId, int amount)
     {
-        if (_playerStats.TryGetValue(playerId, out var stat))
-        {
-            stat.DecreaseHp(amount);
-            _playerStats[playerId] = stat; // struct라면 다시 할당 필요
-        }
+        if (!_playerStats.TryGetValue(playerId, out var stat)) return;
 
-        int hp = stat.GetHp();
-        float oxygen = stat.GetOxygen();
-        
-        UpdateStat(playerId, hp, oxygen);
+        // stat.DecreaseHp() 호출 시 HostPlayerStat.DecreaseHp() → 무한루프 발생
+        // statData만 직접 수정하고 이벤트만 호출
+        stat.statData.DecreaseHp(amount);
+        stat.CallOnHpChanged();
+        if (stat.statData.hp <= 0)
+            stat.CallOnPlayerDead();
 
-        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
+        PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
     public void IncreaseHp(ulong playerId, int amount)
     {
-        if (_playerStats.TryGetValue(playerId, out var stat))
-        {
-            stat.IncreaseHp(amount);
-            _playerStats[playerId] = stat;
-        }
+        if (!_playerStats.TryGetValue(playerId, out var stat)) return;
 
-        int hp = stat.GetHp();
-        float oxygen = stat.GetOxygen();
+        stat.statData.IncreaseHp(amount);
+        stat.CallOnHpChanged();
 
-        UpdateStat(playerId, hp, oxygen);
-
-        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
+        PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
-    // =========================산소============================
     public void DecreaseOxygen(ulong playerId)
     {
-        if (_playerStats.TryGetValue(playerId, out var stat))
-        {
-            stat.statData.DecreaseOxygen(0.01f); // 매 초마다 0.01씩 감소
-            _playerStats[playerId] = stat;
-        }
-        
-        int hp = stat.GetHp();
-        float oxygen = stat.GetOxygen();
+        if (!_playerStats.TryGetValue(playerId, out var stat)) return;
 
-        UpdateStat(playerId, hp, oxygen);
+        stat.statData.DecreaseOxygen(0.01f);
+        stat.CallOnOxygenChanged();
 
-        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
+        PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
     }
+
     public void IncreaseOxygen(ulong playerId)
     {
-        if (_playerStats.TryGetValue(playerId, out var stat))
-        {
-            stat.statData.IncreaseOxygen(0.02f); // 매 초마다 0.02씩 증가
-            _playerStats[playerId] = stat;
-        }
+        if (!_playerStats.TryGetValue(playerId, out var stat)) return;
 
-        int hp = stat.GetHp();
-        float oxygen = stat.GetOxygen();
+        stat.statData.IncreaseOxygen(0.02f);
+        stat.CallOnOxygenChanged();
 
-        UpdateStat(playerId, hp, oxygen);
-
-        PacketSender.Instance?.BroadcastStatResult((ulong)playerId, stat.GetHp(), stat.GetOxygen());
+        PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
     }
-    #endregion
+
+    /// <summary>실제 PlayerStat 컴포넌트를 등록합니다.</summary>
+    public void RegisterPlayer(ulong playerId, PlayerStat stat)
+    {
+        _playerStats[playerId] = stat;
+        Debug.Log($"[HostStatManager] RegisterPlayer: {playerId}");
+    }
 }

@@ -19,6 +19,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_OBJECT_DROP> OnPeerItemDetachedEvent;
     public event Action<int, C_TEST_ENTER_GAME> OnPeerEnterGameEvent;
     public event Action<int, C_OBJECT_MOVE> OnPeerObjectMoveEvent;
+    public event Action<int, S_PLAYER_STAT> OnPeerStatEvent;
 
     /// <summary>
     /// 호스트가 피어로부터 받은 패킷 처리
@@ -65,23 +66,25 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     {
         C_TEST_ENTER_GAME packet = C_TEST_ENTER_GAME.Parser.ParseFrom(data);
 
-        // 1. 피어의 S_PLAYER_ENTER 패킷 생성
+        // 1. 피어 스탯 먼저 등록 (이후 패킷 처리 전에 반드시 등록되어야 함)
+        HostStatManager.Instance?.AddPlayer((ulong)peerId);
+
+        // 2. 피어의 S_PLAYER_ENTER 패킷 생성
         S_PLAYER_ENTER enterPacket = new S_PLAYER_ENTER
         {
             Player = new PlayerGameInfo
             {
                 PlayerId = peerId,
-                Name = "Peer", // packet.Name이 null이면 기본값
+                Name = "Peer",
                 Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
             }
         };
 
-
-        // 2. 다른 피어들에게만 새 피어 입장 브로드캐스트 (본인 제외)
+        // 3. 다른 피어들에게 브로드캐스트
         HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket, includeSender: false);
 
-        // 3. 새로 들어온 피어에게 호스트 정보 전송
+        // 4. 새로 들어온 피어에게 호스트 정보 전송
         S_PLAYER_ENTER hostEnterPacket = new S_PLAYER_ENTER
         {
             Player = new PlayerGameInfo
@@ -94,11 +97,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         };
         HostNetManager.Instance.SendToPeer(peerId, PacketId.PKT_S_PLAYER_ENTER, hostEnterPacket);
 
-        // 4. 이벤트로 처리 (호스트 측 PlayManager에서 피어의 remotePlayer 생성)
-
+        // 5. PlayManager 이벤트 발생
         OnPeerEnterGameEvent?.Invoke(peerId, packet);
-        // 4. 
-        HostStatManager.Instance?.AddPlayer((ulong)peerId);
     }
 
     private void HandlePeerMove(int peerId, byte[] data)
@@ -191,42 +191,28 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     private void HandlePeerStatEvent(int peerId, byte[] data)
     {
         var packet = C_PLAYER_STAT_EVENT.Parser.ParseFrom(data);
-
         var statManager = HostStatManager.Instance;
 
         if (packet.EventType == StatEventType.OxygenChanged && packet.Oxygen != null)
         {
             if (packet.Oxygen.ChangeType == OxygenChangeType.ConsumeNatural)
             {
-                if (packet.TargetPlayerId == NetManager.Instance._playerId)
-                {
-                    return;
-                }
+                if (packet.TargetPlayerId == NetManager.Instance._playerId) return;
                 statManager.DecreaseOxygen(packet.TargetPlayerId);
             }
             else if (packet.Oxygen.ChangeType == OxygenChangeType.RestoreArea)
             {
                 statManager.IncreaseOxygen(packet.TargetPlayerId);
             }
-            else
-            {
-                Debug.LogWarning($"Unknown oxygen change type: {packet.Oxygen.ChangeType}");
-            }
-                
         }
 
         if (packet.EventType == StatEventType.DamageTaken && packet.Damage != null)
-        {
             statManager.DecreaseHp(packet.TargetPlayerId, packet.Damage.DamageAmount);
-        }
         else if (packet.EventType == StatEventType.Healed && packet.Heal != null)
-        {
             statManager.IncreaseHp(packet.TargetPlayerId, packet.Heal.HealAmount);
-        }
 
-        // 상태 변경 후 브로드캐스트
-        var stat = statManager.GetPlayerStat(packet.TargetPlayerId);
-        if (stat != null)
+        // 에러 로그 없이 조회
+        if (statManager.TryGetPlayerStat(packet.TargetPlayerId, out var stat))
         {
             var syncPacket = new S_PLAYER_STAT
             {
@@ -235,8 +221,12 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 Oxygen = stat.GetOxygen()
             };
 
-            Debug.Log($"전체 참여자에게 정보를 전달: {packet.TargetPlayerId}: HP={syncPacket.Hp}, Oxygen={syncPacket.Oxygen}");
             HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_STAT, syncPacket, true);
+            OnPeerStatEvent?.Invoke(peerId, syncPacket);
+        }
+        else
+        {
+            Debug.LogWarning($"[HandlePeerStatEvent] Player {packet.TargetPlayerId} not registered yet, skipping.");
         }
     }
 }

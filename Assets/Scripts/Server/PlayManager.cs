@@ -20,6 +20,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent += OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent += OnPeerItemDetach;
         PeerPacketHandler.Instance.OnPeerObjectMoveEvent += OnPeerObjectMove;
+        PeerPacketHandler.Instance.OnPeerStatEvent += OnPeerStat; // 추가
 
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
@@ -27,7 +28,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnItemAttached += OnHostItemPickup;
         HostPacketHandler.Instance.OnItemDetatched += OnHostItemDetach;
         HostPacketHandler.Instance.OnItemMoveEvent += OnHostItemMove;
-
+        HostPacketHandler.Instance.OnStatEvent += OnHostStat;
 
         PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
 
@@ -64,6 +65,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent -= OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent -= OnPeerItemDetach;
         PeerPacketHandler.Instance.OnPeerObjectMoveEvent -= OnPeerObjectMove;
+        PeerPacketHandler.Instance.OnPeerStatEvent -= OnPeerStat; // 추가
 
         HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent -= OnHostMove;
@@ -71,6 +73,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnItemAttached -= OnHostItemPickup;
         HostPacketHandler.Instance.OnItemDetatched -= OnHostItemDetach;
         HostPacketHandler.Instance.OnItemMoveEvent -= OnHostItemMove;
+        HostPacketHandler.Instance.OnStatEvent -= OnHostStat;
 
         PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
     }
@@ -178,6 +181,16 @@ public class PlayManager : SceneSingleton<PlayManager>
         else
         {
             Debug.LogWarning($"[HostItemMove] Item not found: {packet.ObjectId.ItemId}");
+        }
+    }
+
+    private void OnHostStat(S_PLAYER_STAT packet)
+    {
+        if (_remotePlayers.TryGetValue(packet.PlayerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+                remotePlayer.SetStat(packet.Hp, packet.Oxygen);
         }
     }
 
@@ -293,6 +306,17 @@ public class PlayManager : SceneSingleton<PlayManager>
         else
         {
             Debug.LogWarning($"[PeerObjectMove] Item not found: {packet.ObjectId.ItemId}");
+        }
+    }
+
+    // 핸들러 추가
+    private void OnPeerStat(int peerId, S_PLAYER_STAT packet)
+    {
+        if (_remotePlayers.TryGetValue((ulong)peerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+                remotePlayer.SetStat(packet.Hp, packet.Oxygen);
         }
     }
 
