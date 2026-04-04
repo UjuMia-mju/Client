@@ -51,6 +51,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 break;
             case PacketId.PKT_C_OBJECT_MOVE:
                 HandlePeerObjectMove(peerId, data);
+                break;
             case PacketId.PKT_C_PLAYER_STAT_EVENT:
                 HandlePeerStatEvent(peerId, data);
                 break;
@@ -186,7 +187,6 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         };
         HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_MOVE, relay, includeSender: false);
     }
-}
 
     private void HandlePeerStatEvent(int peerId, byte[] data)
     {

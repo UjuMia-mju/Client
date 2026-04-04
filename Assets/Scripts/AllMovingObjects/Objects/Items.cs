@@ -95,8 +95,7 @@ public class Items : MovingObject
 
         if (posChanged || rotChanged)
         {
-            Debug.Log($"위치 패킷전송 | posChanged={posChanged} ({Vector3.Distance(transform.position, _lastSendPos):F4}) | rotChanged={rotChanged} ({Quaternion.Angle(transform.rotation, _lastSendRot):F4}) | hVel={horizontalVelocity.sqrMagnitude:F4}");
-            PacketDispatcher.Instance.SendItemOrToolMove(this, transform.position, transform.rotation);
+            PacketSender.Instance.SendItemMove(itemId, transform.position, transform.rotation);
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;
             _lastSendTime = Time.time;

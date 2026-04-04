@@ -62,7 +62,7 @@ public class ConnectManager : SceneSingleton<ConnectManager>
         var player = FindFirstObjectByType<Player>();
         if (player != null)
         {
-            PacketDispatcher.Instance.SendMove(player.transform.position, player.transform.rotation, force: true);
+            PacketSender.Instance.SendMove(player.transform.position, player.transform.rotation);
         }
     }
 

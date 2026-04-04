@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Protocol;
 
 public class HostSender : IPcaketDispatcher
@@ -9,42 +9,32 @@ public class HostSender : IPcaketDispatcher
     private Vector3 _lastSentPos;
     private Quaternion _lastSentRot;
 
+    private readonly S_MOVE _movePacket = new S_MOVE();
+    private readonly S_PLAYER_ANIMATION _animPacket = new S_PLAYER_ANIMATION();
+    private readonly S_PLAYER_STAT _eventPacket = new S_PLAYER_STAT();
 
-    // 재사용 가능한 패킷 객체들 (값이 자주 바뀌는 패킷들은 매번 새로 생성하지 않고 재사용)
-    private readonly S_MOVE _movePacket = new ();
-    private readonly S_PLAYER_ANIMATION _animPacket = new ();
-    private readonly S_PLAYER_STAT _eventPacket = new ();
-
-    public ulong GetLocalPlayerId()
-    {
-        // 로그인 후 세팅되는 값 사용
-        return (ulong)NetManager.Instance._playerId;
-    }
+    public ulong GetLocalPlayerId() => (ulong)NetManager.Instance._playerId;
 
     public void SendEnterGame(ulong playerIndex)
     {
         Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
-
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ENTER, new S_PLAYER_ENTER
         {
             Player = new PlayerGameInfo
             {
-                PlayerId = (int)GetLocalPlayerId()
+                PlayerId = (int)GetLocalPlayerId(),
+                Name = "Host",
+                Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
+                Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
             }
         });
-        return;
     }
-    public void SendChat(string message)
-    {
-        
-    }
+
+    public void SendChat(string message) { }
+
     public void SendMove(Vector3 position, Quaternion rotation)
     {
-        // 값이 바뀌지 않았으면 전송하지 않음
-        if (position == _lastSentPos && rotation == _lastSentRot)
-        {
-            return;
-        }
+        if (position == _lastSentPos && rotation == _lastSentRot) return;
 
         _lastSentPos = position;
         _lastSentRot = rotation;
@@ -63,28 +53,65 @@ public class HostSender : IPcaketDispatcher
         _movePacket.Rot = _moveRotInfo;
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_MOVE, _movePacket);
     }
+
     public void SendAnimation(AnimState animState)
     {
         _animPacket.PlayerId = GetLocalPlayerId();
         _animPacket.State = (int)animState;
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, _animPacket);
     }
+
     public void SendItemAttached(Items itemData)
     {
-        //
+        bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        if (!isItem && !isTool) return;
+
+        S_OBJECT_PICKUP packet = new S_OBJECT_PICKUP
+        {
+            Success = true,
+            ObjectId = new ObjectId
+            {
+                Type = isItem ? ObjectType.Item : ObjectType.Tool,
+                ItemId = (ulong)itemData.itemId
+            },
+            PlayerId = GetLocalPlayerId(),
+            ErrorMsg = ""
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_PICKUP, packet);
     }
+
     public void SendItemDetatched(Items itemData)
     {
-        //
+        bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        if (!isItem && !isTool) return;
+
+        S_OBJECT_DROP packet = new S_OBJECT_DROP
+        {
+            ObjectId = new ObjectId
+            {
+                Type = isItem ? ObjectType.Item : ObjectType.Tool,
+                ItemId = (ulong)itemData.itemId
+            },
+            PlayerId = GetLocalPlayerId()
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DROP, packet);
     }
+
     public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
     {
-        //
+        S_OBJECT_MOVE packet = new S_OBJECT_MOVE
+        {
+            ObjectId = new ObjectId { Type = ObjectType.Item, ItemId = (ulong)itemId },
+            Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
+            Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_MOVE, packet);
     }
-    public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation)
-    {
-        //
-    }
+
+    public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation) { }
+
     public void SendPlayerStatEvent(
         StatEventType eventType,
         ulong targetPlayerId,
@@ -94,16 +121,14 @@ public class HostSender : IPcaketDispatcher
         ItemUseEventData itemUse = null
     )
     {
-        //권한 없음
-        Debug.LogWarning("HostSender.SendPlayerStatEvent called, but stat events should be sent by the HostPlayerStat component.");
+        Debug.LogWarning("HostSender.SendPlayerStatEvent: 호스트는 stat 이벤트를 보낼 권한이 없습니다.");
     }
+
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
     {
         _eventPacket.PlayerId = targetPlayerId;
         _eventPacket.Hp = hp;
         _eventPacket.Oxygen = oxygen;
-        Debug.Log($"Broadcasting stat result for Player {targetPlayerId}: HP={hp}, Oxygen={oxygen}");
-
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_STAT, _eventPacket);
     }
 }
