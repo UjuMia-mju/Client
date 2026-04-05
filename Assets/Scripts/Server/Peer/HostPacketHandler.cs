@@ -17,7 +17,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
     public event Action<S_OBJECT_SMELT> OnSmeltEvent;
     public event Action<S_SMELT_COMPLETE> OnSmeltCompleteEvent;
-
+    public event Action<S_FURNACE_RETRIEVE> OnFurnaceRetrieveEvent;
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         switch (packetId)
@@ -54,6 +54,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_SMELT_COMPLETE:
                 HandleSmeltComplete(data);
+                break;
+            case PacketId.PKT_S_FURNACE_RETRIEVE:
+                HandleFurnaceRetrieve(data);
                 break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
@@ -134,5 +137,11 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         S_SMELT_COMPLETE packet = S_SMELT_COMPLETE.Parser.ParseFrom(payloadData);
         OnSmeltCompleteEvent?.Invoke(packet); // 필요 시 완성 알림 처리
+    }
+
+    private void HandleFurnaceRetrieve(byte[] payloadData)
+    {
+        S_FURNACE_RETRIEVE packet = S_FURNACE_RETRIEVE.Parser.ParseFrom(payloadData);
+        OnFurnaceRetrieveEvent?.Invoke(packet); // 필요 시 완성 알림 처리
     }
 }

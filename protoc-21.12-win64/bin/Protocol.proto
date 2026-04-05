@@ -374,3 +374,15 @@ message S_SMELT_COMPLETE
 	int32 furnace_id = 2;
 	ItemType item_result = 3;
 }
+
+// 용광로 꺼내기
+message C_FURNACE_RETRIEVE
+{
+	int32 furnace_id = 1;
+}
+
+message S_FURNACE_RETRIEVE
+{
+	int32 furnace_id = 1;
+	ItemType item_result = 2;
+}

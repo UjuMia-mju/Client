@@ -20,6 +20,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_TEST_ENTER_GAME> OnPeerEnterGameEvent;
     public event Action<int, C_PLAYER_STAT_EVENT> OnPeerStatEvent;
     public event Action<int, ulong> OnPeerSmeltRequestEvent;
+    public event Action<int> OnPeerFurnaceRetrieveEvent;
     /// <summary>
     /// 호스트가 피어로부터 받은 패킷 처리
     /// NetManager의 피어 receive 루프에서 호출됨
@@ -54,6 +55,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 break;
             case PacketId.PKT_C_OBJECT_SMELT:
                 HandlePeerSmeltRequest(peerId, data);
+                break;
+            case PacketId.PKT_C_FURNACE_RETRIEVE:
+                HandlePeerFurnaceRetrieve(peerId, data);
                 break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
@@ -221,5 +225,15 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         int furnaceId = packet.FurnaceId;
         ulong objectId = packet.ObjectId.ItemId;
         OnPeerSmeltRequestEvent?.Invoke(furnaceId, objectId);
+    }
+
+    public void HandlePeerFurnaceRetrieve(int peerId, byte[] data)
+    {
+        var packet = C_FURNACE_RETRIEVE.Parser.ParseFrom(data);
+        Debug.Log($"Received furnace retrieve request from Peer {peerId} for FurnaceId: {packet.FurnaceId}");
+
+        // 용광로 아이템 회수 요청 이벤트 발생
+        int furnaceId = packet.FurnaceId;
+        OnPeerFurnaceRetrieveEvent?.Invoke(furnaceId);
     }
 }

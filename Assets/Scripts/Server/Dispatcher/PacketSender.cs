@@ -69,6 +69,10 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     // 용광로 작업 요청 전송
     public void SendFurnanceSmeltRequest(ulong objectId, int furnaceId)
         => TryClientSend(() => clientSender.SendFurnanceSmeltRequest(objectId, furnaceId));
+    
+    // 용광로에서 아이템 회수 요청 전송
+    public void SendFurnaceRetrieveRequest(int furnaceId)
+        => TryClientSend(() => clientSender.SendFurnaceRetrieveRequest(furnaceId));
 
 
     #endregion
@@ -99,6 +103,10 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     // 용광로 작업 완료 결과 전파
     public void BroadcastFurnanceSmeltComplete(int objectId, int furnaceId, ItemType resultItem)
         => TryHostBroadcast(() => hostSender.BroadcastFurnanceSmeltComplete(objectId, furnaceId, resultItem));
+
+    // 용광로에서 아이템 회수 결과 전파
+    public void BroadcastFurnaceRetrieve(int furnaceId, ItemType retrievedItem)
+        => TryHostBroadcast(() => hostSender.BroadcastFurnaceRetrieve(furnaceId, retrievedItem));
 
     #endregion
 }

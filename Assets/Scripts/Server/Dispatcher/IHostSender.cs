@@ -9,4 +9,5 @@ public interface IHostSender
     void BroadcastStatResult(ulong targetId, int hp, float oxygen);
     void BroadcastFurnanceSmeltStart(int furnaceId, int objectId, int meltTime);
     void BroadcastFurnanceSmeltComplete(int objectId, int furnaceId, ItemType resultItem);
+    void BroadcastFurnaceRetrieve(int furnaceId, ItemType retrievedItem);
 }

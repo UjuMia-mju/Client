@@ -123,4 +123,11 @@ public class PeerSender : IClientSender
         C_OBJECT_SMELT reqPacket = new C_OBJECT_SMELT { ObjectId = objectId_p, FurnaceId = furnaceId };
         peerNet.SendPacket(PacketId.PKT_C_OBJECT_SMELT, reqPacket);
     }
+
+    // 용광로에서 아이템 회수 요청
+    public void SendFurnaceRetrieveRequest(int furnaceId)
+    {
+        C_FURNACE_RETRIEVE reqPacket = new C_FURNACE_RETRIEVE { FurnaceId = furnaceId };
+        peerNet.SendPacket(PacketId.PKT_C_FURNACE_RETRIEVE, reqPacket);
+    }
 }

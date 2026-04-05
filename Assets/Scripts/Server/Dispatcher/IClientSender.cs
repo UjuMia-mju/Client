@@ -21,4 +21,5 @@ public interface IClientSender
     );
     void BroadcastStatResult(ulong targetId, int hp, float oxygen);
     void SendFurnanceSmeltRequest(ulong objectId, int furnaceId);
+    void SendFurnaceRetrieveRequest(int furnaceId);
 }

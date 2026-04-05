@@ -2,12 +2,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 
+
+[System.Serializable]
+public class ResultPrefabData
+{
+    public int resultItemType;
+    public GameObject resultPrefab;
+}
+
 public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
 {
     // 씬에 존재하는 용광로 컨트롤러들을 관리하는 딕셔너리
     private Dictionary<int, FurnaceObject> furnaceControllers = new ();
     private const float ITEM_THROW_HEIGHT = 3.5f; 
     private const float ITEM_THROW_FORCE = 200f;
+
+    [Header("Result Prefab Settings")]
+    [SerializeField] private List<ResultPrefabData> resultPrefabList = new();
 
     private void Start()
     {
@@ -16,6 +27,7 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         {
             HostPacketHandler.Instance.OnSmeltEvent += HandleSmeltStarted;
             HostPacketHandler.Instance.OnSmeltCompleteEvent += HandleSmeltCompleted;
+            HostPacketHandler.Instance.OnFurnaceRetrieveEvent += HandleFurnaceRetrieve;
         }
     }
 
@@ -26,6 +38,7 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         {
             HostPacketHandler.Instance.OnSmeltEvent -= HandleSmeltStarted;
             HostPacketHandler.Instance.OnSmeltCompleteEvent -= HandleSmeltCompleted;
+            HostPacketHandler.Instance.OnFurnaceRetrieveEvent -= HandleFurnaceRetrieve;
         }
     }
 
@@ -89,6 +102,35 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
             // 해당 용광로의 파티클, 사운드 등 작동 종료 연출 (UI적인 처리)
             furnaceObject.OnSmeltCompleted();
             Debug.Log($"[Client] {furnaceId}번 용광로 작동 완료!");
+        }
+    }
+
+    // 서버로부터 용광로에서 아이템이 완성되어 수거하라는 패킷을 받았을 때 처리
+    private void HandleFurnaceRetrieve(S_FURNACE_RETRIEVE packet)
+    {
+        int furnaceId = packet.FurnaceId;
+        int resultItemType = (int)packet.ItemResult; // ItemType (Enum)을 int로 캐스팅
+
+        SpawnResultItemLocal(furnaceId, resultItemType);
+    }
+
+    public void SpawnResultItemLocal(int furnaceId, int resultItemType)
+    {
+        // 1. 해당 ID의 용광로 확인
+        if (furnaceControllers.TryGetValue(furnaceId, out FurnaceObject furnaceObj))
+        {
+            // 2. 인스펙터에 등록된 리스트에서 아이템 ID 탐색
+            ResultPrefabData foundData = resultPrefabList.Find(x => x.resultItemType == resultItemType);
+
+            if (foundData != null && foundData.resultPrefab != null)
+            {
+                // 3. 실제 배출 (던지기)
+                furnaceObj.ThrowSmeltedItem(foundData.resultPrefab);
+            }
+            else
+            {
+                Debug.LogError($"[ClientManager] 인스펙터(ResultPrefabList)에 타입({resultItemType})의 프리팹이 누락되었습니다!");
+            }
         }
     }
 }

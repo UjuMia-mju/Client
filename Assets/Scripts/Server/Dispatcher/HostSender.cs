@@ -101,4 +101,16 @@ public class HostSender : IHostSender
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_SMELT_COMPLETE, completePacket);
         Debug.Log($"녹이기 완료 알림보냄:: {objectId} in Furnace {furnaceId}: Result Item={resultItem}");
     }
+
+    // 용광로에서 아이템 회수 알림
+    public void BroadcastFurnaceRetrieve(int furnaceId, ItemType resultItem)
+    {
+        S_FURNACE_RETRIEVE retrievePacket = new S_FURNACE_RETRIEVE
+        {
+            FurnaceId = furnaceId,
+            ItemResult = resultItem
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_FURNACE_RETRIEVE, retrievePacket);
+        Debug.Log($"용광로에서 아이템 회수 알림 보냄:: Furnace {furnaceId}: Result Item={resultItem}");
+    }
 }
