@@ -30,6 +30,7 @@ public static class Define
         public const string CLICKOFF = "ClickOff";
         public const string SPACESHIP = "Spaceship";
         public const string RESPAWN_SPOT = "RespawnSpot";    
+        public const string PLANET = "Planet";
     }
 
     public static class Layer
