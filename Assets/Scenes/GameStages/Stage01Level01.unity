@@ -758,6 +758,7 @@ MonoBehaviour:
   furnaceId: 1
   fireEffect: {fileID: 0}
   workingSound: {fileID: 0}
+  progressBar: {fileID: 168549275}
 --- !u!1 &377323709
 GameObject:
   m_ObjectHideFlags: 0

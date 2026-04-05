@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FurnaceObject : MonoBehaviour
 {
@@ -7,24 +9,24 @@ public class FurnaceObject : MonoBehaviour
     [Header("Visuals & Effects")]
     [SerializeField] private ParticleSystem fireEffect;
     [SerializeField] private AudioSource workingSound;
+    [SerializeField] private Image progressBar; // 시각적 타이머용 UI (인스펙터에서 연결)
     private Coroutine visualTimerCoroutine; // 시각적 타이머를 관리할 코루틴
     private bool isWorking = false;
     private void Start()
     {
-        // 매니저가 씬에 존재한다면 이 용광로를 통신망(Dictionary)에 등록
-        if (FurnaceClientManager.Instance != null)
+        // 진행 이미지 초기 상태 설정 (투명하게 숨김)
+        if (progressBar != null)
         {
-            FurnaceClientManager.Instance.RegisterFurnace(furnaceId, this);
+            progressBar.fillAmount = 0f;
+            progressBar.gameObject.SetActive(false);
         }
+
+        FurnaceClientManager.Instance?.RegisterFurnace(furnaceId, this);
     }
 
     private void OnDestroy()
     {
-        // 씬 전환이나 파괴 시, 매니저의 관리 목록에서 제거하여 에러(NullReference) 방지
-        if (FurnaceClientManager.Instance != null)
-        {
-            FurnaceClientManager.Instance.UnregisterFurnace(furnaceId);
-        }
+        FurnaceClientManager.Instance?.UnregisterFurnace(furnaceId);
     }
 
     // 유저가 용광로에 아이템을 넣으려 할 때 호출 (상호작용 키 등)
@@ -66,8 +68,34 @@ public class FurnaceObject : MonoBehaviour
         if (workingSound != null) workingSound.Play();
 
         // 2. 프로그레스 바 UI 등 시각적 타이머 설정 (클라이언트는 시각적 처리만)
-        //if (visualTimerCoroutine != null) StopCoroutine(visualTimerCoroutine);
-        //visualTimerCoroutine = StartCoroutine(VisualTimerRoutine(meltTime)); // 시각적 타이머 코루틴 시작 (추후 연결 부탁드립니다.)
+        Debug.Log($"!!!!!!!!!!!!!!!!!!!!!!!!");
+        if (visualTimerCoroutine != null) StopCoroutine(visualTimerCoroutine);
+        visualTimerCoroutine = StartCoroutine(VisualTimerRoutine(meltTime));
+    }
+
+    // [클라이언트 전용] 시각적 진행 게이지 코루틴
+    private IEnumerator VisualTimerRoutine(float timerDuration)
+    {
+        if (progressBar != null)
+        {
+            progressBar.gameObject.SetActive(true);
+            progressBar.fillAmount = 0f;
+        }
+
+        float remainingTime = timerDuration;
+
+        while (remainingTime > 0f)
+        {
+            remainingTime -= Time.deltaTime;
+
+            // 진행률 계산하여 이미지 채우기 (시간에 비례해서 점점 차오름)
+            if (progressBar != null)
+            {
+                progressBar.fillAmount = (timerDuration - remainingTime) / timerDuration;
+            }
+
+            yield return null; // 프레임 단위 매번 갱신
+        }
     }
 
     // 서버(통신 Manager)로부터 작동 완료 명령을 받았을 때 호출
@@ -78,7 +106,20 @@ public class FurnaceObject : MonoBehaviour
         // 1. 진행 중이던 이펙트/사운드 정지
         if (fireEffect != null) fireEffect.Stop();
         if (workingSound != null) workingSound.Stop();
-        // progressBar.Hide();
+
+        // 2. 타이머 코루틴 중지 시키기 (메모리 낭비/버그 방지)
+        if (visualTimerCoroutine != null)
+        {
+            StopCoroutine(visualTimerCoroutine);
+            visualTimerCoroutine = null;
+        }
+
+        // 3. UI(Progress Bar) 숨기기
+        if (progressBar != null)
+        {
+            progressBar.fillAmount = 0f; // 다음 작업을 위해 0으로 초기화
+            progressBar.gameObject.SetActive(false); // 게이지 끄기
+        }
 
         // 필요 시 완성 알림음이나 완성 이펙트 재생 (아이템 생성은 서버의 몫)
         Debug.Log($"[Client] 용광로({furnaceId}) 완료! 결과물 드랍 대기중...");

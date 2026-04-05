@@ -29,6 +29,17 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         }
     }
 
+    public FurnaceObject GetFurnaceObject(int furnaceId)
+    {
+        if (furnaceControllers.TryGetValue(furnaceId, out FurnaceObject obj))
+        {
+            return obj;
+        }
+
+        Debug.LogWarning($"[FurnaceClientManager] {furnaceId}번 용광로를 찾을 수 없습니다.");
+        return null;
+    }
+
     // ==========================================
     // 용광로 등록/해제 관리
     // ==========================================

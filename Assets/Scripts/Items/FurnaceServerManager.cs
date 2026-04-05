@@ -49,15 +49,35 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
     {
         // 1. 다른 클라이언트들에게 작업 시작 패킷 브로드캐스트
         PacketSender.Instance.BroadcastFurnanceSmeltStart(furnaceId, (int)objectId, (int)recipe.smeltingTime);
+
+        // 1-1. 호스트 ui 업데이트
+        if (FurnaceClientManager.Instance != null && ConnectManager.Instance.isHost)
+        {
+            FurnaceObject localFurnace = FurnaceClientManager.Instance.GetFurnaceObject(furnaceId);
+            if (localFurnace != null)
+            {
+                // 호스트 눈에 띄게 UI와 파티클 바로 실행!
+                localFurnace.OnSmeltStarted((int)recipe.smeltingTime);
+            }
+        }
+        
         Debug.Log("녹이는중...");
         // 2. 정해진 시간 동안 대기
         yield return new WaitForSeconds(recipe.smeltingTime);
         Debug.Log("녹이는 완료!");
-        // 3. 작업 완료 처리 (Item 제거 및 결과 아이템 생성 등, UI 업데이트 등) -> 이 부분은 클라분들이 해주세요
         
-
         // 4. 추적 중인 리스트에서 제거하여 완료 상태로 전환
         activeFurnaces.Remove(furnaceId);
+
+        // 4-1. 호스트 ui 업데이트 (작업 완료)
+        if (FurnaceClientManager.Instance != null && ConnectManager.Instance.isHost)
+        {
+            FurnaceObject localFurnace = FurnaceClientManager.Instance.GetFurnaceObject(furnaceId);
+            if (localFurnace != null)
+            {
+                localFurnace.OnSmeltCompleted(); // 이 함수가 알아서 코루틴 멈추고 ProgressBar 숨겨줍니다!
+            }
+        }
 
         // 5. 다른 클라이언트들에게 작업 완료 패킷 브로드캐스트
         ItemType resultItemType = (ItemType)recipe.outputItemID;
