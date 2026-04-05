@@ -1,7 +1,7 @@
 using UnityEngine;
 using Protocol;
 
-public class HostSender : IPcaketDispatcher
+public class HostSender : IHostSender
 {
     HostNetManager hostNet = HostNetManager.Instance;
     private readonly PosInfo _movePosInfo = new PosInfo();
@@ -21,7 +21,7 @@ public class HostSender : IPcaketDispatcher
         return (ulong)NetManager.Instance._playerId;
     }
 
-    public void SendEnterGame(ulong playerIndex)
+    public void BroadcastEnterGame(ulong playerIndex)
     {
         Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
 
@@ -34,7 +34,7 @@ public class HostSender : IPcaketDispatcher
         });
         return;
     }
-    public void SendChat(string message)
+    public void BroadcastChat(string message)
     {
         
     }
@@ -69,41 +69,36 @@ public class HostSender : IPcaketDispatcher
         _animPacket.State = (int)animState;
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, _animPacket);
     }
-    public void SendItemAttached(Items itemData)
-    {
-        //
-    }
-    public void SendItemDetatched(Items itemData)
-    {
-        //
-    }
-    public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
-    {
-        //
-    }
-    public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation)
-    {
-        //
-    }
-    public void SendPlayerStatEvent(
-        StatEventType eventType,
-        ulong targetPlayerId,
-        DamageEventData damage = null,
-        HealEventData heal = null,
-        OxygenEventData oxygen = null,
-        ItemUseEventData itemUse = null
-    )
-    {
-        //권한 없음
-        Debug.LogWarning("HostSender.SendPlayerStatEvent called, but stat events should be sent by the HostPlayerStat component.");
-    }
+    
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
     {
         _eventPacket.PlayerId = targetPlayerId;
         _eventPacket.Hp = hp;
         _eventPacket.Oxygen = oxygen;
-        Debug.Log($"Broadcasting stat result for Player {targetPlayerId}: HP={hp}, Oxygen={oxygen}");
+        //Debug.Log($"Broadcasting stat result for Player {targetPlayerId}: HP={hp}, Oxygen={oxygen}");
 
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_STAT, _eventPacket);
+    }
+
+    public void BroadcastFurnanceSmeltStart(int furnaceId, int objectId, int meltTime)
+    {
+        S_OBJECT_SMELT startPacket = new S_OBJECT_SMELT { 
+            ObjectId = new ObjectId { ItemId = (ulong)objectId, Type = ObjectType.Item}, 
+            MeltTime = meltTime,
+            FurnaceId = furnaceId
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_SMELT, startPacket);
+    }
+
+    public void BroadcastFurnanceSmeltComplete(int objectId, int furnaceId, ItemType resultItem)
+    {
+        S_SMELT_COMPLETE completePacket = new S_SMELT_COMPLETE
+        { 
+            ObjectId = new ObjectId { ItemId = (ulong)objectId, Type = ObjectType.Item }, 
+            FurnaceId = furnaceId, 
+            ItemResult = resultItem 
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_SMELT_COMPLETE, completePacket);
+        Debug.Log($"녹이기 완료 알림보냄:: {objectId} in Furnace {furnaceId}: Result Item={resultItem}");
     }
 }

@@ -53,7 +53,9 @@ public enum PacketId : ushort
     PKT_S_OBJECT_DROP = 1050,
     PKT_C_OBJECT_MOVE = 1051,
     PKT_S_OBJECT_MOVE = 1052,
-
+    PKT_C_OBJECT_SMELT = 1053,
+    PKT_S_OBJECT_SMELT = 1054,
+    PKT_S_SMELT_COMPLETE = 1055,
     // 20260310일자 수정
     // 플레이어 스탯, 조합대, 오브젝트 위치/회전정보 헤더 필요합니다.
     //PKT_C_STAT = 1036,

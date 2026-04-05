@@ -50,6 +50,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             case PacketId.PKT_C_PLAYER_STAT_EVENT:
                 HandlePeerStatEvent(peerId, data);
                 break;
+            case PacketId.PKT_C_OBJECT_SMELT:
+                HandlePeerSmeltRequest(peerId, data);
+                break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
                 break;
@@ -205,5 +208,14 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             Debug.Log($"전체 참여자에게 정보를 전달: {packet.TargetPlayerId}: HP={syncPacket.Hp}, Oxygen={syncPacket.Oxygen}");
             HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_STAT, syncPacket, true);
         }
+    }
+
+    public void HandlePeerSmeltRequest(int peerId, byte[] data)
+    {
+        var packet = C_OBJECT_SMELT.Parser.ParseFrom(data);
+        Debug.Log($"Received smelt request from Peer {peerId} for ObjectId: {packet.ObjectId.ItemId}, FurnaceId: {packet.FurnaceId}");
+
+        // 용광로 작업 요청 이벤트 발생
+        //OnPeerSmeltRequestEvent?.Invoke(peerId, packet);
     }
 }

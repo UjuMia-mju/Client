@@ -208,8 +208,17 @@ public class Player : MovingObject
     private void LateUpdate()
     {
         // 서버로 패킷 전송
+        if (ConnectManager.Instance.isHost)
+        {
+            // 호스트는 로컬 플레이어의 위치/애니메이션을 굳이 서버로 보낼 필요가 없습니다. (자신은 자기 상태를 알고 있기 때문)
+
+            return;
+        }
+
         SendPositionToServer();
         SendAnimationToServer();
+
+        
         //SendPlayerStatToServer();
     }
 
@@ -264,15 +273,27 @@ public class Player : MovingObject
             // 또한 투입할 때 플레이어의 손에서 Detach
             else if (nearestObject.CompareTag(Define.Tag.FURNACE) && isPlayerGetSomething)
             {
-                Furnace furnace = nearestObject.GetComponent<Furnace>();
-                if (furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem))
+                FurnaceObject furnace = nearestObject.GetComponent<FurnaceObject>();
+                if (furnace != null)
                 {
-                    isPlayerGetSomething = false;
-                    playerItemSystem.DetachItem();
-                }
-                else
-                {
-                    Debug.Log("아직 용광로는 준비되지 않았다.");
+                    // 1) 내가 손에 들고 있는 아이템의 고유 ID (네트워크 Object ID)를 가져옵니다.
+                    // Items 클래스에 UID가 있다면 그걸 넣으시고, 지금은 예시로 1을 사용하겠습니다. 추후에 수정해주세요!
+                    // int objectId = playerItemSystem.currentEquipItem.GetComponent<Items>().objectId;
+                    int objectId = 1; // 임시 고유번호
+
+                    // 2) 용광로에게 요청을 날립니다. 알아서 Host/Client 분기 처리되어 날아갑니다.
+                    if (furnace.RequestSmelt(objectId))
+                    {
+                        Debug.Log("용광로에 아이템 투입 요청 성공!");
+                        // 3) 성공했다면 플레이어 상태 갱신 (빈손 처리)
+                        Destroy(playerItemSystem.currentEquipItem);
+                        isPlayerGetSomething = false;
+                        playerItemSystem.DetachItem();    
+                    }
+                    else
+                    {
+                        Debug.Log("아직 용광로가 이전 작업을 처리 중입니다!"); // (isWorking == true 인 경우)
+                    }
                 }
             }
 

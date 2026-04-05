@@ -1,7 +1,7 @@
 using UnityEngine;
 using Protocol;
 
-public interface IPcaketDispatcher
+public interface IClientSender
 {
     void SendEnterGame(ulong playerIndex);
     void SendChat(string message);
@@ -20,4 +20,5 @@ public interface IPcaketDispatcher
         ItemUseEventData itemUse = null
     );
     void BroadcastStatResult(ulong targetId, int hp, float oxygen);
+    void SendFurnanceSmeltRequest(ulong objectId, int furnaceId);
 }

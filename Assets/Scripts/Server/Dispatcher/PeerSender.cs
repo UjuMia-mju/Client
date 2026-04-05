@@ -1,7 +1,7 @@
 using UnityEngine;
 using Protocol;
 
-public class PeerSender : IPcaketDispatcher
+public class PeerSender : IClientSender
 {
     PeerNetManager peerNet = PeerNetManager.Instance;
     private readonly PosInfo _movePosInfo = new PosInfo();
@@ -113,5 +113,14 @@ public class PeerSender : IPcaketDispatcher
     {
         // Peer는 Broadcast할 권한이 없으므로 이 메서드는 빈 구현으로 남겨둡니다.
         Debug.LogWarning("PeerSender.BroadcastStatResult called, but peers should not broadcast stat results.");
+    }
+
+    //용광로 요청
+    public void SendFurnanceSmeltRequest(ulong objectId, int furnaceId)
+    {
+        ObjectId objectId_p = new ObjectId { ItemId = objectId, Type = ObjectType.Item };
+
+        C_OBJECT_SMELT reqPacket = new C_OBJECT_SMELT { ObjectId = objectId_p, FurnaceId = furnaceId };
+        peerNet.SendPacket(PacketId.PKT_C_OBJECT_SMELT, reqPacket);
     }
 }
