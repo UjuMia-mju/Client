@@ -18,6 +18,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_OBJECT_PICKUP> OnPeerItemAttachedEvent;
     public event Action<int, C_OBJECT_DROP> OnPeerItemDetachedEvent;
     public event Action<int, C_TEST_ENTER_GAME> OnPeerEnterGameEvent;
+    public event Action<int, C_PLAYER_STAT_EVENT> OnPeerStatEvent;
+    public event Action<int, ulong> OnPeerSmeltRequestEvent;
     /// <summary>
     /// 호스트가 피어로부터 받은 패킷 처리
     /// NetManager의 피어 receive 루프에서 호출됨
@@ -216,6 +218,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         Debug.Log($"Received smelt request from Peer {peerId} for ObjectId: {packet.ObjectId.ItemId}, FurnaceId: {packet.FurnaceId}");
 
         // 용광로 작업 요청 이벤트 발생
-        //OnPeerSmeltRequestEvent?.Invoke(peerId, packet);
+        int furnaceId = packet.FurnaceId;
+        ulong objectId = packet.ObjectId.ItemId;
+        OnPeerSmeltRequestEvent?.Invoke(furnaceId, objectId);
     }
 }

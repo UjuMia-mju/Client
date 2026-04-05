@@ -9,6 +9,16 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
     // 용광로 ID(furnaceId)를 키로 하여 현재 진행 중인 제련 코루틴을 추적
     private Dictionary<int, Coroutine> activeFurnaces = new ();
 
+    private void Start()
+    {
+        PeerPacketHandler.Instance.OnPeerSmeltRequestEvent += OnReceiveSmeltRequest;
+    }
+
+    private void OnDestroy()
+    {
+        PeerPacketHandler.Instance.OnPeerSmeltRequestEvent -= OnReceiveSmeltRequest;
+    }
+
     // 클라이언트로부터 C_OBJECT_SMELT 패킷을 받았을 때 호출 (어떤 용광로인지 정보가 필요함)
     public void OnReceiveSmeltRequest(int furnaceId, ulong objectId)
     {
