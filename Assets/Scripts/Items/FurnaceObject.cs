@@ -10,6 +10,7 @@ public class FurnaceObject : MonoBehaviour
     [SerializeField] private ParticleSystem fireEffect;
     [SerializeField] private AudioSource workingSound;
     [SerializeField] private Image progressBar; // 시각적 타이머용 UI (인스펙터에서 연결)
+    [SerializeField] private Image finishImage; // 제련 완료 시 표시할 이미지 (인스펙터에서 연결)
     private Coroutine visualTimerCoroutine; // 시각적 타이머를 관리할 코루틴
     
     public bool isWorking {get; private set;} = false; // 현재 용광로가 작동 중인지 여부
@@ -24,6 +25,7 @@ public class FurnaceObject : MonoBehaviour
         {
             progressBar.fillAmount = 0f;
             progressBar.gameObject.SetActive(false);
+            finishImage.gameObject.SetActive(false);
         }
 
         FurnaceClientManager.Instance?.RegisterFurnace(furnaceId, this);
@@ -124,6 +126,7 @@ public class FurnaceObject : MonoBehaviour
         {
             progressBar.fillAmount = 0f; // 다음 작업을 위해 0으로 초기화
             progressBar.gameObject.SetActive(false); // 게이지 끄기
+            finishImage.gameObject.SetActive(true); // 제련 완료 이미지 켜기
         }
 
         // 필요 시 완성 알림음이나 완성 이펙트 재생 (아이템 생성은 서버의 몫)
@@ -157,6 +160,11 @@ public class FurnaceObject : MonoBehaviour
         hasResult = false;
         isWorking = false; // 혹시 몰라서 한번 더 함.
 
+        // 완요 이미지 끄기
+        if (finishImage != null)
+        {
+            finishImage.gameObject.SetActive(false);
+        }
         // 2. 스폰 위치 지정 (현재 위치 + 윗방향 높이)
         Vector3 spawnPos = this.transform.position + this.transform.up * item_throw_height;
 
