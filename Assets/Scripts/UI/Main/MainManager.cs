@@ -17,6 +17,8 @@ public class MainManager : MonoBehaviour
 
     private void Start()
     {
+        SoundManager.Instance.PlayBGM("Menu");
+        
         // 이미 인트로를 본 상태라면 (다른 씬에서 돌아온 경우)
         if (_hasSeenIntro)
         {
@@ -75,8 +77,6 @@ public class MainManager : MonoBehaviour
         {
             to.gameObject.SetActive(true);
             yield return StartCoroutine(FadeCanvas(to, 0, 1));
-            
-            SoundManager.Instance.PlayBGM("Menu");
         }
     }
 
