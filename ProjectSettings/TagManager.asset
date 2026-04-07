@@ -13,6 +13,7 @@ TagManager:
   - ClickOff
   - Spaceship
   - RespawnSpot
+  - Planet
   layers:
   - Default
   - TransparentFX

@@ -2,93 +2,81 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// IntroPanel과 MenuPanel의 전환
+/// IntroPanel과 MenuPanel의 전환 (UIPanelAnimator 활용)
 /// </summary>
 public class MainManager : MonoBehaviour
 {
     [Header("Panel References")]
-    [SerializeField] private CanvasGroup introPanel;
-    [SerializeField] private CanvasGroup menuPanel;
+    [SerializeField] private GameObject introPanel; // CanvasGroup 대신 GameObject로 참조
+    [SerializeField] private GameObject menuPanel;
     
-    private float fadeDuration = 0.5f;
+    [Header("Dependencies")]
+    [SerializeField] private UIPanelAnimator animator;
 
     // 앱 실행 후 딱 한 번만 false이고 이후엔 계속 true 유지
     private static bool _hasSeenIntro = false;
 
+    private void Awake()
+    {
+        if (animator == null) animator = GetComponent<UIPanelAnimator>();
+    }
+
     private void Start()
     {
-        // 이미 인트로를 본 상태라면 (다른 씬에서 돌아온 경우)
+        SoundManager.Instance.PlayBGM("Menu");
+        
         if (_hasSeenIntro)
         {
-            // 인트로를 건너뛰고 바로 메뉴 패널을 활성화
-            if (introPanel != null)
-            {
-                introPanel.alpha = 0;
-                introPanel.gameObject.SetActive(false);
-            }
-
+            // 인트로 스킵 상태
+            if (introPanel != null) introPanel.SetActive(false);
             if (menuPanel != null)
             {
-                menuPanel.alpha = 1;
-                menuPanel.gameObject.SetActive(true);
+                menuPanel.SetActive(true);
+                // 즉시 알파를 1로 설정 (연출 없이 고정)
+                var cg = menuPanel.GetComponent<CanvasGroup>() ?? menuPanel.AddComponent<CanvasGroup>();
+                cg.alpha = 1f;
             }
         }
-        else // 소프트웨어를 처음 켰을 때
+        else
         {
-            // 기존처럼 인트로 패널 활성화
+            // 처음 실행 시 인트로 활성화
             if (introPanel != null)
             {
-                introPanel.alpha = 1;
-                introPanel.gameObject.SetActive(true);
+                introPanel.SetActive(true);
+                var cg = introPanel.GetComponent<CanvasGroup>() ?? introPanel.AddComponent<CanvasGroup>();
+                cg.alpha = 1f;
             }
+            if (menuPanel != null) menuPanel.SetActive(false);
 
-            if (menuPanel != null)
-            {
-                menuPanel.alpha = 0;
-                menuPanel.gameObject.SetActive(false);
-            }
-
-            // 다음 씬 진입부터는 인트로를 스킵하도록 상태 변경
             _hasSeenIntro = true;
         }
     }
 
     /// <summary>
-    ///  introPanel에서 menuPanel로 전환
+    /// introPanel에서 menuPanel로 전환
     /// </summary>
     public void ChangeFromIntroToMenu()
     {
         StartCoroutine(SwitchPanelRoutine(introPanel, menuPanel));
     }
 
-    private IEnumerator SwitchPanelRoutine(CanvasGroup from, CanvasGroup to)
+    private IEnumerator SwitchPanelRoutine(GameObject from, GameObject to)
     {
-        // 1. 현재 패널 Fade Out
+        // 1. 현재 패널 Fade Out (Scale 연출 없이 사라지게 하려면 Animator 수정이 필요할 수 있음)
         if (from != null)
         {
-            yield return StartCoroutine(FadeCanvas(from, 1, 0));
-            from.gameObject.SetActive(false);
+            // 주의: 현재 Animator.FadeOut은 Destroy(panel)를 포함하므로, 
+            // 만약 패널을 파괴하지 않고 비활성화만 하려면 Animator에 별도 메서드가 필요합니다.
+            yield return StartCoroutine(animator.FadeOut(from));
+            // Animator 내부에서 이미 Destroy 되었을 것이므로 SetActive(false)는 생략 가능하거나 
+            // Animator의 설정을 따릅니다.
         }
 
         // 2. 다음 패널 활성화 및 Fade In
         if (to != null)
         {
-            to.gameObject.SetActive(true);
-            yield return StartCoroutine(FadeCanvas(to, 0, 1));
-            
-            SoundManager.Instance.PlayBGM("Menu");
+            to.SetActive(true);
+            yield return StartCoroutine(animator.FadeIn(to, Vector3.one));
         }
-    }
-
-    private IEnumerator FadeCanvas(CanvasGroup cg, float start, float end)
-    {
-        float elapsed = 0f;
-        while (elapsed < fadeDuration)
-        {
-            elapsed += Time.deltaTime;
-            cg.alpha = Mathf.Lerp(start, end, elapsed / fadeDuration);
-            yield return null;
-        }
-        cg.alpha = end;
     }
 }

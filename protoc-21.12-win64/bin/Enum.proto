@@ -22,29 +22,29 @@ enum ObjectType
 
 enum ItemType
 {
-    NONE = 0;
-    WOOD = 100;             // 나무
-    STONE = 101;            // 돌
-    IRON_ORE = 102;         // 철광석
-    GOLD_ORE = 103;         // 금광석
+	NONE = 0;
+	WOOD = 100;             // 나무
+	STONE = 101;            // 돌
+	IRON_ORE = 102;         // 철광석
+	GOLD_ORE = 103;         // 금광석
 }
 
 // ==================== 도구 타입 ====================
 enum ToolType
 {
-    TOOL_TYPE_NONE = 0;
-    AXE = 100;                  // 도끼 - 나무 채집
-    PICKAXE = 101;              // 곡괭이 - 돌/광석 채집
-    DRILL = 102;                // 드릴 - 등급 높은 광석 채집
+	TOOL_TYPE_NONE = 0;
+	AXE = 100;                  // 도끼 - 나무 채집
+	PICKAXE = 101;              // 곡괭이 - 돌/광석 채집
+	DRILL = 102;                // 드릴 - 등급 높은 광석 채집
 }
 
 // ==================== 아이템/도구 상태 ====================
 enum ItemState
 {
-    ITEM_STATE_NONE = 0;
-    ON_GROUND = 1;         // 바닥에 떨어진 상태
-    IN_AIR = 2;            // 공중에 떠있는 상태 (던져진 직후)
-    EQUIPPED = 3;          // 플레이어가 장착한 상태
+	ITEM_STATE_NONE = 0;
+	ON_GROUND = 1;         // 바닥에 떨어진 상태
+	IN_AIR = 2;            // 공중에 떠있는 상태 (던져진 직후)
+	EQUIPPED = 3;          // 플레이어가 장착한 상태
 }
 
 // ==================== 데미지 원인 ====================
@@ -60,7 +60,7 @@ enum DamageSource
 enum HealSource
 {
 	HEAL_SOURCE_NONE = 0;
-    REST_AREA = 1;
+	REST_AREA = 1;
 	MEDICAL_KIT = 2;
 }
 
