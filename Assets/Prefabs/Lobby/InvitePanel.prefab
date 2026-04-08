@@ -245,7 +245,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -136.6, y: 0}
+  m_AnchoredPosition: {x: 130, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &321245155493994345
@@ -534,14 +534,13 @@ GameObject:
   - component: {fileID: 404853556371234783}
   - component: {fileID: 2274928297463641413}
   - component: {fileID: 3748637639081051690}
-  - component: {fileID: 6580027613310047666}
   m_Layer: 5
   m_Name: InvitePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &404853556371234783
 RectTransform:
   m_ObjectHideFlags: 0
@@ -603,24 +602,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6580027613310047666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4618512875168059090}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 404fcb9bcb3268f49baa7c9fbc69b7ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LobbyInviteUI
-  panelRoot: {fileID: 4618512875168059090}
-  openInvitePanelButton: {fileID: 0}
-  closeButton: {fileID: 1337889023438820623}
-  targetPlayerNameInput: {fileID: 2887854883077223406}
-  targetPlayerTagInput: {fileID: 6552585286311283258}
-  inviteButton: {fileID: 6661194222300415487}
 --- !u!1 &4715228159295814572
 GameObject:
   m_ObjectHideFlags: 0
@@ -1307,7 +1288,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 150.9, y: 0}
+  m_AnchoredPosition: {x: -130, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3414451684309448763
