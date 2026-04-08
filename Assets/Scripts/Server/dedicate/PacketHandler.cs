@@ -9,6 +9,9 @@ using System;
 /// </summary>
 public class PacketHandler : Singleton<PacketHandler>
 {
+    /// <summary>로비 씬 로드 전에 S_ENTER_ROOM이 도착한 경우를 위해 캐시. LobbyRoomClient가 씬 로드 후 적용.</summary>
+    private static S_ENTER_ROOM _cachedEnterRoom;
+
     // 이벤트
     public event Action<S_LOGIN> OnLoginResultEvent;
     public event Action<S_GACHA> OnGachaResultEvent;
@@ -184,8 +187,22 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_ENTER_ROOM packet = S_ENTER_ROOM.Parser.ParseFrom(payloadData);
         if (packet.Success)
-            PacketManager.SetCachedEnterRoom(packet);
+            _cachedEnterRoom = packet;
         OnEnterRoomEvent?.Invoke(packet);
+    }
+
+    /// <summary>캐시된 S_ENTER_ROOM(성공)을 반환하고 캐시를 비웁니다. 로비 씬 로드 후 한 번만 호출.</summary>
+    public static S_ENTER_ROOM GetAndClearCachedEnterRoom()
+    {
+        var p = _cachedEnterRoom;
+        _cachedEnterRoom = null;
+        return p;
+    }
+
+    /// <summary>방 생성 직후 클라에서 S_ENTER_ROOM을 보내지 않을 때, 가짜 S_ENTER_ROOM을 캐시해 두기 위해 사용.</summary>
+    public static void SetCachedEnterRoom(S_ENTER_ROOM packet)
+    {
+        _cachedEnterRoom = packet;
     }
 
     private void HandleLeaveRoom(byte[] payloadData)
