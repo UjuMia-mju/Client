@@ -823,8 +823,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee0faf06659c5584c9de9034f38d2e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainManager
-  introPanel: {fileID: 1951031237}
-  menuPanel: {fileID: 2014221}
+  introPanel: {fileID: 1951031232}
+  menuPanel: {fileID: 2014216}
   animator: {fileID: 1642478998}
 --- !u!1 &447585588
 GameObject:
@@ -1016,7 +1016,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1345.3, y: 407}
+  m_SizeDelta: {x: 1080, y: 346}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &575907383
 MonoBehaviour:
@@ -1038,7 +1038,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 249678613, guid: 2a4ac35668fcbe94c85d4cca3bd258dc, type: 3}
+  m_Sprite: {fileID: -1914852714, guid: 2a4ac35668fcbe94c85d4cca3bd258dc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

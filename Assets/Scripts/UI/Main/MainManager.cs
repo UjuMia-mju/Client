@@ -23,14 +23,13 @@ public class MainManager : MonoBehaviour
 
     private void Start()
     {
-        SoundManager.Instance.PlayBGM("Menu");
-        
         if (_hasSeenIntro)
         {
             // 인트로 스킵 상태
             if (introPanel != null) introPanel.SetActive(false);
             if (menuPanel != null)
             {
+                SoundManager.Instance.PlayBGM("Menu");
                 menuPanel.SetActive(true);
                 // 즉시 알파를 1로 설정 (연출 없이 고정)
                 var cg = menuPanel.GetComponent<CanvasGroup>() ?? menuPanel.AddComponent<CanvasGroup>();
@@ -46,7 +45,11 @@ public class MainManager : MonoBehaviour
                 var cg = introPanel.GetComponent<CanvasGroup>() ?? introPanel.AddComponent<CanvasGroup>();
                 cg.alpha = 1f;
             }
-            if (menuPanel != null) menuPanel.SetActive(false);
+            if (menuPanel != null)
+            {
+                SoundManager.Instance.PlayBGM("Menu");
+                menuPanel.SetActive(false);
+            }
 
             _hasSeenIntro = true;
         }

@@ -169,7 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SplashController
   logoObject: {fileID: 1201466389}
   animator: {fileID: 1252586139}
-  stayTime: 2
+  stayTime: 3.5
 --- !u!1 &472791190
 GameObject:
   m_ObjectHideFlags: 0
@@ -627,7 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b85abfb5e36c0449925202830961510, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIPanelAnimator
-  duration: 0.2
+  duration: 0.5
 --- !u!4 &1252586140
 Transform:
   m_ObjectHideFlags: 0
