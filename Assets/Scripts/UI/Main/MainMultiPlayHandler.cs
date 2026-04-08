@@ -44,7 +44,7 @@ public class MainMultiPlayHandler : MonoBehaviour
             },
             IsReady = false
         });
-        PacketManager.SetCachedEnterRoom(synthetic);
+        PacketHandler.SetCachedEnterRoom(synthetic);
 
         SceneLoader.Instance.LoadScene(Define.Scene.LOBBY);
     }
