@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Protocol;
 
-public class PeerSender : IPcaketDispatcher
+public class PeerSender : IClientSender
 {
     PeerNetManager peerNet = PeerNetManager.Instance;
     private readonly PosInfo _movePosInfo = new PosInfo();
@@ -136,5 +136,21 @@ public class PeerSender : IPcaketDispatcher
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
     {
         Debug.LogWarning("PeerSender.BroadcastStatResult: 피어는 브로드캐스트 권한이 없습니다.");
+    }
+
+    //용광로 요청
+    public void SendFurnanceSmeltRequest(ulong objectId, int furnaceId)
+    {
+        ObjectId objectId_p = new ObjectId { ItemId = objectId, Type = ObjectType.Item };
+
+        C_OBJECT_SMELT reqPacket = new C_OBJECT_SMELT { ObjectId = objectId_p, FurnaceId = furnaceId };
+        peerNet.SendPacket(PacketId.PKT_C_OBJECT_SMELT, reqPacket);
+    }
+
+    // 용광로에서 아이템 회수 요청
+    public void SendFurnaceRetrieveRequest(int furnaceId)
+    {
+        C_FURNACE_RETRIEVE reqPacket = new C_FURNACE_RETRIEVE { FurnaceId = furnaceId };
+        peerNet.SendPacket(PacketId.PKT_C_FURNACE_RETRIEVE, reqPacket);
     }
 }

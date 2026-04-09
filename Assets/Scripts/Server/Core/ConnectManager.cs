@@ -13,14 +13,7 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     public int hostPortFromServer = 7788;
     private async void Start()
     {
-        if (isHost)
-        {
-            PacketSender.Instance.Init(true);
-        }
-        else
-        {
-            PacketSender.Instance.Init(false);
-        }
+        PacketSender.Instance.Init(isHost);
         
         if (isHost)
         {

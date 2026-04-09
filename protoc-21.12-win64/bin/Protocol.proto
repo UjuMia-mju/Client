@@ -352,3 +352,37 @@ message S_OBJECT_MOVE
 	PosInfo pos = 2;
 	RotInfo rot = 3;
 }
+
+//오브젝트 녹이기
+message C_OBJECT_SMELT
+{
+	ObjectId object_id = 1;
+	int32 furnace_id = 2;
+}
+
+message S_OBJECT_SMELT
+{
+	ObjectId object_id = 1;
+	int32 melt_time = 2;
+	int32 furnace_id = 3;
+}
+
+//용광로 결과
+message S_SMELT_COMPLETE
+{
+	ObjectId object_id = 1;
+	int32 furnace_id = 2;
+	ItemType item_result = 3;
+}
+
+// 용광로 꺼내기
+message C_FURNACE_RETRIEVE
+{
+	int32 furnace_id = 1;
+}
+
+message S_FURNACE_RETRIEVE
+{
+	int32 furnace_id = 1;
+	ItemType item_result = 2;
+}

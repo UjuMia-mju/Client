@@ -213,8 +213,17 @@ public class Player : MovingObject
     private void LateUpdate()
     {
         // 서버로 패킷 전송
+        if (ConnectManager.Instance.isHost)
+        {
+            // 호스트는 로컬 플레이어의 위치/애니메이션을 굳이 서버로 보낼 필요가 없습니다. (자신은 자기 상태를 알고 있기 때문)
+
+            return;
+        }
+
         SendPositionToServer();
         SendAnimationToServer();
+
+        
         //SendPlayerStatToServer();
     }
 
@@ -266,19 +275,42 @@ public class Player : MovingObject
                 playerItemSystem.DetachItem();
             }
 
-            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로이며, 아이템을 들고 있을 때
-            // 또한 투입할 때 플레이어의 손에서 Detach
-            else if (nearestObject.CompareTag(Define.Tag.FURNACE) && isPlayerGetSomething)
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로.
+            else if (nearestObject.CompareTag(Define.Tag.FURNACE))
             {
-                Furnace furnace = nearestObject.GetComponent<Furnace>();
-                if (furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem))
+                FurnaceObject furnace = nearestObject.GetComponent<FurnaceObject>();
+            
+                if (furnace != null)
                 {
-                    isPlayerGetSomething = false;
-                    playerItemSystem.DetachItem();
-                }
-                else
-                {
-                    Debug.Log("아직 용광로는 준비되지 않았다.");
+                    // 1. 용광로가 작업이 끝났으면 아이템 회수하기
+
+                    if (furnace.hasResult)
+                    {
+                        // 클라이언트가 서버로 C_FURNACE_RETRIEVE 패킷을 보내도록 FurnaceObject에 함수(예: RequestRetrieve) 구현 필요
+                        furnace.RequestRetrieve();
+                        Debug.Log("용광로 결과물 수거 요청!");
+                    }
+                    else if (!furnace.isWorking && isPlayerGetSomething)
+                    {
+                        // 2. 용광로가 작업중이 아니고 플레이어가 아이템을 들고 있으면 사용 가능./
+                        // 2-1) 내가 손에 들고 있는 아이템의 고유 ID (네트워크 Object ID)를 가져옵니다.
+                        // Items 클래스에 UID가 있다면 그걸 넣으시고, 지금은 예시로 1을 사용하겠습니다. 추후에 수정해주세요!
+                        int objectId = 1; // 임시 고유번호
+
+                        // 2-2) 용광로에게 요청을 날립니다. 알아서 Host/Client 분기 처리되어 날아갑니다.
+                        if (furnace.RequestSmelt(objectId))
+                        {
+                            Debug.Log("용광로에 아이템 투입 요청 성공!");
+                            // 2-3) 성공했다면 플레이어 상태 갱신 (빈손 처리)
+                            Destroy(playerItemSystem.currentEquipItem);
+                            isPlayerGetSomething = false;
+                            playerItemSystem.DetachItem();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("아직 용광로가 이전 작업을 처리 중입니다!");
+                    }
                 }
             }
 

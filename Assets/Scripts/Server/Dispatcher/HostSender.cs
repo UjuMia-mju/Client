@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Protocol;
 
-public class HostSender : IPcaketDispatcher
+public class HostSender : IHostSender
 {
     HostNetManager hostNet = HostNetManager.Instance;
     private readonly PosInfo _movePosInfo = new PosInfo();
@@ -15,7 +15,7 @@ public class HostSender : IPcaketDispatcher
 
     public ulong GetLocalPlayerId() => (ulong)NetManager.Instance._playerId;
 
-    public void SendEnterGame(ulong playerIndex)
+    public void BroadcastEnterGame(ulong playerIndex)
     {
         Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ENTER, new S_PLAYER_ENTER
@@ -28,6 +28,11 @@ public class HostSender : IPcaketDispatcher
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
             }
         });
+        return;
+    }
+    public void BroadcastChat(string message)
+    {
+        
     }
 
     public void SendChat(string message) { }
@@ -60,75 +65,48 @@ public class HostSender : IPcaketDispatcher
         _animPacket.State = (int)animState;
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, _animPacket);
     }
-
-    public void SendItemAttached(Items itemData)
-    {
-        bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
-        if (!isItem && !isTool) return;
-
-        S_OBJECT_PICKUP packet = new S_OBJECT_PICKUP
-        {
-            Success = true,
-            ObjectId = new ObjectId
-            {
-                Type = isItem ? ObjectType.Item : ObjectType.Tool,
-                ItemId = (ulong)itemData.itemId
-            },
-            PlayerId = GetLocalPlayerId(),
-            ErrorMsg = ""
-        };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_PICKUP, packet);
-    }
-
-    public void SendItemDetatched(Items itemData)
-    {
-        bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
-        if (!isItem && !isTool) return;
-
-        S_OBJECT_DROP packet = new S_OBJECT_DROP
-        {
-            ObjectId = new ObjectId
-            {
-                Type = isItem ? ObjectType.Item : ObjectType.Tool,
-                ItemId = (ulong)itemData.itemId
-            },
-            PlayerId = GetLocalPlayerId()
-        };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DROP, packet);
-    }
-
-    public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
-    {
-        S_OBJECT_MOVE packet = new S_OBJECT_MOVE
-        {
-            ObjectId = new ObjectId { Type = ObjectType.Item, ItemId = (ulong)itemId },
-            Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
-            Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
-        };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_MOVE, packet);
-    }
-
-    public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation) { }
-
-    public void SendPlayerStatEvent(
-        StatEventType eventType,
-        ulong targetPlayerId,
-        DamageEventData damage = null,
-        HealEventData heal = null,
-        OxygenEventData oxygen = null,
-        ItemUseEventData itemUse = null
-    )
-    {
-        Debug.LogWarning("HostSender.SendPlayerStatEvent: 호스트는 stat 이벤트를 보낼 권한이 없습니다.");
-    }
-
+    
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
     {
         _eventPacket.PlayerId = targetPlayerId;
         _eventPacket.Hp = hp;
         _eventPacket.Oxygen = oxygen;
+        //Debug.Log($"Broadcasting stat result for Player {targetPlayerId}: HP={hp}, Oxygen={oxygen}");
+
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_STAT, _eventPacket);
+    }
+
+    public void BroadcastFurnanceSmeltStart(int furnaceId, int objectId, int meltTime)
+    {
+        S_OBJECT_SMELT startPacket = new S_OBJECT_SMELT { 
+            ObjectId = new ObjectId { ItemId = (ulong)objectId, Type = ObjectType.Item}, 
+            MeltTime = meltTime,
+            FurnaceId = furnaceId
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_SMELT, startPacket);
+    }
+
+    public void BroadcastFurnanceSmeltComplete(int objectId, int furnaceId, ItemType resultItem)
+    {
+        S_SMELT_COMPLETE completePacket = new S_SMELT_COMPLETE
+        { 
+            ObjectId = new ObjectId { ItemId = (ulong)objectId, Type = ObjectType.Item }, 
+            FurnaceId = furnaceId, 
+            ItemResult = resultItem 
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_SMELT_COMPLETE, completePacket);
+        Debug.Log($"녹이기 완료 알림보냄:: {objectId} in Furnace {furnaceId}: Result Item={resultItem}");
+    }
+
+    // 용광로에서 아이템 회수 알림
+    public void BroadcastFurnaceRetrieve(int furnaceId, ItemType resultItem)
+    {
+        S_FURNACE_RETRIEVE retrievePacket = new S_FURNACE_RETRIEVE
+        {
+            FurnaceId = furnaceId,
+            ItemResult = resultItem
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_FURNACE_RETRIEVE, retrievePacket);
+        Debug.Log($"용광로에서 아이템 회수 알림 보냄:: Furnace {furnaceId}: Result Item={resultItem}");
     }
 }
