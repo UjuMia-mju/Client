@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections;
 using Protocol;
@@ -25,7 +25,13 @@ public class PeerPlayerStat : PlayerStat
     {
         while (statData.oxygen > 0)
         {
+
+            // 1. 로컬에서 직접 감소
+            statData.DecreaseOxygen(0.01f);
+            CallOnOxygenChanged();
+
             PeerStatManager.Instance.DecreaseOxygen(currPlayerId);
+
             yield return new WaitForSeconds(1.0f);
         }
 

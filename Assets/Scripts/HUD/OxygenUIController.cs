@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class OxygenUIController : MonoBehaviour
@@ -20,6 +20,7 @@ public class OxygenUIController : MonoBehaviour
     {
         if (oxygenImage != null)
         {
+            Debug.Log($"Updating oxygen UI: {amount * 100}%");
             oxygenImage.fillAmount = amount;
             
             // 추가 연출: 산소가 20% 이하일 때 빨간색으로 변경 등
