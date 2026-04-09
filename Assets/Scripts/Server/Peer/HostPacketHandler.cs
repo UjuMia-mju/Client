@@ -19,6 +19,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_OBJECT_SMELT> OnSmeltEvent;
     public event Action<S_SMELT_COMPLETE> OnSmeltCompleteEvent;
     public event Action<S_FURNACE_RETRIEVE> OnFurnaceRetrieveEvent;
+    public event Action<S_OBJECT_SPAWN> OnObjectSpawnEvent;
+    public event Action<S_OBJECT_DESTROY> OnObjectDestroyEvent;
+
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         switch (packetId)
@@ -59,6 +62,12 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
             case PacketId.PKT_S_FURNACE_RETRIEVE:
                 HandleFurnaceRetrieve(data);
                 break;
+            case PacketId.PKT_S_OBJECT_SPAWN:
+                HandleObjectSpawn(data);
+                break;
+            case PacketId.PKT_S_OBJECT_DESTORY:
+                HandleObjectDestroy(data);
+                break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
                 break;
@@ -69,12 +78,17 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
 
-        // === 임시
-        int newPlayerId = packet.Player.PlayerId;
-        NetManager.Instance._playerId = (ulong)newPlayerId; // NetManager에 새로 할당된 playerId 저장
-        Debug.Log($"[HostPacketHandler] Received S_PLAYER_ENTER for PlayerId: {NetManager.Instance._playerId}");
-        // ===
+        // 첫 번째로 받는 패킷은 반드시 피어 자신의 정보 (호스트가 가장 먼저 전송)
+        // _playerId가 0이면 아직 할당 전이므로 자신의 ID로 갱신하고 스폰은 하지 않음
+        if (NetManager.Instance._playerId == 0)
+        {
+            NetManager.Instance._playerId = (ulong)packet.Player.PlayerId;
+            Debug.Log($"[HostPacketHandler] Assigned local PlayerId: {NetManager.Instance._playerId}");
+            // 자기 자신은 RemotePlayer로 스폰하지 않으므로 이벤트를 올리지 않음
+            return;
+        }
 
+        Debug.Log($"[HostPacketHandler] Received S_PLAYER_ENTER for remote player: {packet.Player.PlayerId}");
         OnPlayerEnterEvent?.Invoke(packet);
     }
 
@@ -145,4 +159,18 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
         S_FURNACE_RETRIEVE packet = S_FURNACE_RETRIEVE.Parser.ParseFrom(payloadData);
         OnFurnaceRetrieveEvent?.Invoke(packet); // 필요 시 완성 알림 처리
     }
+
+    private void HandleObjectSpawn(byte[] payloadData)
+    {
+        S_OBJECT_SPAWN packet = S_OBJECT_SPAWN.Parser.ParseFrom(payloadData);
+        OnObjectSpawnEvent?.Invoke(packet);
+    }
+
+    private void HandleObjectDestroy(byte[] payloadData)
+    {
+        S_OBJECT_DESTROY packet = S_OBJECT_DESTROY.Parser.ParseFrom(payloadData);
+        OnObjectDestroyEvent?.Invoke(packet);
+    }
 }
+
+

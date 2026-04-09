@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Protocol;
 public interface IHostSender
 {
@@ -7,7 +7,13 @@ public interface IHostSender
     void SendMove(Vector3 position, Quaternion rotation);
     void SendAnimation(AnimState animState);
     void BroadcastStatResult(ulong targetId, int hp, float oxygen);
+    void BroadcastItemMove(int itemId, Vector3 position, Quaternion rotation);
+    void BroadcastItemAttached(Items itemData);
+    void BroadcastItemDetached(Items itemData);
     void BroadcastFurnanceSmeltStart(int furnaceId, int objectId, int meltTime);
     void BroadcastFurnanceSmeltComplete(int objectId, int furnaceId, ItemType resultItem);
     void BroadcastFurnaceRetrieve(int furnaceId, ItemType retrievedItem);
+
+    void BroadcastObjectSpawn(Items item, Vector3 position, Quaternion rotation);
+    void BroadcastObjectDestroy(int itemId);
 }

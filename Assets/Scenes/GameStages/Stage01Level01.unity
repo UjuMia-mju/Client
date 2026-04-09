@@ -663,7 +663,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FurnaceClientManager
   resultPrefabList:
   - resultItemType: 2
-    resultPrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+    resultPrefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
 --- !u!114 &239167528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1279,6 +1279,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69afb27bc9a488b4c812904a58f10e89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemManager
+  itemPrefabList:
+  - itemStringKey: TestCube
+    prefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  - itemStringKey: SmeltedTestCube
+    prefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
 --- !u!1 &669581819
 GameObject:
   m_ObjectHideFlags: 0
@@ -1790,6 +1795,10 @@ PrefabInstance:
     - target: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
       propertyPath: m_Name
       value: TestCube (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

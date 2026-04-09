@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Protocol;
 using UnityEngine;
@@ -82,9 +82,11 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
         if (FurnaceClientManager.Instance != null && ConnectManager.Instance.isHost)
         {
             FurnaceObject localFurnace = FurnaceClientManager.Instance.GetFurnaceObject(furnaceId);
+            Debug.Log($"[FurnaceServerManager] 호스트 UI 업데이트 시도: furnaceId={furnaceId}, furnaceObj={localFurnace != null}");
             if (localFurnace != null)
             {
                 localFurnace.OnSmeltCompleted();
+                Debug.Log($"[FurnaceServerManager] OnSmeltCompleted 호출 완료, hasResult={localFurnace.hasResult}");
             }
         }
 
@@ -96,34 +98,29 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
     // 클라이언트로부터 C_FURNACE_RETRIEVE 패킷 정보를 받았을 때 호출 (어떤 용광로인지 정보가 필요함)
     public void OnReceiveFurnaceRetrieve(int furnaceId) // objectId 매개변수 제거 (꺼내는 요청은 해당 용광로 번호만으로 판단)
     {
+        Debug.Log($"[FurnaceServerManager] 수거 요청 수신: furnaceId={furnaceId}, activeFurnaces={activeFurnaces.ContainsKey(furnaceId)}, completedFurnaces={completedFurnaces.ContainsKey(furnaceId)}");
+
         if (activeFurnaces.ContainsKey(furnaceId))
         {
-            Debug.LogWarning($"[Server] 용광로({furnaceId})는 아직 제련 중입니다. 수거할 수 없습니다.");
+            Debug.LogWarning($"[Server] 용광로({furnaceId})는 아직 제련 중입니다.");
             return;
         }
 
-        // 1. 해당 용광로에 완료된 아이템이 존재하는지 확인
         if (completedFurnaces.TryGetValue(furnaceId, out int resultItemId))
         {
-            // 2. 완성 보관함에서 꺼냄 (삭제)
             completedFurnaces.Remove(furnaceId);
-
-            // 3. 클라이언트 전체에 뱉으라고 명령을 브로드캐스트
             ItemType itemResult = (ItemType)resultItemId;
             PacketSender.Instance.BroadcastFurnaceRetrieve(furnaceId, itemResult);
 
-            // 4. 아이템 수거
             if (ConnectManager.Instance.isHost && FurnaceClientManager.Instance != null)
             {
-                // 클라이언트 매니저에게 프리팹 스폰 지시 (이게 좋은 방법인지는 모르겠음.)
+                Debug.Log($"[FurnaceServerManager] 호스트 로컬 아이템 생성: furnaceId={furnaceId}, resultItemId={resultItemId}");
                 FurnaceClientManager.Instance.SpawnResultItemLocal(furnaceId, resultItemId);
             }
-
-            Debug.Log($"[Server] 용광로({furnaceId}) 결과물({resultItemId}) 배출 승인 및 브로드캐스트");
         }
         else
         {
-            Debug.LogWarning($"[Server] 용광로({furnaceId})에는 수거할 수 있는 완성품이 없습니다.");
+            Debug.LogWarning($"[Server] 용광로({furnaceId})에는 수거할 완성품이 없습니다.");
         }
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 
@@ -94,14 +94,11 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
 
     private void HandleSmeltCompleted(S_SMELT_COMPLETE packet)
     {
-        // 참고: packet 내부 필드명(FurnaceId 등)은 Protocol.proto 정의에 맞게 수정하세요.
         int furnaceId = packet.FurnaceId;
 
         if (furnaceControllers.TryGetValue(furnaceId, out FurnaceObject furnaceObject))
         {
-            // 해당 용광로의 파티클, 사운드 등 작동 종료 연출 (UI적인 처리)
             furnaceObject.OnSmeltCompleted();
-            Debug.Log($"[Client] {furnaceId}번 용광로 작동 완료!");
         }
     }
 
@@ -109,9 +106,24 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
     private void HandleFurnaceRetrieve(S_FURNACE_RETRIEVE packet)
     {
         int furnaceId = packet.FurnaceId;
-        int resultItemType = (int)packet.ItemResult; // ItemType (Enum)을 int로 캐스팅
+        int resultItemType = (int)packet.ItemResult;
 
-        SpawnResultItemLocal(furnaceId, resultItemType);
+        if (ConnectManager.Instance.isHost) return;
+
+        FurnaceObject furnaceObj = GetFurnaceObject(furnaceId);
+        if (furnaceObj == null) return;
+
+        furnaceObj.OnSmeltCompleted();
+
+        ResultPrefabData foundData = resultPrefabList.Find(x => x.resultItemType == resultItemType);
+        if (foundData == null || foundData.resultPrefab == null)
+        {
+            Debug.LogError($"[FurnaceClientManager] 타입({resultItemType})의 프리팹이 누락되었습니다!");
+            return;
+        }
+
+        // ThrowSmeltedItem과 동일한 방식으로 직접 생성 (용광로 기준 방향)
+        furnaceObj.ThrowSmeltedItem(foundData.resultPrefab);
     }
 
     public void SpawnResultItemLocal(int furnaceId, int resultItemType)

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -156,22 +156,15 @@ public class FurnaceObject : MonoBehaviour
 
     public void ThrowSmeltedItem(GameObject resultPrefab)
     {
-        // 1. 상태 완전 초기화 (이제 빈 용광로가 됨)
         hasResult = false;
-        isWorking = false; // 혹시 몰라서 한번 더 함.
+        isWorking = false;
 
-        // 완요 이미지 끄기
         if (finishImage != null)
-        {
             finishImage.gameObject.SetActive(false);
-        }
-        // 2. 스폰 위치 지정 (현재 위치 + 윗방향 높이)
-        Vector3 spawnPos = this.transform.position + this.transform.up * item_throw_height;
 
-        // 3. 아이템 생성
+        Vector3 spawnPos = this.transform.position + this.transform.up * item_throw_height;
         GameObject itemToThrow = Instantiate(resultPrefab, spawnPos, Quaternion.identity);
 
-        // 4. Rigidbody 가져와서 던지는 물리력 적용
         Rigidbody rb = itemToThrow.GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -179,6 +172,6 @@ public class FurnaceObject : MonoBehaviour
             rb.AddForce(throwDir * item_throw_force);
         }
 
-        Debug.Log($"[Client] 용광로({furnaceId}) 배출 완료!");
+        Debug.Log($"[FurnaceObject] ({furnaceId}) 배출 완료!");
     }
 }

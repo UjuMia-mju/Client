@@ -28,12 +28,9 @@ public class HostSender : IHostSender
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
             }
         });
-        return;
     }
-    public void BroadcastChat(string message)
-    {
-        
-    }
+
+    public void BroadcastChat(string message) { }
 
     public void SendChat(string message) { }
 
@@ -65,21 +62,69 @@ public class HostSender : IHostSender
         _animPacket.State = (int)animState;
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, _animPacket);
     }
-    
+
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
     {
         _eventPacket.PlayerId = targetPlayerId;
         _eventPacket.Hp = hp;
         _eventPacket.Oxygen = oxygen;
-        //Debug.Log($"Broadcasting stat result for Player {targetPlayerId}: HP={hp}, Oxygen={oxygen}");
-
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_STAT, _eventPacket);
+    }
+
+    public void BroadcastItemMove(int itemId, Vector3 position, Quaternion rotation)
+    {
+        S_OBJECT_MOVE packet = new S_OBJECT_MOVE
+        {
+            ObjectId = new ObjectId { Type = ObjectType.Item, ItemId = (ulong)itemId },
+            Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
+            Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_MOVE, packet);
+    }
+
+    public void BroadcastItemAttached(Items itemData)
+    {
+        bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        if (!isItem && !isTool) return;
+
+        S_OBJECT_PICKUP packet = new S_OBJECT_PICKUP
+        {
+            Success = true,
+            ObjectId = new ObjectId
+            {
+                Type = isItem ? ObjectType.Item : ObjectType.Tool,
+                ItemId = (ulong)itemData.itemId
+            },
+            PlayerId = GetLocalPlayerId(),
+            ErrorMsg = ""
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_PICKUP, packet);
+    }
+
+    public void BroadcastItemDetached(Items itemData)
+    {
+        bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        if (!isItem && !isTool) return;
+
+        S_OBJECT_DROP packet = new S_OBJECT_DROP
+        {
+            ObjectId = new ObjectId
+            {
+                Type = isItem ? ObjectType.Item : ObjectType.Tool,
+                ItemId = (ulong)itemData.itemId
+            },
+            PlayerId = GetLocalPlayerId()
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DROP, packet);
     }
 
     public void BroadcastFurnanceSmeltStart(int furnaceId, int objectId, int meltTime)
     {
-        S_OBJECT_SMELT startPacket = new S_OBJECT_SMELT { 
-            ObjectId = new ObjectId { ItemId = (ulong)objectId, Type = ObjectType.Item}, 
+        S_OBJECT_SMELT startPacket = new S_OBJECT_SMELT
+        {
+            ObjectId = new ObjectId { ItemId = (ulong)objectId, Type = ObjectType.Item },
             MeltTime = meltTime,
             FurnaceId = furnaceId
         };
@@ -89,16 +134,15 @@ public class HostSender : IHostSender
     public void BroadcastFurnanceSmeltComplete(int objectId, int furnaceId, ItemType resultItem)
     {
         S_SMELT_COMPLETE completePacket = new S_SMELT_COMPLETE
-        { 
-            ObjectId = new ObjectId { ItemId = (ulong)objectId, Type = ObjectType.Item }, 
-            FurnaceId = furnaceId, 
-            ItemResult = resultItem 
+        {
+            ObjectId = new ObjectId { ItemId = (ulong)objectId, Type = ObjectType.Item },
+            FurnaceId = furnaceId,
+            ItemResult = resultItem
         };
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_SMELT_COMPLETE, completePacket);
         Debug.Log($"녹이기 완료 알림보냄:: {objectId} in Furnace {furnaceId}: Result Item={resultItem}");
     }
 
-    // 용광로에서 아이템 회수 알림
     public void BroadcastFurnaceRetrieve(int furnaceId, ItemType resultItem)
     {
         S_FURNACE_RETRIEVE retrievePacket = new S_FURNACE_RETRIEVE
@@ -109,4 +153,23 @@ public class HostSender : IHostSender
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_FURNACE_RETRIEVE, retrievePacket);
         Debug.Log($"용광로에서 아이템 회수 알림 보냄:: Furnace {furnaceId}: Result Item={resultItem}");
     }
+
+    public void BroadcastObjectSpawn(Items item, Vector3 position, Quaternion rotation)
+    {
+        S_OBJECT_SPAWN packet = new S_OBJECT_SPAWN
+        {
+            ItemId = item.itemId,
+            ItemStringKey = item.itemStringKey,
+            Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
+            Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
+        };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_SPAWN, packet);
+    }
+
+    public void BroadcastObjectDestroy(int itemId)
+    {
+        S_OBJECT_DESTROY packet = new S_OBJECT_DESTROY { ItemId = itemId };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DESTORY, packet);
+        Debug.Log($"[HostSender] BroadcastObjectDestroy: itemId={itemId}");
+    }   
 }

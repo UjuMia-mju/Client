@@ -38,12 +38,13 @@ public class Items : MovingObject
 
     private void FixedUpdate()
     {
-        // 바닥에 닿으면 목표 위치를 현재 위치로 갱신 (이전 공중 위치로 되돌아가는 현상 방지)
         if (_planet != null)
         {
             Vector3 gravityDir = (transform.position - _planet.transform.position).normalized;
             LayerMask groundMask = LayerMask.GetMask(Define.Layer.GROUND, Define.Layer.WALKABLE_COLLIDER);
-            if (Physics.Raycast(transform.position, -gravityDir, 2.0f, groundMask))
+
+            // 거리를 2.0f → 0.6f로 줄여서 완전히 바닥에 닿았을 때만 위치 고정
+            if (Physics.Raycast(transform.position, -gravityDir, 0.6f, groundMask))
             {
                 _targetPos = transform.position;
                 _targetRot = transform.rotation;
@@ -65,9 +66,19 @@ public class Items : MovingObject
             this.transform.localPosition = Vector3.zero;
             this.transform.localRotation = Quaternion.identity;
 
-            // 내 로컬 플레이어의 소켓인지 확인
-            Player localPlayer = transform.parent.GetComponentInParent<Player>();
-            IsOwnedByMe = localPlayer != null;
+            // 부모 계층에서 OtherPlayers 또는 Player를 찾아 로컬 플레이어 소유 여부 판단
+            // OtherPlayers가 부모이면 다른 플레이어가 든 것 → 내 소유 아님
+            OtherPlayers otherPlayer = transform.parent.GetComponentInParent<OtherPlayers>();
+            if (otherPlayer != null)
+            {
+                IsOwnedByMe = false;
+            }
+            else
+            {
+                // OtherPlayers가 없으면 로컬 Player가 든 것
+                Player localPlayer = transform.parent.GetComponentInParent<Player>();
+                IsOwnedByMe = localPlayer != null;
+            }
         }
         else
         {

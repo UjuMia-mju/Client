@@ -212,19 +212,45 @@ public class Player : MovingObject
 
     private void LateUpdate()
     {
-        // 서버로 패킷 전송
         if (ConnectManager.Instance.isHost)
         {
-            // 호스트는 로컬 플레이어의 위치/애니메이션을 굳이 서버로 보낼 필요가 없습니다. (자신은 자기 상태를 알고 있기 때문)
-
+            BroadcastPositionToPeers();
+            BroadcastAnimationToPeers();
             return;
         }
 
         SendPositionToServer();
         SendAnimationToServer();
+    }
 
-        
-        //SendPlayerStatToServer();
+    // 호스트 전용: 자신의 위치를 피어들에게 브로드캐스트
+    private void BroadcastPositionToPeers()
+    {
+        if (Time.time - _lastSendTime < sendInterval)
+            return;
+
+        bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.01f;
+        bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 0.5f;
+
+        if (posChanged || rotChanged)
+        {
+            PacketSender.Instance.BroadcastMove(transform.position, transform.rotation);
+
+            _lastSendPos = transform.position;
+            _lastSendRot = transform.rotation;
+            _lastSendTime = Time.time;
+        }
+    }
+
+    // 호스트 전용: 자신의 애니메이션을 피어들에게 브로드캐스트
+    private void BroadcastAnimationToPeers()
+    {
+        AnimState currentState = playerAnimator.GetAnimState();
+        if (currentState != lastAnimState)
+        {
+            PacketSender.Instance.BroadcastAnimation(currentState);
+            lastAnimState = currentState;
+        }
     }
 
     protected override void Moving(Vector3 movDir)
@@ -292,16 +318,16 @@ public class Player : MovingObject
                     }
                     else if (!furnace.isWorking && isPlayerGetSomething)
                     {
-                        // 2. 용광로가 작업중이 아니고 플레이어가 아이템을 들고 있으면 사용 가능./
-                        // 2-1) 내가 손에 들고 있는 아이템의 고유 ID (네트워크 Object ID)를 가져옵니다.
-                        // Items 클래스에 UID가 있다면 그걸 넣으시고, 지금은 예시로 1을 사용하겠습니다. 추후에 수정해주세요!
-                        int objectId = 1; // 임시 고유번호
+                        // 손에 든 아이템의 실제 itemId를 사용
+                        Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
+                        if (currentItem == null) return;
 
-                        // 2-2) 용광로에게 요청을 날립니다. 알아서 Host/Client 분기 처리되어 날아갑니다.
+                        int objectId = currentItem.itemId;
+
                         if (furnace.RequestSmelt(objectId))
                         {
                             Debug.Log("용광로에 아이템 투입 요청 성공!");
-                            // 2-3) 성공했다면 플레이어 상태 갱신 (빈손 처리)
+                            PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
                             Destroy(playerItemSystem.currentEquipItem);
                             isPlayerGetSomething = false;
                             playerItemSystem.DetachItem();

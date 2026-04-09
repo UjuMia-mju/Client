@@ -1,4 +1,4 @@
-public enum PacketId : ushort
+﻿public enum PacketId : ushort
 {
     PKT_C_LOGIN = 1000,
     PKT_S_LOGIN = 1001,
@@ -53,17 +53,17 @@ public enum PacketId : ushort
     PKT_S_OBJECT_DROP = 1050,
     PKT_C_OBJECT_MOVE = 1051,
     PKT_S_OBJECT_MOVE = 1052,
+
+    // 용광로 패킷 20260410
     PKT_C_OBJECT_SMELT = 1053,
     PKT_S_OBJECT_SMELT = 1054,
     PKT_S_SMELT_COMPLETE = 1055,
     PKT_C_FURNACE_RETRIEVE = 1056,
-    PKT_S_FURNACE_RETRIEVE = 1056,
-    // 20260310일자 수정
-    // 플레이어 스탯, 조합대, 오브젝트 위치/회전정보 헤더 필요합니다.
-    //PKT_C_STAT = 1036,
-    //PKT_S_STAT = 1037,
-    //PKT_C_ITEM_MOVE = 1038,
-    //PKT_S_ITEM_MOVE = 1039,
-    //PKT_C_WORKBENCH = 1040,
-    //PKT_S_WORKBENCH = 1041,
+    PKT_S_FURNACE_RETRIEVE = 1057,
+
+    // 아이템 생성/ 파괴 패킷 20260410
+    PKT_S_OBJECT_SPAWN = 1058,
+    PKT_S_OBJECT_DESTORY = 1059,
+    PKT_C_OBJECT_SPAWN = 1060,
+    PKT_C_OBJECT_DESTROY = 1061
 }

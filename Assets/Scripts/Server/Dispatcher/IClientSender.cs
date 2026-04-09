@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Protocol;
 
 public interface IClientSender
@@ -22,4 +22,6 @@ public interface IClientSender
     void BroadcastStatResult(ulong targetId, int hp, float oxygen);
     void SendFurnanceSmeltRequest(ulong objectId, int furnaceId);
     void SendFurnaceRetrieveRequest(int furnaceId);
+    void SendObjectSpawn(string itemStringKey, Vector3 position, Quaternion rotation);
+    void SendObjectDestroy(int itemId);
 }

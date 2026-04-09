@@ -1,6 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Protocol;
 using System;
+
 public class PacketSender : MonoBehaviorSingleton<PacketSender>
 {
     private IClientSender clientSender;
@@ -10,14 +11,13 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     {
         if (isHost)
         {
-            var sender = new HostSender();
-            clientSender = null; // 호스트는 클라이언트 기능이 없음
-            hostSender = sender;
+            hostSender = new HostSender();
+            clientSender = null;
         }
         else
         {
             clientSender = new PeerSender();
-            hostSender = null; // 피어는 서버 기능이 없음
+            hostSender = null;
         }
     }
 
@@ -37,8 +37,7 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
             broadcastReq?.Invoke();
     }
 
-    #region Client Requests 
-    // (클라이언트 -> 호스트 요청)
+    #region Client Requests
     public void SendEnterGame(ulong playerIndex)
         => TryClientSend(() => clientSender.SendEnterGame(playerIndex));
 
@@ -51,14 +50,32 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     public void SendAnimation(AnimState animState)
         => TryClientSend(() => clientSender.SendAnimation(animState));
 
+    // 아이템 집기: 호스트/피어 분기
     public void SendItemAttached(Items itemData)
-        => TryClientSend(() => clientSender.SendItemAttached(itemData));
+    {
+        if (hostSender != null)
+            hostSender.BroadcastItemAttached(itemData);
+        else
+            TryClientSend(() => clientSender.SendItemAttached(itemData));
+    }
 
+    // 아이템 놓기: 호스트/피어 분기
     public void SendItemDetatched(Items itemData)
-        => TryClientSend(() => clientSender.SendItemDetatched(itemData));
+    {
+        if (hostSender != null)
+            hostSender.BroadcastItemDetached(itemData);
+        else
+            TryClientSend(() => clientSender.SendItemDetatched(itemData));
+    }
 
+    // 아이템 이동: 호스트/피어 분기
     public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
-        => TryClientSend(() => clientSender.SendItemMove(itemId, position, rotation));
+    {
+        if (hostSender != null)
+            hostSender.BroadcastItemMove(itemId, position, rotation);
+        else
+            TryClientSend(() => clientSender.SendItemMove(itemId, position, rotation));
+    }
 
     public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation)
         => TryClientSend(() => clientSender.SendToolMove(data, position, rotation));
@@ -66,21 +83,30 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     public void SendPlayerStatEvent(StatEventType eventType, ulong targetPlayerId, DamageEventData damage = null, HealEventData heal = null, OxygenEventData oxygen = null, ItemUseEventData itemUse = null)
         => TryClientSend(() => clientSender.SendPlayerStatEvent(eventType, targetPlayerId, damage, heal, oxygen, itemUse));
 
-    // 용광로 작업 요청 전송
     public void SendFurnanceSmeltRequest(ulong objectId, int furnaceId)
         => TryClientSend(() => clientSender.SendFurnanceSmeltRequest(objectId, furnaceId));
-    
-    // 용광로에서 아이템 회수 요청 전송
+
     public void SendFurnaceRetrieveRequest(int furnaceId)
         => TryClientSend(() => clientSender.SendFurnaceRetrieveRequest(furnaceId));
 
+    public void SendObjectSpawn(Items item, Vector3 position, Quaternion rotation)
+    {
+        if (hostSender != null)
+            TryHostBroadcast(() => hostSender.BroadcastObjectSpawn(item, position, rotation));
+        else
+            TryClientSend(() => clientSender.SendObjectSpawn(item.itemStringKey, position, rotation));
+    }
 
+    public void SendObjectDestroy(int itemId)
+    {
+        if (hostSender != null)
+            TryHostBroadcast(() => hostSender.BroadcastObjectDestroy(itemId));
+        else
+            TryClientSend(() => clientSender.SendObjectDestroy(itemId));
+    }
     #endregion
 
-
-    #region Host Broadcasts 
-    //(호스트 -> 전체 클라이언트 전파)
-
+    #region Host Broadcasts
     public void BroadcastPlayerEnter(ulong playerIndex)
         => TryHostBroadcast(() => hostSender.BroadcastEnterGame(playerIndex));
 
@@ -96,17 +122,19 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     public void BroadcastStatResult(ulong targetId, int hp, float oxygen)
         => TryHostBroadcast(() => hostSender.BroadcastStatResult(targetId, hp, oxygen));
 
-    // 용광로 작업 시작 결과 전파
     public void BroadcastFurnanceSmeltStart(int furnaceId, int objectId, int meltTime)
         => TryHostBroadcast(() => hostSender.BroadcastFurnanceSmeltStart(furnaceId, objectId, meltTime));
 
-    // 용광로 작업 완료 결과 전파
     public void BroadcastFurnanceSmeltComplete(int objectId, int furnaceId, ItemType resultItem)
         => TryHostBroadcast(() => hostSender.BroadcastFurnanceSmeltComplete(objectId, furnaceId, resultItem));
 
-    // 용광로에서 아이템 회수 결과 전파
     public void BroadcastFurnaceRetrieve(int furnaceId, ItemType retrievedItem)
         => TryHostBroadcast(() => hostSender.BroadcastFurnaceRetrieve(furnaceId, retrievedItem));
 
+    public void BroadcastObjectSpawn(Items item, Vector3 position, Quaternion rotation)
+        => TryHostBroadcast(() => hostSender.BroadcastObjectSpawn(item, position, rotation));
+
+    public void BroadcastObjectDestroy(int itemId)
+        => TryHostBroadcast(() => hostSender.BroadcastObjectDestroy(itemId));
     #endregion
 }

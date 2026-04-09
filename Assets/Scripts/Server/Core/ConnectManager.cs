@@ -51,11 +51,11 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     /// </summary>
     private void OnPeerEntered(int peerId, Protocol.C_TEST_ENTER_GAME packet)
     {
-        // 호스트의 현재 위치를 즉시 전송 (Enter 패킷은 PeerPacketHandler에서 처리됨)
         var player = FindFirstObjectByType<Player>();
         if (player != null)
         {
-            PacketSender.Instance.SendMove(player.transform.position, player.transform.rotation);
+            // 호스트는 BroadcastMove를 사용해야 함
+            PacketSender.Instance.BroadcastMove(player.transform.position, player.transform.rotation);
         }
     }
 

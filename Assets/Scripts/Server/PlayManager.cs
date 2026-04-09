@@ -19,8 +19,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerAnimationEvent += OnPeerAnimation;
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent += OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent += OnPeerItemDetach;
-        PeerPacketHandler.Instance.OnPeerObjectMoveEvent += OnPeerObjectMove;
-        PeerPacketHandler.Instance.OnPeerStatEvent += OnPeerStat; // 추가
+        PeerPacketHandler.Instance.OnPeerObjectSpawnEvent += OnPeerObjectSpawn;
+        PeerPacketHandler.Instance.OnPeerObjectDestroyEvent += OnPeerObjectDestroy;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
@@ -29,6 +29,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnItemDetatched += OnHostItemDetach;
         HostPacketHandler.Instance.OnItemMoveEvent += OnHostItemMove;
         HostPacketHandler.Instance.OnStatEvent += OnHostStat;
+        HostPacketHandler.Instance.OnObjectSpawnEvent += OnHostObjectSpawn;
+        HostPacketHandler.Instance.OnObjectDestroyEvent += OnHostObjectDestroy;
 
         PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
 
@@ -50,7 +52,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         //HostPacketHandler.Instance.OnStatEvent += PeerStatManager.Instance.OnStatChanged;
     }
 
-    // HACK : 애니메이션은 실시간으로 처리해야되기때문에 Update에서 처리하도록 했습니다. 올바른 처리일까요?
+    // HACK : 애니메이션은 실시간으로 처리해야되기때문에 Update에서 처리도록 했습니다. 올바른 처리일까요?
     private void Update()
     {
         
@@ -64,8 +66,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerAnimationEvent -= OnPeerAnimation;
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent -= OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent -= OnPeerItemDetach;
-        PeerPacketHandler.Instance.OnPeerObjectMoveEvent -= OnPeerObjectMove;
-        PeerPacketHandler.Instance.OnPeerStatEvent -= OnPeerStat; // 추가
+        PeerPacketHandler.Instance.OnPeerObjectSpawnEvent -= OnPeerObjectSpawn;
+        PeerPacketHandler.Instance.OnPeerObjectDestroyEvent -= OnPeerObjectDestroy;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent -= OnHostMove;
@@ -74,6 +76,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnItemDetatched -= OnHostItemDetach;
         HostPacketHandler.Instance.OnItemMoveEvent -= OnHostItemMove;
         HostPacketHandler.Instance.OnStatEvent -= OnHostStat;
+        HostPacketHandler.Instance.OnObjectSpawnEvent -= OnHostObjectSpawn;
+        HostPacketHandler.Instance.OnObjectDestroyEvent -= OnHostObjectDestroy;
 
         PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
     }
@@ -91,7 +95,6 @@ public class PlayManager : SceneSingleton<PlayManager>
     // 피어가 호스트로부터 받은 S_PLAYER_ENTER 패킷 처리 (호스트가 피어에게 보낸 패킷)
     private void OnServerPlayerEnter(S_PLAYER_ENTER packet)
     {
-        //Instantiate(remotePlayerPrefab);
         OnPlayerEnter((int)packet.Player.PlayerId, packet);
     }
 
@@ -194,6 +197,26 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
     }
 
+    private void OnHostObjectSpawn(S_OBJECT_SPAWN packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+        ItemManager.Instance.SpawnItemFromNetwork(packet.ItemId, packet.ItemStringKey, pos, rot);
+    }
+
+    private void OnHostObjectDestroy(S_OBJECT_DESTROY packet)
+    {
+        Items item = ItemManager.Instance.GetItem(packet.ItemId);
+        if (item == null)
+        {
+            Debug.LogWarning($"[OnHostObjectDestroy] itemId={packet.ItemId}에 해당하는 아이템을 찾을 수 없습니다.");
+            return;
+        }
+
+        ItemManager.Instance.UnregisterItem(item);
+        Destroy(item.gameObject);
+        Debug.Log($"[PlayManager] ObjectDestroy 처리: id={packet.ItemId}");
+    }
     #endregion
 
     #region 인게임 피어 -> 호스트 패킷 
@@ -320,6 +343,28 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
     }
 
+    // 호스트가 피어로부터 받은 C_OBJECT_SPAWN 패킷 처리
+    private void OnPeerObjectSpawn(int peerId, C_OBJECT_SPAWN packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+        ItemManager.Instance.SpawnItemFromNetwork(0, packet.ItemStringKey, pos, rot);
+    }
+
+    // 호스트가 피어로부터 받은 C_OBJECT_DESTROY 패킷 처리
+    private void OnPeerObjectDestroy(int peerId, C_OBJECT_DESTROY packet)
+    {
+        Items item = ItemManager.Instance.GetItem(packet.ItemId);
+        if (item == null)
+        {
+            Debug.LogWarning($"[OnPeerObjectDestroy] itemId={packet.ItemId}에 해당하는 아이템을 찾을 수 없습니다.");
+            return;
+        }
+
+        ItemManager.Instance.UnregisterItem(item);
+        Destroy(item.gameObject);
+        Debug.Log($"[PlayManager] 피어 요청으로 ObjectDestroy: id={packet.ItemId}");
+    }
     #endregion
 
     // 게임 입장 성공
@@ -360,6 +405,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         RemoveRemotePlayer((ulong)packet.Player.PlayerId);
     }
 
+
+
     // HACK : 이전 이동 로직, 다른 상황에 대비해 주석화하고 새로 개발한 Peer 및 Host 용 로직으로 대체하고 테스트합니다.
     // 플레이어 이동
     //private void OnPlayerMove(S_MOVE packet)
@@ -399,7 +446,8 @@ public class PlayManager : SceneSingleton<PlayManager>
             return;
         }
 
-        Vector3 pos = playerInfo.Pos != null ? new Vector3(playerInfo.Pos.X, playerInfo.Pos.Y, playerInfo.Pos.Z) : Vector3.zero;
+        // 스폰 위치 고정 (테스트용: 0, 23, 2)
+        Vector3 pos = new Vector3(0, 23, 2);
         Quaternion rot = playerInfo.Rot != null ? new Quaternion(playerInfo.Rot.X, playerInfo.Rot.Y, playerInfo.Rot.Z, playerInfo.Rot.W) : Quaternion.identity;
 
         GameObject playerObj = Instantiate(remotePlayerPrefab, pos, rot);
@@ -407,7 +455,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         //GameObject playerObj = Instantiate(remotePlayerPrefab, SpawnOffset.transform.position, rot);
 
         playerObj.name = $"RemotePlayer_{playerInfo.PlayerId}";
-
+        
         OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
         if (remotePlayer != null)
         {

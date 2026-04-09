@@ -153,4 +153,23 @@ public class PeerSender : IClientSender
         C_FURNACE_RETRIEVE reqPacket = new C_FURNACE_RETRIEVE { FurnaceId = furnaceId };
         peerNet.SendPacket(PacketId.PKT_C_FURNACE_RETRIEVE, reqPacket);
     }
+
+    public void SendObjectSpawn(string itemStringKey, Vector3 position, Quaternion rotation)
+    {
+        C_OBJECT_SPAWN packet = new C_OBJECT_SPAWN
+        {
+            ItemStringKey = itemStringKey,
+            Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
+            Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
+        };
+        peerNet.SendPacket(PacketId.PKT_C_OBJECT_SPAWN, packet);
+    }
+
+    public void SendObjectDestroy(int itemId)
+    {
+        C_OBJECT_DESTROY packet = new C_OBJECT_DESTROY { ItemId = itemId };
+        peerNet.SendPacket(PacketId.PKT_C_OBJECT_DESTROY, packet);
+    }
+
+
 }

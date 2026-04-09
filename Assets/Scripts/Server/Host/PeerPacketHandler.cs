@@ -21,6 +21,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_PLAYER_STAT_EVENT> OnPeerStatEvent;
     public event Action<int, ulong> OnPeerSmeltRequestEvent;
     public event Action<int> OnPeerFurnaceRetrieveEvent;
+    public event Action<int, C_OBJECT_SPAWN> OnPeerObjectSpawnEvent;
+    public event Action<int, C_OBJECT_DESTROY> OnPeerObjectDestroyEvent;
     /// <summary>
     /// 호스트가 피어로부터 받은 패킷 처리
     /// NetManager의 피어 receive 루프에서 호출됨
@@ -62,6 +64,12 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             case PacketId.PKT_C_FURNACE_RETRIEVE:
                 HandlePeerFurnaceRetrieve(peerId, data);
                 break;
+            case PacketId.PKT_C_OBJECT_SPAWN:
+                HandlePeerObjectSpawn(peerId, data);
+                break;
+            case PacketId.PKT_C_OBJECT_DESTROY:
+                HandlePeerObjectDestroy(peerId, data);
+                break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
                 break;
@@ -87,10 +95,13 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             }
         };
 
-        // 3. 다른 피어들에게 브로드캐스트
+        // 3. 다른 피어들에게 브로드캐스트 (새로 들어온 피어 제외)
         HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket, includeSender: false);
 
-        // 4. 새로 들어온 피어에게 호스트 정보 전송
+        // 4. 새로 들어온 피어에게 자신의 정보 전송 (playerId 세팅용, 스폰 제외 플래그 없음)
+        HostNetManager.Instance.SendToPeer(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket);
+
+        // 5. 새로 들어온 피어에게 호스트 정보 전송
         S_PLAYER_ENTER hostEnterPacket = new S_PLAYER_ENTER
         {
             Player = new PlayerGameInfo
@@ -103,7 +114,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         };
         HostNetManager.Instance.SendToPeer(peerId, PacketId.PKT_S_PLAYER_ENTER, hostEnterPacket);
 
-        // 5. PlayManager 이벤트 발생
+        // 6. PlayManager 이벤트 발생
         OnPeerEnterGameEvent?.Invoke(peerId, packet);
     }
 
@@ -184,7 +195,6 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     private void HandlePeerObjectMove(int peerId, byte[] data)
     {
         C_OBJECT_MOVE packet = C_OBJECT_MOVE.Parser.ParseFrom(data);
-        OnPeerObjectMoveEvent?.Invoke(peerId, packet);
         S_OBJECT_MOVE relay = new S_OBJECT_MOVE
         {
             ObjectId = packet.ObjectId?.Clone(),
@@ -228,7 +238,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             };
 
             HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_STAT, syncPacket, true);
-            OnPeerStatEvent?.Invoke(peerId, syncPacket);
+            OnPeerStatEvent?.Invoke(peerId, packet); // 올바른 인수 타입으로 수정
         }
         else
         {
@@ -255,6 +265,32 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         // 용광로 아이템 회수 요청 이벤트 발생
         int furnaceId = packet.FurnaceId;
         OnPeerFurnaceRetrieveEvent?.Invoke(furnaceId);
+    }
+
+    private void HandlePeerObjectSpawn(int peerId, byte[] data)
+    {
+        C_OBJECT_SPAWN packet = C_OBJECT_SPAWN.Parser.ParseFrom(data);
+        OnPeerObjectSpawnEvent?.Invoke(peerId, packet);
+
+        // 다른 피어들에게 릴레이
+        S_OBJECT_SPAWN relay = new S_OBJECT_SPAWN
+        {
+            ItemId = 0, // 호스트가 itemId 부여 후 브로드캐스트하므로 여기선 0
+            ItemStringKey = packet.ItemStringKey,
+            Pos = packet.Pos?.Clone(),
+            Rot = packet.Rot?.Clone()
+        };
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_SPAWN, relay, includeSender: false);
+    }
+
+    private void HandlePeerObjectDestroy(int peerId, byte[] data)
+    {
+        C_OBJECT_DESTROY packet = C_OBJECT_DESTROY.Parser.ParseFrom(data);
+        OnPeerObjectDestroyEvent?.Invoke(peerId, packet);
+
+        // 다른 피어들에게 릴레이
+        S_OBJECT_DESTROY relay = new S_OBJECT_DESTROY { ItemId = packet.ItemId };
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DESTORY, relay, includeSender: false);
     }
 }
 

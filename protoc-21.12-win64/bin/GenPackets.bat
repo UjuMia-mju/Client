@@ -1,14 +1,9 @@
 @echo off
 setlocal
 
-REM protoc.exe 절대경로
-set PROTOC=C:\Users\Admin\Desktop\UjuMia\protoc-21.12-win64\bin\protoc.exe
-
-REM proto 파일 디렉터리 (bin 폴더에 있음)
-set PROTO_DIR=C:\Users\Admin\Desktop\UjuMia\protoc-21.12-win64\bin
-
-REM 출력 디렉터리 (필요시 폴더 생성)
-set OUTPUT_DIR=C:\Users\Admin\Desktop\UjuMia\Assets\Scripts\Server\Proto
+set PROTOC=C:\Users\owner\Desktop\Files\TeamProject\Client\protoc-21.12-win64\bin\protoc.exe
+set PROTO_DIR=C:\Users\owner\Desktop\Files\TeamProject\Client\protoc-21.12-win64\bin
+set OUTPUT_DIR=C:\Users\owner\Desktop\Files\TeamProject\Client\Assets\Scripts\Server\Proto
 
 
 if not exist "%OUTPUT_DIR%" mkdir "%OUTPUT_DIR%"
