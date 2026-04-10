@@ -11,9 +11,12 @@ public class PlayManager : SceneSingleton<PlayManager>
     private GameObject _localPlayer;
     public Dictionary<ulong, GameObject> _remotePlayers = new();
 
-
+    private SpaceshipAssembly spaceshipAssembly;
     void Start()
     {
+        spaceshipAssembly = FindFirstObjectByType<SpaceshipAssembly>();
+
+
         PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
         PeerPacketHandler.Instance.OnPeerMoveEvent += OnPeerMove;
         PeerPacketHandler.Instance.OnPeerAnimationEvent += OnPeerAnimation;
@@ -21,6 +24,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent += OnPeerItemDetach;
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent += OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent += OnPeerObjectDestroy;
+        PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent += OnPeerSpaceshipInsert;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
@@ -31,6 +35,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnStatEvent += OnHostStat;
         HostPacketHandler.Instance.OnObjectSpawnEvent += OnHostObjectSpawn;
         HostPacketHandler.Instance.OnObjectDestroyEvent += OnHostObjectDestroy;
+        HostPacketHandler.Instance.OnSpaceshipUpdateEvent += OnHostSpaceshipUpdate;
+        HostPacketHandler.Instance.OnSpaceshipCompleteEvent += OnHostSpaceshipComplete;
 
         PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
 
@@ -68,6 +74,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent -= OnPeerItemDetach;
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent -= OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent -= OnPeerObjectDestroy;
+        PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent -= OnPeerSpaceshipInsert;
 
         HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent -= OnHostMove;
@@ -78,6 +85,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnStatEvent -= OnHostStat;
         HostPacketHandler.Instance.OnObjectSpawnEvent -= OnHostObjectSpawn;
         HostPacketHandler.Instance.OnObjectDestroyEvent -= OnHostObjectDestroy;
+        HostPacketHandler.Instance.OnSpaceshipUpdateEvent -= OnHostSpaceshipUpdate;
+        HostPacketHandler.Instance.OnSpaceshipCompleteEvent -= OnHostSpaceshipComplete;
 
         PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
     }
@@ -217,6 +226,20 @@ public class PlayManager : SceneSingleton<PlayManager>
         Destroy(item.gameObject);
         Debug.Log($"[PlayManager] ObjectDestroy 처리: id={packet.ItemId}");
     }
+
+    private void OnHostSpaceshipUpdate(S_SPACESHIP_UPDATE packet)
+    {
+        if (spaceshipAssembly == null) return;
+        spaceshipAssembly.SyncIndex(packet.CurrentIndex);
+    }
+
+    private void OnHostSpaceshipComplete(S_SPACESHIP_COMPLETE packet)
+    {
+        Debug.Log("모든 부품을 모았습니다! 우주선 완성!");  // 추가
+        GameRuleManager.Instance.ReturnToStageSelectScene(packet.Success);
+    }
+
+
     #endregion
 
     #region 인게임 피어 -> 호스트 패킷 
@@ -365,6 +388,28 @@ public class PlayManager : SceneSingleton<PlayManager>
         Destroy(item.gameObject);
         Debug.Log($"[PlayManager] 피어 요청으로 ObjectDestroy: id={packet.ItemId}");
     }
+
+
+
+    private void OnPeerSpaceshipInsert(int peerId, C_SPACESHIP_INSERT packet)
+    {
+        if (spaceshipAssembly == null)
+        {
+            Debug.LogWarning("[OnPeerSpaceshipInsert] SpaceshipAssembly를 찾을 수 없습니다.");
+            return;
+        }
+
+        Items item = ItemManager.Instance.GetItem(packet.ItemId);
+        if (item == null)
+        {
+            Debug.LogWarning($"[OnPeerSpaceshipInsert] itemStringKey={packet.ItemStringKey}에 해당하는 아이템을 찾을 수 없습니다.");
+            return;
+        }
+
+        spaceshipAssembly.AddTargetItems(item.gameObject);
+    }
+
+
     #endregion
 
     // 게임 입장 성공
@@ -477,4 +522,5 @@ public class PlayManager : SceneSingleton<PlayManager>
             Debug.Log($"✓ Removed remote player: {playerId}");
         }
     }
+
 }

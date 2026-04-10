@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 public class PeerStatManager : BaseStatManager<PeerStatManager>
@@ -54,8 +54,6 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
     }
     public void IncreaseOxygen(ulong playerId)
     {
-        Debug.Log($"fyck~~~~ 산소 증가 시작 + id: " + playerId);
-        
         var Oxygen = new OxygenEventData
         {
             ChangeType = OxygenChangeType.RestoreArea,

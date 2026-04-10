@@ -171,5 +171,19 @@ public class HostSender : IHostSender
         S_OBJECT_DESTROY packet = new S_OBJECT_DESTROY { ItemId = itemId };
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DESTORY, packet);
         Debug.Log($"[HostSender] BroadcastObjectDestroy: itemId={itemId}");
-    }   
+    }
+
+    public void BroadcastSpaceshipUpdate(int currentIndex)
+    {
+        S_SPACESHIP_UPDATE packet = new S_SPACESHIP_UPDATE { CurrentIndex = currentIndex };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_SPACESHIP_UPDATE, packet);
+    }
+
+    public void BroadcastSpaceshipComplete(bool success)
+    {
+        S_SPACESHIP_COMPLETE packet = new S_SPACESHIP_COMPLETE { Success = success };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_SPACESHIP_COMPLETE, packet);
+    }
+
+
 }

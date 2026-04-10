@@ -345,12 +345,33 @@ public class Player : MovingObject
             else if (nearestObject.CompareTag(Define.Tag.SPACESHIP) && isPlayerGetSomething)
             {
                 SpaceshipAssembly spaceshipAssembly = nearestObject.GetComponent<SpaceshipAssembly>();
-                if (spaceshipAssembly != null)
+
+                Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
+                if (currentItem == null) return;
+
+                if (ConnectManager.Instance.isHost)
                 {
+                    // 호스트: 직접 판정 후 브로드캐스트
                     spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
                     isPlayerGetSomething = false;
                     playerItemSystem.DetachItem();
                 }
+                else
+                {
+                    // 피어: 패킷 전송 후 로컬 정리
+                    PacketSender.Instance.SendSpaceshipInsert(currentItem.itemStringKey, currentItem.itemId);
+                    PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
+                    Destroy(playerItemSystem.currentEquipItem);
+                    isPlayerGetSomething = false;
+                    playerItemSystem.DetachItem();
+                }
+
+                //if (spaceshipAssembly != null)
+                //{
+                //    spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
+                //    isPlayerGetSomething = false;
+                //    playerItemSystem.DetachItem();
+                //}
             }
         }
     }

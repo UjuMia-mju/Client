@@ -24,4 +24,7 @@ public interface IClientSender
     void SendFurnaceRetrieveRequest(int furnaceId);
     void SendObjectSpawn(string itemStringKey, Vector3 position, Quaternion rotation);
     void SendObjectDestroy(int itemId);
+
+    void SendSpaceshipInsert(string itemStringKey, int itemId);
+
 }

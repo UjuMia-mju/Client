@@ -104,6 +104,10 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
         else
             TryClientSend(() => clientSender.SendObjectDestroy(itemId));
     }
+
+    public void SendSpaceshipInsert(string itemStringKey, int itemId)
+        => TryClientSend (() => clientSender.SendSpaceshipInsert(itemStringKey, itemId));
+
     #endregion
 
     #region Host Broadcasts
@@ -136,5 +140,11 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
 
     public void BroadcastObjectDestroy(int itemId)
         => TryHostBroadcast(() => hostSender.BroadcastObjectDestroy(itemId));
+
+    public void BroadcastSpaceshipUpdate(int currentIndex)
+        => TryHostBroadcast(() => hostSender.BroadcastSpaceshipUpdate(currentIndex));
+
+    public void BroadcastSpaceshipComplete(bool success)
+        => TryHostBroadcast(() => hostSender.BroadcastSpaceshipComplete(success));
     #endregion
 }

@@ -23,6 +23,10 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int> OnPeerFurnaceRetrieveEvent;
     public event Action<int, C_OBJECT_SPAWN> OnPeerObjectSpawnEvent;
     public event Action<int, C_OBJECT_DESTROY> OnPeerObjectDestroyEvent;
+    public event Action<int, C_SPACESHIP_INSERT> OnPeerSpaceshipInsertEvent;
+
+
+
     /// <summary>
     /// 호스트가 피어로부터 받은 패킷 처리
     /// NetManager의 피어 receive 루프에서 호출됨
@@ -69,6 +73,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 break;
             case PacketId.PKT_C_OBJECT_DESTROY:
                 HandlePeerObjectDestroy(peerId, data);
+                break;
+            case PacketId.PKT_C_SPACESHIP_INSERT:
+                HandlePeerSpaceshipInsert(peerId, data);
                 break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
@@ -291,6 +298,13 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         // 다른 피어들에게 릴레이
         S_OBJECT_DESTROY relay = new S_OBJECT_DESTROY { ItemId = packet.ItemId };
         HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DESTORY, relay, includeSender: false);
+    }
+
+
+    private void HandlePeerSpaceshipInsert(int peerId, byte[] data)
+    {
+        C_SPACESHIP_INSERT packet = C_SPACESHIP_INSERT.Parser.ParseFrom(data);
+        OnPeerSpaceshipInsertEvent?.Invoke(peerId, packet);
     }
 }
 

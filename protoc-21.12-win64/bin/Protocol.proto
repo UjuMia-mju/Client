@@ -407,3 +407,17 @@ message C_OBJECT_SPAWN{
 message C_OBJECT_DESTROY{
 	int32 item_id = 1;
 }
+
+message C_SPACESHIP_INSERT{
+	string item_string_key = 1;
+	int32 item_id = 2;
+}
+
+message S_SPACESHIP_UPDATE {
+	int32 current_index = 1;
+}
+
+message S_SPACESHIP_COMPLETE
+{
+	bool success = 1;
+}

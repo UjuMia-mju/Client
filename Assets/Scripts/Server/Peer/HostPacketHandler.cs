@@ -1,4 +1,5 @@
 ﻿using System;
+using NUnit.Framework.Internal;
 using Protocol;
 using UnityEngine;
 
@@ -21,6 +22,8 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_FURNACE_RETRIEVE> OnFurnaceRetrieveEvent;
     public event Action<S_OBJECT_SPAWN> OnObjectSpawnEvent;
     public event Action<S_OBJECT_DESTROY> OnObjectDestroyEvent;
+    public event Action<S_SPACESHIP_UPDATE> OnSpaceshipUpdateEvent;
+    public event Action<S_SPACESHIP_COMPLETE> OnSpaceshipCompleteEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -67,6 +70,12 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_OBJECT_DESTORY:
                 HandleObjectDestroy(data);
+                break;
+            case PacketId.PKT_S_SPACESHIP_UPDATE:
+                HandleSpaceshipUpdate(data);
+                break;
+            case PacketId.PKT_S_SPACESHIP_COMPLETE:
+                HandleSpaceshipComplete(data);
                 break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
@@ -171,6 +180,20 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
         S_OBJECT_DESTROY packet = S_OBJECT_DESTROY.Parser.ParseFrom(payloadData);
         OnObjectDestroyEvent?.Invoke(packet);
     }
+
+
+    private void HandleSpaceshipUpdate(byte[] data)
+    {
+        S_SPACESHIP_UPDATE packet = S_SPACESHIP_UPDATE.Parser.ParseFrom(data);
+        OnSpaceshipUpdateEvent?.Invoke(packet);
+    }
+
+    private void HandleSpaceshipComplete(byte[] data)
+    {
+        S_SPACESHIP_COMPLETE packet = S_SPACESHIP_COMPLETE.Parser.ParseFrom(data);
+        OnSpaceshipCompleteEvent?.Invoke(packet);
+    }
+
 }
 
 

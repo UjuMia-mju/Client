@@ -171,5 +171,9 @@ public class PeerSender : IClientSender
         peerNet.SendPacket(PacketId.PKT_C_OBJECT_DESTROY, packet);
     }
 
-
+    public void SendSpaceshipInsert(string itemStringKey, int itemId)
+    {
+        C_SPACESHIP_INSERT packet = new C_SPACESHIP_INSERT { ItemStringKey = itemStringKey, ItemId = itemId };
+        peerNet.SendPacket(PacketId.PKT_C_SPACESHIP_INSERT, packet);
+    }
 }
