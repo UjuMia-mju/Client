@@ -18,43 +18,86 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_PLAYER_LIST> OnPlayerListEvent;
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
     public event Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
+    public event Action<S_CREATE_ROOM> OnCreateRoomEvent;
+    public event Action<S_ROOM_LIST> OnRoomListEvent;
+    public event Action<S_ENTER_ROOM> OnEnterRoomEvent;
+    public event Action<S_LEAVE_ROOM> OnLeaveRoomEvent;
+    public event Action<S_ROOM_MEMBER_ENTER> OnRoomMemberEnterEvent;
+    public event Action<S_ROOM_MEMBER_LEAVE> OnRoomMemberLeaveEvent;
+    public event Action<S_INVITE_PLAYER> OnInvitePlayerResultEvent;
+    public event Action<S_INVITE_NOTIFICATION> OnInviteNotificationEvent;
+    public event Action<S_INVITE_RESPONSE> OnInviteResponseResultEvent;
+    public event Action<S_READY> OnReadyEvent;
+    public event Action<S_START_ROOM> OnStartRoomEvent;
     public event Action<S_OBJECT_MOVE> OnItemMoveEvent;
+
     public void HandlePacket(PacketId packetId, byte[] data)
     {
         Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
         switch (packetId)
         {
-            case PacketId.PKT_S_LOGIN: 
+            case PacketId.PKT_S_LOGIN:
                 HandleLoginResult(data);
                 break;
-            case PacketId.PKT_S_GACHA:
-                HandleGachaResult(data);
-                break;
-            case PacketId.PKT_S_GACHA_POOL_LIST:
-                HandleGachaPoolList(data);
-                break;
-            case PacketId.PKT_S_MY_SKINS:
-                HandleMySkins(data);
-                break;
-            case PacketId.PKT_S_ENTER_GAME: 
+            case PacketId.PKT_S_ENTER_GAME:
                 HandleEnterGameResult(data);
                 break;
-            case PacketId.PKT_S_PLAYER_LIST: 
+            case PacketId.PKT_S_PLAYER_LIST:
                 HandlePlayerList(data);
                 break;
-            case PacketId.PKT_S_PLAYER_ENTER: 
+            case PacketId.PKT_S_PLAYER_ENTER:
                 HandlePlayerEnter(data);
                 break;
-            case PacketId.PKT_S_PLAYER_LEAVE: 
+            case PacketId.PKT_S_PLAYER_LEAVE:
                 HandlePlayerLeave(data);
                 break;
-            
+            case PacketId.PKT_S_CREATE_ROOM:
+                HandleCreateRoom(data);
+                break;
+            case PacketId.PKT_S_ROOM_LIST:
+                HandleRoomList(data);
+                break;
+            case PacketId.PKT_S_ENTER_ROOM:
+                HandleEnterRoom(data);
+                break;
+            case PacketId.PKT_S_LEAVE_ROOM:
+                HandleLeaveRoom(data);
+                break;
+            case PacketId.PKT_S_ROOM_MEMBER_ENTER:
+                HandleRoomMemberEnter(data);
+                break;
+            case PacketId.PKT_S_ROOM_MEMBER_LEAVE:
+                HandleRoomMemberLeave(data);
+                break;
+            case PacketId.PKT_S_INVITE_PLAYER:
+                HandleInvitePlayerResult(data);
+                break;
+            case PacketId.PKT_S_INVITE_NOTIFICATION:
+                HandleInviteNotification(data);
+                break;
+            case PacketId.PKT_S_INVITE_RESPONSE:
+                HandleInviteResponseResult(data);
+                break;
+            case PacketId.PKT_S_READY:
+                HandleReady(data);
+                break;
+            case PacketId.PKT_S_START_ROOM:
+                HandleStartRoom(data);
+                break;
+            case PacketId.PKT_S_OBJECT_MOVE:
+                HandleObjectMove(data);
+                break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
                 break;
         }
     }
 
+    public void OnDisconnected()
+    {
+        Debug.Log("서버와의 연결이 해제되었습니다.");
+        // TODO: UI 갱신, 재접속 안내, 게임 상태 초기화 등 필요한 작업 추가
+    }
 
     private void HandleLoginResult(byte[] data)
     {
@@ -72,12 +115,6 @@ public class PacketHandler : Singleton<PacketHandler>
         {
             Debug.LogError(" Login Failed!");
         }
-    }
-
-    public void OnDisconnected()
-    {
-        Debug.Log("서버와의 연결이 해제되었습니다.");
-        // TODO: UI 갱신, 재접속 안내, 게임 상태 초기화 등 필요한 작업 추가
     }
 
     private void HandleEnterGameResult(byte[] data)
@@ -130,4 +167,79 @@ public class PacketHandler : Singleton<PacketHandler>
         S_PLAYER_LEAVE packet = S_PLAYER_LEAVE.Parser.ParseFrom(payloadData);
         OnPlayerLeaveEvent?.Invoke(packet);
     }
+
+    private void HandleCreateRoom(byte[] payloadData)
+    {
+        S_CREATE_ROOM packet = S_CREATE_ROOM.Parser.ParseFrom(payloadData);
+        OnCreateRoomEvent?.Invoke(packet);
+    }
+
+    private void HandleRoomList(byte[] payloadData)
+    {
+        S_ROOM_LIST packet = S_ROOM_LIST.Parser.ParseFrom(payloadData);
+        OnRoomListEvent?.Invoke(packet);
+    }
+
+    private void HandleEnterRoom(byte[] payloadData)
+    {
+        S_ENTER_ROOM packet = S_ENTER_ROOM.Parser.ParseFrom(payloadData);
+        if (packet.Success)
+            PacketManager.SetCachedEnterRoom(packet);
+        OnEnterRoomEvent?.Invoke(packet);
+    }
+
+    private void HandleLeaveRoom(byte[] payloadData)
+    {
+        S_LEAVE_ROOM packet = S_LEAVE_ROOM.Parser.ParseFrom(payloadData);
+        OnLeaveRoomEvent?.Invoke(packet);
+    }
+
+    private void HandleRoomMemberEnter(byte[] payloadData)
+    {
+        S_ROOM_MEMBER_ENTER packet = S_ROOM_MEMBER_ENTER.Parser.ParseFrom(payloadData);
+        OnRoomMemberEnterEvent?.Invoke(packet);
+    }
+
+    private void HandleRoomMemberLeave(byte[] payloadData)
+    {
+        S_ROOM_MEMBER_LEAVE packet = S_ROOM_MEMBER_LEAVE.Parser.ParseFrom(payloadData);
+        OnRoomMemberLeaveEvent?.Invoke(packet);
+    }
+
+    private void HandleInvitePlayerResult(byte[] payloadData)
+    {
+        S_INVITE_PLAYER packet = S_INVITE_PLAYER.Parser.ParseFrom(payloadData);
+        OnInvitePlayerResultEvent?.Invoke(packet);
+    }
+
+    private void HandleInviteNotification(byte[] payloadData)
+    {
+        S_INVITE_NOTIFICATION packet = S_INVITE_NOTIFICATION.Parser.ParseFrom(payloadData);
+        OnInviteNotificationEvent?.Invoke(packet);
+    }
+
+    private void HandleInviteResponseResult(byte[] payloadData)
+    {
+        S_INVITE_RESPONSE packet = S_INVITE_RESPONSE.Parser.ParseFrom(payloadData);
+        OnInviteResponseResultEvent?.Invoke(packet);
+    }
+
+    private void HandleReady(byte[] payloadData)
+    {
+        S_READY packet = S_READY.Parser.ParseFrom(payloadData);
+        OnReadyEvent?.Invoke(packet);
+    }
+
+    private void HandleStartRoom(byte[] payloadData)
+    {
+        S_START_ROOM packet = S_START_ROOM.Parser.ParseFrom(payloadData);
+        OnStartRoomEvent?.Invoke(packet);
+    }
+
+    private void HandleObjectMove(byte[] payloadData)
+    {
+        S_OBJECT_MOVE packet = S_OBJECT_MOVE.Parser.ParseFrom(payloadData);
+        OnItemMoveEvent?.Invoke(packet);
+    }
+
 }

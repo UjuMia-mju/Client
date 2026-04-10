@@ -212,7 +212,10 @@ public class BaseNetSession
         {
             return;
         }
-            
+        if (_recvBuffer == null)
+        {
+            _recvBuffer = new RecvBuffer(BUFFER_SIZE);
+        }
 
         ArraySegment<byte> segment = _recvBuffer.GetWriteSegment();
         _socket.BeginReceive(segment.Array, segment.Offset, segment.Count, SocketFlags.None, OnRecvCallback, null);

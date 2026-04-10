@@ -35,35 +35,38 @@ namespace Protocol {
             "ASgFIpIBCgtHYWNoYVJlc3VsdBIqCg5vYnRhaW5lZF9za2lucxgBIAMoCzIS",
             "LlByb3RvY29sLlNraW5JbmZvEhIKCmdlbXNfc3BlbnQYAiABKAUSFgoOcmVt",
             "YWluaW5nX2dlbXMYAyABKAUSEgoKY29pbl9zcGVudBgEIAEoBRIXCg9yZW1h",
-            "aW5pbmdfY29pbnMYBSABKAUinwEKDUdhY2hhUG9vbEluZm8SDwoHcG9vbF9p",
+            "aW5pbmdfY29pbnMYBSABKAUi1QEKDUdhY2hhUG9vbEluZm8SDwoHcG9vbF9p",
             "ZBgBIAEoBRIRCglwb29sX25hbWUYAiABKAkSEQoJcG9vbF90eXBlGAMgASgJ",
-            "EhAKCGNvc3RfZ2VtGAQgASgFEhAKCG1heF9wdWxsGAUgASgFEhEKCWlzX2Fj",
-            "dGl2ZRgGIAEoCBIQCghzdGFydF9hdBgHIAEoAxIOCgZlbmRfYXQYCCABKAMi",
-            "KgoHUG9zSW5mbxIJCgF4GAEgASgCEgkKAXkYAiABKAISCQoBehgDIAEoAiI1",
-            "CgdSb3RJbmZvEgkKAXgYASABKAISCQoBeRgCIAEoAhIJCgF6GAMgASgCEgkK",
-            "AXcYBCABKAIijAEKCFJvb21JbmZvEg8KB3Jvb21faWQYASABKAQSEQoJcm9v",
-            "bV9uYW1lGAIgASgJEh4KBGhvc3QYAyABKAsyEC5Qcm90b2NvbC5QbGF5ZXIS",
-            "FQoNY3VycmVudF9jb3VudBgEIAEoBRIRCgltYXhfY291bnQYBSABKAUSEgoK",
-            "aXNfcGxheWluZxgGIAEoCCJECg5Sb29tTWVtYmVySW5mbxIgCgZwbGF5ZXIY",
-            "ASABKAsyEC5Qcm90b2NvbC5QbGF5ZXISEAoIaXNfcmVhZHkYAiABKAgicgoJ",
-            "U3RhZ2VJbmZvEhMKC3N0YWdlX2xldmVsGAEgASgFEhMKC3N0YWdlX2luZGV4",
-            "GAIgASgFEhIKCnN0YWdlX25hbWUYAyABKAkSEwoLZGVzY3JpcHRpb24YBCAB",
-            "KAkSEgoKZGlmZmljdWx0eRgFIAEoBSJQCg5TdGFnZUNsZWFySW5mbxINCgVz",
-            "dGFnZRgBIAEoBRINCgVsZXZlbBgCIAEoBRIMCgRzdGFyGAMgASgFEhIKCmNs",
-            "ZWFyX3RpbWUYBCABKAMicAoIT2JqZWN0SWQSIgoEdHlwZRgBIAEoDjIULlBy",
-            "b3RvY29sLk9iamVjdFR5cGUSJwoJdG9vbF90eXBlGAIgASgOMhIuUHJvdG9j",
-            "b2wuVG9vbFR5cGVIABIRCgdpdGVtX2lkGAMgASgESABCBAoCaWQikwEKCk9i",
-            "amVjdEluZm8SJQoJb2JqZWN0X2lkGAEgASgLMhIuUHJvdG9jb2wuT2JqZWN0",
-            "SWQSDAoEbmFtZRgCIAEoCRIeCgNwb3MYAyABKAsyES5Qcm90b2NvbC5Qb3NJ",
-            "bmZvEh4KA3JvdBgEIAEoCzIRLlByb3RvY29sLlJvdEluZm8SEAoIb3duZXJf",
-            "aWQYBSABKAQiZQoPRGFtYWdlRXZlbnREYXRhEiYKBnNvdXJjZRgBIAEoDjIW",
-            "LlByb3RvY29sLkRhbWFnZVNvdXJjZRITCgthdHRhY2tlcl9pZBgCIAEoBBIV",
-            "Cg1kYW1hZ2VfYW1vdW50GAMgASgFIkoKDUhlYWxFdmVudERhdGESJAoGc291",
-            "cmNlGAEgASgOMhQuUHJvdG9jb2wuSGVhbFNvdXJjZRITCgtoZWFsX2Ftb3Vu",
-            "dBgCIAEoBSJKChBJdGVtVXNlRXZlbnREYXRhEg8KB2l0ZW1faWQYASABKAQS",
-            "JQoJaXRlbV90eXBlGAIgASgOMhIuUHJvdG9jb2wuSXRlbVR5cGUiUgoPT3h5",
-            "Z2VuRXZlbnREYXRhEi8KC2NoYW5nZV90eXBlGAEgASgOMhouUHJvdG9jb2wu",
-            "T3h5Z2VuQ2hhbmdlVHlwZRIOCgZhbW91bnQYAiABKAJiBnByb3RvMw=="));
+            "EhAKCGNvc3RfZ2VtGAQgASgFEhEKCWNvc3RfY29pbhgFIAEoBRIQCghtYXhf",
+            "cHVsbBgGIAEoBRIRCglpc19hY3RpdmUYByABKAgSEAoIc3RhcnRfYXQYCCAB",
+            "KAMSDgoGZW5kX2F0GAkgASgDEiEKBXNraW5zGAogAygLMhIuUHJvdG9jb2wu",
+            "U2tpbkluZm8iKgoHUG9zSW5mbxIJCgF4GAEgASgCEgkKAXkYAiABKAISCQoB",
+            "ehgDIAEoAiI1CgdSb3RJbmZvEgkKAXgYASABKAISCQoBeRgCIAEoAhIJCgF6",
+            "GAMgASgCEgkKAXcYBCABKAIijAEKCFJvb21JbmZvEg8KB3Jvb21faWQYASAB",
+            "KAQSEQoJcm9vbV9uYW1lGAIgASgJEh4KBGhvc3QYAyABKAsyEC5Qcm90b2Nv",
+            "bC5QbGF5ZXISFQoNY3VycmVudF9jb3VudBgEIAEoBRIRCgltYXhfY291bnQY",
+            "BSABKAUSEgoKaXNfcGxheWluZxgGIAEoCCJECg5Sb29tTWVtYmVySW5mbxIg",
+            "CgZwbGF5ZXIYASABKAsyEC5Qcm90b2NvbC5QbGF5ZXISEAoIaXNfcmVhZHkY",
+            "AiABKAgiqwEKCVN0YWdlSW5mbxIOCgZtYXBfaWQYASABKAUSDwoHY2hhcHRl",
+            "chgCIAEoBRINCgVzdGFnZRgDIAEoBRISCgpzdGFnZV9uYW1lGAQgASgJEhMK",
+            "C2Rlc2NyaXB0aW9uGAUgASgJEhIKCmRpZmZpY3VsdHkYBiABKAUSEwoLaXNC",
+            "b3NzU3RhZ2UYByABKAgSHAoUZXN0aW1hdGVkX2NsZWFyX3RpbWUYCCABKAUi",
+            "QgoOU3RhZ2VDbGVhckluZm8SDgoGbWFwX2lkGAEgASgFEgwKBHN0YXIYAiAB",
+            "KAUSEgoKY2xlYXJfdGltZRgDIAEoAyJwCghPYmplY3RJZBIiCgR0eXBlGAEg",
+            "ASgOMhQuUHJvdG9jb2wuT2JqZWN0VHlwZRInCgl0b29sX3R5cGUYAiABKA4y",
+            "Ei5Qcm90b2NvbC5Ub29sVHlwZUgAEhEKB2l0ZW1faWQYAyABKARIAEIECgJp",
+            "ZCKTAQoKT2JqZWN0SW5mbxIlCglvYmplY3RfaWQYASABKAsyEi5Qcm90b2Nv",
+            "bC5PYmplY3RJZBIMCgRuYW1lGAIgASgJEh4KA3BvcxgDIAEoCzIRLlByb3Rv",
+            "Y29sLlBvc0luZm8SHgoDcm90GAQgASgLMhEuUHJvdG9jb2wuUm90SW5mbxIQ",
+            "Cghvd25lcl9pZBgFIAEoBCJlCg9EYW1hZ2VFdmVudERhdGESJgoGc291cmNl",
+            "GAEgASgOMhYuUHJvdG9jb2wuRGFtYWdlU291cmNlEhMKC2F0dGFja2VyX2lk",
+            "GAIgASgEEhUKDWRhbWFnZV9hbW91bnQYAyABKAUiSgoNSGVhbEV2ZW50RGF0",
+            "YRIkCgZzb3VyY2UYASABKA4yFC5Qcm90b2NvbC5IZWFsU291cmNlEhMKC2hl",
+            "YWxfYW1vdW50GAIgASgFIkoKEEl0ZW1Vc2VFdmVudERhdGESDwoHaXRlbV9p",
+            "ZBgBIAEoBBIlCglpdGVtX3R5cGUYAiABKA4yEi5Qcm90b2NvbC5JdGVtVHlw",
+            "ZSJSCg9PeHlnZW5FdmVudERhdGESLwoLY2hhbmdlX3R5cGUYASABKA4yGi5Q",
+            "cm90b2NvbC5PeHlnZW5DaGFuZ2VUeXBlEg4KBmFtb3VudBgCIAEoAmIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Protocol.EnumReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -72,13 +75,13 @@ namespace Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.PlayerGameInfo), global::Protocol.PlayerGameInfo.Parser, new[]{ "PlayerId", "Name", "Pos", "Rot" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.SkinInfo), global::Protocol.SkinInfo.Parser, new[]{ "SkinId", "SkinName", "SkinDes", "Rarity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.GachaResult), global::Protocol.GachaResult.Parser, new[]{ "ObtainedSkins", "GemsSpent", "RemainingGems", "CoinSpent", "RemainingCoins" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.GachaPoolInfo), global::Protocol.GachaPoolInfo.Parser, new[]{ "PoolId", "PoolName", "PoolType", "CostGem", "MaxPull", "IsActive", "StartAt", "EndAt" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.GachaPoolInfo), global::Protocol.GachaPoolInfo.Parser, new[]{ "PoolId", "PoolName", "PoolType", "CostGem", "CostCoin", "MaxPull", "IsActive", "StartAt", "EndAt", "Skins" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.PosInfo), global::Protocol.PosInfo.Parser, new[]{ "X", "Y", "Z" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.RotInfo), global::Protocol.RotInfo.Parser, new[]{ "X", "Y", "Z", "W" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.RoomInfo), global::Protocol.RoomInfo.Parser, new[]{ "RoomId", "RoomName", "Host", "CurrentCount", "MaxCount", "IsPlaying" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.RoomMemberInfo), global::Protocol.RoomMemberInfo.Parser, new[]{ "Player", "IsReady" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.StageInfo), global::Protocol.StageInfo.Parser, new[]{ "StageLevel", "StageIndex", "StageName", "Description", "Difficulty" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.StageClearInfo), global::Protocol.StageClearInfo.Parser, new[]{ "Stage", "Level", "Star", "ClearTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.StageInfo), global::Protocol.StageInfo.Parser, new[]{ "MapId", "Chapter", "Stage", "StageName", "Description", "Difficulty", "IsBossStage", "EstimatedClearTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.StageClearInfo), global::Protocol.StageClearInfo.Parser, new[]{ "MapId", "Star", "ClearTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.ObjectId), global::Protocol.ObjectId.Parser, new[]{ "Type", "ToolType", "ItemId" }, new[]{ "Id" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.ObjectInfo), global::Protocol.ObjectInfo.Parser, new[]{ "ObjectId", "Name", "Pos", "Rot", "OwnerId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.DamageEventData), global::Protocol.DamageEventData.Parser, new[]{ "Source", "AttackerId", "DamageAmount" }, null, null, null, null),
@@ -91,6 +94,9 @@ namespace Protocol {
 
   }
   #region Messages
+  /// <summary>
+  /// 유저 간단 정보
+  /// </summary>
   public sealed partial class Player : pb::IMessage<Player>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1642,10 +1648,12 @@ namespace Protocol {
       poolName_ = other.poolName_;
       poolType_ = other.poolType_;
       costGem_ = other.costGem_;
+      costCoin_ = other.costCoin_;
       maxPull_ = other.maxPull_;
       isActive_ = other.isActive_;
       startAt_ = other.startAt_;
       endAt_ = other.endAt_;
+      skins_ = other.skins_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1706,8 +1714,20 @@ namespace Protocol {
       }
     }
 
+    /// <summary>Field number for the "cost_coin" field.</summary>
+    public const int CostCoinFieldNumber = 5;
+    private int costCoin_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CostCoin {
+      get { return costCoin_; }
+      set {
+        costCoin_ = value;
+      }
+    }
+
     /// <summary>Field number for the "max_pull" field.</summary>
-    public const int MaxPullFieldNumber = 5;
+    public const int MaxPullFieldNumber = 6;
     private int maxPull_;
     /// <summary>
     /// 1회 최대 뽑기 개수 (없어도 될듯 한데.. 일단 구현)
@@ -1722,7 +1742,7 @@ namespace Protocol {
     }
 
     /// <summary>Field number for the "is_active" field.</summary>
-    public const int IsActiveFieldNumber = 6;
+    public const int IsActiveFieldNumber = 7;
     private bool isActive_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1734,7 +1754,7 @@ namespace Protocol {
     }
 
     /// <summary>Field number for the "start_at" field.</summary>
-    public const int StartAtFieldNumber = 7;
+    public const int StartAtFieldNumber = 8;
     private long startAt_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1746,7 +1766,7 @@ namespace Protocol {
     }
 
     /// <summary>Field number for the "end_at" field.</summary>
-    public const int EndAtFieldNumber = 8;
+    public const int EndAtFieldNumber = 9;
     private long endAt_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1755,6 +1775,20 @@ namespace Protocol {
       set {
         endAt_ = value;
       }
+    }
+
+    /// <summary>Field number for the "skins" field.</summary>
+    public const int SkinsFieldNumber = 10;
+    private static readonly pb::FieldCodec<global::Protocol.SkinInfo> _repeated_skins_codec
+        = pb::FieldCodec.ForMessage(82, global::Protocol.SkinInfo.Parser);
+    private readonly pbc::RepeatedField<global::Protocol.SkinInfo> skins_ = new pbc::RepeatedField<global::Protocol.SkinInfo>();
+    /// <summary>
+    /// 해당 풀에서 뽑을 수 있는 스킨 목록
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Protocol.SkinInfo> Skins {
+      get { return skins_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1776,10 +1810,12 @@ namespace Protocol {
       if (PoolName != other.PoolName) return false;
       if (PoolType != other.PoolType) return false;
       if (CostGem != other.CostGem) return false;
+      if (CostCoin != other.CostCoin) return false;
       if (MaxPull != other.MaxPull) return false;
       if (IsActive != other.IsActive) return false;
       if (StartAt != other.StartAt) return false;
       if (EndAt != other.EndAt) return false;
+      if(!skins_.Equals(other.skins_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1791,10 +1827,12 @@ namespace Protocol {
       if (PoolName.Length != 0) hash ^= PoolName.GetHashCode();
       if (PoolType.Length != 0) hash ^= PoolType.GetHashCode();
       if (CostGem != 0) hash ^= CostGem.GetHashCode();
+      if (CostCoin != 0) hash ^= CostCoin.GetHashCode();
       if (MaxPull != 0) hash ^= MaxPull.GetHashCode();
       if (IsActive != false) hash ^= IsActive.GetHashCode();
       if (StartAt != 0L) hash ^= StartAt.GetHashCode();
       if (EndAt != 0L) hash ^= EndAt.GetHashCode();
+      hash ^= skins_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1829,22 +1867,27 @@ namespace Protocol {
         output.WriteRawTag(32);
         output.WriteInt32(CostGem);
       }
-      if (MaxPull != 0) {
+      if (CostCoin != 0) {
         output.WriteRawTag(40);
+        output.WriteInt32(CostCoin);
+      }
+      if (MaxPull != 0) {
+        output.WriteRawTag(48);
         output.WriteInt32(MaxPull);
       }
       if (IsActive != false) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(56);
         output.WriteBool(IsActive);
       }
       if (StartAt != 0L) {
-        output.WriteRawTag(56);
+        output.WriteRawTag(64);
         output.WriteInt64(StartAt);
       }
       if (EndAt != 0L) {
-        output.WriteRawTag(64);
+        output.WriteRawTag(72);
         output.WriteInt64(EndAt);
       }
+      skins_.WriteTo(output, _repeated_skins_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1871,22 +1914,27 @@ namespace Protocol {
         output.WriteRawTag(32);
         output.WriteInt32(CostGem);
       }
-      if (MaxPull != 0) {
+      if (CostCoin != 0) {
         output.WriteRawTag(40);
+        output.WriteInt32(CostCoin);
+      }
+      if (MaxPull != 0) {
+        output.WriteRawTag(48);
         output.WriteInt32(MaxPull);
       }
       if (IsActive != false) {
-        output.WriteRawTag(48);
+        output.WriteRawTag(56);
         output.WriteBool(IsActive);
       }
       if (StartAt != 0L) {
-        output.WriteRawTag(56);
+        output.WriteRawTag(64);
         output.WriteInt64(StartAt);
       }
       if (EndAt != 0L) {
-        output.WriteRawTag(64);
+        output.WriteRawTag(72);
         output.WriteInt64(EndAt);
       }
+      skins_.WriteTo(ref output, _repeated_skins_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1909,6 +1957,9 @@ namespace Protocol {
       if (CostGem != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(CostGem);
       }
+      if (CostCoin != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(CostCoin);
+      }
       if (MaxPull != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxPull);
       }
@@ -1921,6 +1972,7 @@ namespace Protocol {
       if (EndAt != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(EndAt);
       }
+      size += skins_.CalculateSize(_repeated_skins_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1945,6 +1997,9 @@ namespace Protocol {
       if (other.CostGem != 0) {
         CostGem = other.CostGem;
       }
+      if (other.CostCoin != 0) {
+        CostCoin = other.CostCoin;
+      }
       if (other.MaxPull != 0) {
         MaxPull = other.MaxPull;
       }
@@ -1957,6 +2012,7 @@ namespace Protocol {
       if (other.EndAt != 0L) {
         EndAt = other.EndAt;
       }
+      skins_.Add(other.skins_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1989,19 +2045,27 @@ namespace Protocol {
             break;
           }
           case 40: {
-            MaxPull = input.ReadInt32();
+            CostCoin = input.ReadInt32();
             break;
           }
           case 48: {
-            IsActive = input.ReadBool();
+            MaxPull = input.ReadInt32();
             break;
           }
           case 56: {
-            StartAt = input.ReadInt64();
+            IsActive = input.ReadBool();
             break;
           }
           case 64: {
+            StartAt = input.ReadInt64();
+            break;
+          }
+          case 72: {
             EndAt = input.ReadInt64();
+            break;
+          }
+          case 82: {
+            skins_.AddEntriesFrom(input, _repeated_skins_codec);
             break;
           }
         }
@@ -2036,19 +2100,27 @@ namespace Protocol {
             break;
           }
           case 40: {
-            MaxPull = input.ReadInt32();
+            CostCoin = input.ReadInt32();
             break;
           }
           case 48: {
-            IsActive = input.ReadBool();
+            MaxPull = input.ReadInt32();
             break;
           }
           case 56: {
-            StartAt = input.ReadInt64();
+            IsActive = input.ReadBool();
             break;
           }
           case 64: {
+            StartAt = input.ReadInt64();
+            break;
+          }
+          case 72: {
             EndAt = input.ReadInt64();
+            break;
+          }
+          case 82: {
+            skins_.AddEntriesFrom(ref input, _repeated_skins_codec);
             break;
           }
         }
@@ -3291,11 +3363,14 @@ namespace Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public StageInfo(StageInfo other) : this() {
-      stageLevel_ = other.stageLevel_;
-      stageIndex_ = other.stageIndex_;
+      mapId_ = other.mapId_;
+      chapter_ = other.chapter_;
+      stage_ = other.stage_;
       stageName_ = other.stageName_;
       description_ = other.description_;
       difficulty_ = other.difficulty_;
+      isBossStage_ = other.isBossStage_;
+      estimatedClearTime_ = other.estimatedClearTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3305,38 +3380,53 @@ namespace Protocol {
       return new StageInfo(this);
     }
 
-    /// <summary>Field number for the "stage_level" field.</summary>
-    public const int StageLevelFieldNumber = 1;
-    private int stageLevel_;
+    /// <summary>Field number for the "map_id" field.</summary>
+    public const int MapIdFieldNumber = 1;
+    private int mapId_;
     /// <summary>
-    /// 스테이지 레벨 (월드)
+    /// 맵 ID
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int StageLevel {
-      get { return stageLevel_; }
+    public int MapId {
+      get { return mapId_; }
       set {
-        stageLevel_ = value;
+        mapId_ = value;
       }
     }
 
-    /// <summary>Field number for the "stage_index" field.</summary>
-    public const int StageIndexFieldNumber = 2;
-    private int stageIndex_;
+    /// <summary>Field number for the "chapter" field.</summary>
+    public const int ChapterFieldNumber = 2;
+    private int chapter_;
+    /// <summary>
+    /// 챕터
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Chapter {
+      get { return chapter_; }
+      set {
+        chapter_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "stage" field.</summary>
+    public const int StageFieldNumber = 3;
+    private int stage_;
     /// <summary>
     /// 스테이지 번호
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int StageIndex {
-      get { return stageIndex_; }
+    public int Stage {
+      get { return stage_; }
       set {
-        stageIndex_ = value;
+        stage_ = value;
       }
     }
 
     /// <summary>Field number for the "stage_name" field.</summary>
-    public const int StageNameFieldNumber = 3;
+    public const int StageNameFieldNumber = 4;
     private string stageName_ = "";
     /// <summary>
     /// 스테이지 이름 (예: "화산 던전")
@@ -3351,7 +3441,7 @@ namespace Protocol {
     }
 
     /// <summary>Field number for the "description" field.</summary>
-    public const int DescriptionFieldNumber = 4;
+    public const int DescriptionFieldNumber = 5;
     private string description_ = "";
     /// <summary>
     /// 스테이지 설명
@@ -3366,7 +3456,7 @@ namespace Protocol {
     }
 
     /// <summary>Field number for the "difficulty" field.</summary>
-    public const int DifficultyFieldNumber = 5;
+    public const int DifficultyFieldNumber = 6;
     private int difficulty_;
     /// <summary>
     /// 난이도 (1~5)
@@ -3377,6 +3467,36 @@ namespace Protocol {
       get { return difficulty_; }
       set {
         difficulty_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "isBossStage" field.</summary>
+    public const int IsBossStageFieldNumber = 7;
+    private bool isBossStage_;
+    /// <summary>
+    /// 보스 스테이지 여부
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsBossStage {
+      get { return isBossStage_; }
+      set {
+        isBossStage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "estimated_clear_time" field.</summary>
+    public const int EstimatedClearTimeFieldNumber = 8;
+    private int estimatedClearTime_;
+    /// <summary>
+    /// 예상 클리어 시간 (초)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int EstimatedClearTime {
+      get { return estimatedClearTime_; }
+      set {
+        estimatedClearTime_ = value;
       }
     }
 
@@ -3395,11 +3515,14 @@ namespace Protocol {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (StageLevel != other.StageLevel) return false;
-      if (StageIndex != other.StageIndex) return false;
+      if (MapId != other.MapId) return false;
+      if (Chapter != other.Chapter) return false;
+      if (Stage != other.Stage) return false;
       if (StageName != other.StageName) return false;
       if (Description != other.Description) return false;
       if (Difficulty != other.Difficulty) return false;
+      if (IsBossStage != other.IsBossStage) return false;
+      if (EstimatedClearTime != other.EstimatedClearTime) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3407,11 +3530,14 @@ namespace Protocol {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (StageLevel != 0) hash ^= StageLevel.GetHashCode();
-      if (StageIndex != 0) hash ^= StageIndex.GetHashCode();
+      if (MapId != 0) hash ^= MapId.GetHashCode();
+      if (Chapter != 0) hash ^= Chapter.GetHashCode();
+      if (Stage != 0) hash ^= Stage.GetHashCode();
       if (StageName.Length != 0) hash ^= StageName.GetHashCode();
       if (Description.Length != 0) hash ^= Description.GetHashCode();
       if (Difficulty != 0) hash ^= Difficulty.GetHashCode();
+      if (IsBossStage != false) hash ^= IsBossStage.GetHashCode();
+      if (EstimatedClearTime != 0) hash ^= EstimatedClearTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3430,25 +3556,37 @@ namespace Protocol {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (StageLevel != 0) {
+      if (MapId != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(StageLevel);
+        output.WriteInt32(MapId);
       }
-      if (StageIndex != 0) {
+      if (Chapter != 0) {
         output.WriteRawTag(16);
-        output.WriteInt32(StageIndex);
+        output.WriteInt32(Chapter);
+      }
+      if (Stage != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Stage);
       }
       if (StageName.Length != 0) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteString(StageName);
       }
       if (Description.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(42);
         output.WriteString(Description);
       }
       if (Difficulty != 0) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(48);
         output.WriteInt32(Difficulty);
+      }
+      if (IsBossStage != false) {
+        output.WriteRawTag(56);
+        output.WriteBool(IsBossStage);
+      }
+      if (EstimatedClearTime != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(EstimatedClearTime);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -3460,25 +3598,37 @@ namespace Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (StageLevel != 0) {
+      if (MapId != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(StageLevel);
+        output.WriteInt32(MapId);
       }
-      if (StageIndex != 0) {
+      if (Chapter != 0) {
         output.WriteRawTag(16);
-        output.WriteInt32(StageIndex);
+        output.WriteInt32(Chapter);
+      }
+      if (Stage != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Stage);
       }
       if (StageName.Length != 0) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteString(StageName);
       }
       if (Description.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(42);
         output.WriteString(Description);
       }
       if (Difficulty != 0) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(48);
         output.WriteInt32(Difficulty);
+      }
+      if (IsBossStage != false) {
+        output.WriteRawTag(56);
+        output.WriteBool(IsBossStage);
+      }
+      if (EstimatedClearTime != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(EstimatedClearTime);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -3490,11 +3640,14 @@ namespace Protocol {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (StageLevel != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(StageLevel);
+      if (MapId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MapId);
       }
-      if (StageIndex != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(StageIndex);
+      if (Chapter != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Chapter);
+      }
+      if (Stage != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Stage);
       }
       if (StageName.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(StageName);
@@ -3504,6 +3657,12 @@ namespace Protocol {
       }
       if (Difficulty != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Difficulty);
+      }
+      if (IsBossStage != false) {
+        size += 1 + 1;
+      }
+      if (EstimatedClearTime != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(EstimatedClearTime);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -3517,11 +3676,14 @@ namespace Protocol {
       if (other == null) {
         return;
       }
-      if (other.StageLevel != 0) {
-        StageLevel = other.StageLevel;
+      if (other.MapId != 0) {
+        MapId = other.MapId;
       }
-      if (other.StageIndex != 0) {
-        StageIndex = other.StageIndex;
+      if (other.Chapter != 0) {
+        Chapter = other.Chapter;
+      }
+      if (other.Stage != 0) {
+        Stage = other.Stage;
       }
       if (other.StageName.Length != 0) {
         StageName = other.StageName;
@@ -3531,6 +3693,12 @@ namespace Protocol {
       }
       if (other.Difficulty != 0) {
         Difficulty = other.Difficulty;
+      }
+      if (other.IsBossStage != false) {
+        IsBossStage = other.IsBossStage;
+      }
+      if (other.EstimatedClearTime != 0) {
+        EstimatedClearTime = other.EstimatedClearTime;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3548,23 +3716,35 @@ namespace Protocol {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            StageLevel = input.ReadInt32();
+            MapId = input.ReadInt32();
             break;
           }
           case 16: {
-            StageIndex = input.ReadInt32();
+            Chapter = input.ReadInt32();
             break;
           }
-          case 26: {
-            StageName = input.ReadString();
+          case 24: {
+            Stage = input.ReadInt32();
             break;
           }
           case 34: {
+            StageName = input.ReadString();
+            break;
+          }
+          case 42: {
             Description = input.ReadString();
             break;
           }
-          case 40: {
+          case 48: {
             Difficulty = input.ReadInt32();
+            break;
+          }
+          case 56: {
+            IsBossStage = input.ReadBool();
+            break;
+          }
+          case 64: {
+            EstimatedClearTime = input.ReadInt32();
             break;
           }
         }
@@ -3583,23 +3763,35 @@ namespace Protocol {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            StageLevel = input.ReadInt32();
+            MapId = input.ReadInt32();
             break;
           }
           case 16: {
-            StageIndex = input.ReadInt32();
+            Chapter = input.ReadInt32();
             break;
           }
-          case 26: {
-            StageName = input.ReadString();
+          case 24: {
+            Stage = input.ReadInt32();
             break;
           }
           case 34: {
+            StageName = input.ReadString();
+            break;
+          }
+          case 42: {
             Description = input.ReadString();
             break;
           }
-          case 40: {
+          case 48: {
             Difficulty = input.ReadInt32();
+            break;
+          }
+          case 56: {
+            IsBossStage = input.ReadBool();
+            break;
+          }
+          case 64: {
+            EstimatedClearTime = input.ReadInt32();
             break;
           }
         }
@@ -3646,8 +3838,7 @@ namespace Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public StageClearInfo(StageClearInfo other) : this() {
-      stage_ = other.stage_;
-      level_ = other.level_;
+      mapId_ = other.mapId_;
       star_ = other.star_;
       clearTime_ = other.clearTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -3659,38 +3850,23 @@ namespace Protocol {
       return new StageClearInfo(this);
     }
 
-    /// <summary>Field number for the "stage" field.</summary>
-    public const int StageFieldNumber = 1;
-    private int stage_;
+    /// <summary>Field number for the "map_id" field.</summary>
+    public const int MapIdFieldNumber = 1;
+    private int mapId_;
     /// <summary>
-    /// 스테이지 번호
+    /// 스테이지 ID
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int Stage {
-      get { return stage_; }
+    public int MapId {
+      get { return mapId_; }
       set {
-        stage_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "level" field.</summary>
-    public const int LevelFieldNumber = 2;
-    private int level_;
-    /// <summary>
-    /// 난이도
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int Level {
-      get { return level_; }
-      set {
-        level_ = value;
+        mapId_ = value;
       }
     }
 
     /// <summary>Field number for the "star" field.</summary>
-    public const int StarFieldNumber = 3;
+    public const int StarFieldNumber = 2;
     private int star_;
     /// <summary>
     /// 별점 (1~3)
@@ -3705,7 +3881,7 @@ namespace Protocol {
     }
 
     /// <summary>Field number for the "clear_time" field.</summary>
-    public const int ClearTimeFieldNumber = 4;
+    public const int ClearTimeFieldNumber = 3;
     private long clearTime_;
     /// <summary>
     /// 클리어 시간 (유닉스 타임스탬프)
@@ -3734,8 +3910,7 @@ namespace Protocol {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Stage != other.Stage) return false;
-      if (Level != other.Level) return false;
+      if (MapId != other.MapId) return false;
       if (Star != other.Star) return false;
       if (ClearTime != other.ClearTime) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -3745,8 +3920,7 @@ namespace Protocol {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Stage != 0) hash ^= Stage.GetHashCode();
-      if (Level != 0) hash ^= Level.GetHashCode();
+      if (MapId != 0) hash ^= MapId.GetHashCode();
       if (Star != 0) hash ^= Star.GetHashCode();
       if (ClearTime != 0L) hash ^= ClearTime.GetHashCode();
       if (_unknownFields != null) {
@@ -3767,20 +3941,16 @@ namespace Protocol {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Stage != 0) {
+      if (MapId != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(Stage);
-      }
-      if (Level != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(Level);
+        output.WriteInt32(MapId);
       }
       if (Star != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(16);
         output.WriteInt32(Star);
       }
       if (ClearTime != 0L) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(24);
         output.WriteInt64(ClearTime);
       }
       if (_unknownFields != null) {
@@ -3793,20 +3963,16 @@ namespace Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Stage != 0) {
+      if (MapId != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(Stage);
-      }
-      if (Level != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(Level);
+        output.WriteInt32(MapId);
       }
       if (Star != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(16);
         output.WriteInt32(Star);
       }
       if (ClearTime != 0L) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(24);
         output.WriteInt64(ClearTime);
       }
       if (_unknownFields != null) {
@@ -3819,11 +3985,8 @@ namespace Protocol {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Stage != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Stage);
-      }
-      if (Level != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Level);
+      if (MapId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MapId);
       }
       if (Star != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Star);
@@ -3843,11 +4006,8 @@ namespace Protocol {
       if (other == null) {
         return;
       }
-      if (other.Stage != 0) {
-        Stage = other.Stage;
-      }
-      if (other.Level != 0) {
-        Level = other.Level;
+      if (other.MapId != 0) {
+        MapId = other.MapId;
       }
       if (other.Star != 0) {
         Star = other.Star;
@@ -3871,18 +4031,14 @@ namespace Protocol {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Stage = input.ReadInt32();
+            MapId = input.ReadInt32();
             break;
           }
           case 16: {
-            Level = input.ReadInt32();
-            break;
-          }
-          case 24: {
             Star = input.ReadInt32();
             break;
           }
-          case 32: {
+          case 24: {
             ClearTime = input.ReadInt64();
             break;
           }
@@ -3902,18 +4058,14 @@ namespace Protocol {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            Stage = input.ReadInt32();
+            MapId = input.ReadInt32();
             break;
           }
           case 16: {
-            Level = input.ReadInt32();
-            break;
-          }
-          case 24: {
             Star = input.ReadInt32();
             break;
           }
-          case 32: {
+          case 24: {
             ClearTime = input.ReadInt64();
             break;
           }
