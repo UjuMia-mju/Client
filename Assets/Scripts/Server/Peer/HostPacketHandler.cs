@@ -24,6 +24,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_OBJECT_DESTROY> OnObjectDestroyEvent;
     public event Action<S_SPACESHIP_UPDATE> OnSpaceshipUpdateEvent;
     public event Action<S_SPACESHIP_COMPLETE> OnSpaceshipCompleteEvent;
+    public event Action<S_TIMER_SYNC> OnTimerSyncEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -76,6 +77,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_SPACESHIP_COMPLETE:
                 HandleSpaceshipComplete(data);
+                break;
+            case PacketId.PKT_S_TIMER_SYNC:
+                HandleTimerSync(data);
                 break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
@@ -192,6 +196,12 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         S_SPACESHIP_COMPLETE packet = S_SPACESHIP_COMPLETE.Parser.ParseFrom(data);
         OnSpaceshipCompleteEvent?.Invoke(packet);
+    }
+
+    private void HandleTimerSync(byte[] data)
+    {
+        S_TIMER_SYNC packet = S_TIMER_SYNC.Parser.ParseFrom(data);
+        OnTimerSyncEvent?.Invoke(packet);
     }
 
 }

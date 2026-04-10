@@ -37,6 +37,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnObjectDestroyEvent += OnHostObjectDestroy;
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent += OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent += OnHostSpaceshipComplete;
+        HostPacketHandler.Instance.OnTimerSyncEvent += OnHostTimerSync;
 
         PacketHandler.Instance.OnEnterGameResultEvent += OnEnterGameResult;
 
@@ -87,6 +88,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnObjectDestroyEvent -= OnHostObjectDestroy;
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent -= OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent -= OnHostSpaceshipComplete;
+        HostPacketHandler.Instance.OnTimerSyncEvent -= OnHostTimerSync;
 
         PacketHandler.Instance.OnEnterGameResultEvent -= OnEnterGameResult;
     }
@@ -235,10 +237,12 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void OnHostSpaceshipComplete(S_SPACESHIP_COMPLETE packet)
     {
-        Debug.Log("모든 부품을 모았습니다! 우주선 완성!");  // 추가
         GameRuleManager.Instance.ReturnToStageSelectScene(packet.Success);
     }
-
+    private void OnHostTimerSync(S_TIMER_SYNC packet)
+    {
+        GameRuleManager.Instance.SyncTimer(packet.RemainingTime);
+    }
 
     #endregion
 

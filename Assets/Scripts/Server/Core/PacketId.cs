@@ -70,8 +70,9 @@
     // 우주선 아이템 삽입, 성공 판정 20260410
     PKT_C_SPACESHIP_INSERT = 1062,
     PKT_S_SPACESHIP_UPDATE = 1063,
-    PKT_S_SPACESHIP_COMPLETE = 1064
+    PKT_S_SPACESHIP_COMPLETE = 1064,
 
 
-    // 타이머 동기화, 실패 판정 20260410
+    // 타이머 동기화
+    PKT_S_TIMER_SYNC = 1065
 }

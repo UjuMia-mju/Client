@@ -185,5 +185,9 @@ public class HostSender : IHostSender
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_SPACESHIP_COMPLETE, packet);
     }
 
-
+    public void BroadcastTimerSync(float remainingTime)
+    {
+        S_TIMER_SYNC packet = new S_TIMER_SYNC { RemainingTime = remainingTime };
+        hostNet.BroadcastToPeers(0, PacketId.PKT_S_TIMER_SYNC, packet);
+    }   
 }

@@ -6,24 +6,28 @@ public class GameRuleManager : MonoBehaviour
     public static GameRuleManager Instance { get; private set; }
 
     [SerializeField]
-    private float timerDuration;  // 제한시간
+    private float timerDuration;
     private float remainingTime;
-    public float GetRemainingTime() => remainingTime;    // 현재 남은 시간
-    private bool isVictory = false; // 승패여부
-    private bool isGameDone = false;    // 게임이 종료된 것이 맞는지
+    public float GetRemainingTime() => remainingTime;
+    private bool isVictory = false;
+    private bool isGameDone = false;
+
+    private const float TIMER_SYNC_INTERVAL = 1f; // 1초마다 동기화
+    private float _lastSyncTime = 0f;
 
     void Start()
     {
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
         {
             Destroy(gameObject);
+            return;
         }
 
-        StartCoroutine(StartTimer());
+        // 호스트만 타이머 실행
+        if (ConnectManager.Instance == null || ConnectManager.Instance.isHost)
+            StartCoroutine(StartTimer());
     }
 
     IEnumerator StartTimer()
@@ -32,8 +36,15 @@ public class GameRuleManager : MonoBehaviour
 
         while (remainingTime > 0)
         {
-            yield return new WaitForSeconds(1f); // 1초마다 감소
+            yield return new WaitForSeconds(1f);
             remainingTime -= 1f;
+
+            // 5초마다 피어들에게 타이머 동기화
+            if (ConnectManager.Instance != null && Time.time - _lastSyncTime >= TIMER_SYNC_INTERVAL)
+            {
+                PacketSender.Instance.BroadcastTimerSync(remainingTime);
+                _lastSyncTime = Time.time;
+            }
         }
 
         Debug.Log("타이머 종료!");
@@ -42,27 +53,31 @@ public class GameRuleManager : MonoBehaviour
 
     void OnTimerEnd()
     {
-        // 타이머가 끝났을 때 실행할 로직
         Debug.Log("타이머가 종료되어 게임이 실패로 끝났습니다.");
+
+        // 호스트가 피어들에게 패배 브로드캐스트
+        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+            PacketSender.Instance.BroadcastSpaceshipComplete(false);
+
         ReturnToStageSelectScene(false);
+    }
+
+    // 피어 전용: 호스트로부터 받은 타이머 동기화
+    public void SyncTimer(float time)
+    {
+        remainingTime = time;
+        Debug.Log($"[GameRuleManager] 타이머 동기화: {remainingTime}초");
     }
 
     public void ReturnToStageSelectScene(bool data)
     {
-        if (isGameDone)
-        {
-            return;
-        }
+        if (isGameDone) return;
 
         isVictory = data;
-
-        Time.timeScale = 0f; // 게임 일시정지
+        Time.timeScale = 0f;
         isGameDone = true;
 
         Debug.Log("게임 종료! 승리 여부: " + isVictory);
-
-        // HACK : 현재 MonoBehaviorSingleton.cs에서 어떤 인스턴스가 null이면 자동으로 이를 생성하도록 하는 로직이 있습니다.
-        // 해당 부분이 씬을 단독으로 실행시켰을 때 프리팹이 할당되어 있지 않은 문제로 오류를 일으키도록 하고 있으므로, 레벨 디자인 기간동안 이 부분은 주석화하겠습니다.
 
         //if (SceneLoader.Instance != null)
         //{

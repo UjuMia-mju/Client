@@ -19,4 +19,6 @@ public interface IHostSender
 
     void BroadcastSpaceshipUpdate(int currentIndex);
     void BroadcastSpaceshipComplete(bool success);
+
+    void BroadcastTimerSync(float remainingTime);
 }

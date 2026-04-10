@@ -146,5 +146,8 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
 
     public void BroadcastSpaceshipComplete(bool success)
         => TryHostBroadcast(() => hostSender.BroadcastSpaceshipComplete(success));
+
+    public void BroadcastTimerSync(float remainingTime)
+        => TryHostBroadcast(() => hostSender.BroadcastTimerSync(remainingTime));
     #endregion
 }

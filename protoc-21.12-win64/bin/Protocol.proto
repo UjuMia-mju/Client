@@ -421,3 +421,8 @@ message S_SPACESHIP_COMPLETE
 {
 	bool success = 1;
 }
+
+message S_TIMER_SYNC
+{
+	float remaining_time = 1;
+}
