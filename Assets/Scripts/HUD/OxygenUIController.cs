@@ -1,9 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class OxygenUIController : MonoBehaviour
 {
-    [SerializeField] private PlayerStat playerStat;
+    public PlayerStat playerStat;
     [SerializeField] private Image oxygenImage;
 
     private void OnEnable()

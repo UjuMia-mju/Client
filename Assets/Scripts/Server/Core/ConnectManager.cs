@@ -13,12 +13,14 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     public int hostPortFromServer = 7788;
     private async void Start()
     {
-        // 테스트라 중앙 서버에 연결하는 부분
-        NetManager.Instance.Connect(centralServerIp, centralServerPort);
-        return;
+        PacketSender.Instance.Init(isHost);
+        
         if (isHost)
         {
             HostNetManager.Instance.StartHost(hostPortFromServer);
+
+            // 피어가 입장할 때마다 호스트 Enter 정보를 전송
+            PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEntered;
 
             // Player 인스턴스가 이미 생성되어 있다고 가정
             var player = FindFirstObjectByType<Player>();
@@ -39,6 +41,29 @@ public class ConnectManager : SceneSingleton<ConnectManager>
             {
                 player.OnNetworkReady();
             }
+        }
+
+        
+    }
+
+    /// <summary>
+    /// 피어가 입장했을 때 호스트의 현재 위치를 전송
+    /// </summary>
+    private void OnPeerEntered(int peerId, Protocol.C_TEST_ENTER_GAME packet)
+    {
+        var player = FindFirstObjectByType<Player>();
+        if (player != null)
+        {
+            // 호스트는 BroadcastMove를 사용해야 함
+            PacketSender.Instance.BroadcastMove(player.transform.position, player.transform.rotation);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (isHost)
+        {
+            PeerPacketHandler.Instance.OnPeerEnterGameEvent -= OnPeerEntered;
         }
     }
 

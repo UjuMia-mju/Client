@@ -379,4 +379,78 @@ message S_OBJECT_MOVE
 	ObjectId object_id = 1;
 	PosInfo pos = 2;
 	RotInfo rot = 3;
-}	
+}
+
+//오브젝트 녹이기
+message C_OBJECT_SMELT
+{
+	ObjectId object_id = 1;
+	int32 furnace_id = 2;
+}
+
+message S_OBJECT_SMELT
+{
+	ObjectId object_id = 1;
+	int32 melt_time = 2;
+	int32 furnace_id = 3;
+}
+
+//용광로 결과
+message S_SMELT_COMPLETE
+{
+	ObjectId object_id = 1;
+	int32 furnace_id = 2;
+	ItemType item_result = 3;
+}
+
+// 용광로 꺼내기
+message C_FURNACE_RETRIEVE
+{
+	int32 furnace_id = 1;
+}
+
+message S_FURNACE_RETRIEVE
+{
+	int32 furnace_id = 1;
+	ItemType item_result = 2;
+}
+
+message S_OBJECT_SPAWN{
+	int32 item_id = 1;
+	string item_string_key = 2;
+	PosInfo pos = 3;
+	RotInfo rot = 4;
+}
+
+message S_OBJECT_DESTROY{
+	int32 item_id = 1;
+}
+
+message C_OBJECT_SPAWN{
+	string item_string_key = 1;
+	PosInfo pos = 2;
+	RotInfo rot = 3;
+}
+
+message C_OBJECT_DESTROY{
+	int32 item_id = 1;
+}
+
+message C_SPACESHIP_INSERT{
+	string item_string_key = 1;
+	int32 item_id = 2;
+}
+
+message S_SPACESHIP_UPDATE {
+	int32 current_index = 1;
+}
+
+message S_SPACESHIP_COMPLETE
+{
+	bool success = 1;
+}
+
+message S_TIMER_SYNC
+{
+	float remaining_time = 1;
+}

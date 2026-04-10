@@ -57,7 +57,7 @@ public class LobbyReadyButton : MonoBehaviour
     {
         if (NetManager.Instance == null)
             return;
-        if ((int)packet.PlayerId != NetManager.Instance._playerId)
+        if (packet.PlayerId != NetManager.Instance._playerId)
             return;
 
         _localReady = packet.IsReady;

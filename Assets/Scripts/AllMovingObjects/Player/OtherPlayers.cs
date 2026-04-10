@@ -24,22 +24,35 @@ public class OtherPlayers : MovingObject
         otherPlayerAnimator = GetComponent<Animator>();
         otherPlayerStats = GetComponent<OtherPlayerStats>();
         otherPlayerItemSystem = GetComponent<PlayerItemSystem>();
-        //playerStat = GetComponent<PlayerStat>();
+
+        // 물리 충돌로 밀려 떨리는 현상 방지
+        rb.isKinematic = true;
+
     }
 
     private void FixedUpdate()
     {
-        // movDir은 일단 사용하지 않는 것으로 하고, 영벡터를 파라메터로 넣었습니다. 의미는 없습니다.
         Moving(Vector3.zero);
     }
 
     protected override void Moving(Vector3 movDir)
     {
+        // NOTE : rb 사용을 주석화합니다. 20260403 
+        // 문제 상황 : 몸으로 다른 플레이어를 밀다 보면 다른 쪽에서 플레이어가 부들부들 떨리는 문제
+        // 이를 해결하기 위해 isKinematic을 설정해 물리 충돌로 인한 위치 변화가 일어나지 않게끔 했습니다.
+        // 그런데 이렇게 설정하니 다른 플레이어를 몸으로 밀면 그 객체가 멀리 밀려나는 문제가 생겼습니다.
+        // 도저히 모르겠어서 코파일럿한테 물어봤는데, 아마 유니티 내부 물리엔진에서 자체적으로 위치를 보정시키는거 같습니다.
+        // 이를 해결하기 위해 Rigidbody를 사용한 이동을 포기하고, 직접 위치와 회전을 넣는 방식으로 변경하였습니다.
+        // 이것은 서버에서 보낸 위치로 강제로 텔레포트 시키는 방식에 가까운데, 아마 로컬에서는 이런 식으로 이동 구현을 시키면 안 된다는걸 다들 아실 겁니다.
+        // 다만 물리엔진을 계속 사용을 하면 문제가 해결이 안 되기도 하고, 어차피 서버에서 보낸 위치로 이동을 시키고 있기 때문에 그냥 transform에 대입시키도록 변경했습니다.
         if (_hasTarget)
         {
-            // 부드러운 보간 이동
-            rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed));
-            rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed));
+            transform.position = Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed);
+
+            //Vector3 newPos = Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed);
+            //rb.MovePosition(newPos);
+            //rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed));
         }
     }
 
