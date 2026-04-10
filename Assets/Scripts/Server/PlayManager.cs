@@ -62,7 +62,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     // HACK : 애니메이션은 실시간으로 처리해야되기때문에 Update에서 처리도록 했습니다. 올바른 처리일까요?
     private void Update()
     {
-        
+
 
     }
 
@@ -465,7 +465,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     //    {
     //        return;
     //    }
-            
+
 
     //    if (_remotePlayers.TryGetValue(packet.PlayerId, out GameObject playerObj))
     //    {
@@ -504,7 +504,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         //GameObject playerObj = Instantiate(remotePlayerPrefab, SpawnOffset.transform.position, rot);
 
         playerObj.name = $"RemotePlayer_{playerInfo.PlayerId}";
-        
+
         OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
         if (remotePlayer != null)
         {
@@ -524,6 +524,16 @@ public class PlayManager : SceneSingleton<PlayManager>
             Destroy(playerObj);
             _remotePlayers.Remove(playerId);
             Debug.Log($"✓ Removed remote player: {playerId}");
+        }
+    }
+
+    public void UpdateRemotePlayerStat(ulong playerId, int hp, float oxygen)
+    {
+        if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+        {
+            OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
+            if (remotePlayer != null)
+                remotePlayer.SetStat(hp, oxygen);
         }
     }
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Protocol;
 using System.Collections.Generic;
 
@@ -15,12 +15,12 @@ public class SmeltingRecipeManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    // 아이템 ID(혹은 Type)를 기반으로 레시피를 조회
-    public bool TryGetRecipe(int inputItemId, out SmeltingRecipe recipe)
+    // itemStringKey를 기반으로 레시피를 조회
+    public bool TryGetRecipe(string inputItemStringKey, out SmeltingRecipe recipe)
     {
         foreach (var r in recipes)
         {
-            if (r.inputItemID == inputItemId)
+            if (r.inputItemStringKey == inputItemStringKey)
             {
                 recipe = r;
                 return true;

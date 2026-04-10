@@ -234,7 +234,6 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         else if (packet.EventType == StatEventType.Healed && packet.Heal != null)
             statManager.IncreaseHp(packet.TargetPlayerId, packet.Heal.HealAmount);
 
-        // 에러 로그 없이 조회
         if (statManager.TryGetPlayerStat(packet.TargetPlayerId, out var stat))
         {
             var syncPacket = new S_PLAYER_STAT
@@ -245,7 +244,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             };
 
             HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_STAT, syncPacket, true);
-            OnPeerStatEvent?.Invoke(peerId, packet); // 올바른 인수 타입으로 수정
+            OnPeerStatEvent?.Invoke(peerId, packet);
         }
         else
         {

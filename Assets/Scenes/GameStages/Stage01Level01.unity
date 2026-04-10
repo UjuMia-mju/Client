@@ -2233,12 +2233,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmeltingRecipeManager
   recipes:
-  - inputItemID: 1
+  - inputItemStringKey: TestCube
     outputItemID: 2
     smeltingTime: 5
-  - inputItemID: 2
-    outputItemID: 3
-    smeltingTime: 6
 --- !u!4 &1747493077
 Transform:
   m_ObjectHideFlags: 0
@@ -2465,7 +2462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0ed162b0230c043b9de84fac61b4e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameRuleManager
-  timerDuration: 10
+  timerDuration: 100
 --- !u!1 &1963899701
 GameObject:
   m_ObjectHideFlags: 0

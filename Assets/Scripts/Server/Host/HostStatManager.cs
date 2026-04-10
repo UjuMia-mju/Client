@@ -5,11 +5,8 @@ public class HostStatManager : BaseStatManager<HostStatManager>
 {
     void Start()
     {
-        // RegisterPlayer로 이미 등록된 경우 덮어쓰지 않음
         if (!_playerStats.ContainsKey(NetManager.Instance._playerId))
-        {
             _playerStats.Add(NetManager.Instance._playerId, new PlayerStat());
-        }
     }
 
     public void AddPlayer(ulong playerId, int maxHp = 5)
@@ -22,14 +19,14 @@ public class HostStatManager : BaseStatManager<HostStatManager>
     {
         if (!_playerStats.TryGetValue(playerId, out var stat)) return;
 
-        // stat.DecreaseHp() 호출 시 HostPlayerStat.DecreaseHp() → 무한루프 발생
-        // statData만 직접 수정하고 이벤트만 호출
         stat.statData.DecreaseHp(amount);
         stat.CallOnHpChanged();
         if (stat.statData.hp <= 0)
             stat.CallOnPlayerDead();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
+        // 호스트 로컬 RemotePlayer UI 갱신
+        PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
     public void IncreaseHp(ulong playerId, int amount)
@@ -40,6 +37,7 @@ public class HostStatManager : BaseStatManager<HostStatManager>
         stat.CallOnHpChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
+        PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
     public void DecreaseOxygen(ulong playerId)
@@ -50,6 +48,8 @@ public class HostStatManager : BaseStatManager<HostStatManager>
         stat.CallOnOxygenChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
+        Debug.Log($"[HostStatManager] DecreaseOxygen: playerId={playerId}, oxygen={stat.GetOxygen()}");
+        PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
     public void IncreaseOxygen(ulong playerId)
@@ -60,9 +60,9 @@ public class HostStatManager : BaseStatManager<HostStatManager>
         stat.CallOnOxygenChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
+        PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
-    /// <summary>실제 PlayerStat 컴포넌트를 등록합니다.</summary>
     public void RegisterPlayer(ulong playerId, PlayerStat stat)
     {
         _playerStats[playerId] = stat;

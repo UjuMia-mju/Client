@@ -38,19 +38,19 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
             return;
         }
 
-        int inputItemId = 1; // 추후 이 아이템이 어떤건지 확인하는 로직 필요.
+        Items item = ItemManager.Instance.GetItem((int)objectId);
+        if (item == null) return;
 
-        // 2. 레시피 확인
-        if (SmeltingRecipeManager.Instance.TryGetRecipe(inputItemId, out SmeltingRecipe recipe))
+        if (SmeltingRecipeManager.Instance.TryGetRecipe(item.itemStringKey, out SmeltingRecipe recipe))
         {
             // 중앙 매니저에서 코루틴 시작 후 딕셔너리에 등록
             Coroutine routine = StartCoroutine(SmeltingRoutine(furnaceId, objectId, recipe));
             activeFurnaces.Add(furnaceId, routine);
-            Debug.Log($"[Server] 용광로({furnaceId})에서 제련 시작: 아이템 {inputItemId} -> 결과 {recipe.outputItemID}, 소요 시간 {recipe.smeltingTime}초");
+            Debug.Log($"[Server] 용광로({furnaceId})에서 제련 시작: 아이템 {item.itemStringKey} -> 결과 {recipe.outputItemID}, 소요 시간 {recipe.smeltingTime}초");
         }
         else
         {
-            Debug.LogWarning($"[Server] 아이템({inputItemId})은 녹일 수 없습니다.");
+            Debug.LogWarning($"[Server] 아이템({item.itemStringKey})은 녹일 수 없습니다.");
         }
     }
 
