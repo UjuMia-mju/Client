@@ -14,7 +14,7 @@ public class LobbyInviteUI : MonoBehaviour
 
     [Header("열기/닫기")]
     [SerializeField] private Button openInvitePanelButton;  // 로비에 둘 "초대" 버튼 → 누르면 패널 활성화
-    [SerializeField] private Button closeButton;           // 패널 안 "닫기" 버튼 (선택)
+    //[SerializeField] private Button closeButton;           // 패널 안 "닫기" 버튼 (선택)
 
     [Header("초대 입력")]
     [SerializeField] private TMP_InputField targetPlayerNameInput;
@@ -41,8 +41,8 @@ public class LobbyInviteUI : MonoBehaviour
 
         if (panelRoot == null)
             Debug.LogWarning("[LobbyInviteUI] Panel Root가 할당되지 않았습니다. InvitePanel을 연결하세요.");
-        if (closeButton != null)
-            closeButton.onClick.AddListener(OnClickClosePanel);
+        // if (closeButton != null)
+        //     closeButton.onClick.AddListener(OnClickClosePanel);
         if (inviteButton != null)
             inviteButton.onClick.AddListener(OnClickInvite);
 
