@@ -139,6 +139,9 @@ public class LobbyInviteUI : MonoBehaviour
 
         // C_INVITE_PLAYER 패킷 전송 → 서버가 S_INVITE_PLAYER(보낸 사람), S_INVITE_NOTIFICATION(받는 사람) 처리
         PacketDispatcher.Instance.SendInvitePlayer(playerName, playerTag);
+        
+        // 초대 요청 후 패널 닫기
+        OnClickClosePanel();
     }
 
     private void OnInvitePlayerResult(S_INVITE_PLAYER packet)
