@@ -16,7 +16,7 @@ public class TestPlayer : MonoBehaviour
         _lastSendRot = transform.rotation;
 
         // 게임 입장 패킷 전송
-        PacketDispatcher.Instance.SendEnterGame(0);
+        PacketSender.Instance.SendEnterGame(0);
     }
 
     void Update()
@@ -55,7 +55,7 @@ public class TestPlayer : MonoBehaviour
 
         if (posChanged || rotChanged)
         {
-            PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+            PacketSender.Instance.SendMove(transform.position, transform.rotation);
 
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;

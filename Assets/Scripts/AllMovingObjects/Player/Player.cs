@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class Player : MovingObject
 {
@@ -13,10 +14,12 @@ public class Player : MovingObject
 
     public GameObject nearestObject { get; private set; } // 플레이어에게서 가장 가까운 오브젝트
 
-    private const float DETECT_RADIUS = 5.5f; // 구형 트리거 반지름 
+    private const float DETECT_RADIUS = 2.2f; // 구형 트리거 반지름 
+    private const float THROW_IGNORE_COLLISION_DURATION = 0.65f; // 던진 후 충돌 무시 시간
 
     public bool isPlayerGetSomething { get; private set; } = false;
     public bool isMining { get; private set; } = false;
+    private bool isPlayerThrowSomething = false;    // 무언가를 던지는 플래그
     
     private PlayerStat playerStat;
 
@@ -33,6 +36,10 @@ public class Player : MovingObject
     private int lastHP;
     private float lastOxygen;
 
+    // 임시 UI 객체
+    [SerializeField] private HPUIController hpUIController;
+    [SerializeField] private OxygenUIController oxygenUIController;
+
     // 초기화
     protected override void Awake()
     {
@@ -42,10 +49,27 @@ public class Player : MovingObject
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
         playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
-        playerStat = GetComponent<PlayerStat>();
 
         playerAnimator.Initialize();
         lastAnimState = AnimState.Idle;
+
+        if (ConnectManager.Instance.isHost)
+        {
+            playerStat = gameObject.AddComponent<HostPlayerStat>();
+            HostStatManager.Instance.RegisterPlayer(playerStat.playerId, playerStat);
+        }
+        else
+        {
+            playerStat = gameObject.AddComponent<PeerPlayerStat>();
+        }
+
+        // ==== 임시 UI 초기화 ===
+        hpUIController.playerStat = playerStat;
+        oxygenUIController.playerStat = playerStat;
+
+        hpUIController.gameObject.SetActive(true);
+        oxygenUIController.gameObject.SetActive(true);
+        // =====
     }
 
     private void Start()
@@ -63,8 +87,8 @@ public class Player : MovingObject
 
 
         // 산소/HP 이벤트 기반 로직
-        lastHP = playerStat.GetHp();
-        lastOxygen = playerStat.GetOxygen();
+        // lastHP = playerStat.GetHp();
+        // lastOxygen = playerStat.GetOxygen();
 
         playerStat.OnHpChanged += HandleHpChanged;
         playerStat.OnOxygenChanged += HandleOxygenChanged;
@@ -83,6 +107,7 @@ public class Player : MovingObject
             playerStat.OnPlayerRevive -= HandlePlayerRevive;
         }
     }
+
 
     private void HandlePlayerDead()
     {
@@ -123,16 +148,16 @@ public class Player : MovingObject
 
     public void OnNetworkReady()
     {
-        // 호스트 자신이 로컬 플레이어를 생성할 때는 네트워크로 EnterGame을 보낼 필요가 없습니다.
-        // 피어(클라이언트)만 호스트에 C_TEST_ENTER_GAME(=SendEnterGame)를 전송해서
-        // 호스트가 받은 뒤 S_PLAYER_ENTER로 브로드캐스트하게 해야 패킷 순서가 맞습니다.
         if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
         {
-            PacketDispatcher.Instance.SendEnterGame(0);
+            PacketSender.Instance.SendEnterGame(0);
         }
-        // 위치/애니메이션 전송은 계속 수행
         SendEnterPosToServer();
+
+        // 네트워크 준비 후 산소 감소 시작 (EnterGame 패킷 이후에 산소 패킷이 전송되도록)
+        playerStat.StartOxygenDecrease();
     }
+
 
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
     private void Update()
@@ -187,10 +212,45 @@ public class Player : MovingObject
 
     private void LateUpdate()
     {
-        // 서버로 패킷 전송
+        if (ConnectManager.Instance.isHost)
+        {
+            BroadcastPositionToPeers();
+            BroadcastAnimationToPeers();
+            return;
+        }
+
         SendPositionToServer();
         SendAnimationToServer();
-        //SendPlayerStatToServer();
+    }
+
+    // 호스트 전용: 자신의 위치를 피어들에게 브로드캐스트
+    private void BroadcastPositionToPeers()
+    {
+        if (Time.time - _lastSendTime < sendInterval)
+            return;
+
+        bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.01f;
+        bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 0.5f;
+
+        if (posChanged || rotChanged)
+        {
+            PacketSender.Instance.BroadcastMove(transform.position, transform.rotation);
+
+            _lastSendPos = transform.position;
+            _lastSendRot = transform.rotation;
+            _lastSendTime = Time.time;
+        }
+    }
+
+    // 호스트 전용: 자신의 애니메이션을 피어들에게 브로드캐스트
+    private void BroadcastAnimationToPeers()
+    {
+        AnimState currentState = playerAnimator.GetAnimState();
+        if (currentState != lastAnimState)
+        {
+            PacketSender.Instance.BroadcastAnimation(currentState);
+            lastAnimState = currentState;
+        }
     }
 
     protected override void Moving(Vector3 movDir)
@@ -210,7 +270,7 @@ public class Player : MovingObject
         {
             playerInput.MakeIsInteractFalse();
             // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
-            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething)
+            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething && !isPlayerThrowSomething)
             {
                 isMining = true;
             }
@@ -220,9 +280,10 @@ public class Player : MovingObject
                 return;
             }
 
-            // 플레이어에게서 가장 가까운 오브젝트의 태그가 아이템이며, 빈 손일 때
+            // 플레이어에게서 가장.closest오브젝트의 태그가 아이템이며, 빈 손일 때
             // 혹은 태그가 Tool인 것도 포함함.
-            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething || nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething)
+            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething && !isPlayerThrowSomething ||
+                nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething && !isPlayerThrowSomething)
             {
                 isPlayerGetSomething = true;
                 playerItemSystem.AttachItem(nearestObject);
@@ -240,19 +301,42 @@ public class Player : MovingObject
                 playerItemSystem.DetachItem();
             }
 
-            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로이며, 아이템을 들고 있을 때
-            // 또한 투입할 때 플레이어의 손에서 Detach
-            else if (nearestObject.CompareTag(Define.Tag.FURNACE) && isPlayerGetSomething)
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로.
+            else if (nearestObject.CompareTag(Define.Tag.FURNACE))
             {
-                Furnace furnace = nearestObject.GetComponent<Furnace>();
-                if (furnace.AddSmeltTargetItem(playerItemSystem.currentEquipItem))
+                FurnaceObject furnace = nearestObject.GetComponent<FurnaceObject>();
+            
+                if (furnace != null)
                 {
-                    isPlayerGetSomething = false;
-                    playerItemSystem.DetachItem();
-                }
-                else
-                {
-                    Debug.Log("아직 용광로는 준비되지 않았다.");
+                    // 1. 용광로가 작업이 끝났으면 아이템 회수하기
+
+                    if (furnace.hasResult)
+                    {
+                        // 클라이언트가 서버로 C_FURNACE_RETRIEVE 패킷을 보내도록 FurnaceObject에 함수(예: RequestRetrieve) 구현 필요
+                        furnace.RequestRetrieve();
+                        Debug.Log("용광로 결과물 수거 요청!");
+                    }
+                    else if (!furnace.isWorking && isPlayerGetSomething)
+                    {
+                        // 손에 든 아이템의 실제 itemId를 사용
+                        Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
+                        if (currentItem == null) return;
+
+                        int objectId = currentItem.itemId;
+
+                        if (furnace.RequestSmelt(objectId))
+                        {
+                            Debug.Log("용광로에 아이템 투입 요청 성공!");
+                            PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
+                            Destroy(playerItemSystem.currentEquipItem);
+                            isPlayerGetSomething = false;
+                            playerItemSystem.DetachItem();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("아직 용광로가 이전 작업을 처리 중입니다!");
+                    }
                 }
             }
 
@@ -261,12 +345,33 @@ public class Player : MovingObject
             else if (nearestObject.CompareTag(Define.Tag.SPACESHIP) && isPlayerGetSomething)
             {
                 SpaceshipAssembly spaceshipAssembly = nearestObject.GetComponent<SpaceshipAssembly>();
-                if (spaceshipAssembly != null)
+
+                Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
+                if (currentItem == null) return;
+
+                if (ConnectManager.Instance.isHost)
                 {
+                    // 호스트: 직접 판정 후 브로드캐스트
                     spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
                     isPlayerGetSomething = false;
                     playerItemSystem.DetachItem();
                 }
+                else
+                {
+                    // 피어: 패킷 전송 후 로컬 정리
+                    PacketSender.Instance.SendSpaceshipInsert(currentItem.itemStringKey, currentItem.itemId);
+                    PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
+                    Destroy(playerItemSystem.currentEquipItem);
+                    isPlayerGetSomething = false;
+                    playerItemSystem.DetachItem();
+                }
+
+                //if (spaceshipAssembly != null)
+                //{
+                //    spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
+                //    isPlayerGetSomething = false;
+                //    playerItemSystem.DetachItem();
+                //}
             }
         }
     }
@@ -286,7 +391,7 @@ public class Player : MovingObject
                     isPlayerGetSomething = false;
                     SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
                     playerItemSystem.ThrowItem(GetMovingAmount());
-                    playerItemSystem.DetachItem();
+                    StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
                 }
                 return;
             }
@@ -350,10 +455,27 @@ public class Player : MovingObject
         isMining = false;
     }
 
+    private IEnumerator IgnoreItemCollisionAfterThrow(GameObject thrownItem)
+    {
+        if (thrownItem == null) yield break;
+
+        Collider playerCollider = GetComponent<Collider>();
+        Collider itemCollider = thrownItem.GetComponent<Collider>();
+
+        if (playerCollider == null || itemCollider == null) yield break;
+
+        isPlayerThrowSomething = true;
+        Physics.IgnoreCollision(playerCollider, itemCollider, true);
+        yield return new WaitForSeconds(THROW_IGNORE_COLLISION_DURATION);
+        Physics.IgnoreCollision(playerCollider, itemCollider, false);
+        isPlayerThrowSomething = false;
+    }
+
+
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
     private void SendEnterPosToServer()
     {
-        PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+        PacketSender.Instance.SendMove(transform.position, transform.rotation);
 
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
@@ -373,7 +495,7 @@ public class Player : MovingObject
 
         if (posChanged || rotChanged)
         {
-            PacketDispatcher.Instance.SendMove(transform.position, transform.rotation);
+            PacketSender.Instance.SendMove(transform.position, transform.rotation);
 
             _lastSendPos = transform.position;
             _lastSendRot = transform.rotation;
@@ -391,7 +513,7 @@ public class Player : MovingObject
         // 상태가 바뀐 경우에만 전송
         if (currentState != lastAnimState)
         {
-            PacketDispatcher.Instance.SendAnimation(currentState);
+            PacketSender.Instance.SendAnimation(currentState);
             lastAnimState = currentState;
         }
     }
@@ -399,12 +521,12 @@ public class Player : MovingObject
     // 아이템을 들어올렸을 때 RemotePlayer의 소켓에 부착시키기 위해 패킷을 1회 전송
     private void SendItemAttachedToServer(Items data)
     {
-        PacketDispatcher.Instance.SendItemAttached(data);
+        PacketSender.Instance.SendItemAttached(data);
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
     private void SendItemDetatchedToServer(Items data)
     {
-        PacketDispatcher.Instance.SendItemDetatched(data);
+        PacketSender.Instance.SendItemDetatched(data);
     }
 }

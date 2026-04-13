@@ -1284,7 +1284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &698449392
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2165,6 +2165,10 @@ PrefabInstance:
     - target: {fileID: 6819354358102729913, guid: 84e43ada6f09cca4088efce409ee970f, type: 3}
       propertyPath: m_Name
       value: InvitePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 6819354358102729913, guid: 84e43ada6f09cca4088efce409ee970f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8919437156839237903, guid: 84e43ada6f09cca4088efce409ee970f, type: 3}
       propertyPath: m_AnchorMax.y

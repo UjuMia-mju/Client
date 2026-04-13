@@ -9,93 +9,138 @@ public class Items : MovingObject
     protected const string SOCKET = "Socket";
 
     // 서버 관련 변수들
-    public float sendInterval = 0.05f; // 20fps로 위치 전송 (네트워크 부하 고려)
     protected float _lastSendTime = 0f;
     protected Vector3 _lastSendPos;
     protected Quaternion _lastSendRot;
 
-    public int itemId; // 아이템 고유 ID
+    // 이제 ItemManager에서 자동부여하며 이전에 테스트했던 방식대로 인스펙터에서 특정 값 줘서 작동하지 않습니다.
+    [HideInInspector] public int itemId; // 아이템 고유 ID
 
     public string itemStringKey;
 
     [SerializeField] private float lerpSpeed = 10f;
 
     private Vector3 _targetPos;
-    private Quaternion _targetRot;
+    private Quaternion _targetRot = Quaternion.identity;
+
+    private PlanetGravity _planet;
 
     private void Start()
     {
         ItemManager.Instance.RegisterItem(this);
+        _planet = FindFirstObjectByType<PlanetGravity>();
+        _targetPos = transform.position;
+        _targetRot = transform.rotation;
+        _lastSendPos = transform.position;
+        _lastSendRot = transform.rotation;
+        _lastSendTime = Time.time;
     }
 
-    //private void FixedUpdate()
-    //{
-    //    Moving(Vector3.zero);
-    //}
+    private void FixedUpdate()
+    {
+        if (_planet != null)
+        {
+            Vector3 gravityDir = (transform.position - _planet.transform.position).normalized;
+            LayerMask groundMask = LayerMask.GetMask(Define.Layer.GROUND, Define.Layer.WALKABLE_COLLIDER);
+
+            // 거리를 2.0f → 0.6f로 줄여서 완전히 바닥에 닿았을 때만 위치 고정
+            if (Physics.Raycast(transform.position, -gravityDir, 0.6f, groundMask))
+            {
+                _targetPos = transform.position;
+                _targetRot = transform.rotation;
+            }
+        }
+
+        // 서버에서 목표 위치를 받았을 때만 보간 이동
+        if (Vector3.Distance(transform.position, _targetPos) > 0.01f ||
+            Quaternion.Angle(transform.rotation, _targetRot) > 0.5f)
+        {
+            Moving(Vector3.zero);
+        }
+    }
 
     private void LateUpdate()
     {
-        // 부모 이름이 "Socket"이면 내가 손에 들고 있는 상태라고 판단
         if (transform.parent != null && transform.parent.name == SOCKET)
         {
             this.transform.localPosition = Vector3.zero;
             this.transform.localRotation = Quaternion.identity;
-            IsOwnedByMe = true;
+
+            // 부모 계층에서 OtherPlayers 또는 Player를 찾아 로컬 플레이어 소유 여부 판단
+            // OtherPlayers가 부모이면 다른 플레이어가 든 것 → 내 소유 아님
+            OtherPlayers otherPlayer = transform.parent.GetComponentInParent<OtherPlayers>();
+            if (otherPlayer != null)
+            {
+                IsOwnedByMe = false;
+            }
+            else
+            {
+                // OtherPlayers가 없으면 로컬 Player가 든 것
+                Player localPlayer = transform.parent.GetComponentInParent<Player>();
+                IsOwnedByMe = localPlayer != null;
+            }
         }
         else
         {
             IsOwnedByMe = false;
         }
 
-        // 내가 들고 있지 않을 때만 위치 패킷을 서버로 전송
-        //if (!IsOwnedByMe)
-        //{
-        //    SendPositionToServer();
-        //}
+        if (!IsOwnedByMe)
+        {
+            SendPositionToServer();
+        }
     }
 
     // 서버로 위치 정보 패킷전송
-    //private void SendPositionToServer()
-    //{
-    //    // 일정 간격으로만 전송 (네트워크 최적화)
-    //    if (Time.time - _lastSendTime < sendInterval)
-    //        return;
+    private void SendPositionToServer()
+    {
+        Vector3 gravityDir = (transform.position - _planet.transform.position).normalized;
+        Vector3 horizontalVelocity = rb.linearVelocity - Vector3.Project(rb.linearVelocity, gravityDir);
+        float interval = horizontalVelocity.sqrMagnitude > 0.1f ? 0.05f : 0.5f;
 
-    //    // 위치나 회전이 변경되었을 때만 전송
-    //    bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.01f;
-    //    bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 0.5f;
+        if (Time.time - _lastSendTime < interval)
+            return;
 
-    //    if (posChanged || rotChanged)
-    //    {
-    //        NetManager.Instance.SendItemMove(itemId, transform.position, transform.rotation);
+        bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.1f;
+        bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 5f;
 
-    //        _lastSendPos = transform.position;
-    //        _lastSendRot = transform.rotation;
-
-    //        _lastSendTime = Time.time;
-    //    }
-    //}
+        if (posChanged || rotChanged)
+        {
+            PacketSender.Instance.SendItemMove(itemId, transform.position, transform.rotation);
+            _lastSendPos = transform.position;
+            _lastSendRot = transform.rotation;
+            _lastSendTime = Time.time;
+        }
+    }
 
     // 서버에서 받은 위치와 회전을 적용
-    //public void SetPos(Vector3 pos, Quaternion rot)
-    //{
-    //    // 내가 들고 있는 아이템이면 서버 위치를 무시하고,
-    //    // 다른 플레이어가 들고 있는 아이템만 위치를 갱신
-    //    if (!IsOwnedByMe)
-    //    {
-    //        _targetPos = pos;
-    //        _targetRot = rot;
-    //    }
-    //}
+    public void SetPos(Vector3 pos, Quaternion rot)
+    {
+        if (!IsOwnedByMe)
+        {
+            _targetPos = pos;
+            _targetRot = rot;
+        }
+    }
 
-    //protected override void Moving(Vector3 movDir)
-    //{
-    //    // AddForce로 움직이는 중이면 보간 이동을 막는다
-    //    //if (rb.linearVelocity.sqrMagnitude < 0.0001f) // 거의 정지 상태일 때만 보간
-    //    //{
-    //    //    rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed));
-    //    //    rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed));
-    //    //}
-    //}
+    // 아이템을 놓을 때 즉시 위치 동기화 강제 전송
+    public void OnDetached()
+    {
+        _lastSendPos = Vector3.zero; // 강제로 변화 감지되게 초기화
+        _lastSendRot = Quaternion.identity;
+        _lastSendTime = 0f;
+    }
+
+    protected override void Moving(Vector3 movDir)
+    {
+        if (IsOwnedByMe) return; // 들고 있는 중이면 보간 이동 불필요
+
+        // AddForce로 움직이는 중이면 보간 이동을 막는다
+        if (rb.linearVelocity.sqrMagnitude < 0.0001f) // 거의 정지 상태일 때만 보간
+        {
+            rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed));
+            rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed));
+        }
+    }
 
 }

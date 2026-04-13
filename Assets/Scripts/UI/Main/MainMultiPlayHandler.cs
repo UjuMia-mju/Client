@@ -38,13 +38,13 @@ public class MainMultiPlayHandler : MonoBehaviour
         {
             Player = new Protocol.Player
             {
-                Id = NetManager.Instance._playerId,
+                Id = (int)NetManager.Instance._playerId,
                 Name = NetManager.Instance.PlayerName ?? "",
                 Tag = NetManager.Instance.PlayerTag
             },
             IsReady = false
         });
-        PacketManager.SetCachedEnterRoom(synthetic);
+        PacketHandler.SetCachedEnterRoom(synthetic);
 
         SceneLoader.Instance.LoadScene(Define.Scene.LOBBY);
     }
