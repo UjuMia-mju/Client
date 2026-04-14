@@ -2,6 +2,7 @@
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
+using Protocol;
 
 [RequireComponent(typeof(StageCameraController))]
 [RequireComponent(typeof(StageUIManager))]
@@ -69,33 +70,28 @@ public class StageManager : MonoBehaviour
         if (_currentSelectedNode != null || _isTransitioning) return;
         _currentSelectedNode = clickedNode;
 
-        // MOCK 서버 호출
-        MockServerResponse(clickedNode.stageLevel, clickedNode.stageIndex);
-        
-        // TODO: 서버 구현 시 주석 해제
-        // NetManager.Instance.SendShowStage(clickedNode.stageLevel, clickedNode.stageIndex);
+        if (!DbCacheManager.Instance.TryGetStageInfoByChapterStage(
+                clickedNode.stageLevel,
+                clickedNode.stageIndex,
+                out StageInfo stageInfo))
+        {
+            Debug.LogWarning($"[StageManager] 캐시에 스테이지 정보가 없습니다. chapter={clickedNode.stageLevel}, stage={clickedNode.stageIndex}");
+            _currentSelectedNode = null;
+            return;
+        }
+
+        OnReceiveStageInfo(stageInfo);
     }
 
-    // TODO: 서버 구현 시 주석 해제
-    private void MockServerResponse(int stageLevel, int stageIndex)
+    public void OnReceiveStageInfo(StageInfo stageInfo)
     {
-        Debug.Log($"[Mock] 서버에 Level {stageLevel}, Index {stageIndex} 정보 요청...");
-        
-        string mockStageName = $"챕터 {stageLevel}-{stageIndex}";
-        int mockDifficulty = Mathf.Clamp(stageLevel + stageIndex, 1, 5); 
-        string mockDescription = "거대한 수풀과 숲을 이룬 버섯 군락이 지표면을 완전히 점령한 행성입니다. \n\n이곳의 식물들은 비정상적으로 거대하여, " +
-                                 "\n한 그루의 높이가 수 킬로미터에 달합니다. \n\n대기 중에는 고농도의 산소와 포자가 가득 차 있어, " +
-                                 "모든 유기물은 일반적인 환경보다 수십 배 빠른 속도로 성장합니다.";
-        
-        OnReceiveStageInfo(mockStageName, mockDifficulty, mockDescription);
+        if (stageInfo == null)
+            return;
+
+        StartCoroutine(OpenPanelSequence(_currentSelectedNode, stageInfo));
     }
 
-    public void OnReceiveStageInfo(string stageName, int difficulty, string description)
-    {
-        StartCoroutine(OpenPanelSequence(_currentSelectedNode, stageName, difficulty, description));
-    }
-
-    private IEnumerator OpenPanelSequence(StageNode targetNode, string stageName, int difficulty, string description)
+    private IEnumerator OpenPanelSequence(StageNode targetNode, StageInfo stageInfo)
     {
         _isTransitioning = true;
         isMovementPaused = true; 
@@ -107,7 +103,12 @@ public class StageManager : MonoBehaviour
 
         if (selectPanel != null)
         {
-            yield return StartCoroutine(_uiManager.OpenPanel(selectPanel, stageName, difficulty, description));
+            yield return StartCoroutine(_uiManager.OpenPanel(
+                selectPanel,
+                stageInfo.StageName,
+                stageInfo.Difficulty,
+                stageInfo.Description,
+                stageInfo.EstimatedClearTime));
         }
 
         _isTransitioning = false;

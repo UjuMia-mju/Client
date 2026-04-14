@@ -50,6 +50,12 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_MY_SKINS, packet);
     }
 
+    public void SendGetDbData()
+    {
+        C_GET_DB_DATA packet = new C_GET_DB_DATA();
+        net.SendPacket(PacketId.PKT_C_GET_DB_DATA, packet);
+    }
+
     // ==================== Lobby/Room ====================
 
     public void SendCreateRoom()
