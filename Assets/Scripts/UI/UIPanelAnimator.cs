@@ -22,9 +22,11 @@ public class UIPanelAnimator : MonoBehaviour
         }
     }
 
-    public IEnumerator FadeOut(GameObject panel)
+    public IEnumerator FadeOut(GameObject panel, bool destroyOnEnd = true)
     {
         CanvasGroup cg = panel.GetComponent<CanvasGroup>();
+        if (cg == null) yield break;
+
         float elapsed = 0f;
         while (elapsed < duration)
         {
@@ -33,6 +35,14 @@ public class UIPanelAnimator : MonoBehaviour
             cg.alpha = Mathf.Lerp(1f, 0f, t);
             yield return null;
         }
-        Destroy(panel);
+
+        if (destroyOnEnd)
+        {
+            Destroy(panel);
+        }
+        else
+        {
+            panel.SetActive(false);
+        }
     }
 }

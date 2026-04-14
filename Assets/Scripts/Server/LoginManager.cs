@@ -11,6 +11,7 @@ public class LoginManager : SceneSingleton<LoginManager>
 
     private void Start()
     {
+        SoundManager.Instance.PlayBGM("Intro");
         loginButton.onClick.AddListener(OnLoginButton);
     }
 

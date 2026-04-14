@@ -1,58 +1,38 @@
 using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// Splash씬에서 로고 페이드 인/아웃 연출을 담당하는 클래스
-/// </summary>
 public class SplashController : MonoBehaviour
 {
-    [Header("CanvasGroup Of Logo")]
-    public CanvasGroup logoCanvasGroup;
+    [Header("UI References")]
+    [SerializeField] private GameObject logoObject; // 애니메이션을 적용할 게임 오브젝트
+    [SerializeField] private UIPanelAnimator animator;
 
-    private float fadeInTime = 1.2f;
-    private float stayTime = 2.0f;
-    private float fadeOutTime = 1.0f;
-    
-    private string nextSceneName = Define.Scene.MAIN;
+    [Header("Sequence Settings")]
+    [SerializeField] private float stayTime = 2.0f;
 
     private void Start()
     {
         SoundManager.Instance.PlayBGM("Splash");
         
-        if (logoCanvasGroup != null)
+        if (logoObject != null && animator != null)
         {
-            logoCanvasGroup.alpha = 0f;
             StartCoroutine(PlaySplashSequence());
         }
     }
 
     private IEnumerator PlaySplashSequence()
     {
-        // 1. 로고 나타남
-        yield return StartCoroutine(Fade(0f, 1f, fadeInTime));
+        // 1. 로고 나타남 (FadeIn)
+        // 로고는 보통 원래 크기(Vector3.one)로 나타나야 하므로 두 번째 인자로 전달
+        yield return StartCoroutine(animator.FadeIn(logoObject, Vector3.one));
 
         // 2. 유지
         yield return new WaitForSeconds(stayTime);
 
-        // 3. 로고 사라짐
-        yield return StartCoroutine(Fade(1f, 0f, fadeOutTime));
+        // 3. 로고 사라짐 (FadeOut)
+        yield return StartCoroutine(animator.FadeOut(logoObject));
 
-        // 4. 로고가 완전히 사라지면 SceneLoader에게 모든 권한 위임
-        SceneLoader.Instance.LoadScene(nextSceneName);
-    }
-
-    /// <summary>
-    /// 페이드 인/아웃 연출 로직
-    /// </summary>
-    private IEnumerator Fade(float startAlpha, float endAlpha, float duration)
-    {
-        float elapsedTime = 0f;
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            logoCanvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duration);
-            yield return null;
-        }
-        logoCanvasGroup.alpha = endAlpha;
+        // 4. 로고가 완전히 사라지면 다음 씬으로 이동
+        SceneLoader.Instance.LoadScene(Define.Scene.LOGIN);
     }
 }

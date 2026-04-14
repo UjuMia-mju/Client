@@ -1359,8 +1359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   pausePanel: {fileID: 6091618347145964930, guid: 0e99ccf2cdcf78740a57b1161edcad75, type: 3}
-  animDuration: 0.2
-  targetScale: {x: 1, y: 1, z: 1}
+  animator: {fileID: 1953825593}
 --- !u!4 &710526184
 Transform:
   m_ObjectHideFlags: 0
@@ -2462,6 +2461,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0ed162b0230c043b9de84fac61b4e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameRuleManager
+  timerDuration: 180
+--- !u!1 &1953825592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1953825594}
+  - component: {fileID: 1953825593}
+  m_Layer: 0
+  m_Name: UIPanelAnimator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1953825593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953825592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b85abfb5e36c0449925202830961510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIPanelAnimator
+  duration: 0.2
+--- !u!4 &1953825594
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953825592}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   timerDuration: 100
 --- !u!1 &1963899701
 GameObject:
@@ -4735,6 +4780,7 @@ SceneRoots:
   - {fileID: 1025038043}
   - {fileID: 1997255347}
   - {fileID: 710526184}
+  - {fileID: 1953825594}
   - {fileID: 815630919}
   - {fileID: 1747493077}
   - {fileID: 239167529}
