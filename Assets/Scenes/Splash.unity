@@ -169,7 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SplashController
   logoObject: {fileID: 1201466389}
   animator: {fileID: 1252586139}
-  stayTime: 3.5
+  stayTime: 2
 --- !u!1 &472791190
 GameObject:
   m_ObjectHideFlags: 0
