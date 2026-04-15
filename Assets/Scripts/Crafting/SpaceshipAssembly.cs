@@ -30,6 +30,11 @@ public class SpaceshipAssembly : MonoBehaviour
         if (targetPrefabLists[currentTargetIndex].itemStringKey == item.itemStringKey)
         {
             Debug.Log((currentTargetIndex + 1) + "번째 미션 클리어");
+
+            // 피어들에게 아이템 삭제 동기화 (용광로와 동일한 방식)
+            if (ConnectManager.Instance != null)
+                PacketSender.Instance.SendObjectDestroy(item.itemId);
+
             Destroy(data);
             currentTargetIndex++;
 
