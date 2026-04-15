@@ -25,6 +25,10 @@ public class Items : MovingObject
 
     private PlanetGravity _planet;
 
+    // 씬에 직접 배치된 아이템인지 여부 (런타임 Instantiate가 아닌 경우)
+    [Tooltip("씬에 미리 배치된 아이템이면 체크. 호스트가 피어에게 초기 ID를 동기화합니다.")]
+    [SerializeField] private bool isScenePlacedItem = false;
+
     private void Start()
     {
         ItemManager.Instance.RegisterItem(this);
@@ -34,6 +38,17 @@ public class Items : MovingObject
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
         _lastSendTime = Time.time;
+
+        // 씬에 직접 배치된 아이템은 호스트가 피어에게 ID 및 위치를 동기화
+        if (isScenePlacedItem && ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+            StartCoroutine(BroadcastSpawnNextFrame());
+    }
+
+    private System.Collections.IEnumerator BroadcastSpawnNextFrame()
+    {
+        yield return null; // RegisterItem() 완료 후 itemId 확정 대기
+        PacketSender.Instance.SendObjectSpawn(this, transform.position, transform.rotation);
+        Debug.Log($"[Items] 씬 배치 아이템 동기화: itemId={itemId}, key={itemStringKey}");
     }
 
     private void FixedUpdate()
@@ -142,5 +157,4 @@ public class Items : MovingObject
             rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed));
         }
     }
-
 }

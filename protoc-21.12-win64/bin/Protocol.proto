@@ -8,11 +8,6 @@ message C_GET_DB_DATA
 
 }
 
-message C_GET_DB_DATA
-{
-
-}
-
 message C_LOGIN
 {
 	string userId = 1;
@@ -446,7 +441,8 @@ message C_SPACESHIP_INSERT{
 }
 
 message S_SPACESHIP_UPDATE {
-	int32 current_index = 1;
+	string item_string_key_mission = 1;
+	int32 current_index = 2;
 }
 
 message S_SPACESHIP_COMPLETE
