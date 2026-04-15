@@ -1,13 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Protocol;
 
+[System.Serializable]
+public class SpaceshipMission
+{
+    public int currentCount; // 현재 조립된 아이템 수
+    public int targetCount; // 조립에 필요한 아이템 수
+    public Items targetItem;    // 타겟 아이템
+}
 
 public class SpaceshipAssembly : MonoBehaviour
 {
     [SerializeField]
-    private List<Items> targetPrefabLists; // 조립에 필요한 타겟 프리팹 리스트
-
-    private int currentTargetIndex = 0; // 현재 조립 중인 타겟 인덱스, 게임 도중 다른 숫자로 바뀌거나 하지 않고 순차적으로만 늘어남.
+    private List<SpaceshipMission> targetMission; // 목표 미션
 
     // data는 현재 우주선에 넣으려는 아이템의 게임 오브젝트
     // 호스트 전용: 직접 판정 (피어 요청은 PlayManager.OnPeerSpaceshipInsert에서 호출)
@@ -27,22 +33,26 @@ public class SpaceshipAssembly : MonoBehaviour
             return;
         }
 
-        if (targetPrefabLists[currentTargetIndex].itemStringKey == item.itemStringKey)
-        {
-            Debug.Log((currentTargetIndex + 1) + "번째 미션 클리어");
+        SpaceshipMission mission = targetMission.Find(
+            m => m.targetItem.itemStringKey == item.itemStringKey && m.currentCount < m.targetCount
+        );
 
+        if (mission != null)
+        {
             // 피어들에게 아이템 삭제 동기화 (용광로와 동일한 방식)
             if (ConnectManager.Instance != null)
                 PacketSender.Instance.SendObjectDestroy(item.itemId);
-
             Destroy(data);
-            currentTargetIndex++;
 
-            // 피어들에게 현재 인덱스 동기화 (씬 단독 실행 시 ConnectManager 없을 수 있으므로 null 체크)
+
+            mission.currentCount++;
+            Debug.Log($"[{mission.targetItem.itemStringKey}] {mission.currentCount}/{mission.targetCount} 투입 완료");
+
+            // 피어들에게 currentCount 동기화 (씬 단독 실행 시 ConnectManager 없을 수 있으므로 null 체크)
             if (ConnectManager.Instance != null)
-                PacketSender.Instance.BroadcastSpaceshipUpdate(currentTargetIndex);
+                PacketSender.Instance.BroadcastSpaceshipUpdate(mission.targetItem.itemStringKey, mission.currentCount);
 
-            if (currentTargetIndex >= targetPrefabLists.Count)
+            if (targetMission.TrueForAll(m => m.currentCount >= m.targetCount))
             {
                 Debug.Log("모든 부품을 모았습니다! 우주선 완성!");
                 CompleteAssembly();
@@ -66,10 +76,17 @@ public class SpaceshipAssembly : MonoBehaviour
         GameRuleManager.Instance.ReturnToStageSelectScene(true);
     }
 
-    // 피어 전용: 호스트로부터 받은 인덱스 동기화
-    public void SyncIndex(int index)
+    // 피어 전용: 호스트로부터 받은 미션 카운트 동기화
+    public void SyncMission(string itemStringKey, int currentCount)
     {
-        currentTargetIndex = index;
-        Debug.Log($"{currentTargetIndex}번째 미션 클리어");
+        SpaceshipMission mission = targetMission.Find(m => m.targetItem.itemStringKey == itemStringKey);
+        if (mission == null)
+        {
+            Debug.LogWarning($"[SpaceshipAssembly] SyncMission: {itemStringKey}에 해당하는 미션을 찾을 수 없습니다.");
+            return;
+        }
+
+        mission.currentCount = currentCount;
+        Debug.Log($"[{itemStringKey}] 동기화: {currentCount}/{mission.targetCount}");
     }
 }

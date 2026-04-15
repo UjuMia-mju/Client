@@ -173,9 +173,13 @@ public class HostSender : IHostSender
         Debug.Log($"[HostSender] BroadcastObjectDestroy: itemId={itemId}");
     }
 
-    public void BroadcastSpaceshipUpdate(int currentIndex)
+    public void BroadcastSpaceshipUpdate(string itemStringKey, int currentCount)
     {
-        S_SPACESHIP_UPDATE packet = new S_SPACESHIP_UPDATE { CurrentIndex = currentIndex };
+        S_SPACESHIP_UPDATE packet = new S_SPACESHIP_UPDATE
+        {
+            ItemStringKeyMission = itemStringKey,
+            CurrentIndex = currentCount
+        };
         hostNet.BroadcastToPeers(0, PacketId.PKT_S_SPACESHIP_UPDATE, packet);
     }
 

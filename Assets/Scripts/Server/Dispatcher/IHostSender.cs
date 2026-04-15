@@ -17,7 +17,7 @@ public interface IHostSender
     void BroadcastObjectSpawn(Items item, Vector3 position, Quaternion rotation);
     void BroadcastObjectDestroy(int itemId);
 
-    void BroadcastSpaceshipUpdate(int currentIndex);
+    void BroadcastSpaceshipUpdate(string itemStringKey, int currentCount);
     void BroadcastSpaceshipComplete(bool success);
 
     void BroadcastTimerSync(float remainingTime);
