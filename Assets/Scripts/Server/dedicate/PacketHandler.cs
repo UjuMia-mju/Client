@@ -34,6 +34,7 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_START_ROOM> OnStartRoomEvent;
     public event Action<S_OBJECT_MOVE> OnItemMoveEvent;
     public event Action<S_STAGE_INFO> OnStageInfoEvent;
+    public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -93,6 +94,9 @@ public class PacketHandler : Singleton<PacketHandler>
                 break;
             case PacketId.PKT_S_STAGE_INFO:
                 HandleStageInfo(data);
+                break;
+            case PacketId.PKT_S_GET_CLEAR_INFO:
+                HandleGetClearInfo(data);
                 break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId} ({(ushort)packetId})");
@@ -268,6 +272,12 @@ public class PacketHandler : Singleton<PacketHandler>
         S_STAGE_INFO packet = S_STAGE_INFO.Parser.ParseFrom(payloadData);
         DbCacheManager.Instance.CacheStageInfos(packet.Stages);
         OnStageInfoEvent?.Invoke(packet);
+    }
+
+    private void HandleGetClearInfo(byte[] payloadData)
+    {
+        S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
+        OnGetClearInfoEvent?.Invoke(packet);
     }
 
 }

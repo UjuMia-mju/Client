@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 124221698}
   - component: {fileID: 124221697}
   - component: {fileID: 124221696}
+  - component: {fileID: 124221700}
   m_Layer: 0
   m_Name: 4
   m_TagString: Untagged
@@ -168,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   stageLevel: 1
   stageIndex: 4
+  isClearedStage: 0
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 10
@@ -176,6 +178,9 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
+  nodeOutline: {fileID: 124221700}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  clearedColor: {r: 1, g: 0.5, b: 0, a: 1}
 --- !u!135 &124221697
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -253,6 +258,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124221694}
   m_Mesh: {fileID: 4300000, guid: ee6535f71428504449546c25c0673573, type: 3}
+--- !u!114 &124221700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124221694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &137441931
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +356,7 @@ GameObject:
   - component: {fileID: 213756899}
   - component: {fileID: 213756898}
   - component: {fileID: 213756897}
+  - component: {fileID: 213756901}
   m_Layer: 0
   m_Name: 1
   m_TagString: Untagged
@@ -369,6 +393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   stageLevel: 1
   stageIndex: 1
+  isClearedStage: 0
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 10
@@ -377,6 +402,9 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
+  nodeOutline: {fileID: 213756901}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  clearedColor: {r: 1, g: 0.5, b: 0, a: 1}
 --- !u!135 &213756898
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -454,6 +482,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213756895}
   m_Mesh: {fileID: 4300000, guid: 41f08c35745be45418cd81746e1fea81, type: 3}
+--- !u!114 &213756901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213756895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &243413792
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,7 +802,7 @@ MonoBehaviour:
   orbitCenter: {fileID: 1922309642}
   segments: 60
   lineWidth: 0.15
-  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  hoverColor: {r: 0.015686274, g: 0.6492225, b: 1, a: 1}
   hitBoxMultiplier: 5
 --- !u!120 &964966197
 LineRenderer:
@@ -1275,7 +1321,7 @@ MonoBehaviour:
   orbitCenter: {fileID: 1922309642}
   segments: 60
   lineWidth: 0.15
-  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  hoverColor: {r: 0.015686274, g: 0.6492225, b: 1, a: 1}
   hitBoxMultiplier: 5
 --- !u!120 &1484300596
 LineRenderer:
@@ -1594,6 +1640,7 @@ GameObject:
   - component: {fileID: 1555946059}
   - component: {fileID: 1555946058}
   - component: {fileID: 1555946057}
+  - component: {fileID: 1555946061}
   m_Layer: 0
   m_Name: 2
   m_TagString: Untagged
@@ -1630,6 +1677,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   stageLevel: 1
   stageIndex: 2
+  isClearedStage: 0
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 12
@@ -1638,6 +1686,9 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
+  nodeOutline: {fileID: 1555946061}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  clearedColor: {r: 1, g: 0.5, b: 0, a: 1}
 --- !u!135 &1555946058
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1715,6 +1766,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1555946055}
   m_Mesh: {fileID: 4300000, guid: 94e8b543ccfce214cbe3536377799049, type: 3}
+--- !u!114 &1555946061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1555946055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &1690677397
 GameObject:
   m_ObjectHideFlags: 0
@@ -2256,6 +2325,7 @@ GameObject:
   - component: {fileID: 1767277962}
   - component: {fileID: 1767277961}
   - component: {fileID: 1767277960}
+  - component: {fileID: 1767277964}
   m_Layer: 0
   m_Name: 3
   m_TagString: Untagged
@@ -2292,6 +2362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   stageLevel: 1
   stageIndex: 3
+  isClearedStage: 1
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 15
@@ -2300,6 +2371,9 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
+  nodeOutline: {fileID: 1767277964}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  clearedColor: {r: 1, g: 0.5, b: 0, a: 1}
 --- !u!135 &1767277961
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2377,6 +2451,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1767277958}
   m_Mesh: {fileID: 4300000, guid: 3efdfb47275bdf54583ae191f1a4ef7a, type: 3}
+--- !u!114 &1767277964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767277958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &1791206421
 GameObject:
   m_ObjectHideFlags: 0
@@ -2546,7 +2638,7 @@ MonoBehaviour:
   orbitCenter: {fileID: 1922309642}
   segments: 60
   lineWidth: 0.15
-  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  hoverColor: {r: 0.015686274, g: 0.6492225, b: 1, a: 1}
   hitBoxMultiplier: 5
 --- !u!120 &1847534618
 LineRenderer:
@@ -2707,7 +2799,7 @@ MonoBehaviour:
   orbitCenter: {fileID: 1922309642}
   segments: 60
   lineWidth: 0.15
-  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  hoverColor: {r: 0.015686274, g: 0.6492225, b: 1, a: 1}
   hitBoxMultiplier: 5
 --- !u!120 &1909865704
 LineRenderer:
@@ -2832,6 +2924,7 @@ GameObject:
   - component: {fileID: 1922309644}
   - component: {fileID: 1922309643}
   - component: {fileID: 1922309646}
+  - component: {fileID: 1922309647}
   m_Layer: 0
   m_Name: OrbitCenter
   m_TagString: ClickOff
@@ -2945,6 +3038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageNode
   stageLevel: 1
   stageIndex: 5
+  isClearedStage: 1
   orbitCenter: {fileID: 1922309642}
   orbitAxis: {x: 0, y: 0, z: 1}
   orbitSpeed: 10
@@ -2953,6 +3047,27 @@ MonoBehaviour:
   randomizeStartPosition: 1
   hoverScaleMultiplier: 1.5
   hoverTransitionSpeed: 10
+  nodeOutline: {fileID: 1922309647}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  clearedColor: {r: 1, g: 0.5, b: 0, a: 1}
+--- !u!114 &1922309647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922309641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &1981201848
 GameObject:
   m_ObjectHideFlags: 0

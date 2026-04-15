@@ -56,6 +56,12 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_GET_DB_DATA, packet);
     }
 
+    public void SendGetClearInfo()
+    {
+        C_GET_CLEAR_INFO packet = new C_GET_CLEAR_INFO();
+        net.SendPacket(PacketId.PKT_C_GET_CLEAR_INFO, packet);
+    }
+
     // ==================== Lobby/Room ====================
 
     public void SendCreateRoom()
