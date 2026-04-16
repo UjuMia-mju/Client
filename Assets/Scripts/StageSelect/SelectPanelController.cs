@@ -42,4 +42,9 @@ public class SelectPanelController : MonoBehaviour
         int seconds = totalSeconds % 60;
         return $"{minutes:D2}:{seconds:D2}";
     }
+    
+    public void OnClickPlayButton()
+    {
+        StageManager.Instance.EnterSelectedStage();
+    }
 }

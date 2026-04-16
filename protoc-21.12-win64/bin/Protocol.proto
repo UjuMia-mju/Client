@@ -3,10 +3,6 @@ package Protocol;
 
 import "Enum.proto";
 import "Struct.proto";
-message C_GET_DB_DATA
-{
-
-}
 
 message C_GET_DB_DATA
 {
@@ -251,11 +247,12 @@ message S_SHOW_STAGE
 	StageInfo stage = 2;
 }
 
-// ==================== 스테이지 시작 ===================
+// ==================== 스테이지 시작 =================== (스테이지 선택)
 message C_START_STAGE
 {
-	int32 stageLevel = 1;
-	int32 stageIndex = 2;
+	int32 map_id = 1;
+	int32 chapter = 2;
+	int32 stageIndex = 3;
 }
 
 // 스테이지 시작 결과 (true면 스테이지 시작, false면 실패))

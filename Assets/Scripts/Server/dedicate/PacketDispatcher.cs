@@ -138,6 +138,18 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_INVITE_RESPONSE, inviteResponsePacket);
     }
 
+    public void SendStartStage(int mapId, int chapter, int stageIndex)
+    {
+        C_START_STAGE packet = new C_START_STAGE
+        {
+            MapId = mapId,
+            Chapter = chapter,
+            StageIndex = stageIndex
+        };
+        
+        net.SendPacket(PacketId.PKT_C_START_STAGE, packet);
+    }
+    
     #endregion
 
 

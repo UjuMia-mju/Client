@@ -1263,7 +1263,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6941775052241298139}
         m_TargetAssemblyTypeName: SelectPanelController, Assembly-CSharp
-        m_MethodName: OnPlayButtonClicked
+        m_MethodName: OnClickPlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

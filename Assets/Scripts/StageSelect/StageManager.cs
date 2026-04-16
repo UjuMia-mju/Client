@@ -2,6 +2,7 @@
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using Protocol;
 
 [RequireComponent(typeof(StageCameraController))]
@@ -11,7 +12,6 @@ public class StageManager : MonoBehaviour
     public static StageManager Instance { get; private set; }
 
     [Header("UI Base Prefab")]
-    [Tooltip("여기에 SelectPanel 프리팹을 넣어주세요!")]
     public GameObject selectPanel; 
 
     [Header("Nodes & Environment")] 
@@ -47,21 +47,21 @@ public class StageManager : MonoBehaviour
         _cameraController.ResetToOrigin();
         _clickOffObjects = GameObject.FindGameObjectsWithTag(Define.Tag.CLICKOFF);
 
-        // 패킷 핸들러에서 클리어 정보 이벤트를 구독
         if (PacketHandler.Instance != null)
         {
             PacketHandler.Instance.OnGetClearInfoEvent += HandleGetClearInfoResponse;
+            PacketHandler.Instance.OnStartStageEvent += HandleStartStageResponse;
         }
         
-        PacketDispatcher.Instance.SendGetClearInfo();
+        PacketDispatcher.Instance.SendGetClearInfo(); 
     }
 
-    // 씬이 파괴될 때 메모리 누수 방지를 위해 구독 해제
     private void OnDestroy()
     {
         if (PacketHandler.Instance != null)
         {
             PacketHandler.Instance.OnGetClearInfoEvent -= HandleGetClearInfoResponse;
+            PacketHandler.Instance.OnStartStageEvent -= HandleStartStageResponse;
         }
     }
 
@@ -106,6 +106,36 @@ public class StageManager : MonoBehaviour
         if (_currentSelectedNode != null && !_isTransitioning && Keyboard.current[Key.Escape].wasPressedThisFrame)
         {
             StartCoroutine(ClosePanelSequence());
+        }
+    }
+    
+    public void EnterSelectedStage()
+    {
+        if (_currentSelectedNode == null) return;
+
+        int level = _currentSelectedNode.stageLevel;
+        int index = _currentSelectedNode.stageIndex;
+
+        // DB 캐시에서 MapId를 꺼내와서 패킷에 담아 보낸다!
+        if (DbCacheManager.Instance.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
+        {
+            Debug.Log($"[StageManager] 서버에 스테이지 시작 요청! MapId: {info.MapId}");
+            PacketDispatcher.Instance.SendStartStage(info.MapId, level, index);
+        }
+    }
+    
+    private void HandleStartStageResponse(S_START_STAGE packet)
+    {
+        if (packet.Success)
+        {
+            Debug.Log($"[StageManager] 스테이지 시작 허가됨! 씬 이동 준비: {packet.Stage.StageName}");
+            
+            SceneManager.LoadScene(Define.Scene.GAME_1_1); 
+        }
+        else
+        {
+            Debug.LogWarning("[StageManager] 서버가 스테이지 시작을 거절했습니다!");
+            // (필요하다면 여기에 "입장 실패" 경고 팝업을 띄우는 로직 추가)
         }
     }
 
@@ -158,14 +188,6 @@ public class StageManager : MonoBehaviour
         }
 
         _isTransitioning = false;
-    }
-
-    public void ClosePanel()
-    {
-        if (_currentSelectedNode != null && !_isTransitioning)
-        {
-            StartCoroutine(ClosePanelSequence());
-        }
     }
 
     private IEnumerator ClosePanelSequence()

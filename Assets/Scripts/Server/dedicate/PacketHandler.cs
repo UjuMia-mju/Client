@@ -34,6 +34,8 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_START_ROOM> OnStartRoomEvent;
     public event Action<S_OBJECT_MOVE> OnItemMoveEvent;
     public event Action<S_STAGE_INFO> OnStageInfoEvent;
+    
+    public event Action<S_START_STAGE> OnStartStageEvent;
     public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
@@ -94,6 +96,9 @@ public class PacketHandler : Singleton<PacketHandler>
                 break;
             case PacketId.PKT_S_STAGE_INFO:
                 HandleStageInfo(data);
+                break;
+            case PacketId.PKT_S_START_STAGE:
+                HandleStartStage(data);
                 break;
             case PacketId.PKT_S_GET_CLEAR_INFO:
                 HandleGetClearInfo(data);
@@ -274,6 +279,12 @@ public class PacketHandler : Singleton<PacketHandler>
         OnStageInfoEvent?.Invoke(packet);
     }
 
+    private void HandleStartStage(byte[] payloadData)
+    {
+        S_START_STAGE packet = S_START_STAGE.Parser.ParseFrom(payloadData);
+        OnStartStageEvent?.Invoke(packet);
+    }
+    
     private void HandleGetClearInfo(byte[] payloadData)
     {
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
