@@ -162,9 +162,8 @@ public class Player : MovingObject
     // 플레이어 인풋, 레이캐스트, 애니메이션 업데이트
     private void Update()
     {
-        playerInput.InputProcess(); // 인풋, 충돌 감지는 Input이 되지 않으면 레이캐스트가 멈추므로 가장 먼저 처리합니다.
+        playerInput.InputProcess();
 
-        // 충돌 감지
         inputFreeze = CollisionDetectWithRaycast(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir), wallMask, walkable);
 
         if (!inputFreeze)
@@ -173,19 +172,118 @@ public class Player : MovingObject
 
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
-                isGrounded, 
+                isGrounded,
                 inputFreeze,
                 isMining);
 
             KeyEInteract();
+            KeyLeftClickInteract();
             KeyFInteract();
         }
 
-        // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
         GetGroundNormal(groundMask);
-
-        // 구형 트리거
         SphereTriggerFunc();
+    }
+
+    // E키 상호작용
+    private void KeyEInteract()
+    {
+        if (playerInput.GetIsInteract())
+        {
+            playerInput.MakeIsInteractFalse();
+
+            if (nearestObject == null)
+            {
+                return;
+            }
+
+            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething && !isPlayerThrowSomething ||
+                nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething && !isPlayerThrowSomething)
+            {
+                isPlayerGetSomething = true;
+                playerItemSystem.AttachItem(nearestObject);
+                SendItemAttachedToServer(playerItemSystem.GetCurrentEquipItemClass());
+            }
+
+            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isPlayerGetSomething)
+            {
+                Crafting craftTable = nearestObject.GetComponent<Crafting>();
+                isPlayerGetSomething = false;
+                craftTable.AddCraftItems(playerItemSystem.currentEquipItem);
+                playerItemSystem.DetachItem();
+            }
+
+            else if (nearestObject.CompareTag(Define.Tag.FURNACE))
+            {
+                FurnaceObject furnace = nearestObject.GetComponent<FurnaceObject>();
+
+                if (furnace != null)
+                {
+                    if (furnace.hasResult)
+                    {
+                        furnace.RequestRetrieve();
+                        Debug.Log("용광로 결과물 수거 요청!");
+                    }
+                    else if (!furnace.isWorking && isPlayerGetSomething)
+                    {
+                        Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
+                        if (currentItem == null) return;
+
+                        int objectId = currentItem.itemId;
+
+                        if (furnace.RequestSmelt(objectId))
+                        {
+                            Debug.Log("용광로에 아이템 투입 요청 성공!");
+                            PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
+                            Destroy(playerItemSystem.currentEquipItem);
+                            isPlayerGetSomething = false;
+                            playerItemSystem.DetachItem();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("아직 용광로가 이전 작업을 처리 중입니다!");
+                    }
+                }
+            }
+
+            else if (nearestObject.CompareTag(Define.Tag.SPACESHIP) && isPlayerGetSomething)
+            {
+                SpaceshipAssembly spaceshipAssembly = nearestObject.GetComponent<SpaceshipAssembly>();
+
+                Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
+                if (currentItem == null) return;
+
+                if (ConnectManager.Instance.isHost)
+                {
+                    bool success = spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
+                    if (success)
+                    {
+                        isPlayerGetSomething = false;
+                        playerItemSystem.DetachItem();
+                    }
+                }
+                else
+                {
+                    PacketSender.Instance.SendSpaceshipInsert(currentItem.itemStringKey, currentItem.itemId);
+                }
+            }
+        }
+    }
+
+    // 좌클릭 상호작용 (채굴 전용)
+    private void KeyLeftClickInteract()
+    {
+        if (playerInput.GetIsLeftClick())
+        {
+            playerInput.MakeIsLeftClickFalse();
+
+            // 곡괭이를 들고 있을 때만 채굴 시작
+            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething && !isPlayerThrowSomething)
+            {
+                isMining = true;
+            }
+        }
     }
 
     // 물리 작용 업데이트
@@ -260,112 +358,6 @@ public class Player : MovingObject
             EndMining();
         }
         base.Moving(movDir);
-    }
-
-    // E키 상호작용
-    // NOTE : nearestObject는 항상 SphereTriggerFunc로 트리거 감지합니다. 뭔가 만들었는데 안된다 싶으면, 해당 함수에서 태그를 검사하고 있는지 확인해주세요!
-    private void KeyEInteract()
-    {
-        if (playerInput.GetIsInteract())
-        {
-            playerInput.MakeIsInteractFalse();
-            // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
-            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething && !isPlayerThrowSomething)
-            {
-                isMining = true;
-            }
-
-            else if (nearestObject == null)
-            {
-                return;
-            }
-
-            // 플레이어에게서 가장.closest오브젝트의 태그가 아이템이며, 빈 손일 때
-            // 혹은 태그가 Tool인 것도 포함함.
-            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething && !isPlayerThrowSomething ||
-                nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething && !isPlayerThrowSomething)
-            {
-                isPlayerGetSomething = true;
-                playerItemSystem.AttachItem(nearestObject);
-                //SendItemAttachedToServer(nearestObject.GetComponent<Items>());
-                SendItemAttachedToServer(playerItemSystem.GetCurrentEquipItemClass());
-            }
-
-            // 플레이어에게서 가장 가까운 오브젝트의 태그가 조합대이며, 아이템을 들고 있을 때
-            // 또한 투입할 때 플레이어의 손에서 Detach
-            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isPlayerGetSomething)
-            {
-                Crafting craftTable = nearestObject.GetComponent<Crafting>();
-                isPlayerGetSomething = false;
-                craftTable.AddCraftItems(playerItemSystem.currentEquipItem);
-                playerItemSystem.DetachItem();
-            }
-
-            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로.
-            else if (nearestObject.CompareTag(Define.Tag.FURNACE))
-            {
-                FurnaceObject furnace = nearestObject.GetComponent<FurnaceObject>();
-            
-                if (furnace != null)
-                {
-                    // 1. 용광로가 작업이 끝났으면 아이템 회수하기
-
-                    if (furnace.hasResult)
-                    {
-                        // 클라이언트가 서버로 C_FURNACE_RETRIEVE 패킷을 보내도록 FurnaceObject에 함수(예: RequestRetrieve) 구현 필요
-                        furnace.RequestRetrieve();
-                        Debug.Log("용광로 결과물 수거 요청!");
-                    }
-                    else if (!furnace.isWorking && isPlayerGetSomething)
-                    {
-                        // 손에 든 아이템의 실제 itemId를 사용
-                        Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
-                        if (currentItem == null) return;
-
-                        int objectId = currentItem.itemId;
-
-                        if (furnace.RequestSmelt(objectId))
-                        {
-                            Debug.Log("용광로에 아이템 투입 요청 성공!");
-                            PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
-                            Destroy(playerItemSystem.currentEquipItem);
-                            isPlayerGetSomething = false;
-                            playerItemSystem.DetachItem();
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("아직 용광로가 이전 작업을 처리 중입니다!");
-                    }
-                }
-            }
-
-            // 플레이어에게서 가장 가까운 오브젝트의 태그가 우주선이며, 아이템을 들고 있을 때
-            // 또한 투입할 때 플레이어의 손에서 Detach
-            else if (nearestObject.CompareTag(Define.Tag.SPACESHIP) && isPlayerGetSomething)
-            {
-                SpaceshipAssembly spaceshipAssembly = nearestObject.GetComponent<SpaceshipAssembly>();
-
-                Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
-                if (currentItem == null) return;
-
-                if (ConnectManager.Instance.isHost)
-                {
-                    // 호스트: 판정 성공 시에만 손에서 제거
-                    bool success = spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
-                    if (success)
-                    {
-                        isPlayerGetSomething = false;
-                        playerItemSystem.DetachItem();
-                    }
-                }
-                else
-                {
-                    // 피어: 호스트에 요청만. 로컬 정리는 OnHostObjectDestroy에서 수행
-                    PacketSender.Instance.SendSpaceshipInsert(currentItem.itemStringKey, currentItem.itemId);
-                }
-            }
-        }
     }
 
     // F키 상호작용
