@@ -82,4 +82,10 @@ public class OtherPlayers : MovingObject
     {
         otherPlayerStats.SetStat(hpData, oxygenData);
     }
+
+
+    public void EndMining()
+    {
+        //empty
+    }
 }
