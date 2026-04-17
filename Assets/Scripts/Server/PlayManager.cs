@@ -232,7 +232,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     private void OnHostSpaceshipUpdate(S_SPACESHIP_UPDATE packet)
     {
         if (spaceshipAssembly == null) return;
-        spaceshipAssembly.SyncIndex(packet.CurrentIndex);
+        spaceshipAssembly.SyncMission(packet.ItemStringKeyMission, packet.CurrentIndex);
     }
 
     private void OnHostSpaceshipComplete(S_SPACESHIP_COMPLETE packet)
