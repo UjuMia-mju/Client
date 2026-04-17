@@ -28,6 +28,7 @@ public class Items : MovingObject
     // 씬에 직접 배치된 아이템인지 여부 (런타임 Instantiate가 아닌 경우)
     [Tooltip("씬에 미리 배치된 아이템이면 체크. 호스트가 피어에게 초기 ID를 동기화합니다.")]
     [SerializeField] private bool isScenePlacedItem = false;
+    public bool IsScenePlacedItem => isScenePlacedItem;
 
     private void Start()
     {

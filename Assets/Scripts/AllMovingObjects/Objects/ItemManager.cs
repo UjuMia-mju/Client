@@ -9,7 +9,6 @@ public class ItemManager : MonoBehaviour
 
     private Dictionary<int, Items> itemDic = new Dictionary<int, Items>();
 
-    // itemStringKey → 프리팹 매핑 테이블 (인스펙터에서 등록)
     [System.Serializable]
     public class ItemPrefabData
     {
@@ -85,11 +84,23 @@ public class ItemManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 네트워크 패킷으로 아이템 생성 (호스트/피어 공용)
-    /// Items.Start()에서 RegisterItem이 호출되므로 한 프레임 뒤에 OverrideItemId 처리
+    /// 네트워크 패킷으로 아이템 처리 (호스트/피어 공용)
+    /// - 씬 배치 아이템: 이미 존재하는 오브젝트를 찾아 ID만 교체
+    /// - 런타임 스폰 아이템: 새로 Instantiate 후 ID 교체
     /// </summary>
     public void SpawnItemFromNetwork(int itemId, string itemStringKey, Vector3 pos, Quaternion rot)
     {
+        // 씬에 이미 배치된 아이템인지 확인 (위치 기반 근접 탐색)
+        Items existingItem = FindScenePlacedItem(itemStringKey, pos);
+        if (existingItem != null)
+        {
+            if (itemId > 0)
+                OverrideItemId(existingItem, itemId);
+            Debug.Log($"[ItemManager] 씬 배치 아이템 ID 동기화: key={itemStringKey}, id={itemId}");
+            return;
+        }
+
+        // 런타임 스폰 아이템: 새로 생성
         GameObject prefab = GetPrefabByKey(itemStringKey);
         if (prefab == null)
         {
@@ -99,7 +110,6 @@ public class ItemManager : MonoBehaviour
 
         GameObject spawnedObj = Instantiate(prefab, pos, rot);
 
-        // Ore.DropItem()과 동일하게 행성 위 방향 + forward로 힘을 줌
         Rigidbody rb = spawnedObj.GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -115,6 +125,18 @@ public class ItemManager : MonoBehaviour
             StartCoroutine(OverrideIdNextFrame(itemComp, itemId));
 
         Debug.Log($"[ItemManager] SpawnItemFromNetwork: key={itemStringKey}, id={itemId}, pos={pos}");
+    }
+
+    // 씬에 이미 배치된 아이템을 stringKey + 위치 근접도로 탐색
+    private Items FindScenePlacedItem(string key, Vector3 pos)
+    {
+        foreach (var item in itemDic.Values)
+        {
+            if (item.itemStringKey == key && item.IsScenePlacedItem &&
+                Vector3.Distance(item.transform.position, pos) < 1f)
+                return item;
+        }
+        return null;
     }
 
     private IEnumerator OverrideIdNextFrame(Items itemComp, int newId)
