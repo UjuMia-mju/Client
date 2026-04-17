@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Google.Protobuf;
+using UnityEngine;
 using Protocol;
 
 
@@ -147,7 +148,18 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             StageIndex = stageIndex
         };
         
-        net.SendPacket(PacketId.PKT_C_START_STAGE, packet);
+        if (ConnectManager.Instance.isHost)
+        {
+            Debug.Log("[PacketDispatcher] 호스트 루프백 발동! 다이렉트 전달!");
+            // 내 로컬 플레이어 ID를 넣어서 서버 핸들러 강제 호출
+            int myPlayerId = (int)NetManager.Instance._playerId;
+            PeerPacketHandler.Instance.HandlePeerPacket(myPlayerId, PacketId.PKT_C_START_STAGE, packet.ToByteArray());
+        }
+        else
+        {
+            // 3. 파티원(Peer) -> 원래 하던 대로 서버를 향해 네트워크로 전송
+            NetManager.Instance.SendPacket(PacketId.PKT_C_START_STAGE, packet); 
+        }
     }
     
     #endregion

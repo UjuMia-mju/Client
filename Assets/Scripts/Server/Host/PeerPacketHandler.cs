@@ -77,6 +77,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             case PacketId.PKT_C_SPACESHIP_INSERT:
                 HandlePeerSpaceshipInsert(peerId, data);
                 break;
+            case PacketId.PKT_C_START_STAGE:
+                HandlePeerStartStage(peerId, data);
+                break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
                 break;
@@ -304,6 +307,36 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     {
         C_SPACESHIP_INSERT packet = C_SPACESHIP_INSERT.Parser.ParseFrom(data);
         OnPeerSpaceshipInsertEvent?.Invoke(peerId, packet);
+    }
+    
+    // ============================================
+    // 스테이지 시작 요청 처리 및 모두에게 전파 (Broadcast)
+    // ============================================
+    private void HandlePeerStartStage(int peerId, byte[] data)
+    {
+        // 1. 클라이언트가 보낸 요청 읽기
+        C_START_STAGE packet = C_START_STAGE.Parser.ParseFrom(data);
+        Debug.Log($"[Peer {peerId}] 스테이지 시작 요청 수신! MapId: {packet.MapId}");
+        
+        S_START_STAGE relay = new S_START_STAGE
+        {
+            Success = true,
+            Stage = new StageInfo 
+            { 
+                MapId = packet.MapId, 
+                Chapter = packet.Chapter, 
+                Stage = packet.StageIndex 
+            }
+        };
+
+        // 3. 네트워크에 연결된 모든 피어들에게 전송
+        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_START_STAGE, relay, includeSender: true);
+
+        // 4.호스트 클라이언트도 씬을 넘어가야 함
+        if ((ulong)peerId == NetManager.Instance._playerId || peerId == 0) 
+        {
+            PacketManager.Instance.HandlePacket(PacketId.PKT_S_START_STAGE, relay.ToByteArray());
+        }
     }
 }
 
