@@ -47,21 +47,20 @@ public class StageManager : MonoBehaviour
         _cameraController.ResetToOrigin();
         _clickOffObjects = GameObject.FindGameObjectsWithTag(Define.Tag.CLICKOFF);
 
-        if (PacketManager.Instance != null)
+        if (PacketHandler.Instance != null)
         {
-            PacketManager.Instance.OnGetClearInfoEvent += HandleGetClearInfoResponse;
-            PacketManager.Instance.OnStartStageEvent += HandleStartStageResponse;
+            PacketHandler.Instance.OnGetClearInfoEvent += HandleGetClearInfoResponse;
+            PacketHandler.Instance.OnStartStageEvent += HandleStartStageResponse;
         }
-        
-        PacketDispatcher.Instance.SendGetClearInfo(); 
+        PacketDispatcher.Instance.SendGetClearInfo();
     }
 
     private void OnDestroy()
     {
-        if (PacketManager.Instance != null)
+        if (PacketHandler.Instance != null) 
         {
-            PacketManager.Instance.OnGetClearInfoEvent -= HandleGetClearInfoResponse;
-            PacketManager.Instance.OnStartStageEvent -= HandleStartStageResponse;
+            PacketHandler.Instance.OnGetClearInfoEvent -= HandleGetClearInfoResponse;
+            PacketHandler.Instance.OnStartStageEvent -= HandleStartStageResponse;
         }
     }
 
