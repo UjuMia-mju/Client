@@ -29,6 +29,11 @@ message S_GET_CURRENCY
 	int32 gem = 3;
 }
 
+message C_GET_DB_DATA
+{
+	
+}
+
 // ==================== 가챠 뽑기 ====================
 
 message C_GACHA
