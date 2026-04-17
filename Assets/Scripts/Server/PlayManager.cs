@@ -224,6 +224,14 @@ public class PlayManager : SceneSingleton<PlayManager>
             return;
         }
 
+        // 로컬 플레이어가 해당 아이템을 들고 있으면 먼저 해제
+        Player localPlayer = FindFirstObjectByType<Player>();
+        if (localPlayer != null && localPlayer.playerItemSystem.currentEquipItem == item.gameObject)
+        {
+            localPlayer.isPlayerGetSomething = false;
+            localPlayer.playerItemSystem.DetachItem();
+        }
+
         ItemManager.Instance.UnregisterItem(item);
         Destroy(item.gameObject);
         Debug.Log($"[PlayManager] ObjectDestroy 처리: id={packet.ItemId}");

@@ -17,7 +17,7 @@ public class Player : MovingObject
     private const float DETECT_RADIUS = 2.2f; // 구형 트리거 반지름 
     private const float THROW_IGNORE_COLLISION_DURATION = 0.65f; // 던진 후 충돌 무시 시간
 
-    public bool isPlayerGetSomething { get; private set; } = false;
+    public bool isPlayerGetSomething = false;
     public bool isMining { get; private set; } = false;
     private bool isPlayerThrowSomething = false;    // 무언가를 던지는 플래그
     
@@ -351,27 +351,19 @@ public class Player : MovingObject
 
                 if (ConnectManager.Instance.isHost)
                 {
-                    // 호스트: 직접 판정 후 브로드캐스트
-                    spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
-                    isPlayerGetSomething = false;
-                    playerItemSystem.DetachItem();
+                    // 호스트: 판정 성공 시에만 손에서 제거
+                    bool success = spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
+                    if (success)
+                    {
+                        isPlayerGetSomething = false;
+                        playerItemSystem.DetachItem();
+                    }
                 }
                 else
                 {
-                    // 피어: 패킷 전송 후 로컬 정리
+                    // 피어: 호스트에 요청만. 로컬 정리는 OnHostObjectDestroy에서 수행
                     PacketSender.Instance.SendSpaceshipInsert(currentItem.itemStringKey, currentItem.itemId);
-                    PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
-                    Destroy(playerItemSystem.currentEquipItem);
-                    isPlayerGetSomething = false;
-                    playerItemSystem.DetachItem();
                 }
-
-                //if (spaceshipAssembly != null)
-                //{
-                //    spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
-                //    isPlayerGetSomething = false;
-                //    playerItemSystem.DetachItem();
-                //}
             }
         }
     }
