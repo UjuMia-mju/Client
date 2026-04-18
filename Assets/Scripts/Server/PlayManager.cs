@@ -488,7 +488,15 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void SpawnRemotePlayer(PlayerGameInfo playerInfo)
     {
+        Debug.Log("생성!");
         ulong id = (ulong)playerInfo.PlayerId;
+
+        if (id == (ulong)NetManager.Instance._playerId)
+        {
+            Debug.Log("내 플레이어는 스폰하지 않습니다.");
+            return;
+        }
+
         if (_remotePlayers.ContainsKey(id))
         {
             Debug.LogWarning($"Player {playerInfo.PlayerId} already exists!");

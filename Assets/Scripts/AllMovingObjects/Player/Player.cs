@@ -56,7 +56,11 @@ public class Player : MovingObject
         if (ConnectManager.Instance.isHost)
         {
             playerStat = gameObject.AddComponent<HostPlayerStat>();
-            HostStatManager.Instance.RegisterPlayer(playerStat.playerId, playerStat);
+            HostStatManager.Instance.RegisterPlayer(1, playerStat); 
+            // 나중에 밑에걸로 바꿔야 합니다. 지금은 타이밍 이슈로 Host인 1로 고정해놨습니다.
+            // 나중에는 로그인->방 생성->인게임 순으로 동작하기 때문에 Netmanager가 초기화가 되어있고, 
+            // 플레이어 ID도 확정된 시점에 playerStat을 생성하고 등록하는 구조로 바꿔야 합니다.
+            //HostStatManager.Instance.RegisterPlayer(NetManager.Instance._playerId, playerStat);
         }
         else
         {

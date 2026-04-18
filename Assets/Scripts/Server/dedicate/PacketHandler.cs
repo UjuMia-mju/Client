@@ -33,7 +33,6 @@ public class PacketHandler : Singleton<PacketHandler>
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
-        Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
         switch (packetId)
         {
             case PacketId.PKT_S_LOGIN:

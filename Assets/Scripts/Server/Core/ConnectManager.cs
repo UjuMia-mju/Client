@@ -8,10 +8,15 @@ public class ConnectManager : SceneSingleton<ConnectManager>
     // 중앙 서버(호스트만 사용)
     public string centralServerIp = "127.0.0.1";
     public int centralServerPort = 7777;
+
+    // 테스트용 로그인 정보 (실제에서는 UI에서 입력받거나 저장된 정보를 불러와야 함)
     private string hostId = "player1@test.com";
     private string hostPassword = "1234";
     private string peerId = "player2@test.com";
     private string peerPassword = "1234";
+    public bool isSecondPeer = false; // 테스트용: 두 번째 피어로 실행할 때 true로 설정
+    private string peerId2 = "player3@test.com";
+    private string peerPassword2 = "1234";
 
     // 중앙 서버가 내려줬다고 가정하는 호스트 접속 정보
     public string hostIpFromServer = "127.0.0.1";
@@ -57,6 +62,10 @@ public class ConnectManager : SceneSingleton<ConnectManager>
         if (isHost)
         {
             SendLogin(hostId, hostPassword);
+        }
+        else if (isSecondPeer)
+        {
+            SendLogin(peerId2, peerPassword2);
         }
         else
         {

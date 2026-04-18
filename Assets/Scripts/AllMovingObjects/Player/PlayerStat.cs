@@ -55,7 +55,7 @@ public struct PlayerStatData
 public class PlayerStat : MonoBehaviour
 {
     public PlayerStatData statData = new (5);
-    public ulong playerId;
+    protected ulong GetMyPlayerId() => NetManager.Instance._playerId;
 
     public event Action<float> OnOxygenChanged;
     public event Action<int> OnHpChanged;
@@ -76,7 +76,6 @@ public class PlayerStat : MonoBehaviour
     protected virtual void Awake()
     {
         statData = new PlayerStatData(5);
-        playerId = NetManager.Instance._playerId;
     }
 
     void Start()
