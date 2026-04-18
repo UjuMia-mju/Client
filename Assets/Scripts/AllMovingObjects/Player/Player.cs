@@ -1,5 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class Player : MovingObject
 {
@@ -39,6 +40,7 @@ public class Player : MovingObject
     // 임시 UI 객체
     [SerializeField] private HPUIController hpUIController;
     [SerializeField] private OxygenUIController oxygenUIController;
+    [SerializeField] private ThrowTrajectoryPreview trajectoryPreview;
 
     // 초기화
     protected override void Awake()
@@ -49,6 +51,11 @@ public class Player : MovingObject
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
         playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
+
+        if (trajectoryPreview == null)
+            trajectoryPreview = GetComponent<ThrowTrajectoryPreview>();
+        if (trajectoryPreview == null)
+            trajectoryPreview = gameObject.AddComponent<ThrowTrajectoryPreview>();
 
         playerAnimator.Initialize();
         lastAnimState = AnimState.Idle;
@@ -179,6 +186,11 @@ public class Player : MovingObject
 
             KeyEInteract();
             KeyFInteract();
+            UpdateThrowAimPreview();
+        }
+        else if (trajectoryPreview != null)
+        {
+            trajectoryPreview.Hide();
         }
 
         // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
@@ -374,6 +386,35 @@ public class Player : MovingObject
                 //}
             }
         }
+    }
+
+    private void UpdateThrowAimPreview()
+    {
+        if (trajectoryPreview == null || Mouse.current == null)
+            return;
+
+        bool holdingItem = isPlayerGetSomething && playerItemSystem.currentEquipItem != null && !isPlayerThrowSomething;
+        if (!holdingItem || !Mouse.current.rightButton.isPressed)
+        {
+            trajectoryPreview.Hide();
+            return;
+        }
+
+        Vector3 aimFlat = GetFlatPlayerThrowDirection();
+        Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimFlat);
+        float mass = playerItemSystem.GetHeldItemMass();
+        Vector3 v0 = impulse / mass;
+        trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
+    }
+
+    /// <summary>플레이어가 바라보는 방향을 지면(플레이어 up)에 투영한 조준 방향. 던지기/궤적 미리보기 공통.</summary>
+    private Vector3 GetFlatPlayerThrowDirection()
+    {
+        Vector3 up = transform.up;
+        Vector3 flat = Vector3.ProjectOnPlane(transform.forward, up);
+        if (flat.sqrMagnitude < 1e-4f)
+            flat = Vector3.ProjectOnPlane(transform.right, up);
+        return flat.normalized;
     }
 
     // F키 상호작용
