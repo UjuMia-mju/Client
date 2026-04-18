@@ -16,7 +16,7 @@ public class TestPlayer : MonoBehaviour
         _lastSendRot = transform.rotation;
 
         // 게임 입장 패킷 전송
-        PacketSender.Instance.SendEnterGame(0);
+        PacketSender.Instance.SendEnterGame();
     }
 
     void Update()

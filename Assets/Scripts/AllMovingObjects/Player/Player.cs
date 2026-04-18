@@ -148,10 +148,15 @@ public class Player : MovingObject
 
     public void OnNetworkReady()
     {
-        if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
-        {
-            PacketSender.Instance.SendEnterGame(0);
-        }
+        Debug.Log("Player: Network is ready, sending EnterGame packet.");
+        // if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
+        // {
+        //     PacketSender.Instance.SendEnterGame(0);
+
+        //     Debug.Log("Player: Sent EnterGame packet to server.");
+        // }
+        
+        PacketSender.Instance.SendEnterGame();
         SendEnterPosToServer();
 
         // 네트워크 준비 후 산소 감소 시작 (EnterGame 패킷 이후에 산소 패킷이 전송되도록)

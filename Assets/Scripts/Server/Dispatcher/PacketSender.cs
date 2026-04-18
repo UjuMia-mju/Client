@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Protocol;
 using System;
+using Google.Protobuf;
 
 public class PacketSender : MonoBehaviorSingleton<PacketSender>
 {
@@ -38,8 +39,8 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     }
 
     #region Client Requests
-    public void SendEnterGame(ulong playerIndex)
-        => TryClientSend(() => clientSender.SendEnterGame(playerIndex));
+    public void SendEnterGame()
+        => TryClientSend(() => clientSender.SendEnterGame());
 
     public void SendChat(string message)
         => TryClientSend(() => clientSender.SendChat(message));
@@ -111,6 +112,9 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     #endregion
 
     #region Host Broadcasts
+    public void BroadcastToPeers(PacketId packetId, IMessage packet)
+        => TryHostBroadcast(() => hostSender.BroadcastToPeers(packetId, packet));
+
     public void BroadcastPlayerEnter(ulong playerIndex)
         => TryHostBroadcast(() => hostSender.BroadcastEnterGame(playerIndex));
 

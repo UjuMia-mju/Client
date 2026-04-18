@@ -9,6 +9,24 @@ message C_GET_DB_DATA
 
 }
 
+message C_TEST_ENTER_ROOM
+{
+}
+
+// [클라이언트 -> 서버] 릴레이 요청
+message C_RELAY_PACKET {
+    bool require_host_authority = 1; // true면 방장에게만, false면 방장이 전체에게
+    uint32 packet_id = 2; // 실제 패킷의 ID
+    bytes payload = 3; // 실제 게임 패킷 (직렬화된 byte 배열)
+}
+
+// [서버 -> 클라이언트] 릴레이 전달
+message S_RELAY_PACKET {
+    uint64 sender_id = 1; // 누가 보낸 패킷인지
+    uint32 packet_id = 2;
+    bytes payload = 3;
+}
+
 message C_LOGIN
 {
 	string userId = 1;

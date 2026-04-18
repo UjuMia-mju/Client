@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         if (packet.Success)
         {
             Debug.Log($"✓ Login Success! Player ID: {packet.Player.Id}, Name: {packet.Player.Name}");
-            NetManager.Instance._playerId = (int)packet.Player.Id; //  이런 캐스팅 부분 나중에 수정해야함.
+            NetManager.Instance._playerId = (ulong)packet.Player.Id; //  이런 캐스팅 부분 나중에 수정해야함.
             SceneManager.LoadScene(Define.Scene.SPLASH);  // 로그인 성공 시 게임 씬으로 이동            
         }
         else

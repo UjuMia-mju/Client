@@ -103,10 +103,13 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         };
 
         // 3. 다른 피어들에게 브로드캐스트 (새로 들어온 피어 제외)
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket, includeSender: false);
+        //HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket, includeSender: false);
+
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_ENTER, enterPacket);
 
         // 4. 새로 들어온 피어에게 자신의 정보 전송 (playerId 세팅용, 스폰 제외 플래그 없음)
-        HostNetManager.Instance.SendToPeer(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket);
+        //HostNetManager.Instance.SendToPeer(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket);
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_ENTER, enterPacket);
 
         // 5. 새로 들어온 피어에게 호스트 정보 전송
         S_PLAYER_ENTER hostEnterPacket = new S_PLAYER_ENTER
@@ -119,7 +122,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
             }
         };
-        HostNetManager.Instance.SendToPeer(peerId, PacketId.PKT_S_PLAYER_ENTER, hostEnterPacket);
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_ENTER, hostEnterPacket);
 
         // 6. PlayManager 이벤트 발생
         OnPeerEnterGameEvent?.Invoke(peerId, packet);
@@ -137,7 +140,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             Rot = packet.Rot?.Clone()
         };
 
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_MOVE, relay, includeSender: false);
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_MOVE, relay);
     }
 
     private void HandlePeerChat(int peerId, byte[] data)
@@ -151,7 +154,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             Msg = packet.Msg
         };
 
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_CHAT, relay);
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_CHAT, relay);
     }
 
     private void HandlePeerAnimation(int peerId, byte[] data)
@@ -165,7 +168,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             State = packet.State
         };
 
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ANIMATION, relay, includeSender: false);
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_ANIMATION, relay);
     }
 
     private void HandlePeerItemAttached(int peerId, byte[] data)
@@ -181,7 +184,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             ErrorMsg = ""
         };
 
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_PICKUP, relay, includeSender: false);
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_PICKUP, relay);
     }
 
     private void HandlePeerItemDetached(int peerId, byte[] data)
@@ -195,7 +198,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             PlayerId = (ulong)peerId
         };
 
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DROP, relay);
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_DROP, relay);
     }
 
 
@@ -208,7 +211,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             Pos = packet.Pos?.Clone(),
             Rot = packet.Rot?.Clone()
         };
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_MOVE, relay, includeSender: false);
+
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_MOVE, relay);
     }
 
     private void HandlePeerStatEvent(int peerId, byte[] data)
@@ -243,7 +247,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 Oxygen = stat.GetOxygen()
             };
 
-            HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_STAT, syncPacket, true);
+            PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_STAT, syncPacket);
             OnPeerStatEvent?.Invoke(peerId, packet);
         }
         else
@@ -286,7 +290,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             Pos = packet.Pos?.Clone(),
             Rot = packet.Rot?.Clone()
         };
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_SPAWN, relay, includeSender: false);
+
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_SPAWN, relay);
     }
 
     private void HandlePeerObjectDestroy(int peerId, byte[] data)
@@ -296,7 +301,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
 
         // 다른 피어들에게 릴레이
         S_OBJECT_DESTROY relay = new S_OBJECT_DESTROY { ItemId = packet.ItemId };
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DESTORY, relay, includeSender: false);
+
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_DESTORY, relay);
     }
 
 

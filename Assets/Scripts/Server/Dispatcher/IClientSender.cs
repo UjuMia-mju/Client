@@ -3,7 +3,7 @@ using Protocol;
 
 public interface IClientSender
 {
-    void SendEnterGame(ulong playerIndex);
+    void SendEnterGame();
     void SendChat(string message);
     void SendMove(Vector3 position, Quaternion rotation);
     void SendAnimation(AnimState animState);
