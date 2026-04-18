@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class PlayerItemSystem : MonoBehaviour
 {
@@ -53,7 +53,49 @@ public class PlayerItemSystem : MonoBehaviour
         this.currentEquipItem = item;
     }
 
+    public Vector3 ComputeThrowImpulse(float runningAmount, Vector3 flatAimDirection)
+    {
+        if (currentEquipItem == null) return Vector3.zero;
+
+        flatAimDirection = Vector3.ProjectOnPlane(flatAimDirection, transform.up);
+        if (flatAimDirection.sqrMagnitude < 1e-6f)
+            flatAimDirection = Vector3.ProjectOnPlane(transform.forward, transform.up);
+        flatAimDirection.Normalize();
+
+        Vector3 forwardVec;
+        if (runningAmount < MIN_RUNNINGAMOUNT)
+            forwardVec = flatAimDirection;
+        else
+            forwardVec = flatAimDirection * (runningAmount * CONTROL_RUNNINGAMOUNT);
+
+        Vector3 force = (transform.up + forwardVec) * THROW_FORCE;
+        float clampedMagnitude = Mathf.Clamp(force.magnitude, MIN_THROW_FORCE, MAX_THROW_FORCE);
+        return force.normalized * clampedMagnitude;
+    }
+
+    public Vector3 GetThrowStartPosition()
+    {
+        return itemSocket != null ? itemSocket.transform.position : transform.position;
+    }
+
+    public float GetHeldItemMass()
+    {
+        if (currentEquipItem == null) return 1f;
+        Rigidbody rb = currentEquipItem.GetComponent<Rigidbody>();
+        return rb != null ? Mathf.Max(0.01f, rb.mass) : 1f;
+    }
+
     public void ThrowItem(float runningAmount)
+    {
+        ThrowWithImpulse(ComputeThrowImpulse(runningAmount, transform.forward));
+    }
+
+    public void ThrowItemWithAim(float runningAmount, Vector3 flatAimDirection)
+    {
+        ThrowWithImpulse(ComputeThrowImpulse(runningAmount, flatAimDirection));
+    }
+
+    private void ThrowWithImpulse(Vector3 force)
     {
         Rigidbody rb = currentEquipItem.GetComponent<Rigidbody>();
         rb.isKinematic = false;
@@ -65,21 +107,6 @@ public class PlayerItemSystem : MonoBehaviour
         boxCollider.enabled = true;
 
         this.currentEquipItem.transform.SetParent(null);
-
-        Vector3 forwardVec;
-
-        if (runningAmount < MIN_RUNNINGAMOUNT)
-        {
-            forwardVec = transform.forward;
-        }
-        else
-        {
-            forwardVec = transform.forward * runningAmount * CONTROL_RUNNINGAMOUNT;
-        }
-
-        Vector3 force = (this.transform.up + forwardVec) * THROW_FORCE;
-        float clampedMagnitude = Mathf.Clamp(force.magnitude, MIN_THROW_FORCE, MAX_THROW_FORCE);
-        force = force.normalized * clampedMagnitude;
 
         rb.AddForce(force, ForceMode.Impulse);
 
