@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 
@@ -185,6 +185,7 @@ public class Player : MovingObject
                 isMining);
 
             KeyEInteract();
+            TryChargedAimThrow();
             KeyFInteract();
             UpdateThrowAimPreview();
         }
@@ -401,10 +402,29 @@ public class Player : MovingObject
         }
 
         Vector3 aimFlat = GetFlatPlayerThrowDirection();
-        Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimFlat);
+        Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimFlat, chargedThrow: true);
         float mass = playerItemSystem.GetHeldItemMass();
         Vector3 v0 = impulse / mass;
         trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
+    }
+
+    private void TryChargedAimThrow()
+    {
+        if (Mouse.current == null)
+            return;
+        if (!Mouse.current.rightButton.isPressed || !Mouse.current.leftButton.wasPressedThisFrame)
+            return;
+        if (!isPlayerGetSomething || playerItemSystem.currentEquipItem == null || isPlayerThrowSomething)
+            return;
+        if (nearestObject != null && nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
+            return;
+
+        isPlayerGetSomething = false;
+        SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
+        playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetFlatPlayerThrowDirection());
+        if (trajectoryPreview != null)
+            trajectoryPreview.Hide();
+        StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
     }
 
     /// <summary>플레이어가 바라보는 방향을 지면(플레이어 up)에 투영한 조준 방향. 던지기/궤적 미리보기 공통.</summary>
@@ -429,6 +449,10 @@ public class Player : MovingObject
                 // 아이템을 던지고, 플레이어의 손에서 Detach
                 if (isPlayerGetSomething)
                 {
+                    // 우클릭 조준 중에는 F로 약한 던지기 하지 않음(강한 던지기는 좌클릭)
+                    if (Mouse.current != null && Mouse.current.rightButton.isPressed)
+                        return;
+
                     isPlayerGetSomething = false;
                     SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
                     playerItemSystem.ThrowItem(GetMovingAmount());
