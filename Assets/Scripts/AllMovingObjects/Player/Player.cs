@@ -229,15 +229,18 @@ public class Player : MovingObject
                         Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
                         if (currentItem == null) return;
 
-                        int objectId = currentItem.itemId;
-
-                        if (furnace.RequestSmelt(objectId))
+                        if (furnace.RequestSmelt(currentItem.itemId))
                         {
-                            Debug.Log("용광로에 아이템 투입 요청 성공!");
-                            PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
-                            Destroy(playerItemSystem.currentEquipItem);
-                            isPlayerGetSomething = false;
-                            playerItemSystem.DetachItem();
+                            if (ConnectManager.Instance.isHost)
+                            {
+                                // 호스트: 레시피 검증 완료 → 즉시 파괴
+                                PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
+                                Destroy(playerItemSystem.currentEquipItem);
+                                isPlayerGetSomething = false;
+                                playerItemSystem.DetachItem();
+                            }
+                            // 피어: 아이템 파괴하지 않음
+                            // 호스트가 검증 후 S_OBJECT_DESTROY 브로드캐스트 → OnHostObjectDestroy에서 처리
                         }
                     }
                     else

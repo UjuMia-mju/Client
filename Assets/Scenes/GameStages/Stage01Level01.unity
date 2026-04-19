@@ -703,7 +703,6 @@ GameObject:
   - component: {fileID: 268140083}
   - component: {fileID: 268140082}
   - component: {fileID: 268140081}
-  - component: {fileID: 268140084}
   - component: {fileID: 268140085}
   m_Layer: 7
   m_Name: Furnace
@@ -805,23 +804,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 268140078}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &268140084
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 268140078}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad8a77757f2123745912ea98d473221d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Furnace
-  smeltedItemList:
-  - itemSmeltKey: TestCube
-    originalItemPrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
-    smeltedPrefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
-    smeltTime: 3
 --- !u!114 &268140085
 MonoBehaviour:
   m_ObjectHideFlags: 0

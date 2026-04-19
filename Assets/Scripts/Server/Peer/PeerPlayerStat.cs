@@ -51,6 +51,9 @@ public class PeerPlayerStat : PlayerStat
     {
         while (statData.oxygen < 1f)
         {
+            statData.IncreaseOxygen(0.02f);
+            CallOnOxygenChanged();
+
             PeerStatManager.Instance.IncreaseOxygen(GetMyPlayerId());
             yield return new WaitForSeconds(1.0f);
         }

@@ -39,20 +39,29 @@ public class FurnaceObject : MonoBehaviour
     // 유저가 용광로에 아이템을 넣으려 할 때 호출 (상호작용 키 등)
     public bool RequestSmelt(int objectId)
     {
-        if (isWorking)
+        if (isWorking || hasResult)
         {
-            Debug.LogWarning($"[Client] 용광로({furnaceId})는 이미 작동 중입니다.");
+            Debug.LogWarning($"[Client] 용광로({furnaceId})는 이미 작동 중이거나 결과물이 있습니다.");
             return false;
         }
 
         if (ConnectManager.Instance.isHost)
         {
-            // 호스트는 직접 서버 매니저에 smelt 요청
+            Items item = ItemManager.Instance.GetItem(objectId);
+            if (item == null) return false;
+
+            // 호스트: 레시피 먼저 검증 후 요청
+            if (!SmeltingRecipeManager.Instance.TryGetRecipe(item.itemStringKey, out _))
+            {
+                Debug.LogWarning($"[Furnace] '{item.itemStringKey}'은 제련할 수 없는 아이템입니다.");
+                return false;
+            }
+
             FurnaceServerManager.Instance.OnReceiveSmeltRequest(furnaceId, (ulong)objectId);
         }
         else
         {
-            // 클라이언트는 패킷 송신을 통해 호스트에게 요청
+            // 피어: 서버에 요청만, 검증은 호스트가 수행
             PacketSender.Instance.SendFurnanceSmeltRequest((ulong)objectId, furnaceId);
         }
 

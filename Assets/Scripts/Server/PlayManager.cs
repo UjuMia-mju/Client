@@ -224,7 +224,7 @@ public class PlayManager : SceneSingleton<PlayManager>
             return;
         }
 
-        // 로컬 플레이어가 해당 아이템을 들고 있으면 먼저 해제
+        // 로컬 플레이어가 해당 아이템을 들고 있으면 먼저 해제 (피어가 용광로에 넣은 경우)
         Player localPlayer = FindFirstObjectByType<Player>();
         if (localPlayer != null && localPlayer.playerItemSystem.currentEquipItem == item.gameObject)
         {
