@@ -8,6 +8,9 @@ public class PlayerItemSystem : MonoBehaviour
     private const float THROW_FORCE = 0.02f;
     private const float MAX_THROW_FORCE = 20f;
     private const float MIN_THROW_FORCE = 5f;
+    private const float CHARGED_MAX_THROW_FORCE = 38f;
+    private const float CHARGED_MIN_THROW_FORCE = 16f;
+    private const float CHARGED_UP_BLEND = 0.3f;
     private const float CONTROL_RUNNINGAMOUNT = 0.15f;
     private const float MIN_RUNNINGAMOUNT = 0.01f;
 
@@ -53,7 +56,7 @@ public class PlayerItemSystem : MonoBehaviour
         this.currentEquipItem = item;
     }
 
-    public Vector3 ComputeThrowImpulse(float runningAmount, Vector3 flatAimDirection)
+    public Vector3 ComputeThrowImpulse(float runningAmount, Vector3 flatAimDirection, bool chargedThrow = false)
     {
         if (currentEquipItem == null) return Vector3.zero;
 
@@ -68,8 +71,11 @@ public class PlayerItemSystem : MonoBehaviour
         else
             forwardVec = flatAimDirection * (runningAmount * CONTROL_RUNNINGAMOUNT);
 
-        Vector3 force = (transform.up + forwardVec) * THROW_FORCE;
-        float clampedMagnitude = Mathf.Clamp(force.magnitude, MIN_THROW_FORCE, MAX_THROW_FORCE);
+        float upWeight = chargedThrow ? CHARGED_UP_BLEND : 1f;
+        Vector3 force = (transform.up * upWeight + forwardVec) * THROW_FORCE;
+        float minF = chargedThrow ? CHARGED_MIN_THROW_FORCE : MIN_THROW_FORCE;
+        float maxF = chargedThrow ? CHARGED_MAX_THROW_FORCE : MAX_THROW_FORCE;
+        float clampedMagnitude = Mathf.Clamp(force.magnitude, minF, maxF);
         return force.normalized * clampedMagnitude;
     }
 
@@ -87,12 +93,17 @@ public class PlayerItemSystem : MonoBehaviour
 
     public void ThrowItem(float runningAmount)
     {
-        ThrowWithImpulse(ComputeThrowImpulse(runningAmount, transform.forward));
+        ThrowWithImpulse(ComputeThrowImpulse(runningAmount, transform.forward, false));
     }
 
     public void ThrowItemWithAim(float runningAmount, Vector3 flatAimDirection)
     {
-        ThrowWithImpulse(ComputeThrowImpulse(runningAmount, flatAimDirection));
+        ThrowWithImpulse(ComputeThrowImpulse(runningAmount, flatAimDirection, false));
+    }
+
+    public void ThrowChargedAim(float runningAmount, Vector3 flatAimDirection)
+    {
+        ThrowWithImpulse(ComputeThrowImpulse(runningAmount, flatAimDirection, true));
     }
 
     private void ThrowWithImpulse(Vector3 force)
