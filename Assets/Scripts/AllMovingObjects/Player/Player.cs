@@ -189,9 +189,12 @@ public class Player : MovingObject
             KeyFInteract();
             UpdateThrowAimPreview();
         }
-        else if (trajectoryPreview != null)
+        else
         {
-            trajectoryPreview.Hide();
+            if (trajectoryPreview != null)
+                trajectoryPreview.Hide();
+            if (playerTPCamera != null)
+                playerTPCamera.SetThrowAimZoom(false);
         }
 
         // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
@@ -391,21 +394,28 @@ public class Player : MovingObject
 
     private void UpdateThrowAimPreview()
     {
-        if (trajectoryPreview == null || Mouse.current == null)
-            return;
+        bool aimZoom = false;
 
-        bool holdingItem = isPlayerGetSomething && playerItemSystem.currentEquipItem != null && !isPlayerThrowSomething;
-        if (!holdingItem || !Mouse.current.rightButton.isPressed)
+        if (trajectoryPreview != null && Mouse.current != null)
         {
-            trajectoryPreview.Hide();
-            return;
+            bool holdingItem = isPlayerGetSomething && playerItemSystem.currentEquipItem != null && !isPlayerThrowSomething;
+            if (holdingItem && Mouse.current.rightButton.isPressed)
+            {
+                aimZoom = true;
+                Vector3 aimFlat = GetFlatPlayerThrowDirection();
+                Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimFlat, chargedThrow: true);
+                float mass = playerItemSystem.GetHeldItemMass();
+                Vector3 v0 = impulse / mass;
+                trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
+            }
+            else
+                trajectoryPreview.Hide();
         }
+        else if (trajectoryPreview != null)
+            trajectoryPreview.Hide();
 
-        Vector3 aimFlat = GetFlatPlayerThrowDirection();
-        Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimFlat, chargedThrow: true);
-        float mass = playerItemSystem.GetHeldItemMass();
-        Vector3 v0 = impulse / mass;
-        trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
+        if (playerTPCamera != null)
+            playerTPCamera.SetThrowAimZoom(aimZoom);
     }
 
     private void TryChargedAimThrow()
