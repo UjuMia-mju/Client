@@ -7,7 +7,7 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\axe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\allmovingobjects\\objects\\pickaxe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\pickaxe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\pickaxe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -279,8 +279,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
               "ViewState": "AgIAACsAAAAAAAAAAAAiwEoAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T11:41:43.891Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-09T11:41:43.891Z"
             },
             {
               "$type": "Document",
@@ -316,8 +315,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Planet\\Ore.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T10:29:25.39Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-18T10:29:25.39Z"
             },
             {
               "$type": "Document",
@@ -329,8 +327,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Pickaxe.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T09:59:45.904Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-18T09:59:45.904Z"
             },
             {
               "$type": "Document",
@@ -354,8 +351,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Core\\Define.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAgwCUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-22T16:44:55.218Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-22T16:44:55.218Z"
             },
             {
               "$type": "Document",
@@ -367,8 +363,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
               "ViewState": "AgIAACMAAAAAAAAAAAAtwD0AAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-04T01:41:11.286Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-04T01:41:11.286Z"
             },
             {
               "$type": "Document",
@@ -380,8 +375,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
               "ViewState": "AgIAALAAAAAAAAAAAAArwMwAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T09:57:36.814Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-05T09:57:36.814Z"
             },
             {
               "$type": "Document",
@@ -489,8 +483,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
               "ViewState": "AgIAAJgAAAAAAAAAAAAWwLsAAABVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-04T01:40:53.903Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-04T01:40:53.903Z"
             },
             {
               "$type": "Document",

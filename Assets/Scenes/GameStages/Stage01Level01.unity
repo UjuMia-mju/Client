@@ -1284,6 +1284,8 @@ MonoBehaviour:
     prefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   - itemStringKey: SmeltedTestCube
     prefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
+  - itemStringKey: TestCube2
+    prefab: {fileID: 5248076910442429696, guid: 28d3c555b89de824dac8f647c007d843, type: 3}
 --- !u!1 &669581819
 GameObject:
   m_ObjectHideFlags: 0
