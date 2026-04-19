@@ -2,6 +2,8 @@
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using Protocol;
 
 [RequireComponent(typeof(StageCameraController))]
 [RequireComponent(typeof(StageUIManager))]
@@ -10,7 +12,6 @@ public class StageManager : MonoBehaviour
     public static StageManager Instance { get; private set; }
 
     [Header("UI Base Prefab")]
-    [Tooltip("여기에 SelectPanel 프리팹을 넣어주세요!")]
     public GameObject selectPanel; 
 
     [Header("Nodes & Environment")] 
@@ -45,6 +46,49 @@ public class StageManager : MonoBehaviour
 
         _cameraController.ResetToOrigin();
         _clickOffObjects = GameObject.FindGameObjectsWithTag(Define.Tag.CLICKOFF);
+
+        if (PacketHandler.Instance != null)
+        {
+            PacketHandler.Instance.OnGetClearInfoEvent += HandleGetClearInfoResponse;
+            PacketHandler.Instance.OnStartStageEvent += HandleStartStageResponse;
+        }
+        PacketDispatcher.Instance.SendGetClearInfo();
+    }
+
+    private void OnDestroy()
+    {
+        if (PacketHandler.Instance != null) 
+        {
+            PacketHandler.Instance.OnGetClearInfoEvent -= HandleGetClearInfoResponse;
+            PacketHandler.Instance.OnStartStageEvent -= HandleStartStageResponse;
+        }
+    }
+
+    // 서버에서 클리어 정보가 도착했을 때 실행되는 함수
+    private void HandleGetClearInfoResponse(S_GET_CLEAR_INFO packet)
+    {
+        // 1. 서버에서 온 데이터를 MapId 기준으로 딕셔너리에 정리
+        Dictionary<int, bool> clearDataDict = new Dictionary<int, bool>();
+        foreach (var clearInfo in packet.StageClears)
+        {
+            clearDataDict[clearInfo.MapId] = true;
+        }
+
+        // 2. 모든 행성(Node)을 순회하면서 클리어 여부 업데이트
+        foreach (var node in stageNodes)
+        {
+            if (node == null) continue;
+
+            if (DbCacheManager.Instance.TryGetStageInfoByChapterStage(node.stageLevel, node.stageIndex, out StageInfo info))
+            {
+                // 이 행성의 MapId가 클리어 목록에 있는지 확인
+                bool isCleared = clearDataDict.ContainsKey(info.MapId);
+                
+                // StageNode의 상태를 업데이트하고 시각적 테두리(주황색) 적용
+                node.isClearedStage = isCleared; 
+                node.SetClearState(isCleared);
+            }
+        }
     }
 
     private void Update()
@@ -63,39 +107,64 @@ public class StageManager : MonoBehaviour
             StartCoroutine(ClosePanelSequence());
         }
     }
+    
+    public void EnterSelectedStage()
+    {
+        if (_currentSelectedNode == null) return;
+
+        int level = _currentSelectedNode.stageLevel;
+        int index = _currentSelectedNode.stageIndex;
+
+        // DB 캐시에서 MapId를 꺼내와서 패킷에 담아 보낸다!
+        if (DbCacheManager.Instance.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
+        {
+            Debug.Log($"[StageManager] 서버에 스테이지 시작 요청! MapId: {info.MapId}");
+            PacketDispatcher.Instance.SendStartStage(info.MapId, level, index);
+        }
+    }
+    
+    private void HandleStartStageResponse(S_START_STAGE packet)
+    {
+        if (packet.Success)
+        {
+            Debug.Log($"[StageManager] 스테이지 시작 허가됨! 씬 이동 준비: {packet.Stage.StageName}");
+            
+            SceneManager.LoadScene(Define.Scene.GAME_1_1); 
+        }
+        else
+        {
+            Debug.LogWarning("[StageManager] 서버가 스테이지 시작을 거절했습니다!");
+            // (필요하다면 여기에 "입장 실패" 경고 팝업을 띄우는 로직 추가)
+        }
+    }
 
     public void OnStageClicked(StageNode clickedNode)
     {
         if (_currentSelectedNode != null || _isTransitioning) return;
         _currentSelectedNode = clickedNode;
 
-        // MOCK 서버 호출
-        MockServerResponse(clickedNode.stageLevel, clickedNode.stageIndex);
-        
-        // TODO: 서버 구현 시 주석 해제
-        // NetManager.Instance.SendShowStage(clickedNode.stageLevel, clickedNode.stageIndex);
+        if (!DbCacheManager.Instance.TryGetStageInfoByChapterStage(
+                clickedNode.stageLevel,
+                clickedNode.stageIndex,
+                out StageInfo stageInfo))
+        {
+            Debug.LogWarning($"[StageManager] 캐시에 스테이지 정보가 없습니다. chapter={clickedNode.stageLevel}, stage={clickedNode.stageIndex}");
+            _currentSelectedNode = null;
+            return;
+        }
+
+        OnReceiveStageInfo(stageInfo);
     }
 
-    // TODO: 서버 구현 시 주석 해제
-    private void MockServerResponse(int stageLevel, int stageIndex)
+    public void OnReceiveStageInfo(StageInfo stageInfo)
     {
-        Debug.Log($"[Mock] 서버에 Level {stageLevel}, Index {stageIndex} 정보 요청...");
-        
-        string mockStageName = $"챕터 {stageLevel}-{stageIndex}";
-        int mockDifficulty = Mathf.Clamp(stageLevel + stageIndex, 1, 5); 
-        string mockDescription = "거대한 수풀과 숲을 이룬 버섯 군락이 지표면을 완전히 점령한 행성입니다. \n\n이곳의 식물들은 비정상적으로 거대하여, " +
-                                 "\n한 그루의 높이가 수 킬로미터에 달합니다. \n\n대기 중에는 고농도의 산소와 포자가 가득 차 있어, " +
-                                 "모든 유기물은 일반적인 환경보다 수십 배 빠른 속도로 성장합니다.";
-        
-        OnReceiveStageInfo(mockStageName, mockDifficulty, mockDescription);
+        if (stageInfo == null)
+            return;
+
+        StartCoroutine(OpenPanelSequence(_currentSelectedNode, stageInfo));
     }
 
-    public void OnReceiveStageInfo(string stageName, int difficulty, string description)
-    {
-        StartCoroutine(OpenPanelSequence(_currentSelectedNode, stageName, difficulty, description));
-    }
-
-    private IEnumerator OpenPanelSequence(StageNode targetNode, string stageName, int difficulty, string description)
+    private IEnumerator OpenPanelSequence(StageNode targetNode, StageInfo stageInfo)
     {
         _isTransitioning = true;
         isMovementPaused = true; 
@@ -107,18 +176,17 @@ public class StageManager : MonoBehaviour
 
         if (selectPanel != null)
         {
-            yield return StartCoroutine(_uiManager.OpenPanel(selectPanel, stageName, difficulty, description));
+            // UI 매니저에게 targetNode.isClearedStage (클리어 여부)를 같이 넘겨줌
+            yield return StartCoroutine(_uiManager.OpenPanel(
+                selectPanel,
+                stageInfo.StageName,
+                stageInfo.Difficulty,
+                stageInfo.Description,
+                stageInfo.EstimatedClearTime,
+                targetNode.isClearedStage)); 
         }
 
         _isTransitioning = false;
-    }
-
-    public void ClosePanel()
-    {
-        if (_currentSelectedNode != null && !_isTransitioning)
-        {
-            StartCoroutine(ClosePanelSequence());
-        }
     }
 
     private IEnumerator ClosePanelSequence()

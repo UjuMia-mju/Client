@@ -74,19 +74,20 @@ public class GameRuleManager : MonoBehaviour
         if (isGameDone) return;
 
         isVictory = data;
-        Time.timeScale = 0f;
         isGameDone = true;
 
-        Debug.Log("게임 종료! 승리 여부: " + isVictory);
+        // 게임 정지 (필요 시)
+        Time.timeScale = 0f;
 
-        //if (SceneLoader.Instance != null)
-        //{
-        //    Debug.Log("SceneLoader가 있으므로 스테이지 선택 씬으로 돌아갑니다.");
-        //    SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
-        //}
-        //else
-        //{
-        //    Debug.Log("SceneLoader가 없습니다. 씬을 단독으로 실행해 테스트중일 가능성이 있습니다.");
-        //}
+        Debug.Log($"게임 종료! 승리 여부: {isVictory}");
+
+        if (SceneLoader.Instance != null)
+        {
+            // 씬 이동 전 timescale 복구 (SceneLoader 내부에서 처리해도 됨)
+            Time.timeScale = 1f; 
+        
+            Debug.Log("스테이지 선택 씬으로 이동합니다.");
+            SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
+        }
     }
 }

@@ -32,6 +32,11 @@ public class PacketManager : Singleton<PacketManager>
     // 준비 / 시작
     public event Action<S_READY> OnReadyEvent;
     public event Action<S_START_ROOM> OnStartRoomEvent;
+    
+    // 스테이지
+    
+    public event Action<S_START_STAGE> OnStartStageEvent;
+    public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
 
 
     public void HandlePacket(PacketId packetId, byte[] data)
@@ -95,6 +100,12 @@ public class PacketManager : Singleton<PacketManager>
                 break;
             case PacketId.PKT_S_START_ROOM:
                 HandleStartRoom(data);
+                break;
+            case PacketId.PKT_S_START_STAGE:
+                HandleStartStage(data);
+                break;
+            case PacketId.PKT_S_GET_CLEAR_INFO: 
+                HandleGetClearInfo(data);
                 break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
@@ -172,6 +183,20 @@ public class PacketManager : Singleton<PacketManager>
         S_SHOW_STAGE packet = S_SHOW_STAGE.Parser.ParseFrom(payloadData);
         
         OnShowStageEvent?.Invoke(packet);
+    }
+    
+    private void HandleStartStage(byte[] payloadData)
+    {
+        S_START_STAGE packet = S_START_STAGE.Parser.ParseFrom(payloadData);
+        Debug.Log($"[PacketManager] S_START_STAGE 수신! Success: {packet.Success}");
+        OnStartStageEvent?.Invoke(packet);
+    }
+    
+    private void HandleGetClearInfo(byte[] payloadData)
+    {
+        S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
+        Debug.Log($"[PacketManager] S_GET_CLEAR_INFO 수신! 클리어 데이터 개수: {packet.StageClears.Count}");
+        OnGetClearInfoEvent?.Invoke(packet);
     }
 
     #region Room Management

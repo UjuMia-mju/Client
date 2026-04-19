@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Protocol;
+using UnityEngine.InputSystem;
 
 
 // 로비에서 초대 보내기 UI.
@@ -14,7 +15,7 @@ public class LobbyInviteUI : MonoBehaviour
 
     [Header("열기/닫기")]
     [SerializeField] private Button openInvitePanelButton;  // 로비에 둘 "초대" 버튼 → 누르면 패널 활성화
-    [SerializeField] private Button closeButton;           // 패널 안 "닫기" 버튼 (선택)
+    //[SerializeField] private Button closeButton;           // 패널 안 "닫기" 버튼 (선택)
 
     [Header("초대 입력")]
     [SerializeField] private TMP_InputField targetPlayerNameInput;
@@ -41,14 +42,29 @@ public class LobbyInviteUI : MonoBehaviour
 
         if (panelRoot == null)
             Debug.LogWarning("[LobbyInviteUI] Panel Root가 할당되지 않았습니다. InvitePanel을 연결하세요.");
-        if (closeButton != null)
-            closeButton.onClick.AddListener(OnClickClosePanel);
+            
+        // 닫기 버튼을 UI에서 다시 사용하려면 아래 주석을 해제하세요.
+        // if (closeButton != null)
+        //     closeButton.onClick.AddListener(OnClickClosePanel);
+        
         if (inviteButton != null)
             inviteButton.onClick.AddListener(OnClickInvite);
 
         // 방 입장(S_ENTER_ROOM) 성공 전에는 초대 불가
         // if (inviteButton != null)
         //     inviteButton.interactable = false;
+    }
+
+    private void Update()
+    {
+        // ESC 키를 눌렀을 때 패널이 활성화되어 있다면 닫기
+        if (Keyboard.current[Key.Escape].wasPressedThisFrame)
+        {
+            if (panelRoot != null && panelRoot.activeSelf)
+            {
+                OnClickClosePanel();
+            }
+        }
     }
 
     private void OnClickOpenPanel()
@@ -128,7 +144,12 @@ public class LobbyInviteUI : MonoBehaviour
     private void OnInvitePlayerResult(S_INVITE_PLAYER packet)
     {
         if (packet.Success)
+        {
             Debug.Log($"[LobbyInviteUI] 초대 전송 성공: {packet.PlayerName}#{packet.PlayerTag}");
+            
+            // 초대 요청 후 패널 닫기
+            OnClickClosePanel();
+        }
         else
             Debug.LogWarning($"[LobbyInviteUI] 초대 전송 실패: {packet.ErrorMsg}");
     }
