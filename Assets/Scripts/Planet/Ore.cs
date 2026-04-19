@@ -6,6 +6,7 @@ public class Ore : MonoBehaviour
     [SerializeField] private GameObject orePrefab;
 
     private int miningCount = 0;
+    private int oreLeftCount = 3; // 최대 채굴 횟수 제한
 
     private const float ORE_THROW_HEIGHT = 3.5f;
     private const float ORE_THROW_FORCE = 150f;
@@ -23,6 +24,13 @@ public class Ore : MonoBehaviour
 
     private void DropItem()
     {
+        if (oreLeftCount <= 0)
+        {
+            Debug.Log("채굴 아이템 드랍 불가: 최대 채굴 횟수 초과");
+            return;
+        }
+        oreLeftCount--;
+
         Debug.Log("채굴 아이템 드랍");
 
         Vector3 spawnPos = this.transform.position + this.transform.up * ORE_THROW_HEIGHT;
@@ -32,7 +40,6 @@ public class Ore : MonoBehaviour
         if (rb != null)
             rb.AddForce((this.transform.up + this.transform.forward) * ORE_THROW_FORCE);
 
-        // 호스트/피어 모두 상대방에게 알림
         Items itemComp = ore.GetComponent<Items>();
         if (itemComp != null)
             StartCoroutine(BroadcastSpawnNextFrame(itemComp, spawnPos, ore.transform.rotation));
