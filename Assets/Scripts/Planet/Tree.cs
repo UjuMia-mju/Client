@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 
-public class Ore : MonoBehaviour
+public class Tree : MonoBehaviour
 {
     // Inspector에서 프리팹 등록
-    [SerializeField] private GameObject orePrefab;
+    [SerializeField] private GameObject logPrefab;
 
     private int miningCount = 0;
 
     private const float ORE_THROW_HEIGHT = 3.5f;
     private const float ORE_THROW_FORCE = 150f;
 
-    public void Mine()
+    public void Logging()
     {
-        Debug.Log("채굴");
+        Debug.Log("벌목");
         miningCount++;
         if (miningCount >= 3) // 3회 이상 채굴 시 아이템 드롭
         {
@@ -23,24 +23,24 @@ public class Ore : MonoBehaviour
 
     private void DropItem()
     {
-        Debug.Log("채굴 아이템 드랍");
+        Debug.Log("아이템 드랍");
 
         Vector3 spawnPos = this.transform.position + this.transform.up * ORE_THROW_HEIGHT;
-        GameObject ore = Instantiate(orePrefab, spawnPos, Quaternion.identity);
+        GameObject wood = Instantiate(logPrefab, spawnPos, Quaternion.identity);
 
-        Rigidbody rb = ore.GetComponent<Rigidbody>();
+        Rigidbody rb = wood.GetComponent<Rigidbody>();
         if (rb != null)
             rb.AddForce((this.transform.up + this.transform.forward) * ORE_THROW_FORCE);
 
-        Items itemComp = ore.GetComponent<Items>();
+        Items itemComp = wood.GetComponent<Items>();
         if (itemComp != null)
-            StartCoroutine(BroadcastSpawnNextFrame(itemComp, spawnPos, ore.transform.rotation));
+            StartCoroutine(BroadcastSpawnNextFrame(itemComp, spawnPos, wood.transform.rotation));
     }
 
     private System.Collections.IEnumerator BroadcastSpawnNextFrame(Items itemComp, Vector3 pos, Quaternion rot)
     {
         yield return null; // Items.Start()의 RegisterItem() 완료 대기
         PacketSender.Instance.SendObjectSpawn(itemComp, pos, rot);
-        Debug.Log($"[Ore] SendObjectSpawn: itemId={itemComp.itemId}, key={itemComp.itemStringKey}");
+        Debug.Log($"[Tree] SendObjectSpawn: itemId={itemComp.itemId}, key={itemComp.itemStringKey}");
     }
 }

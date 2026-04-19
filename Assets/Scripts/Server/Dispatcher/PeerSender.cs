@@ -59,7 +59,7 @@ public class PeerSender : IClientSender
     public void SendItemAttached(Items itemData)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
         if (!isItem && !isTool) return;
 
         C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
@@ -76,7 +76,7 @@ public class PeerSender : IClientSender
     public void SendItemDetatched(Items itemData)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
         if (!isItem && !isTool) return;
 
         C_OBJECT_DROP packet = new C_OBJECT_DROP

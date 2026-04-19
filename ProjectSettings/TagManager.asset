@@ -7,13 +7,15 @@ TagManager:
   - Item
   - CraftTable
   - MainButton
-  - Pickaxe
   - Ore
   - Furnace
   - ClickOff
   - Spaceship
   - RespawnSpot
   - RemotePlayer
+  - Tool
+  - Tree
+  - Axe
   layers:
   - Default
   - TransparentFX

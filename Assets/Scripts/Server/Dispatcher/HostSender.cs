@@ -85,7 +85,7 @@ public class HostSender : IHostSender
     public void BroadcastItemAttached(Items itemData)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
         if (!isItem && !isTool) return;
 
         S_OBJECT_PICKUP packet = new S_OBJECT_PICKUP
@@ -105,7 +105,7 @@ public class HostSender : IHostSender
     public void BroadcastItemDetached(Items itemData)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
         if (!isItem && !isTool) return;
 
         S_OBJECT_DROP packet = new S_OBJECT_DROP

@@ -48,7 +48,7 @@ public class HostStatManager : BaseStatManager<HostStatManager>
         stat.CallOnOxygenChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
-        Debug.Log($"[HostStatManager] DecreaseOxygen: playerId={playerId}, oxygen={stat.GetOxygen()}");
+        //Debug.Log($"[HostStatManager] DecreaseOxygen: playerId={playerId}, oxygen={stat.GetOxygen()}");
         PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 

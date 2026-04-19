@@ -18,7 +18,7 @@ public class Player : MovingObject
     private const float THROW_IGNORE_COLLISION_DURATION = 0.65f; // 던진 후 충돌 무시 시간
 
     public bool isPlayerGetSomething = false;
-    public bool isMining { get; private set; } = false;
+    public bool isUsingTool { get; private set; } = false;
     private bool isPlayerThrowSomething = false;    // 무언가를 던지는 플래그
     
     private PlayerStat playerStat;
@@ -174,7 +174,7 @@ public class Player : MovingObject
                 playerInput.GetIsJumping(),
                 isGrounded,
                 inputFreeze,
-                isMining);
+                isUsingTool);
 
             KeyEInteract();
             KeyLeftClickInteract();
@@ -198,7 +198,7 @@ public class Player : MovingObject
             }
 
             else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething && !isPlayerThrowSomething ||
-                nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething && !isPlayerThrowSomething)
+                nearestObject.CompareTag(Define.Tag.TOOL) && !isPlayerGetSomething && !isPlayerThrowSomething)
             {
                 isPlayerGetSomething = true;
                 playerItemSystem.AttachItem(nearestObject);
@@ -271,17 +271,17 @@ public class Player : MovingObject
         }
     }
 
-    // 좌클릭 상호작용 (채굴 전용)
+    // 좌클릭 상호작용
     private void KeyLeftClickInteract()
     {
         if (playerInput.GetIsLeftClick())
         {
             playerInput.MakeIsLeftClickFalse();
 
-            // 곡괭이를 들고 있을 때만 채굴 시작
-            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething && !isPlayerThrowSomething)
+            // 도구
+            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.TOOL) && isPlayerGetSomething && !isPlayerThrowSomething)
             {
-                isMining = true;
+                isUsingTool = true;
             }
         }
     }
@@ -294,7 +294,7 @@ public class Player : MovingObject
         {
             Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
 
-            if (playerInput.GetIsJumping() && isGrounded && !isMining)
+            if (playerInput.GetIsJumping() && isGrounded && !isUsingTool)
             {
                 Jump();
                 playerInput.SetIsJumping(false);
@@ -403,7 +403,7 @@ public class Player : MovingObject
                 Debug.Log("콜라이더 null 감지");
                 continue;
             }
-            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.PICKAXE) || col.CompareTag(Define.Tag.FURNACE)
+            if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.CRAFT_TABLE) || col.CompareTag(Define.Tag.TOOL) || col.CompareTag(Define.Tag.FURNACE)
                 || col.CompareTag(Define.Tag.SPACESHIP))
             {
                 float dist = Vector3.Distance(transform.position, col.transform.position);
@@ -427,16 +427,21 @@ public class Player : MovingObject
 
     public void EndMining()
     {
-        if (playerItemSystem.currentEquipItem != null && playerItemSystem.currentEquipItem.CompareTag(Define.Tag.PICKAXE))
+        if (playerItemSystem.currentEquipItem != null && playerItemSystem.currentEquipItem.CompareTag(Define.Tag.TOOL))
         {
             Pickaxe tempP = playerItemSystem.currentEquipItem.GetComponent<Pickaxe>();
             if (tempP != null)
             {
                 tempP.ResetHasMined();
             }
+            else if (playerItemSystem.currentEquipItem.GetComponent<Axe>() != null)
+            {
+                Axe tempA = playerItemSystem.currentEquipItem.GetComponent<Axe>();
+                tempA.ResetHasChopped();
+            }
         }
 
-        isMining = false;
+        isUsingTool = false;
     }
 
     private IEnumerator IgnoreItemCollisionAfterThrow(GameObject thrownItem)
