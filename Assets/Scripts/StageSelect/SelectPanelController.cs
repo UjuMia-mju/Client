@@ -12,15 +12,11 @@ public class SelectPanelController : MonoBehaviour
     public TextMeshProUGUI rightText;
     
     [Header("Clear stars (서버 Star 1~3, 인덱스 0=1성)")]
-    [Tooltip("각 슬롯에서 별 획득 시 켤 오브젝트 (길이 3 권장)")]
     public GameObject[] clearStarObjects;
-    [Tooltip("각 슬롯 빈 별(배경) — 항상 켜 둠. clear가 그 위에 순서대로 켜짐")]
     public GameObject[] unclearStarObjects;
 
     [Header("Clear Status UI (별 배열 미사용 시)")]
-    [Tooltip("클리어 했을 때 띄울 이미지 (예: CLEAR 도장)")]
     public GameObject clearImage;
-    [Tooltip("클리어하지 않았을 때 띄울 이미지 (예: 자물쇠 그림, 혹은 비워둬도 됨)")]
     public GameObject unclearImage;
     
     public void SetInfo(string stageName, int difficulty, string description, int estimatedClearTimeSeconds, int clearStarCount)
