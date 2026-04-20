@@ -233,14 +233,15 @@ public class Player : MovingObject
                         {
                             if (ConnectManager.Instance.isHost)
                             {
-                                // 호스트: 레시피 검증 완료 → 즉시 파괴
-                                PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
+                                // SendObjectDestroy는 FurnaceServerManager에서 처리
+                                // 호스트는 로컬 아이템만 파괴
                                 Destroy(playerItemSystem.currentEquipItem);
                                 isPlayerGetSomething = false;
                                 playerItemSystem.DetachItem();
                             }
-                            // 피어: 아이템 파괴하지 않음
-                            // 호스트가 검증 후 S_OBJECT_DESTROY 브로드캐스트 → OnHostObjectDestroy에서 처리
+                            // 피어: 로컬 처리 없음
+                            // FurnaceServerManager -> SendObjectDestroy 브로드캐스트
+                            // → OnHostObjectDestroy ->아이템 파괴 + DetachItem
                         }
                     }
                     else

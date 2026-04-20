@@ -277,24 +277,23 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     {
         C_OBJECT_SPAWN packet = C_OBJECT_SPAWN.Parser.ParseFrom(data);
         OnPeerObjectSpawnEvent?.Invoke(peerId, packet);
-
-        // 다른 피어들에게 릴레이
-        S_OBJECT_SPAWN relay = new S_OBJECT_SPAWN
-        {
-            ItemId = 0, // 호스트가 itemId 부여 후 브로드캐스트하므로 여기선 0
-            ItemStringKey = packet.ItemStringKey,
-            Pos = packet.Pos?.Clone(),
-            Rot = packet.Rot?.Clone()
-        };
-        HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_SPAWN, relay, includeSender: false);
+        // 브로드캐스트는 PlayManager.OnPeerObjectSpawn에서
+        // 호스트가 스폰 후 실제 ID로 처리 (itemId=0 릴레이 제거)
     }
 
     private void HandlePeerObjectDestroy(int peerId, byte[] data)
     {
         C_OBJECT_DESTROY packet = C_OBJECT_DESTROY.Parser.ParseFrom(data);
-        OnPeerObjectDestroyEvent?.Invoke(peerId, packet);
 
-        // 다른 피어들에게 릴레이
+        // 호스트에서 아이템 존재 검증
+        Items item = ItemManager.Instance.GetItem(packet.ItemId);
+        if (item == null)
+        {
+            Debug.LogWarning($"[PeerObjectDestroy] 존재하지 않는 아이템 삭제 요청 무시: id={packet.ItemId}");
+            return;
+        }
+
+        OnPeerObjectDestroyEvent?.Invoke(peerId, packet);
         S_OBJECT_DESTROY relay = new S_OBJECT_DESTROY { ItemId = packet.ItemId };
         HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_OBJECT_DESTORY, relay, includeSender: false);
     }

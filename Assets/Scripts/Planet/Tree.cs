@@ -26,15 +26,25 @@ public class Tree : MonoBehaviour
         Debug.Log("아이템 드랍");
 
         Vector3 spawnPos = this.transform.position + this.transform.up * ORE_THROW_HEIGHT;
-        GameObject wood = Instantiate(logPrefab, spawnPos, Quaternion.identity);
 
-        Rigidbody rb = wood.GetComponent<Rigidbody>();
-        if (rb != null)
-            rb.AddForce((this.transform.up + this.transform.forward) * ORE_THROW_FORCE);
-
-        Items itemComp = wood.GetComponent<Items>();
-        if (itemComp != null)
-            StartCoroutine(BroadcastSpawnNextFrame(itemComp, spawnPos, wood.transform.rotation));
+        if (ConnectManager.Instance == null || ConnectManager.Instance.isHost)
+        {
+            // 호스트: 직접 스폰 + 브로드캐스트
+            GameObject wood = Instantiate(logPrefab, spawnPos, Quaternion.identity);
+            Rigidbody rb = wood.GetComponent<Rigidbody>();
+            if (rb != null)
+                rb.AddForce((this.transform.up + this.transform.forward) * ORE_THROW_FORCE);
+            Items itemComp = wood.GetComponent<Items>();
+            if (itemComp != null)
+                StartCoroutine(BroadcastSpawnNextFrame(itemComp, spawnPos, wood.transform.rotation));
+        }
+        else
+        {
+            // 피어: 로컬 스폰 없이 요청만 전송
+            Items prefabItem = logPrefab.GetComponent<Items>();
+            if (prefabItem != null)
+                PacketSender.Instance.SendObjectSpawnRequest(prefabItem.itemStringKey, spawnPos, Quaternion.identity);
+        }
     }
 
     private System.Collections.IEnumerator BroadcastSpawnNextFrame(Items itemComp, Vector3 pos, Quaternion rot)

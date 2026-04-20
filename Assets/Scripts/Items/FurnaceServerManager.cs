@@ -42,10 +42,18 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
 
         if (SmeltingRecipeManager.Instance.TryGetRecipe(item.itemStringKey, out SmeltingRecipe recipe))
         {
-            // 피어가 요청한 경우에만 아이템 파괴 브로드캐스트
-            // 호스트가 직접 넣은 경우는 Player.KeyEInteract에서 이미 처리
-            if (!ConnectManager.Instance.isHost)
-                PacketSender.Instance.SendObjectDestroy((int)objectId);
+            // 피어들에게 아이템 파괴 브로드캐스트
+            PacketSender.Instance.SendObjectDestroy((int)objectId);
+
+            // 호스트 로컬에서도 아이템 처리
+            // OtherPlayers 손에서 분리 후 파괴
+            foreach (var rp in FindObjectsByType<OtherPlayers>(FindObjectsSortMode.None))
+            {
+                if (rp.TryDetachItem(item.gameObject))
+                    break;
+            }
+            ItemManager.Instance.UnregisterItem(item);
+            Destroy(item.gameObject);
 
             Coroutine routine = StartCoroutine(SmeltingRoutine(furnaceId, objectId, recipe));
             activeFurnaces.Add(furnaceId, routine);

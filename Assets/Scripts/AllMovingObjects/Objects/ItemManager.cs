@@ -150,4 +150,39 @@ public class ItemManager : MonoBehaviour
         ItemPrefabData data = itemPrefabList.Find(x => x.itemStringKey == key);
         return data?.prefab;
     }
+
+    /// <summary>
+    /// 피어 요청으로 호스트가 아이템을 스폰하고 실제 ID로 전체 브로드캐스트
+    /// </summary>
+    public void SpawnItemAndBroadcast(string itemStringKey, Vector3 pos, Quaternion rot)
+    {
+        GameObject prefab = GetPrefabByKey(itemStringKey);
+        if (prefab == null)
+        {
+            Debug.LogWarning($"[ItemManager] SpawnItemAndBroadcast: 프리팹 없음 key={itemStringKey}");
+            return;
+        }
+
+        GameObject spawnedObj = Instantiate(prefab, pos, rot);
+
+        Rigidbody rb = spawnedObj.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            PlanetGravity planet = FindFirstObjectByType<PlanetGravity>();
+            Vector3 up = planet != null ? planet.GetGravityUp(spawnedObj.transform) : Vector3.up;
+            rb.AddForce((up + spawnedObj.transform.forward) * -150f);
+        }
+
+        Items itemComp = spawnedObj.GetComponent<Items>();
+        if (itemComp != null)
+            StartCoroutine(BroadcastAfterRegistration(itemComp, pos, spawnedObj.transform.rotation));
+    }
+
+    // Items.Start() → RegisterItem() 완료 후 실제 ID로 전체 브로드캐스트
+    private IEnumerator BroadcastAfterRegistration(Items itemComp, Vector3 pos, Quaternion rot)
+    {
+        yield return null;
+        PacketSender.Instance.SendObjectSpawn(itemComp, pos, rot);
+        Debug.Log($"[ItemManager] SpawnItemAndBroadcast 완료: id={itemComp.itemId}, key={itemComp.itemStringKey}");
+    }
 }

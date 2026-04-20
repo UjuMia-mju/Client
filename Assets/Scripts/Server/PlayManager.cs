@@ -383,7 +383,8 @@ public class PlayManager : SceneSingleton<PlayManager>
     {
         Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
         Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
-        ItemManager.Instance.SpawnItemFromNetwork(0, packet.ItemStringKey, pos, rot);
+        // 호스트에서 스폰 후 실제 ID로 전체 브로드캐스트 (요청한 피어 포함)
+        ItemManager.Instance.SpawnItemAndBroadcast(packet.ItemStringKey, pos, rot);
     }
 
     // 호스트가 피어로부터 받은 C_OBJECT_DESTROY 패킷 처리

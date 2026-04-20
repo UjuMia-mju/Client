@@ -108,6 +108,9 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     public void SendSpaceshipInsert(string itemStringKey, int itemId)
         => TryClientSend (() => clientSender.SendSpaceshipInsert(itemStringKey, itemId));
 
+    // 피어 전용: 아이템 스폰 요청 (로컬 스폰 없이 키+위치만 전송)
+    public void SendObjectSpawnRequest(string itemStringKey, Vector3 position, Quaternion rotation)
+        => TryClientSend(() => clientSender.SendObjectSpawn(itemStringKey, position, rotation));
     #endregion
 
     #region Host Broadcasts
