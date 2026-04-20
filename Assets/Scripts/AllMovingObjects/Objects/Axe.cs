@@ -13,7 +13,7 @@ public class Axe : Items
             {
                 if (!hasUsed && player.isUsingTool && other.CompareTag(Define.Tag.TREE))
                 {
-                    Tree t = other.GetComponent<Tree>();
+                    TreeResource t = other.GetComponent<TreeResource>();
                     if (t != null)
                     {
                         t.Logging();

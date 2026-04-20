@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Tree : MonoBehaviour
+public class TreeResource : MonoBehaviour
 {
     // Inspector에서 프리팹 등록
     [SerializeField] private GameObject logPrefab;
