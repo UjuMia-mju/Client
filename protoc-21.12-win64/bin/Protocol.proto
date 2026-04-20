@@ -4,6 +4,29 @@ package Protocol;
 import "Enum.proto";
 import "Struct.proto";
 
+message C_GET_DB_DATA
+{
+
+}
+
+message C_TEST_ENTER_ROOM
+{
+}
+
+// [클라이언트 -> 서버] 릴레이 요청
+message C_RELAY_PACKET {
+    bool require_host_authority = 1; // true면 방장에게만, false면 방장이 전체에게
+    uint32 packet_id = 2; // 실제 패킷의 ID
+    bytes payload = 3; // 실제 게임 패킷 (직렬화된 byte 배열)
+}
+
+// [서버 -> 클라이언트] 릴레이 전달
+message S_RELAY_PACKET {
+    uint64 sender_id = 1; // 누가 보낸 패킷인지
+    uint32 packet_id = 2;
+    bytes payload = 3;
+}
+
 message C_LOGIN
 {
 	string userId = 1;
@@ -27,11 +50,6 @@ message S_GET_CURRENCY
 	bool success = 1;
 	int32 coin = 2;
 	int32 gem = 3;
-}
-
-message C_GET_DB_DATA
-{
-	
 }
 
 // ==================== 가챠 뽑기 ====================
@@ -195,6 +213,7 @@ message S_START_ROOM
 {
 	bool success = 1;
 	string error_msg = 2;
+	repeated StageClearInfo host_clear_stages = 3;
 }
 
 
@@ -210,25 +229,7 @@ message S_CHAT
 	string msg = 2;
 }
 
-// ==================== 게임 입장(실제 게임 스테이지 진입) ====================
-
-message C_ENTER_GAME
-{
-	uint64 playerIndex = 1;
-}
-
-message S_ENTER_GAME
-{
-	bool success = 1;
-}
-
-message C_TEST_ENTER_GAME
-{
-	uint64 playerIndex = 1;
-}
-
 // ==================== 스테이지 정보 ====================
-
 message S_STAGE_INFO
 {
 	repeated StageInfo stages = 1;
@@ -247,6 +248,19 @@ message S_SHOW_STAGE
 	StageInfo stage = 2;
 }
 
+// ==================== 스테이지 확인 상태 =============== (호스트가 선택중인 스테이지 같이 보기)
+message C_HOST_SHOW_STAGE
+{
+	int32 map_id = 1;
+}
+
+message S_HOST_SHOW_STAGE
+{
+	bool success = 1;
+	StageInfo stage = 2;
+}
+
+
 // ==================== 스테이지 시작 =================== (스테이지 선택)
 message C_START_STAGE
 {
@@ -262,6 +276,7 @@ message S_START_STAGE
 	StageInfo stage = 2; // 선택된 스테이지 정보 같이 뿌려줌.
 }
 
+
 // ==================== 스테이지 클리어 정보 조회 ====================
 
 message C_GET_CLEAR_INFO
@@ -272,6 +287,32 @@ message S_GET_CLEAR_INFO
 {
 	bool success = 1;
 	repeated StageClearInfo stage_clears = 2;
+}
+
+
+// ==================== 게임 입장(실제 게임 스테이지 진입) ====================
+
+message C_ENTER_GAME
+{
+	uint64 playerIndex = 1;
+}
+
+message S_ENTER_GAME
+{
+	bool success = 1;
+	repeated PlayerGameInfo players = 2; // 참여자 리스트
+}
+
+message C_TEST_ENTER_GAME
+{
+	uint64 playerIndex = 1;
+}
+
+message S_GAME_READY_TO_START
+{
+	int32 start_delay_seconds = 1;        // "3초 뒤 시작" 등 UI 표현용
+	uint64 server_start_timestamp = 2;    // 서버 기준 시작 타임스탬프 (핑 차이 보정용)
+	int32 random_seed = 3;                // 일단 랜덤 시드를 같이 보냄. (추후에 사용 가능성)
 }
 
 // ==================== 게임 플레이 ====================
@@ -335,9 +376,9 @@ message C_PLAYER_STAT_EVENT
 
 message S_PLAYER_STAT
 {
-	uint64 playerId = 1;
-	int32 hp = 2;
-	float oxygen = 3;
+    uint64 playerId = 1;
+    int32 hp = 2;
+    float oxygen = 3;
 }
 
 // ==================== 오브젝트 시스템 (도구 + 아이템 통합) ====================
@@ -381,6 +422,8 @@ message S_OBJECT_MOVE
 	PosInfo pos = 2;
 	RotInfo rot = 3;
 }
+
+// ==================== 클라 P2P 확장 (PacketId 2000+) ====================
 
 //오브젝트 녹이기
 message C_OBJECT_SMELT
