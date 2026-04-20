@@ -26,6 +26,9 @@ public class StageManager : MonoBehaviour
     private bool _gameplaySceneLoadStarted;
     private GameObject[] _clickOffObjects;
 
+    /// <summary>맵 ID별 클리어 별 개수(0~3). S_GET_CLEAR_INFO 기준.</summary>
+    private readonly Dictionary<int, int> _clearStarCountByMapId = new Dictionary<int, int>();
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -67,10 +70,13 @@ public class StageManager : MonoBehaviour
 
     private void HandleGetClearInfoResponse(S_GET_CLEAR_INFO packet)
     {
-        Dictionary<int, bool> clearDataDict = new Dictionary<int, bool>();
+        _clearStarCountByMapId.Clear();
         foreach (var clearInfo in packet.StageClears)
         {
-            clearDataDict[clearInfo.MapId] = true;
+            int stars = Mathf.Clamp(clearInfo.Star, 0, 3);
+            if (_clearStarCountByMapId.TryGetValue(clearInfo.MapId, out int prev))
+                stars = Mathf.Max(prev, stars);
+            _clearStarCountByMapId[clearInfo.MapId] = stars;
         }
 
         foreach (var node in stageNodes)
@@ -79,11 +85,18 @@ public class StageManager : MonoBehaviour
 
             if (DbCacheManager.Instance.TryGetStageInfoByChapterStage(node.stageLevel, node.stageIndex, out StageInfo info))
             {
-                bool isCleared = clearDataDict.ContainsKey(info.MapId);
-                node.isClearedStage = isCleared; 
+                int starCount = GetClearStarCountForMap(info.MapId);
+                bool isCleared = starCount > 0;
+                node.isClearedStage = isCleared;
                 node.SetClearState(isCleared);
             }
         }
+    }
+
+    /// <summary>서버 클리어 기록 기준 별 개수(없으면 0).</summary>
+    public int GetClearStarCountForMap(int mapId)
+    {
+        return _clearStarCountByMapId.TryGetValue(mapId, out int n) ? n : 0;
     }
 
     private void Update()
@@ -209,13 +222,14 @@ public class StageManager : MonoBehaviour
 
         if (selectPanel != null)
         {
+            int stars = GetClearStarCountForMap(stageInfo.MapId);
             yield return StartCoroutine(_uiManager.OpenPanel(
                 selectPanel,
                 stageInfo.StageName,
                 stageInfo.Difficulty,
                 stageInfo.Description,
                 stageInfo.EstimatedClearTime,
-                targetNode.isClearedStage)); 
+                stars)); 
         }
 
         _isTransitioning = false;
