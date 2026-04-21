@@ -17,6 +17,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_PLAYER_ANIMATION> OnPeerAnimationEvent;
     public event Action<int, C_OBJECT_PICKUP> OnPeerItemAttachedEvent;
     public event Action<int, C_OBJECT_DROP> OnPeerItemDetachedEvent;
+    public event Action<int, C_OBJECT_MOVE> OnPeerObjectMoveEvent;
     public event Action<int, C_TEST_ENTER_GAME> OnPeerEnterGameEvent;
     public event Action<int, C_PLAYER_STAT_EVENT> OnPeerStatEvent;
     public event Action<int, ulong> OnPeerSmeltRequestEvent;
@@ -202,6 +203,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     private void HandlePeerObjectMove(int peerId, byte[] data)
     {
         C_OBJECT_MOVE packet = C_OBJECT_MOVE.Parser.ParseFrom(data);
+        OnPeerObjectMoveEvent?.Invoke(peerId, packet);
         S_OBJECT_MOVE relay = new S_OBJECT_MOVE
         {
             ObjectId = packet.ObjectId?.Clone(),
