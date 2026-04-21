@@ -71,11 +71,12 @@ public class OtherPlayers : MovingObject
     public void SetEquipItem(Items itemData)
     {
         otherPlayerItemSystem.AttachItem(itemData.gameObject);
+        itemData.SetOwnedByMe(false);
     }
 
     public void DetachEquipItem()
     {
-        otherPlayerItemSystem.ThrowItem(GetMovingAmount());
+        otherPlayerItemSystem.DetachForRemoteSync();
     }
 
     public void SetStat(int hpData, float oxygenData)
