@@ -41,11 +41,10 @@ public class HostStatManager : BaseStatManager<HostStatManager>
         stat.CallOnOxygenChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
-<<<<<<< HEAD
         //Debug.Log($"[HostStatManager] DecreaseOxygen: playerId={playerId}, oxygen={stat.GetOxygen()}");
-=======
->>>>>>> origin/feat/replay
-        PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
+
+        // 확인 필요
+        //PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
     public void IncreaseOxygen(ulong playerId)
