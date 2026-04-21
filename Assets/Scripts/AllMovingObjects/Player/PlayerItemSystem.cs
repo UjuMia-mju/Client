@@ -53,6 +53,10 @@ public class PlayerItemSystem : MonoBehaviour
         item.transform.localPosition = Vector3.zero;
         item.transform.localRotation = Quaternion.identity;
 
+        Items itemClass = item.GetComponent<Items>();
+        if (itemClass != null)
+            itemClass.SetOwnedByMe(true);
+
         this.currentEquipItem = item;
     }
 
@@ -106,6 +110,32 @@ public class PlayerItemSystem : MonoBehaviour
         ThrowWithImpulse(ComputeThrowImpulse(runningAmount, flatAimDirection, true));
     }
 
+    // 원격 플레이어에서 DROP 수신 시: 로컬에서 임의 물리를 주지 않고 네트워크 위치 동기화만 따릅니다.
+    public void DetachForRemoteSync()
+    {
+        if (currentEquipItem == null) return;
+
+        Rigidbody rb = currentEquipItem.GetComponent<Rigidbody>();
+        if (rb != null)
+            rb.isKinematic = true;
+
+        ObjectsGravityController objectGravityController = currentEquipItem.GetComponent<ObjectsGravityController>();
+        if (objectGravityController != null)
+            objectGravityController.enabled = false;
+
+        BoxCollider boxCollider = currentEquipItem.GetComponent<BoxCollider>();
+        if (boxCollider != null)
+            boxCollider.enabled = true;
+
+        currentEquipItem.transform.SetParent(null);
+
+        Items itemClass = currentEquipItem.GetComponent<Items>();
+        if (itemClass != null)
+            itemClass.OnDetached(false);
+
+        DetachItem();
+    }
+
     private void ThrowWithImpulse(Vector3 force)
     {
         Rigidbody rb = currentEquipItem.GetComponent<Rigidbody>();
@@ -126,7 +156,10 @@ public class PlayerItemSystem : MonoBehaviour
         // 던질 때 즉시 위치 동기화 강제
         Items itemClass = currentEquipItem.GetComponent<Items>();
         if (itemClass != null)
-            itemClass.OnDetached();
+        {
+            itemClass.OnDetached(true);
+            PacketSender.Instance.SendItemMove(itemClass.itemId, currentEquipItem.transform.position, currentEquipItem.transform.rotation);
+        }
 
         DetachItem();
     }
