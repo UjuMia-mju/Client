@@ -25,7 +25,6 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
     // 클라이언트로부터 C_OBJECT_SMELT 패킷을 받았을 때 호출 (어떤 용광로인지 정보가 필요함)
     public void OnReceiveSmeltRequest(int furnaceId, ulong objectId)
     {
-        // 1. 해당 용광로가 이미 작동 중인지 확인
         if (activeFurnaces.ContainsKey(furnaceId))
         {
             Debug.LogWarning($"[Server] 용광로({furnaceId})는 이미 작동 중입니다.");
@@ -43,10 +42,22 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
 
         if (SmeltingRecipeManager.Instance.TryGetRecipe(item.itemStringKey, out SmeltingRecipe recipe))
         {
-            // 중앙 매니저에서 코루틴 시작 후 딕셔너리에 등록
+            // 피어들에게 아이템 파괴 브로드캐스트
+            PacketSender.Instance.SendObjectDestroy((int)objectId);
+
+            // 호스트 로컬에서도 아이템 처리
+            // OtherPlayers 손에서 분리 후 파괴
+            foreach (var rp in FindObjectsByType<OtherPlayers>(FindObjectsSortMode.None))
+            {
+                if (rp.TryDetachItem(item.gameObject))
+                    break;
+            }
+            ItemManager.Instance.UnregisterItem(item);
+            Destroy(item.gameObject);
+
             Coroutine routine = StartCoroutine(SmeltingRoutine(furnaceId, objectId, recipe));
             activeFurnaces.Add(furnaceId, routine);
-            Debug.Log($"[Server] 용광로({furnaceId})에서 제련 시작: 아이템 {item.itemStringKey} -> 결과 {recipe.outputItemID}, 소요 시간 {recipe.smeltingTime}초");
+            Debug.Log($"[Server] 용광로({furnaceId}) 제련 시작: {item.itemStringKey} → {recipe.outputItemID}");
         }
         else
         {

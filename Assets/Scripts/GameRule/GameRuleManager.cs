@@ -66,7 +66,7 @@ public class GameRuleManager : MonoBehaviour
     public void SyncTimer(float time)
     {
         remainingTime = time;
-        Debug.Log($"[GameRuleManager] 타이머 동기화: {remainingTime}초");
+        //Debug.Log($"[GameRuleManager] 타이머 동기화: {remainingTime}초");
     }
 
     public void ReturnToStageSelectScene(bool data)

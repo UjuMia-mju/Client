@@ -10,9 +10,6 @@ public class PeerPlayerStat : PlayerStat
     // 올바른 해결책은 GetMyPlayerId()처럼 호출 시점마다 읽어오는 것이나,
     // 현재 구조상 _playerId 확정 전에 루프가 돌아 여전히 0이 반환될 수 있음.
     // 임시로 1로 하드코딩. 추후 _playerId 확정 이후 산소 루프를 시작하는 구조로 수정 필요.
-    private ulong GetMyPlayerId() => 1;
-    // private ulong GetMyPlayerId() => NetManager.Instance._playerId;
-
     #region HP 증/감소 로직
     public override void DecreaseHp(int damage)
     {
@@ -51,6 +48,9 @@ public class PeerPlayerStat : PlayerStat
     {
         while (statData.oxygen < 1f)
         {
+            statData.IncreaseOxygen(0.02f);
+            CallOnOxygenChanged();
+
             PeerStatManager.Instance.IncreaseOxygen(GetMyPlayerId());
             yield return new WaitForSeconds(1.0f);
         }

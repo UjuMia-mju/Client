@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using Protocol;
+using Google.Protobuf;
 public interface IHostSender
 {
+    void BroadcastToPeers(PacketId packetId, IMessage packet);
     void BroadcastEnterGame(ulong playerIndex);
     void BroadcastChat(string message);
     void SendMove(Vector3 position, Quaternion rotation);

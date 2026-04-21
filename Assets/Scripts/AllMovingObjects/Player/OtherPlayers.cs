@@ -82,4 +82,21 @@ public class OtherPlayers : MovingObject
     {
         otherPlayerStats.SetStat(hpData, oxygenData);
     }
+
+
+    public void EndMining()
+    {
+        //empty
+    }
+
+    // 특정 아이템을 들고 있는지 확인 후 분리
+    public bool TryDetachItem(GameObject item)
+    {
+        if (otherPlayerItemSystem.currentEquipItem == item)
+        {
+            otherPlayerItemSystem.DetachItem();
+            return true;
+        }
+        return false;
+    }
 }

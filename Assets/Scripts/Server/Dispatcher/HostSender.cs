@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using Protocol;
+using Google.Protobuf;
 
 public class HostSender : IHostSender
 {
-    HostNetManager hostNet = HostNetManager.Instance;
     private readonly PosInfo _movePosInfo = new PosInfo();
     private readonly RotInfo _moveRotInfo = new RotInfo();
     private Vector3 _lastSentPos;
@@ -12,13 +12,36 @@ public class HostSender : IHostSender
     private readonly S_MOVE _movePacket = new S_MOVE();
     private readonly S_PLAYER_ANIMATION _animPacket = new S_PLAYER_ANIMATION();
     private readonly S_PLAYER_STAT _eventPacket = new S_PLAYER_STAT();
+    private readonly S_OBJECT_MOVE _objectMovePacket = new S_OBJECT_MOVE();
 
     public ulong GetLocalPlayerId() => (ulong)NetManager.Instance._playerId;
+
+    private void BroadcastRelayPacket(PacketId packetId, IMessage innerPacket)
+    {
+        //Debug.Log($"12313123131312313123");
+        var payload = innerPacket.ToByteString();
+        var relayPacket = new C_RELAY_PACKET
+        {
+            RequireHostAuthority = false,
+            PacketId = (uint)packetId,
+            Payload = payload
+        };
+
+        //RelayNetManager.Instance.SendPacket(PacketId.PKT_C_RELAY_PACKET, relayPacket);
+        NetManager.Instance.SendPacket(PacketId.PKT_C_RELAY_PACKET, relayPacket);
+    }
+
+    // packet 자체를 바로 Relay쪽으로 보내는 경우
+    public void BroadcastToPeers(PacketId packetId, IMessage packet)
+    {
+        BroadcastRelayPacket(packetId, packet);
+    }
 
     public void BroadcastEnterGame(ulong playerIndex)
     {
         Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ENTER, new S_PLAYER_ENTER
+
+        BroadcastRelayPacket(PacketId.PKT_S_PLAYER_ENTER, new S_PLAYER_ENTER
         {
             Player = new PlayerGameInfo
             {
@@ -53,14 +76,16 @@ public class HostSender : IHostSender
         _movePacket.PlayerId = GetLocalPlayerId();
         _movePacket.Pos = _movePosInfo;
         _movePacket.Rot = _moveRotInfo;
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_MOVE, _movePacket);
+
+        BroadcastRelayPacket(PacketId.PKT_S_MOVE, _movePacket);
     }
 
     public void SendAnimation(AnimState animState)
     {
         _animPacket.PlayerId = GetLocalPlayerId();
         _animPacket.State = (int)animState;
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_ANIMATION, _animPacket);
+
+        BroadcastRelayPacket(PacketId.PKT_S_PLAYER_ANIMATION, _animPacket);
     }
 
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
@@ -68,24 +93,23 @@ public class HostSender : IHostSender
         _eventPacket.PlayerId = targetPlayerId;
         _eventPacket.Hp = hp;
         _eventPacket.Oxygen = oxygen;
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_PLAYER_STAT, _eventPacket);
+
+        BroadcastRelayPacket(PacketId.PKT_S_PLAYER_STAT, _eventPacket);
     }
 
     public void BroadcastItemMove(int itemId, Vector3 position, Quaternion rotation)
     {
-        S_OBJECT_MOVE packet = new S_OBJECT_MOVE
-        {
-            ObjectId = new ObjectId { Type = ObjectType.Item, ItemId = (ulong)itemId },
-            Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
-            Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
-        };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_MOVE, packet);
+        _objectMovePacket.ObjectId = new ObjectId { Type = ObjectType.Item, ItemId = (ulong)itemId };
+        _objectMovePacket.Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z };
+        _objectMovePacket.Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w };
+
+        BroadcastRelayPacket(PacketId.PKT_S_OBJECT_MOVE, _objectMovePacket);
     }
 
     public void BroadcastItemAttached(Items itemData)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
         if (!isItem && !isTool) return;
 
         S_OBJECT_PICKUP packet = new S_OBJECT_PICKUP
@@ -99,13 +123,14 @@ public class HostSender : IHostSender
             PlayerId = GetLocalPlayerId(),
             ErrorMsg = ""
         };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_PICKUP, packet);
+
+        BroadcastRelayPacket(PacketId.PKT_S_OBJECT_PICKUP, packet);
     }
 
     public void BroadcastItemDetached(Items itemData)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
         if (!isItem && !isTool) return;
 
         S_OBJECT_DROP packet = new S_OBJECT_DROP
@@ -117,7 +142,8 @@ public class HostSender : IHostSender
             },
             PlayerId = GetLocalPlayerId()
         };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DROP, packet);
+
+        BroadcastRelayPacket(PacketId.PKT_S_OBJECT_DROP, packet);
     }
 
     public void BroadcastFurnanceSmeltStart(int furnaceId, int objectId, int meltTime)
@@ -128,7 +154,8 @@ public class HostSender : IHostSender
             MeltTime = meltTime,
             FurnaceId = furnaceId
         };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_SMELT, startPacket);
+
+        BroadcastRelayPacket(PacketId.PKT_S_OBJECT_SMELT, startPacket);
     }
 
     public void BroadcastFurnanceSmeltComplete(int objectId, int furnaceId, ItemType resultItem)
@@ -139,7 +166,8 @@ public class HostSender : IHostSender
             FurnaceId = furnaceId,
             ItemResult = resultItem
         };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_SMELT_COMPLETE, completePacket);
+
+        BroadcastRelayPacket(PacketId.PKT_S_SMELT_COMPLETE, completePacket);
         Debug.Log($"녹이기 완료 알림보냄:: {objectId} in Furnace {furnaceId}: Result Item={resultItem}");
     }
 
@@ -150,7 +178,8 @@ public class HostSender : IHostSender
             FurnaceId = furnaceId,
             ItemResult = resultItem
         };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_FURNACE_RETRIEVE, retrievePacket);
+
+        BroadcastRelayPacket(PacketId.PKT_S_FURNACE_RETRIEVE, retrievePacket);
         Debug.Log($"용광로에서 아이템 회수 알림 보냄:: Furnace {furnaceId}: Result Item={resultItem}");
     }
 
@@ -163,13 +192,15 @@ public class HostSender : IHostSender
             Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
             Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
         };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_SPAWN, packet);
+
+        BroadcastRelayPacket(PacketId.PKT_S_OBJECT_SPAWN, packet);
     }
 
     public void BroadcastObjectDestroy(int itemId)
     {
         S_OBJECT_DESTROY packet = new S_OBJECT_DESTROY { ItemId = itemId };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_OBJECT_DESTORY, packet);
+
+        BroadcastRelayPacket(PacketId.PKT_S_OBJECT_DESTORY, packet);
         Debug.Log($"[HostSender] BroadcastObjectDestroy: itemId={itemId}");
     }
 
@@ -180,18 +211,21 @@ public class HostSender : IHostSender
             ItemStringKeyMission = itemStringKey,
             CurrentIndex = currentCount
         };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_SPACESHIP_UPDATE, packet);
+        //hostNet.BroadcastToPeers(0, PacketId.PKT_S_SPACESHIP_UPDATE, packet);
+        BroadcastRelayPacket(PacketId.PKT_S_SPACESHIP_UPDATE, packet);
     }
 
     public void BroadcastSpaceshipComplete(bool success)
     {
         S_SPACESHIP_COMPLETE packet = new S_SPACESHIP_COMPLETE { Success = success };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_SPACESHIP_COMPLETE, packet);
+
+        BroadcastRelayPacket(PacketId.PKT_S_SPACESHIP_COMPLETE, packet);
     }
 
     public void BroadcastTimerSync(float remainingTime)
     {
         S_TIMER_SYNC packet = new S_TIMER_SYNC { RemainingTime = remainingTime };
-        hostNet.BroadcastToPeers(0, PacketId.PKT_S_TIMER_SYNC, packet);
+
+        BroadcastRelayPacket(PacketId.PKT_S_TIMER_SYNC, packet);
     }   
 }

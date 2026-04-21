@@ -90,7 +90,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     private void HandleServerPlayerEnter(byte[] payloadData)
     {
         S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
-
+        Debug.Log("입장 했습니다!");
         // 첫 번째로 받는 패킷은 반드시 피어 자신의 정보 (호스트가 가장 먼저 전송)
         // _playerId가 0이면 아직 할당 전이므로 자신의 ID로 갱신하고 스폰은 하지 않음
         if (NetManager.Instance._playerId == 0)
@@ -126,7 +126,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     private void HandleStat(byte[] payloadData)
     {
        S_PLAYER_STAT packet = S_PLAYER_STAT.Parser.ParseFrom(payloadData);
-       //Debug.Log($"Received PlayerStat packet: PlayerId={packet.PlayerId}, Hp={packet.Hp}, Oxygen={packet.Oxygen}");
+       Debug.Log($"Received PlayerStat packet: PlayerId={packet.PlayerId}, Hp={packet.Hp}, Oxygen={packet.Oxygen}");
        PeerStatManager.Instance.UpdateStat(packet.PlayerId, packet.Hp, packet.Oxygen);
        OnStatEvent?.Invoke(packet); // 여기서 받은 데이터 기반으로 UI 업데이트 하면 됨.
     }

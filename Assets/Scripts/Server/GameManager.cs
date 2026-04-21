@@ -25,9 +25,15 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         if (packet.Success)
         {
             Debug.Log($"✓ Login Success! Player ID: {packet.Player.Id}, Name: {packet.Player.Name}");
-            NetManager.Instance._playerId = (ulong)packet.Player.Id; //  이런 캐스팅 부분 나중에 수정해야함.
+            NetManager.Instance._playerId = (ulong)packet.Player.Id;
             DbCacheManager.Instance.RequestDbData();
-            SceneManager.LoadScene(Define.Scene.MAIN);
+
+            // 이미 게임 씬에 있으면 씬 전환 하지 않음 (단품 테스트 대응)
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (currentScene != Define.Scene.MAIN && currentScene != Define.Scene.GAME_1_1)
+            {
+                SceneManager.LoadScene(Define.Scene.MAIN);
+            }
         }
         else
         {
