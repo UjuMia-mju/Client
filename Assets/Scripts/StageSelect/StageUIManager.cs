@@ -18,8 +18,8 @@ public class StageUIManager : MonoBehaviour
         if (leftButton != null) leftButton.SetActive(isVisible);
         if (rightButton != null) rightButton.SetActive(isVisible);
     }
-
-    public IEnumerator OpenPanel(GameObject panelPrefab, string stageName, int difficulty, string description)
+    
+    public IEnumerator OpenPanel(GameObject panelPrefab, string stageName, int difficulty, string description, int estimatedClearTimeSeconds, bool isCleared)
     {
         if (panelPrefab == null) yield break;
 
@@ -28,7 +28,8 @@ public class StageUIManager : MonoBehaviour
         SelectPanelController panelInfo = _currentPanel.GetComponent<SelectPanelController>();
         if (panelInfo != null)
         {
-            panelInfo.SetInfo(stageName, difficulty, description);
+            // 받아온 isCleared를 SetInfo로 넘겨줌
+            panelInfo.SetInfo(stageName, difficulty, description, estimatedClearTimeSeconds, isCleared);
         }
 
         RectTransform rect = _currentPanel.GetComponent<RectTransform>();

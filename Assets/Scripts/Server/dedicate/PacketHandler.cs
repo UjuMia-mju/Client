@@ -33,6 +33,10 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_READY> OnReadyEvent;
     public event Action<S_START_ROOM> OnStartRoomEvent;
     public event Action<S_OBJECT_MOVE> OnItemMoveEvent;
+    public event Action<S_STAGE_INFO> OnStageInfoEvent;
+    
+    public event Action<S_START_STAGE> OnStartStageEvent;
+    public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -92,8 +96,17 @@ public class PacketHandler : Singleton<PacketHandler>
             case PacketId.PKT_S_OBJECT_MOVE:
                 HandleObjectMove(data);
                 break;
+            case PacketId.PKT_S_STAGE_INFO:
+                HandleStageInfo(data);
+                break;
+            case PacketId.PKT_S_START_STAGE:
+                HandleStartStage(data);
+                break;
+            case PacketId.PKT_S_GET_CLEAR_INFO:
+                HandleGetClearInfo(data);
+                break;
             default:
-                Debug.LogWarning($"Unhandled packet ID: {packetId}");
+                Debug.LogWarning($"Unhandled packet ID: {packetId} ({(ushort)packetId})");
                 break;
         }
     }
@@ -259,6 +272,25 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_OBJECT_MOVE packet = S_OBJECT_MOVE.Parser.ParseFrom(payloadData);
         OnItemMoveEvent?.Invoke(packet);
+    }
+
+    private void HandleStageInfo(byte[] payloadData)
+    {
+        S_STAGE_INFO packet = S_STAGE_INFO.Parser.ParseFrom(payloadData);
+        DbCacheManager.Instance.CacheStageInfos(packet.Stages);
+        OnStageInfoEvent?.Invoke(packet);
+    }
+
+    private void HandleStartStage(byte[] payloadData)
+    {
+        S_START_STAGE packet = S_START_STAGE.Parser.ParseFrom(payloadData);
+        OnStartStageEvent?.Invoke(packet);
+    }
+    
+    private void HandleGetClearInfo(byte[] payloadData)
+    {
+        S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
+        OnGetClearInfoEvent?.Invoke(packet);
     }
 
 }
