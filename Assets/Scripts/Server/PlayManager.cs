@@ -22,6 +22,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerAnimationEvent += OnPeerAnimation;
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent += OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent += OnPeerItemDetach;
+        PeerPacketHandler.Instance.OnPeerObjectMoveEvent += OnPeerObjectMove;
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent += OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent += OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent += OnPeerSpaceshipInsert;
@@ -73,6 +74,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerAnimationEvent -= OnPeerAnimation;
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent -= OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent -= OnPeerItemDetach;
+        PeerPacketHandler.Instance.OnPeerObjectMoveEvent -= OnPeerObjectMove;
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent -= OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent -= OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent -= OnPeerSpaceshipInsert;
