@@ -44,7 +44,7 @@ public class HostStatManager : BaseStatManager<HostStatManager>
         //Debug.Log($"[HostStatManager] DecreaseOxygen: playerId={playerId}, oxygen={stat.GetOxygen()}");
 
         // 확인 필요
-        //PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
+        PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
     public void IncreaseOxygen(ulong playerId)
