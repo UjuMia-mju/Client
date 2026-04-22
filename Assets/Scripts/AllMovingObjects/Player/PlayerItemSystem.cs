@@ -6,20 +6,32 @@ public class PlayerItemSystem : MonoBehaviour
     public GameObject currentEquipItem { get; private set; }
 
     [Header("Throw - Base")]
+    [Tooltip("기본 던지기 벡터에 곱해지는 스케일. 전체 세기 체감에 가장 큰 영향을 줍니다.")]
     [SerializeField] private float throwForce = 0.02f;
+    [Tooltip("일반(F) 던지기의 최대 힘.")]
     [SerializeField] private float maxThrowForce = 20f;
+    [Tooltip("일반(F) 던지기의 최소 힘. 정지 상태에서도 이 값 이상으로 던져집니다.")]
     [SerializeField] private float minThrowForce = 5f;
+    [Tooltip("이동 속도를 전방 힘으로 변환할 때 곱하는 계수.")]
     [SerializeField] private float controlRunningAmount = 0.15f;
+    [Tooltip("이동 보정이 시작되는 최소 속도 임계값.")]
     [SerializeField] private float minRunningAmount = 0.01f;
 
     [Header("Throw - Charged (RMB + LMB)")]
+    [Tooltip("강한 던지기(우클릭+좌클릭)의 최대 힘.")]
     [SerializeField] private float chargedMaxThrowForce = 38f;
+    [Tooltip("강한 던지기(우클릭+좌클릭)의 최소 힘.")]
     [SerializeField] private float chargedMinThrowForce = 16f;
+    [Tooltip("강한 던지기 기본 상승 비율. 낮을수록 더 낮고 멀리 날아갑니다.")]
+    [Range(0f, 2f)]
     [SerializeField] private float chargedUpBlend = 0.3f;
 
     [Header("Throw - Vertical Angle")]
+    [Tooltip("마우스 위/아래(pitch)가 상승 비율에 반영되는 민감도.")]
     [SerializeField] private float throwPitchSensitivity = 0.9f;
+    [Tooltip("상승 비율의 최소값.")]
     [SerializeField] private float minUpWeight = 0.1f;
+    [Tooltip("상승 비율의 최대값.")]
     [SerializeField] private float maxUpWeight = 1.9f;
 
     private GameObject _lastThrownItem; // 마지막으로 던진 아이템
