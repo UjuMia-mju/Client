@@ -5,14 +5,22 @@ public class PlayerItemSystem : MonoBehaviour
     public GameObject itemSocket {get; private set;}
     public GameObject currentEquipItem { get; private set; }
 
-    private const float THROW_FORCE = 0.02f;
-    private const float MAX_THROW_FORCE = 20f;
-    private const float MIN_THROW_FORCE = 5f;
-    private const float CHARGED_MAX_THROW_FORCE = 38f;
-    private const float CHARGED_MIN_THROW_FORCE = 16f;
-    private const float CHARGED_UP_BLEND = 0.3f;
-    private const float CONTROL_RUNNINGAMOUNT = 0.15f;
-    private const float MIN_RUNNINGAMOUNT = 0.01f;
+    [Header("Throw - Base")]
+    [SerializeField] private float throwForce = 0.02f;
+    [SerializeField] private float maxThrowForce = 20f;
+    [SerializeField] private float minThrowForce = 5f;
+    [SerializeField] private float controlRunningAmount = 0.15f;
+    [SerializeField] private float minRunningAmount = 0.01f;
+
+    [Header("Throw - Charged (RMB + LMB)")]
+    [SerializeField] private float chargedMaxThrowForce = 38f;
+    [SerializeField] private float chargedMinThrowForce = 16f;
+    [SerializeField] private float chargedUpBlend = 0.3f;
+
+    [Header("Throw - Vertical Angle")]
+    [SerializeField] private float throwPitchSensitivity = 0.9f;
+    [SerializeField] private float minUpWeight = 0.1f;
+    [SerializeField] private float maxUpWeight = 1.9f;
 
     private GameObject _lastThrownItem; // 마지막으로 던진 아이템
 
@@ -60,25 +68,30 @@ public class PlayerItemSystem : MonoBehaviour
         this.currentEquipItem = item;
     }
 
-    public Vector3 ComputeThrowImpulse(float runningAmount, Vector3 flatAimDirection, bool chargedThrow = false)
+    public Vector3 ComputeThrowImpulse(float runningAmount, Vector3 aimDirection, bool chargedThrow = false)
     {
         if (currentEquipItem == null) return Vector3.zero;
 
-        flatAimDirection = Vector3.ProjectOnPlane(flatAimDirection, transform.up);
+        Vector3 up = transform.up;
+        Vector3 flatAimDirection = Vector3.ProjectOnPlane(aimDirection, up);
         if (flatAimDirection.sqrMagnitude < 1e-6f)
-            flatAimDirection = Vector3.ProjectOnPlane(transform.forward, transform.up);
+            flatAimDirection = Vector3.ProjectOnPlane(transform.forward, up);
         flatAimDirection.Normalize();
 
         Vector3 forwardVec;
-        if (runningAmount < MIN_RUNNINGAMOUNT)
+        if (runningAmount < minRunningAmount)
             forwardVec = flatAimDirection;
         else
-            forwardVec = flatAimDirection * (runningAmount * CONTROL_RUNNINGAMOUNT);
+            forwardVec = flatAimDirection * (runningAmount * controlRunningAmount);
 
-        float upWeight = chargedThrow ? CHARGED_UP_BLEND : 1f;
-        Vector3 force = (transform.up * upWeight + forwardVec) * THROW_FORCE;
-        float minF = chargedThrow ? CHARGED_MIN_THROW_FORCE : MIN_THROW_FORCE;
-        float maxF = chargedThrow ? CHARGED_MAX_THROW_FORCE : MAX_THROW_FORCE;
+        // 카메라 pitch(위/아래 시선)를 던지기 각도에 반영합니다.
+        float verticalDot = Mathf.Clamp(Vector3.Dot(aimDirection.normalized, up), -1f, 1f);
+        float upWeightBase = chargedThrow ? chargedUpBlend : 1f;
+        float upWeight = Mathf.Clamp(upWeightBase + verticalDot * throwPitchSensitivity, minUpWeight, maxUpWeight);
+
+        Vector3 force = (up * upWeight + forwardVec) * throwForce;
+        float minF = chargedThrow ? chargedMinThrowForce : minThrowForce;
+        float maxF = chargedThrow ? chargedMaxThrowForce : maxThrowForce;
         float clampedMagnitude = Mathf.Clamp(force.magnitude, minF, maxF);
         return force.normalized * clampedMagnitude;
     }
