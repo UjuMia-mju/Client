@@ -402,8 +402,8 @@ public class Player : MovingObject
             if (holdingItem && Mouse.current.rightButton.isPressed)
             {
                 aimZoom = true;
-                Vector3 aimFlat = GetFlatPlayerThrowDirection();
-                Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimFlat, chargedThrow: true);
+                Vector3 aimDir = GetThrowAimDirection();
+                Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimDir, chargedThrow: true);
                 float mass = playerItemSystem.GetHeldItemMass();
                 Vector3 v0 = impulse / mass;
                 trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
@@ -431,20 +431,30 @@ public class Player : MovingObject
 
         isPlayerGetSomething = false;
         SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
-        playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetFlatPlayerThrowDirection());
+        playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetThrowAimDirection());
         if (trajectoryPreview != null)
             trajectoryPreview.Hide();
         StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
     }
 
-    /// <summary>플레이어가 바라보는 방향을 지면(플레이어 up)에 투영한 조준 방향. 던지기/궤적 미리보기 공통.</summary>
-    private Vector3 GetFlatPlayerThrowDirection()
+    /// <summary>
+    /// 던지기 조준 방향(수평은 플레이어 전방, 수직은 카메라 pitch 기반).
+    /// 우클릭 중 마우스 위/아래 입력으로 던지기 각도를 조절할 수 있습니다.
+    /// </summary>
+    private Vector3 GetThrowAimDirection()
     {
         Vector3 up = transform.up;
         Vector3 flat = Vector3.ProjectOnPlane(transform.forward, up);
         if (flat.sqrMagnitude < 1e-4f)
             flat = Vector3.ProjectOnPlane(transform.right, up);
-        return flat.normalized;
+        flat.Normalize();
+
+        if (Camera.main == null)
+            return flat;
+
+        float verticalDot = Mathf.Clamp(Vector3.Dot(Camera.main.transform.forward.normalized, up), -0.95f, 0.95f);
+        Vector3 aim = (flat + up * verticalDot).normalized;
+        return aim;
     }
 
     // F키 상호작용
