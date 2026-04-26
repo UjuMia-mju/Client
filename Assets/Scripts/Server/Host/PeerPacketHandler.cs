@@ -7,7 +7,7 @@ using System;
 /// 호스트가 피어로부터 받은 패킷을 처리하는 클래스
 /// NetManager의 피어 receive 루프에서 호출됨
 /// 각 C_ 패킷에 대한 이벤트를 정의하여 게임 로직에서 구독할 수 있도록 함
-/// 예: 플레이어 이동, 채팅 메시지, 애니메이션 상태 변경, 아이템 상호작용 등
+/// 예: 플레이어 이동, 채팅 메시지, 애니메이션 상태 변경, 아이템 상호작유속 등
 /// </summary>
 public class PeerPacketHandler : Singleton<PeerPacketHandler>
 {
@@ -24,6 +24,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_OBJECT_SPAWN> OnPeerObjectSpawnEvent;
     public event Action<int, C_OBJECT_DESTROY> OnPeerObjectDestroyEvent;
     public event Action<int, C_SPACESHIP_INSERT> OnPeerSpaceshipInsertEvent;
+    public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
 
 
 
@@ -76,6 +77,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 break;
             case PacketId.PKT_C_SPACESHIP_INSERT:
                 HandlePeerSpaceshipInsert(peerId, data);
+                break;
+            case PacketId.PKT_S_GAME_READY_TO_START:
+                HandleGameReadyToStart(data);
                 break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
@@ -321,6 +325,12 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     {
         C_SPACESHIP_INSERT packet = C_SPACESHIP_INSERT.Parser.ParseFrom(data);
         OnPeerSpaceshipInsertEvent?.Invoke(peerId, packet);
+    }
+
+    private void HandleGameReadyToStart(byte[] data)
+    {
+        S_GAME_READY_TO_START packet = S_GAME_READY_TO_START.Parser.ParseFrom(data);
+        OnGameReadyToStartEvent?.Invoke(packet);
     }
 }
 
