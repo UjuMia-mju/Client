@@ -81,7 +81,6 @@ public class Player : MovingObject
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
 
-        // 자동으로 자식 중 PlayerMesh를 찾아 할당 (Inspector에 없으면)
         if (playerMesh == null)
         {
             Transform t = transform.Find("PlayerMesh");
@@ -89,15 +88,14 @@ public class Player : MovingObject
                 playerMesh = t.gameObject;
         }
 
-
-        // 산소/HP 이벤트 기반 로직
-        // lastHP = playerStat.GetHp();
-        // lastOxygen = playerStat.GetOxygen();
-
         playerStat.OnHpChanged += HandleHpChanged;
         playerStat.OnOxygenChanged += HandleOxygenChanged;
         playerStat.OnPlayerDead += HandlePlayerDead;
         playerStat.OnPlayerRevive += HandlePlayerRevive;
+
+        // 씬 로드 후 서버/호스트에 입장을 알립니다.
+        // (기존: ConnectManager.Start()에서 호출 → 자동 로그인 제거 때 함께 삭제됨)
+        OnNetworkReady();
     }
 
     // 이벤트 구독 해제 0324 (추가)
@@ -152,18 +150,20 @@ public class Player : MovingObject
 
     public void OnNetworkReady()
     {
-        Debug.Log("Player: Network is ready, sending EnterGame packet.");
-        // if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
-        // {
-        //     PacketSender.Instance.SendEnterGame(0);
+        Debug.Log($"[Player] OnNetworkReady. isHost={ConnectManager.Instance.isHost}");
 
-        //     Debug.Log("Player: Sent EnterGame packet to server.");
-        // }
-        
-        PacketSender.Instance.SendEnterGame();
+        if (ConnectManager.Instance.isHost)
+        {
+            // 호스트: 피어들에게 자신의 입장을 브로드캐스트
+            PacketSender.Instance.BroadcastPlayerEnter((ulong)NetManager.Instance._playerId);
+        }
+        else
+        {
+            // 피어: 호스트에게 입장 요청 전송
+            PacketSender.Instance.SendEnterGame();
+        }
+
         SendEnterPosToServer();
-
-        // 네트워크 준비 후 산소 감소 시작 (EnterGame 패킷 이후에 산소 패킷이 전송되도록)
         playerStat.StartOxygenDecrease();
     }
 
