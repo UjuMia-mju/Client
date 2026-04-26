@@ -7,16 +7,18 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
 
     public virtual void UpdateStat(ulong playerId, int hp, float oxygen)
     {
-        if (_playerStats.TryGetValue(playerId, out var stat))
+        if (!_playerStats.TryGetValue(playerId, out var stat))
         {
-            stat.ChangeData(hp, oxygen);
-            stat.CallOnHpChanged();
-            stat.CallOnOxygenChanged();
+            // S_ENTER_GAME보다 S_PLAYER_STAT이 먼저 도착하는 경쟁 조건 대응.
+            // 미등록 플레이어는 즉시 등록 후 처리.
+            stat = new PlayerStat();
+            _playerStats[playerId] = stat;
+            Debug.Log($"[StatManager] 미등록 플레이어 자동 등록: playerId={playerId}");
         }
-        else
-        {
-            Debug.LogWarning($"[StatManager] Player {playerId} not found!");
-        }
+
+        stat.ChangeData(hp, oxygen);
+        stat.CallOnHpChanged();
+        stat.CallOnOxygenChanged();
     }
 
     public PlayerStat GetPlayerStat(ulong playerId)
@@ -25,11 +27,10 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
             return stat;
 
         string currentKeys = string.Join(", ", _playerStats.Keys);
-        Debug.LogError($"[GetPlayerStat] Player {playerId} not found! Current IDs in dict: [{currentKeys}]");
+        Debug.LogError($"[GetPlayerStat] Player {playerId} not found! Current IDs: [{currentKeys}]");
         return null;
     }
 
-    /// <summary>에러 로그 없이 PlayerStat을 가져옵니다. 없으면 null 반환.</summary>
     public bool TryGetPlayerStat(ulong playerId, out PlayerStat stat)
     {
         return _playerStats.TryGetValue(playerId, out stat);
@@ -38,9 +39,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
     public void AddPlayer(ulong playerId)
     {
         if (!_playerStats.ContainsKey(playerId))
-        {
             _playerStats.Add(playerId, new PlayerStat());
-        }
     }
 
     public void RemovePlayer(ulong playerId) => _playerStats.Remove(playerId);

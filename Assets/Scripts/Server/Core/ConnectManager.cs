@@ -38,6 +38,7 @@ public class ConnectManager : MonoBehaviour
     /// </summary>
     public void SetHostRole(bool host)
     {
+        Debug.Log($"[ConnectManager] SetHostRole. before={isHost}, after={host}\n{System.Environment.StackTrace}");
         isHost = host;
         PacketSender.Instance.Init(isHost);
         Debug.Log($"[ConnectManager] 호스트 역할 확정: isHost={isHost}");

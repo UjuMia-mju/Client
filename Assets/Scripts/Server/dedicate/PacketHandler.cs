@@ -219,6 +219,17 @@ public class PacketHandler : Singleton<PacketHandler>
     public static void SetCachedEnterRoom(S_ENTER_ROOM packet)
     {
         _cachedEnterRoom = packet;
+
+        // 캐시뿐 아니라 일반 구독자(RoomMembershipTracker 등)에게도 즉시 전파.
+        // LobbyRoomClient는 캐시를 GetAndClearCachedEnterRoom으로 별도 소비하므로 중복 처리되지 않음.
+        if (Instance != null)
+            Instance.OnEnterRoomEvent?.Invoke(packet);
+    }
+
+    /// <summary>캐시를 비우지 않고 들여다보기만. 트래커 등 보조 구독자가 부팅 시 초기 상태를 잡기 위함.</summary>
+    public static S_ENTER_ROOM PeekCachedEnterRoom()
+    {
+        return _cachedEnterRoom;
     }
 
     private void HandleLeaveRoom(byte[] payloadData)

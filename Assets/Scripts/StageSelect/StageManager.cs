@@ -34,6 +34,8 @@ public class StageManager : MonoBehaviour
     private int _pendingChapter;
     private int _pendingStageNum;
 
+    private Coroutine _fallbackCoroutine;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -161,20 +163,27 @@ public class StageManager : MonoBehaviour
         }
 
         Debug.Log("[StageManager] S_START_STAGE 성공. S_GAME_READY_TO_START 대기 중...");
-        // S_GAME_READY_TO_START가 오지 않을 경우 3초 후 폴백
-        StartCoroutine(FallbackIfGameReadyNotReceived());
+        if (_fallbackCoroutine != null) StopCoroutine(_fallbackCoroutine);
+        _fallbackCoroutine = StartCoroutine(FallbackIfGameReadyNotReceived());
     }
 
     private IEnumerator FallbackIfGameReadyNotReceived()
     {
         yield return new WaitForSeconds(3f);
+        _fallbackCoroutine = null;
 
-        if (!_gameplaySceneLoadStarted)
-        {
-            Debug.LogWarning("[StageManager] S_GAME_READY_TO_START 미수신. 호스트로 폴백 씬 로드.");
-            ConnectManager.Instance.SetHostRole(true);
-            DoLoadGameplayScene();
-        }
+        if (_gameplaySceneLoadStarted) yield break;
+
+        var tracker = RoomMembershipTracker.Instance;
+        bool amIFirst = tracker.AmIFirst();
+
+        Debug.LogWarning(
+            $"[StageManager] S_GAME_READY_TO_START 미수신. 입장 순서 기반 폴백. " +
+            $"myId={NetManager.Instance._playerId}, " +
+            $"orderedIds=[{string.Join(",", tracker.OrderedIds)}], amIFirst={amIFirst}");
+
+        ConnectManager.Instance.SetHostRole(amIFirst);
+        DoLoadGameplayScene();
     }
 
     private void HandleGameReadyToStart(S_GAME_READY_TO_START packet)
@@ -182,12 +191,19 @@ public class StageManager : MonoBehaviour
         if (_gameplaySceneLoadStarted)
             return;
 
+        if (_fallbackCoroutine != null)
+        {
+            StopCoroutine(_fallbackCoroutine);
+            _fallbackCoroutine = null;
+        }
+
         bool isHost = packet.IdOrder.Count > 0
                       && packet.IdOrder[0] == (ulong)NetManager.Instance._playerId;
 
-        ConnectManager.Instance.SetHostRole(isHost);
-        Debug.Log($"[StageManager] S_GAME_READY_TO_START 수신. isHost={isHost}");
+        Debug.Log($"[StageManager] S_GAME_READY_TO_START 수신. myId={NetManager.Instance._playerId}, " +
+                  $"idOrder=[{string.Join(",", packet.IdOrder)}], isHost={isHost}");
 
+        ConnectManager.Instance.SetHostRole(isHost);
         DoLoadGameplayScene();
     }
 

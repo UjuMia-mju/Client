@@ -14,6 +14,8 @@ public class GameRuleManager : MonoBehaviour
     private const float TIMER_SYNC_INTERVAL = 1f;
     private float _lastSyncTime = 0f;
 
+    private Coroutine _timerCoroutine;
+
     void Start()
     {
         if (Instance == null)
@@ -24,9 +26,14 @@ public class GameRuleManager : MonoBehaviour
             return;
         }
 
-        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
-            StartCoroutine(StartTimer());
+        Debug.Log($"[GameRuleManager] Start. ConnectManager.isHost={ConnectManager.Instance?.isHost}");
+
+        if (IsHostNow())
+            _timerCoroutine = StartCoroutine(StartTimer());
     }
+
+    private static bool IsHostNow()
+        => ConnectManager.Instance != null && ConnectManager.Instance.isHost;
 
     IEnumerator StartTimer()
     {
@@ -35,11 +42,18 @@ public class GameRuleManager : MonoBehaviour
         while (remainingTime > 0)
         {
             yield return new WaitForSeconds(1f);
+
+            // 매 틱마다 재확인: 도중에 역할이 피어로 바뀌었다면 즉시 중단
+            if (!IsHostNow())
+            {
+                Debug.LogWarning("[GameRuleManager] 호스트 권한 상실, 타이머 코루틴 중단");
+                _timerCoroutine = null;
+                yield break;
+            }
+
             remainingTime -= 1f;
 
-            if (ConnectManager.Instance != null
-                && ConnectManager.Instance.isHost
-                && Time.time - _lastSyncTime >= TIMER_SYNC_INTERVAL)
+            if (Time.time - _lastSyncTime >= TIMER_SYNC_INTERVAL)
             {
                 PacketSender.Instance.BroadcastTimerSync(remainingTime);
                 _lastSyncTime = Time.time;
@@ -47,6 +61,7 @@ public class GameRuleManager : MonoBehaviour
         }
 
         Debug.Log("타이머 종료!");
+        _timerCoroutine = null;
         OnTimerEnd();
     }
 
@@ -54,7 +69,7 @@ public class GameRuleManager : MonoBehaviour
     {
         Debug.Log("타이머가 종료되어 게임이 실패로 끝났습니다.");
 
-        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+        if (IsHostNow())
             PacketSender.Instance.BroadcastSpaceshipComplete(false);
 
         ReturnToStageSelectScene(false);
@@ -62,6 +77,9 @@ public class GameRuleManager : MonoBehaviour
 
     public void SyncTimer(float time)
     {
+        // 피어 전용. 호스트가 자신의 echo로 SyncTimer를 받지 않도록 방어.
+        if (IsHostNow()) return;
+
         remainingTime = time;
     }
 
