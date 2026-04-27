@@ -23,4 +23,8 @@ public interface IHostSender
     void BroadcastSpaceshipComplete(bool success);
 
     void BroadcastTimerSync(float remainingTime);
+
+    // 자원: 호스트 → 피어
+    void BroadcastResourceSpawn(ResourceObject resource);
+    void BroadcastResourceDestroy(int resourceId);
 }

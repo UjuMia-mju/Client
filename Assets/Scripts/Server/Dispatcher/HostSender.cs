@@ -227,5 +227,33 @@ public class HostSender : IHostSender
         S_TIMER_SYNC packet = new S_TIMER_SYNC { RemainingTime = remainingTime };
 
         BroadcastRelayPacket(PacketId.PKT_S_TIMER_SYNC, packet);
-    }   
+    }
+
+    public void BroadcastResourceSpawn(ResourceObject resource)
+    {
+        if (resource == null) return;
+
+        S_RESOURCE_SPAWN packet = new S_RESOURCE_SPAWN
+        {
+            ResourceId = resource.resourceId,
+            ResourceStringKey = resource.resourceStringKey,
+            Pos = new PosInfo
+            {
+                X = resource.transform.position.x,
+                Y = resource.transform.position.y,
+                Z = resource.transform.position.z
+            }
+        };
+
+        BroadcastRelayPacket(PacketId.PKT_S_RESOURCE_SPAWN, packet);
+        Debug.Log($"[HostSender] BroadcastResourceSpawn: id={resource.resourceId}, key={resource.resourceStringKey}");
+    }
+
+    public void BroadcastResourceDestroy(int resourceId)
+    {
+        S_RESOURCE_DESTROY packet = new S_RESOURCE_DESTROY { ResourceId = resourceId };
+
+        BroadcastRelayPacket(PacketId.PKT_S_RESOURCE_DESTROY, packet);
+        Debug.Log($"[HostSender] BroadcastResourceDestroy: id={resourceId}");
+    }
 }

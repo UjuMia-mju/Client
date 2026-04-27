@@ -24,6 +24,8 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_SPACESHIP_COMPLETE> OnSpaceshipCompleteEvent;
     public event Action<S_TIMER_SYNC> OnTimerSyncEvent;
     public event Action<S_ENTER_GAME> OnEnterGameEvent;
+    public event Action<S_RESOURCE_SPAWN> OnResourceSpawnEvent;
+    public event Action<S_RESOURCE_DESTROY> OnResourceDestroyEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -79,6 +81,12 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_ENTER_GAME:
                 HandleEnterGame(data);
+                break;
+            case PacketId.PKT_S_RESOURCE_SPAWN:
+                HandleResourceSpawn(data);
+                break;
+            case PacketId.PKT_S_RESOURCE_DESTROY:
+                HandleResourceDestroy(data);
                 break;
             default:
                 Debug.LogWarning($"[HostPacketHandler] Unhandled packet ID: {packetId}");
@@ -199,6 +207,18 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         S_ENTER_GAME packet = S_ENTER_GAME.Parser.ParseFrom(data);
         OnEnterGameEvent?.Invoke(packet);
+    }
+
+    private void HandleResourceSpawn(byte[] data)
+    {
+        S_RESOURCE_SPAWN packet = S_RESOURCE_SPAWN.Parser.ParseFrom(data);
+        OnResourceSpawnEvent?.Invoke(packet);
+    }
+
+    private void HandleResourceDestroy(byte[] data)
+    {
+        S_RESOURCE_DESTROY packet = S_RESOURCE_DESTROY.Parser.ParseFrom(data);
+        OnResourceDestroyEvent?.Invoke(packet);
     }
 }
 

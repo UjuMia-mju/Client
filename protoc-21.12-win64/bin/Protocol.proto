@@ -500,3 +500,20 @@ message S_TIMER_SYNC
 {
 	float remaining_time = 1;
 }
+
+// 광석 패킷
+message C_RESOURCE_HIT{
+	int32 resource_id = 1;
+}
+
+// 호스트 → 피어: 씬 배치 자원의 ID 동기화 (위치 기반 매칭)
+message S_RESOURCE_SPAWN {
+    int32 resource_id = 1;
+    string resource_string_key = 2;
+    PosInfo pos = 3;
+}
+
+// 호스트 → 피어: 자원 GameObject 파괴
+message S_RESOURCE_DESTROY {
+    int32 resource_id = 1;
+}

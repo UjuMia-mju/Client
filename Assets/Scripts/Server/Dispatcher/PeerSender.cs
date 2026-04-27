@@ -200,4 +200,10 @@ public class PeerSender : IClientSender
 
         SendRelayPacket(PacketId.PKT_C_SPACESHIP_INSERT, packet);
     }
+
+    public void SendResourceHit(int resourceId)
+    {
+        C_RESOURCE_HIT packet = new C_RESOURCE_HIT { ResourceId = resourceId };
+        SendRelayPacket(PacketId.PKT_C_RESOURCE_HIT, packet);
+    }
 }

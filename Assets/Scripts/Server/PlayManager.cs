@@ -23,9 +23,10 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent += OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent += OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent += OnPeerSpaceshipInsert;
+        PeerPacketHandler.Instance.OnPeerResourceHitEvent += OnPeerResourceHit;
 
         HostPacketHandler.Instance.OnEnterGameEvent += OnHostEnterGame;
-        HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter; // 복원: 호스트 즉시 스폰용
+        HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
         HostPacketHandler.Instance.OnAnimationEvent += OnHostAnimation;
         HostPacketHandler.Instance.OnItemAttached += OnHostItemPickup;
@@ -37,6 +38,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent += OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent += OnHostSpaceshipComplete;
         HostPacketHandler.Instance.OnTimerSyncEvent += OnHostTimerSync;
+        HostPacketHandler.Instance.OnResourceSpawnEvent += OnHostResourceSpawn;
+        HostPacketHandler.Instance.OnResourceDestroyEvent += OnHostResourceDestroy;
     }
 
     void OnDestroy()
@@ -49,9 +52,10 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent -= OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent -= OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent -= OnPeerSpaceshipInsert;
+        PeerPacketHandler.Instance.OnPeerResourceHitEvent -= OnPeerResourceHit;
 
         HostPacketHandler.Instance.OnEnterGameEvent -= OnHostEnterGame;
-        HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter; // 복원
+        HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent -= OnHostMove;
         HostPacketHandler.Instance.OnAnimationEvent -= OnHostAnimation;
         HostPacketHandler.Instance.OnItemAttached -= OnHostItemPickup;
@@ -184,6 +188,17 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void OnHostTimerSync(S_TIMER_SYNC packet)
         => GameRuleManager.Instance.SyncTimer(packet.RemainingTime);
+
+    private void OnHostResourceSpawn(S_RESOURCE_SPAWN packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        ResourceManager.Instance.ApplyResourceIdFromNetwork(packet.ResourceId, packet.ResourceStringKey, pos);
+    }
+
+    private void OnHostResourceDestroy(S_RESOURCE_DESTROY packet)
+    {
+        ResourceManager.Instance.DestroyResourceFromNetwork(packet.ResourceId);
+    }
 
     #endregion
 
@@ -371,5 +386,11 @@ public class PlayManager : SceneSingleton<PlayManager>
     private void OnServerPlayerEnter(S_PLAYER_ENTER packet)
     {
         SpawnRemotePlayer(packet.Player);
+    }
+
+    private void OnPeerResourceHit(int peerId, C_RESOURCE_HIT packet)
+    {
+        Debug.Log($"[PlayManager] 피어 자원 타격 수신: peerId={peerId}, resourceId={packet.ResourceId}");
+        ResourceServerManager.Instance.OnReceiveHit(packet.ResourceId);
     }
 }

@@ -27,4 +27,6 @@ public interface IClientSender
 
     void SendSpaceshipInsert(string itemStringKey, int itemId);
 
+    // 자원: 피어 → 호스트, "이 자원을 1회 타격했다"
+    void SendResourceHit(int resourceId);
 }
