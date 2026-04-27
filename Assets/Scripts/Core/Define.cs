@@ -60,13 +60,14 @@ public static class Define
         public const string ITEM = "Item";
         public const string CRAFT_TABLE = "CraftTable";
         public const string MAINBUTTON = "MainButton";
-        public const string PICKAXE = "Pickaxe";
+        public const string TOOL = "Tool";
         public const string ORE = "Ore";
         public const string FURNACE = "Furnace";
         public const string CLICKOFF = "ClickOff";
         public const string SPACESHIP = "Spaceship";
         public const string RESPAWN_SPOT = "RespawnSpot";    
         public const string PLANET = "Planet";
+        public const string TREE = "Tree";
     }
 
     public static class Layer

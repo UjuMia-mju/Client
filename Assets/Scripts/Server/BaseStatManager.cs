@@ -38,7 +38,9 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
     public void AddPlayer(ulong playerId)
     {
         if (!_playerStats.ContainsKey(playerId))
+        {
             _playerStats.Add(playerId, new PlayerStat());
+        }
     }
 
     public void RemovePlayer(ulong playerId) => _playerStats.Remove(playerId);

@@ -13,6 +13,7 @@ public class PlayerInput : MonoBehaviour
     private bool isJumping = false;
     private bool isInteract = false;
     private bool isThrowOrCancel = false;
+    private bool isLeftClick = false;
 
     private PlayerInputSystem inputActions;
 
@@ -27,14 +28,13 @@ public class PlayerInput : MonoBehaviour
     private void OnEnable()
     {
         if (inputActions == null)
-        {
             inputActions = InputManager.Instance.Actions;
-        }
-        
+
         inputActions.Player.Enable();
         inputActions.Player.Jump.performed += OnJump;
         inputActions.Player.Interact.performed += OnInteract;
         inputActions.Player.ThrowOrCancel.performed += OnThrowOrCancel;
+        inputActions.Player.LeftClick.performed += OnLeftClick;
     }
 
     private void OnDisable()
@@ -42,6 +42,7 @@ public class PlayerInput : MonoBehaviour
         inputActions.Player.Jump.performed -= OnJump;
         inputActions.Player.Interact.performed -= OnInteract;
         inputActions.Player.ThrowOrCancel.performed -= OnThrowOrCancel;
+        inputActions.Player.LeftClick.performed -= OnLeftClick;
         inputActions.Player.Disable();
     }
 
@@ -59,6 +60,11 @@ public class PlayerInput : MonoBehaviour
     private void OnThrowOrCancel(InputAction.CallbackContext ctx)
     {
         isThrowOrCancel = true;
+    }
+
+    private void OnLeftClick(InputAction.CallbackContext ctx)
+    {
+        isLeftClick = true;
     }
 
     // 입력받은 값으로 초기화
@@ -102,6 +108,16 @@ public class PlayerInput : MonoBehaviour
         isThrowOrCancel = false;
     }
 
+    public bool GetIsLeftClick()
+    {
+        return isLeftClick;
+    }
+
+    public void MakeIsLeftClickFalse()
+    {
+        isLeftClick = false;
+    }
+
     // 외부에서 입력 전체 활성/비활성 토글
     public void SetInputEnabled(bool enabled)
     {
@@ -113,6 +129,7 @@ public class PlayerInput : MonoBehaviour
             isJumping = false;
             isInteract = false;
             isThrowOrCancel = false;
+            isLeftClick = false;
             axisX = 0f;
             axisY = 0f;
             axisResultDir = Vector3.zero;

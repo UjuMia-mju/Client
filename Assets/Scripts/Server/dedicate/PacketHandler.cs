@@ -40,11 +40,13 @@ public class PacketHandler : Singleton<PacketHandler>
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
-        Debug.Log($"Received packet with ID: {packetId}, Size: {data.Length} bytes");
         switch (packetId)
         {
             case PacketId.PKT_S_LOGIN:
                 HandleLoginResult(data);
+                break;
+            case PacketId.PKT_S_RELAY_PACKET:
+                RelayPacketHandler.Instance.HandleRelayPacket(S_RELAY_PACKET.Parser.ParseFrom(data));
                 break;
             case PacketId.PKT_S_ENTER_GAME:
                 HandleEnterGameResult(data);
@@ -129,7 +131,7 @@ public class PacketHandler : Singleton<PacketHandler>
         }
         else
         {
-            Debug.LogError(" Login Failed!");
+            Debug.LogError("Login Failed!");
         }
     }
 

@@ -19,7 +19,7 @@ public class Pickaxe : Items
             Player player = GetComponentInParent<Player>();
             if (player != null)
             {
-                if (!hasMined && player.isMining && other.CompareTag(Define.Tag.ORE))
+                if (!hasMined && player.isUsingTool && other.CompareTag(Define.Tag.ORE))
                 {
                     Ore o = other.GetComponent<Ore>();
                     if (o != null)

@@ -5,14 +5,7 @@ public class HostStatManager : BaseStatManager<HostStatManager>
 {
     void Start()
     {
-        if (!_playerStats.ContainsKey(NetManager.Instance._playerId))
-            _playerStats.Add(NetManager.Instance._playerId, new PlayerStat());
-    }
-
-    public void AddPlayer(ulong playerId, int maxHp = 5)
-    {
-        if (!_playerStats.ContainsKey(playerId))
-            _playerStats[playerId] = new PlayerStat();
+        AddPlayer(NetManager.Instance._playerId);
     }
 
     public void DecreaseHp(ulong playerId, int amount)
@@ -48,7 +41,9 @@ public class HostStatManager : BaseStatManager<HostStatManager>
         stat.CallOnOxygenChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
-        Debug.Log($"[HostStatManager] DecreaseOxygen: playerId={playerId}, oxygen={stat.GetOxygen()}");
+        //Debug.Log($"[HostStatManager] DecreaseOxygen: playerId={playerId}, oxygen={stat.GetOxygen()}");
+
+        // 확인 필요
         PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 

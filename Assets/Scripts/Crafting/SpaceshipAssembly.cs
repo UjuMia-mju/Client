@@ -17,12 +17,13 @@ public class SpaceshipAssembly : MonoBehaviour
 
     // data는 현재 우주선에 넣으려는 아이템의 게임 오브젝트
     // 호스트 전용: 직접 판정 (피어 요청은 PlayManager.OnPeerSpaceshipInsert에서 호출)
-    public void AddTargetItems(GameObject data)
+    // 반환값: 아이템 삽입 성공 여부
+    public bool AddTargetItems(GameObject data)
     {
         if (!data.CompareTag(Define.Tag.ITEM))
         {
             Debug.Log("해당 객체가 아이템이 아니라서 우주선에 넣을 수 없습니다.");
-            return;
+            return false;
         }
 
         Items item = data.GetComponent<Items>();
@@ -30,38 +31,36 @@ public class SpaceshipAssembly : MonoBehaviour
         if (item == null)
         {
             Debug.Log("Items 컴포넌트가 없습니다.");
-            return;
+            return false;
         }
 
         SpaceshipMission mission = targetMission.Find(
             m => m.targetItem.itemStringKey == item.itemStringKey && m.currentCount < m.targetCount
         );
 
-        if (mission != null)
-        {
-            // 피어들에게 아이템 삭제 동기화 (용광로와 동일한 방식)
-            if (ConnectManager.Instance != null)
-                PacketSender.Instance.SendObjectDestroy(item.itemId);
-            Destroy(data);
-
-
-            mission.currentCount++;
-            Debug.Log($"[{mission.targetItem.itemStringKey}] {mission.currentCount}/{mission.targetCount} 투입 완료");
-
-            // 피어들에게 currentCount 동기화 (씬 단독 실행 시 ConnectManager 없을 수 있으므로 null 체크)
-            if (ConnectManager.Instance != null)
-                PacketSender.Instance.BroadcastSpaceshipUpdate(mission.targetItem.itemStringKey, mission.currentCount);
-
-            if (targetMission.TrueForAll(m => m.currentCount >= m.targetCount))
-            {
-                Debug.Log("모든 부품을 모았습니다! 우주선 완성!");
-                CompleteAssembly();
-            }
-        }
-        else
+        if (mission == null)
         {
             Debug.Log("대상 아이템이 아닙니다.");
+            return false;
         }
+
+        if (ConnectManager.Instance != null)
+            PacketSender.Instance.SendObjectDestroy(item.itemId);
+        Destroy(data);
+
+        mission.currentCount++;
+        Debug.Log($"[{mission.targetItem.itemStringKey}] {mission.currentCount}/{mission.targetCount} 투입 완료");
+
+        if (ConnectManager.Instance != null)
+            PacketSender.Instance.BroadcastSpaceshipUpdate(mission.targetItem.itemStringKey, mission.currentCount);
+
+        if (targetMission.TrueForAll(m => m.currentCount >= m.targetCount))
+        {
+            Debug.Log("모든 부품을 모았습니다! 우주선 완성!");
+            CompleteAssembly();
+        }
+
+        return true;
     }
 
     // TODO : 우주선 완성 시의 연출이나 다음 단계로 넘어가는 로직을 추가할 수 있습니다. UI 담당과의 협업이 필요합니다.

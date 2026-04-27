@@ -86,6 +86,14 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_ENTER_ROOM, packet);
     }
 
+    public void SendEnterTestRoom()
+    {
+        C_TEST_ENTER_ROOM enterRoomPacket = new C_TEST_ENTER_ROOM
+        {
+        };
+        net.SendPacket(PacketId.PKT_C_TEST_ENTER_ROOM, enterRoomPacket);
+    }
+
     public void SendLeaveRoom()
     {
         C_LEAVE_ROOM packet = new C_LEAVE_ROOM();
