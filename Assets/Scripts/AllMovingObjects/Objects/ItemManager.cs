@@ -21,6 +21,9 @@ public class ItemManager : MonoBehaviour
 
     private static int _nextItemId = 1;
 
+    private const float PEER_THROW_FORCE = 200f;
+    private const float PEER_THROW_DURATION = 0.4f;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -84,13 +87,13 @@ public class ItemManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 네트워크 패킷으로 아이템 처리 (호스트/피어 공용)
-    /// - 씬 배치 아이템: 이미 존재하는 오브젝트를 찾아 ID만 교체
-    /// - 런타임 스폰 아이템: 새로 Instantiate 후 ID 교체
+    /// 네트워크 패킷으로 아이템 처리.
+    /// pos = FurnaceClientManager.BroadcastSpawnNextFrame에서 보내는 용광로 스폰 원점
     /// </summary>
     public void SpawnItemFromNetwork(int itemId, string itemStringKey, Vector3 pos, Quaternion rot)
     {
-        // 씬에 이미 배치된 아이템인지 확인 (위치 기반 근접 탐색)
+        Debug.Log($"[ItemManager] SpawnItemFromNetwork: key={itemStringKey}, id={itemId}, pos={pos}");
+
         Items existingItem = FindScenePlacedItem(itemStringKey, pos);
         if (existingItem != null)
         {
@@ -100,34 +103,84 @@ public class ItemManager : MonoBehaviour
             return;
         }
 
-        // 런타임 스폰 아이템: 새로 생성
         GameObject prefab = GetPrefabByKey(itemStringKey);
         if (prefab == null)
         {
-            Debug.LogWarning($"[ItemManager] itemStringKey={itemStringKey}에 해당하는 프리팹이 없습니다. ItemPrefabList를 확인하세요.");
+            Debug.LogWarning($"[ItemManager] 프리팹 없음: key={itemStringKey}");
             return;
         }
 
         GameObject spawnedObj = Instantiate(prefab, pos, rot);
 
-        Rigidbody rb = spawnedObj.GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            PlanetGravity planet = FindFirstObjectByType<PlanetGravity>();
-            Vector3 up = planet != null
-                ? planet.GetGravityUp(spawnedObj.transform)
-                : Vector3.up;
-            rb.AddForce((up + spawnedObj.transform.forward) * -150f);
-        }
-
         Items itemComp = spawnedObj.GetComponent<Items>();
-        if (itemComp != null && itemId > 0)
-            StartCoroutine(OverrideIdNextFrame(itemComp, itemId));
-
-        Debug.Log($"[ItemManager] SpawnItemFromNetwork: key={itemStringKey}, id={itemId}, pos={pos}");
+        if (itemComp != null)
+            StartCoroutine(PostSpawnSetup(itemComp, itemId, pos, rot));
     }
 
-    // 씬에 이미 배치된 아이템을 stringKey + 위치 근접도로 탐색
+    /// <summary>
+    /// Items.Start()에서 RegisterItem() 및 isKinematic 설정 완료 후 실행.
+    /// 1) ID 교체  2) 용광로 UI 초기화  3) 피어 배출 연출
+    /// </summary>
+    private IEnumerator PostSpawnSetup(Items itemComp, int newId, Vector3 spawnOrigin, Quaternion spawnRot)
+    {
+        yield return null; // Items.Start() 완료 대기
+
+        if (itemComp == null) yield break;
+
+        // 1. 아이템 ID를 호스트 기준으로 교체
+        if (newId > 0)
+            OverrideItemId(itemComp, newId);
+
+        // 2. 스폰 원점 기반 근처 용광로 UI 초기화 (S_FURNACE_RETRIEVE 누락/지연 안전장치)
+        FurnaceClientManager.Instance?.TryResetNearestFurnaceBySpawnPosition(spawnOrigin);
+
+        // 3. 피어에서만 배출 연출 적용
+        //    Items.Start()에서 isKinematic=true가 된 뒤이므로 여기서 켜야 함
+        bool isPeer = ConnectManager.Instance != null && !ConnectManager.Instance.isHost;
+        if (isPeer)
+            StartCoroutine(ApplyPeerThrowImpulse(itemComp.gameObject, spawnRot));
+
+        Debug.Log($"[ItemManager] PostSpawnSetup 완료: id={newId}, isPeer={isPeer}");
+    }
+
+    /// <summary>
+    /// 피어 전용 배출 연출.
+    /// isKinematic을 잠시 끄고 힘을 가한 뒤 다시 켜서 S_OBJECT_MOVE 동기화 모드로 복귀.
+    /// </summary>
+    private IEnumerator ApplyPeerThrowImpulse(GameObject obj, Quaternion spawnRot)
+    {
+        if (obj == null) yield break;
+
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            Debug.LogWarning("[ItemManager] ApplyPeerThrowImpulse: Rigidbody 없음");
+            yield break;
+        }
+
+        PlanetGravity planet = FindFirstObjectByType<PlanetGravity>();
+        Vector3 up = planet != null ? planet.GetGravityUp(obj.transform) : Vector3.up;
+
+        // 용광로에서 뱉어나오는 방향: up + forward (FurnaceObject.ThrowSmeltedItem과 동일)
+        Vector3 throwDir = (up + (spawnRot * Vector3.forward)).normalized;
+
+        rb.isKinematic = false;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.AddForce(throwDir * PEER_THROW_FORCE);
+
+        Debug.Log($"[ItemManager] 피어 배출 impulse: dir={throwDir}, force={PEER_THROW_FORCE}");
+
+        yield return new WaitForSeconds(PEER_THROW_DURATION);
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+    }
+
     private Items FindScenePlacedItem(string key, Vector3 pos)
     {
         foreach (var item in itemDic.Values)
@@ -137,12 +190,6 @@ public class ItemManager : MonoBehaviour
                 return item;
         }
         return null;
-    }
-
-    private IEnumerator OverrideIdNextFrame(Items itemComp, int newId)
-    {
-        yield return null; // Items.Start()의 RegisterItem() 완료 대기
-        OverrideItemId(itemComp, newId);
     }
 
     public GameObject GetPrefabByKey(string key)
@@ -178,7 +225,6 @@ public class ItemManager : MonoBehaviour
             StartCoroutine(BroadcastAfterRegistration(itemComp, pos, spawnedObj.transform.rotation));
     }
 
-    // Items.Start() → RegisterItem() 완료 후 실제 ID로 전체 브로드캐스트
     private IEnumerator BroadcastAfterRegistration(Items itemComp, Vector3 pos, Quaternion rot)
     {
         yield return null;

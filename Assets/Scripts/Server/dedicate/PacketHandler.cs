@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Google.Protobuf;
 using Protocol;
 using UnityEngine.SceneManagement;
@@ -34,9 +34,9 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_START_ROOM> OnStartRoomEvent;
     public event Action<S_OBJECT_MOVE> OnItemMoveEvent;
     public event Action<S_STAGE_INFO> OnStageInfoEvent;
-    
     public event Action<S_START_STAGE> OnStartStageEvent;
     public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
+    public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -105,6 +105,9 @@ public class PacketHandler : Singleton<PacketHandler>
             case PacketId.PKT_S_GET_CLEAR_INFO:
                 HandleGetClearInfo(data);
                 break;
+            case PacketId.PKT_S_GAME_READY_TO_START:
+                HandleGameReadyToStart(data);
+                break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId} ({(ushort)packetId})");
                 break;
@@ -114,19 +117,17 @@ public class PacketHandler : Singleton<PacketHandler>
     public void OnDisconnected()
     {
         Debug.Log("서버와의 연결이 해제되었습니다.");
-        // TODO: UI 갱신, 재접속 안내, 게임 상태 초기화 등 필요한 작업 추가
     }
 
     private void HandleLoginResult(byte[] data)
     {
-        S_LOGIN result = S_LOGIN.Parser.ParseFrom(data);  // ← S_LOGIN 사용
+        S_LOGIN result = S_LOGIN.Parser.ParseFrom(data);
         
         if (result.Success)
         {
             Debug.Log($"  Login Success!");
             Debug.Log($"  Player ID: {result.Player.Id}");
             Debug.Log($"  Player Name: {result.Player.Name}");
-
             OnLoginResultEvent?.Invoke(result);
         }
         else
@@ -137,7 +138,7 @@ public class PacketHandler : Singleton<PacketHandler>
 
     private void HandleEnterGameResult(byte[] data)
     {
-        S_ENTER_GAME result = S_ENTER_GAME.Parser.ParseFrom(data);  // ← S_ENTER_GAME 사용
+        S_ENTER_GAME result = S_ENTER_GAME.Parser.ParseFrom(data);
 
         if (result.Success)
         {
@@ -218,6 +219,17 @@ public class PacketHandler : Singleton<PacketHandler>
     public static void SetCachedEnterRoom(S_ENTER_ROOM packet)
     {
         _cachedEnterRoom = packet;
+
+        // 캐시뿐 아니라 일반 구독자(RoomMembershipTracker 등)에게도 즉시 전파.
+        // LobbyRoomClient는 캐시를 GetAndClearCachedEnterRoom으로 별도 소비하므로 중복 처리되지 않음.
+        if (Instance != null)
+            Instance.OnEnterRoomEvent?.Invoke(packet);
+    }
+
+    /// <summary>캐시를 비우지 않고 들여다보기만. 트래커 등 보조 구독자가 부팅 시 초기 상태를 잡기 위함.</summary>
+    public static S_ENTER_ROOM PeekCachedEnterRoom()
+    {
+        return _cachedEnterRoom;
     }
 
     private void HandleLeaveRoom(byte[] payloadData)
@@ -286,11 +298,16 @@ public class PacketHandler : Singleton<PacketHandler>
         S_START_STAGE packet = S_START_STAGE.Parser.ParseFrom(payloadData);
         OnStartStageEvent?.Invoke(packet);
     }
-    
+
     private void HandleGetClearInfo(byte[] payloadData)
     {
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
         OnGetClearInfoEvent?.Invoke(packet);
     }
 
+    private void HandleGameReadyToStart(byte[] data)
+    {
+        S_GAME_READY_TO_START packet = S_GAME_READY_TO_START.Parser.ParseFrom(data);
+        OnGameReadyToStartEvent?.Invoke(packet);
+    }
 }

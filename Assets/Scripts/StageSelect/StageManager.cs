@@ -29,6 +29,13 @@ public class StageManager : MonoBehaviour
     /// <summary>맵 ID별 클리어 별 개수(0~3). S_GET_CLEAR_INFO 기준.</summary>
     private readonly Dictionary<int, int> _clearStarCountByMapId = new Dictionary<int, int>();
 
+    /// <summary>SendStartStage 시 저장해두는 대상 스테이지 정보. S_GAME_READY_TO_START 수신 시 씬 전환에 사용.</summary>
+    private int _pendingMapId;
+    private int _pendingChapter;
+    private int _pendingStageNum;
+
+    private Coroutine _fallbackCoroutine;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -55,6 +62,7 @@ public class StageManager : MonoBehaviour
         {
             PacketHandler.Instance.OnGetClearInfoEvent += HandleGetClearInfoResponse;
             PacketHandler.Instance.OnStartStageEvent += HandleStartStageResponse;
+            PacketHandler.Instance.OnGameReadyToStartEvent += HandleGameReadyToStart;
         }
         PacketDispatcher.Instance.SendGetClearInfo();
     }
@@ -65,6 +73,7 @@ public class StageManager : MonoBehaviour
         {
             PacketHandler.Instance.OnGetClearInfoEvent -= HandleGetClearInfoResponse;
             PacketHandler.Instance.OnStartStageEvent -= HandleStartStageResponse;
+            PacketHandler.Instance.OnGameReadyToStartEvent -= HandleGameReadyToStart;
         }
     }
 
@@ -131,11 +140,20 @@ public class StageManager : MonoBehaviour
                     $"[StageManager] 노드({level},{index})와 StageInfo({info.Chapter},{info.Stage}) 불일치. StageInfo 기준으로 전송합니다.");
             }
 
+            // S_GAME_READY_TO_START 수신 시 씬 전환에 쓸 스테이지 정보를 미리 저장
+            _pendingMapId = info.MapId;
+            _pendingChapter = info.Chapter;
+            _pendingStageNum = info.Stage;
+
             Debug.Log($"[StageManager] 스테이지 시작 요청 MapId={info.MapId}, Chapter={info.Chapter}, Stage={info.Stage}");
             PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
         }
     }
-    
+
+    /// <summary>
+    /// S_START_STAGE: 성공/실패 여부만 확인합니다.
+    /// 씬 전환은 S_GAME_READY_TO_START에서만 수행합니다.
+    /// </summary>
     private void HandleStartStageResponse(S_START_STAGE packet)
     {
         if (!packet.Success)
@@ -144,39 +162,68 @@ public class StageManager : MonoBehaviour
             return;
         }
 
+        Debug.Log("[StageManager] S_START_STAGE 성공. S_GAME_READY_TO_START 대기 중...");
+        if (_fallbackCoroutine != null) StopCoroutine(_fallbackCoroutine);
+        _fallbackCoroutine = StartCoroutine(FallbackIfGameReadyNotReceived());
+    }
+
+    private IEnumerator FallbackIfGameReadyNotReceived()
+    {
+        yield return new WaitForSeconds(3f);
+        _fallbackCoroutine = null;
+
+        if (_gameplaySceneLoadStarted) yield break;
+
+        var tracker = RoomMembershipTracker.Instance;
+        bool amIFirst = tracker.AmIFirst();
+
+        Debug.LogWarning(
+            $"[StageManager] S_GAME_READY_TO_START 미수신. 입장 순서 기반 폴백. " +
+            $"myId={NetManager.Instance._playerId}, " +
+            $"orderedIds=[{string.Join(",", tracker.OrderedIds)}], amIFirst={amIFirst}");
+
+        ConnectManager.Instance.SetHostRole(amIFirst);
+        DoLoadGameplayScene();
+    }
+
+    private void HandleGameReadyToStart(S_GAME_READY_TO_START packet)
+    {
+        if (_gameplaySceneLoadStarted)
+            return;
+
+        if (_fallbackCoroutine != null)
+        {
+            StopCoroutine(_fallbackCoroutine);
+            _fallbackCoroutine = null;
+        }
+
+        bool isHost = packet.IdOrder.Count > 0
+                      && packet.IdOrder[0] == (ulong)NetManager.Instance._playerId;
+
+        Debug.Log($"[StageManager] S_GAME_READY_TO_START 수신. myId={NetManager.Instance._playerId}, " +
+                  $"idOrder=[{string.Join(",", packet.IdOrder)}], isHost={isHost}");
+
+        ConnectManager.Instance.SetHostRole(isHost);
+        DoLoadGameplayScene();
+    }
+
+    /// <summary>씬 로드 진입점. 이중 호출 방지 포함.</summary>
+    private void DoLoadGameplayScene()
+    {
         if (_gameplaySceneLoadStarted)
             return;
 
         _gameplaySceneLoadStarted = true;
 
-        int mapId = 1;
-        int chapter = 1;
-        int stageNum = 1;
-
-        if (packet.Stage != null)
-        {
-            mapId = packet.Stage.MapId;
-            chapter = packet.Stage.Chapter;
-            stageNum = packet.Stage.Stage;
-        }
-        else if (_currentSelectedNode != null &&
-                 DbCacheManager.Instance.TryGetStageInfoByChapterStage(
-                     _currentSelectedNode.stageLevel,
-                     _currentSelectedNode.stageIndex,
-                     out StageInfo cached))
-        {
-            mapId = cached.MapId;
-            chapter = cached.Chapter;
-            stageNum = cached.Stage;
-        }
-
-        if (!Define.Scene.TryGetGameplayScene(mapId, chapter, stageNum, out string sceneName))
+        if (!Define.Scene.TryGetGameplayScene(_pendingMapId, _pendingChapter, _pendingStageNum, out string sceneName))
         {
             Debug.LogWarning(
-                $"[StageManager] Define.Scene에 없는 스테이지입니다. map={mapId}, chapter={chapter}, stage={stageNum}. " +
+                $"[StageManager] Define.Scene에 없는 스테이지입니다. map={_pendingMapId}, chapter={_pendingChapter}, stage={_pendingStageNum}. " +
                 $"fallback={Define.Scene.GAME_1_1}");
             sceneName = Define.Scene.GAME_1_1;
         }
+
+        Debug.Log($"[StageManager] 씬 로드: {sceneName}");
 
         if (SceneLoader.Instance != null)
             SceneLoader.Instance.LoadScene(sceneName);
