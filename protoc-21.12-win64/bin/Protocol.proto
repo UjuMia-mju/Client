@@ -6,6 +6,7 @@ import "Struct.proto";
 
 message C_GET_DB_DATA
 {
+
 }
 
 message C_TEST_ENTER_ROOM
@@ -422,7 +423,7 @@ message S_OBJECT_MOVE
 	RotInfo rot = 3;
 }
 
-// ============= (클라 Host/Peer 전용) — Unity 코드가 계속 사용 =============
+// ==================== 클라 P2P 확장 (PacketId 2000+) ====================
 
 //오브젝트 녹이기
 message C_OBJECT_SMELT
