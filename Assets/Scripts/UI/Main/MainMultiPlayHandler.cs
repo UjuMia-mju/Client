@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Protocol;
 
@@ -8,21 +9,61 @@ using Protocol;
 /// </summary>
 public class MainMultiPlayHandler : MonoBehaviour
 {
+    /// <summary>서버에 남은 방이 있을 때: 퇴장 후 방 생성 1회 재시도</summary>
+    private bool _pendingCreateAfterLeave;
+
     private void OnEnable()
     {
         PacketHandler.Instance.OnCreateRoomEvent += OnCreateRoomResult;
+        PacketHandler.Instance.OnLeaveRoomEvent += OnLeaveRoomForCreateRetry;
     }
 
     private void OnDisable()
     {
+        _pendingCreateAfterLeave = false;
         if (PacketHandler.Instance != null)
+        {
             PacketHandler.Instance.OnCreateRoomEvent -= OnCreateRoomResult;
+            PacketHandler.Instance.OnLeaveRoomEvent -= OnLeaveRoomForCreateRetry;
+        }
+    }
+
+    private static bool IsAlreadyInRoomError(string errorMsg)
+    {
+        if (string.IsNullOrEmpty(errorMsg)) return false;
+        return errorMsg.IndexOf("already", StringComparison.OrdinalIgnoreCase) >= 0
+            || errorMsg.IndexOf("이미", StringComparison.Ordinal) >= 0;
+    }
+
+    private void OnLeaveRoomForCreateRetry(S_LEAVE_ROOM packet)
+    {
+        if (!_pendingCreateAfterLeave) return;
+        _pendingCreateAfterLeave = false;
+
+        if (!packet.Success)
+        {
+            Debug.LogWarning(
+                "[MainMultiPlayHandler] 이전 방 퇴장에 실패해 방을 새로 만들 수 없습니다. 로비/메인을 왕복하거나 다시 시도하세요.");
+            return;
+        }
+
+        Debug.Log("[MainMultiPlayHandler] 이전 방에서 퇴장했으므로 방 생성을 다시 요청합니다.");
+        PacketDispatcher.Instance.SendCreateRoom();
     }
 
     private void OnCreateRoomResult(S_CREATE_ROOM packet)
     {
         if (!packet.Success)
         {
+            if (IsAlreadyInRoomError(packet.ErrorMsg) && !_pendingCreateAfterLeave)
+            {
+                _pendingCreateAfterLeave = true;
+                PacketDispatcher.Instance.SendLeaveRoom();
+                Debug.Log(
+                    "[MainMultiPlayHandler] 서버에 이전 방 세션이 남아 있어 퇴장(C_LEAVE_ROOM) 후 방 생성을 재시도합니다.");
+                return;
+            }
+
             Debug.LogWarning($"[MainMultiPlayHandler] 방 생성 실패: {packet.ErrorMsg}");
             return;
         }

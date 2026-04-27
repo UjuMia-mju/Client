@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : BaseStatManager<T>
 {
-    protected Dictionary<ulong, PlayerStat> _playerStats = new();
+    protected Dictionary<ulong, PlayerStatState> _playerStats = new();
 
     public virtual void UpdateStat(ulong playerId, int hp, float oxygen)
     {
@@ -19,7 +19,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
         }
     }
 
-    public PlayerStat GetPlayerStat(ulong playerId)
+    public PlayerStatState GetPlayerStat(ulong playerId)
     {
         if (_playerStats.TryGetValue(playerId, out var stat))
             return stat;
@@ -29,8 +29,8 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
         return null;
     }
 
-    /// <summary>에러 로그 없이 PlayerStat을 가져옵니다. 없으면 null 반환.</summary>
-    public bool TryGetPlayerStat(ulong playerId, out PlayerStat stat)
+    /// <summary>에러 로그 없이 PlayerStatState를 가져옵니다. 없으면 null 반환.</summary>
+    public bool TryGetPlayerStat(ulong playerId, out PlayerStatState stat)
     {
         return _playerStats.TryGetValue(playerId, out stat);
     }
@@ -38,9 +38,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
     public void AddPlayer(ulong playerId)
     {
         if (!_playerStats.ContainsKey(playerId))
-        {
-            _playerStats.Add(playerId, new PlayerStat());
-        }
+            _playerStats.Add(playerId, new PlayerStatState(5));
     }
 
     public void RemovePlayer(ulong playerId) => _playerStats.Remove(playerId);

@@ -8,7 +8,7 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
     {
         // 호스트 플레이어 초기화
         if (!_playerStats.ContainsKey(0))
-            _playerStats.Add(0, new PlayerStat());
+            _playerStats.Add(0, new PlayerStatState(5));
 
         // 자기 자신의 playerId는 S_PLAYER_ENTER 수신 후 확정되므로
         // 이벤트 구독으로 처리
@@ -30,7 +30,7 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
         ulong myId = NetManager.Instance._playerId;
         if (myId != 0 && !_playerStats.ContainsKey(myId))
         {
-            _playerStats.Add(myId, new PlayerStat());
+            _playerStats.Add(myId, new PlayerStatState(5));
             Debug.Log($"[PeerStatManager] 자기 자신 등록: playerId={myId}");
         }
 
@@ -38,12 +38,12 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
         ulong remoteId = (ulong)packet.Player.PlayerId;
         if (!_playerStats.ContainsKey(remoteId))
         {
-            _playerStats.Add(remoteId, new PlayerStat());
+            _playerStats.Add(remoteId, new PlayerStatState(5));
             Debug.Log($"[PeerStatManager] 원격 플레이어 등록: playerId={remoteId}");
         }
     }
 
-    public IReadOnlyDictionary<ulong, PlayerStat> GetAllRemoteStats()
+    public IReadOnlyDictionary<ulong, PlayerStatState> GetAllRemoteStats()
     {
         return _playerStats;
     }
@@ -82,7 +82,7 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
         PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, Oxygen);
     }
 
-    public IReadOnlyDictionary<ulong, PlayerStat> GetAllStats()
+    public IReadOnlyDictionary<ulong, PlayerStatState> GetAllStats()
     {
         return _playerStats;
     }

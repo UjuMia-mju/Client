@@ -2,7 +2,6 @@
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using Protocol;
 
 [RequireComponent(typeof(StageCameraController))]
@@ -13,6 +12,10 @@ public class StageManager : MonoBehaviour
 
     [Header("UI Base Prefab")]
     public GameObject selectPanel; 
+
+    [Header("캐시 없을 때")]
+    [Tooltip("서버가 S_STAGE_INFO를 안 보내도 SelectPanel·입장 UI를 켤지 (로컬 StageInfo)")]
+    [SerializeField] private bool useLocalStageInfoWhenServerCacheEmpty = true;
 
     [Header("Nodes & Environment")] 
     public List<StageNode> stageNodes = new List<StageNode>();
@@ -51,8 +54,30 @@ public class StageManager : MonoBehaviour
         {
             PacketHandler.Instance.OnGetClearInfoEvent += HandleGetClearInfoResponse;
             PacketHandler.Instance.OnStartStageEvent += HandleStartStageResponse;
+            PacketHandler.Instance.OnStageInfoEvent += OnStageInfoReceived;
         }
         PacketDispatcher.Instance.SendGetClearInfo();
+
+        if (!DbCacheManager.HasStageInfo)
+        {
+            Debug.Log(
+                "[StageManager] StageInfo 캐시가 비어 있습니다. 로그인 직후 서버가 S_STAGE_INFO를 보내야 하며, " +
+                "없으면 DB 요청을 보냅니다. (StageNode의 chapter·stage는 서버 DB의 Chapter·Stage와 같아야 합니다.)");
+            DbCacheManager.RequestDbData();
+            StartCoroutine(CoRetryDbDataIfCacheStillEmpty());
+        }
+    }
+
+    /// <summary>씬 진입·로그인 직후 S_STAGE_INFO가 늦을 때 보조 재요청 (서버 C_GET_DB_DATA 응답 대기)</summary>
+    private IEnumerator CoRetryDbDataIfCacheStillEmpty()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            yield return new WaitForSeconds(1.5f);
+            if (DbCacheManager.HasStageInfo) yield break;
+            Debug.LogWarning($"[StageManager] S_STAGE_INFO 대기 중 재요청 ({i + 1}/3) …");
+            DbCacheManager.RequestDbData();
+        }
     }
 
     private void OnDestroy()
@@ -61,7 +86,17 @@ public class StageManager : MonoBehaviour
         {
             PacketHandler.Instance.OnGetClearInfoEvent -= HandleGetClearInfoResponse;
             PacketHandler.Instance.OnStartStageEvent -= HandleStartStageResponse;
+            PacketHandler.Instance.OnStageInfoEvent -= OnStageInfoReceived;
         }
+    }
+
+    private void OnStageInfoReceived(S_STAGE_INFO packet)
+    {
+        int n = packet?.Stages?.Count ?? 0;
+        Debug.Log($"[StageManager] S_STAGE_INFO 갱신: {n}개 — 노드(Chapter,Stage)를 서버 값과 맞췄는지 확인하세요.");
+
+        if (n > 0 && PacketDispatcher.Instance != null)
+            PacketDispatcher.Instance.SendGetClearInfo();
     }
 
     // 서버에서 클리어 정보가 도착했을 때 실행되는 함수
@@ -79,7 +114,7 @@ public class StageManager : MonoBehaviour
         {
             if (node == null) continue;
 
-            if (DbCacheManager.Instance.TryGetStageInfoByChapterStage(node.stageLevel, node.stageIndex, out StageInfo info))
+            if (DbCacheManager.TryGetStageInfoByChapterStage(node.stageLevel, node.stageIndex, out StageInfo info))
             {
                 // 이 행성의 MapId가 클리어 목록에 있는지 확인
                 bool isCleared = clearDataDict.ContainsKey(info.MapId);
@@ -115,11 +150,12 @@ public class StageManager : MonoBehaviour
         int level = _currentSelectedNode.stageLevel;
         int index = _currentSelectedNode.stageIndex;
 
-        // DB 캐시에서 MapId를 꺼내와서 패킷에 담아 보낸다!
-        if (DbCacheManager.Instance.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
+        // MapId·Chapter·Stage는 서버 DB와 한 세트. 캐시의 StageInfo 기준으로 보낸다(C_START_STAGE의 StageIndex = StageInfo.Stage).
+        if (DbCacheManager.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
         {
-            Debug.Log($"[StageManager] 서버에 스테이지 시작 요청! MapId: {info.MapId}");
-            PacketDispatcher.Instance.SendStartStage(info.MapId, level, index);
+            Debug.Log(
+                $"[StageManager] C_START_STAGE 전송 MapId={info.MapId}, Chapter={info.Chapter}, StageIndex(=Stage)={info.Stage}");
+            PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
         }
     }
     
@@ -129,7 +165,7 @@ public class StageManager : MonoBehaviour
         {
             Debug.Log($"[StageManager] 스테이지 시작 허가됨! 씬 이동 준비: {packet.Stage.StageName}");
             
-            SceneManager.LoadScene(Define.Scene.GAME_1_1); 
+            SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_1); 
         }
         else
         {
@@ -143,17 +179,68 @@ public class StageManager : MonoBehaviour
         if (_currentSelectedNode != null || _isTransitioning) return;
         _currentSelectedNode = clickedNode;
 
-        if (!DbCacheManager.Instance.TryGetStageInfoByChapterStage(
+        if (!DbCacheManager.TryGetStageInfoByChapterStage(
                 clickedNode.stageLevel,
                 clickedNode.stageIndex,
                 out StageInfo stageInfo))
         {
-            Debug.LogWarning($"[StageManager] 캐시에 스테이지 정보가 없습니다. chapter={clickedNode.stageLevel}, stage={clickedNode.stageIndex}");
-            _currentSelectedNode = null;
-            return;
+            if (!DbCacheManager.HasStageInfo && useLocalStageInfoWhenServerCacheEmpty)
+            {
+                stageInfo = BuildLocalFallbackStageInfo(clickedNode);
+                Debug.LogWarning(
+                    "[StageManager] 서버 S_STAGE_INFO가 없어 로컬 폴백으로 패널을 띄웁니다. " +
+                    "StageNode의 localMapIdOverride를 실제 map_id에 맞추면 서버 스타트가 안정적입니다. " +
+                    $"(임시 MapId={stageInfo.MapId})");
+                DbCacheManager.MergeStageInfoEntry(stageInfo);
+            }
+            else if (!DbCacheManager.HasStageInfo)
+            {
+                Debug.LogWarning(
+                    "[StageManager] S_STAGE_INFO가 아직 캐시에 없습니다. " +
+                    "로그인·서버 응답을 기다리거나, 잠시 후 다시 누르세요. (필요 시 DB 재요청을 보냅니다.) " +
+                    "또는 StageManager의 '캐시 없을 때' 로컬 폴백을 켜세요.");
+                DbCacheManager.RequestDbData();
+                _currentSelectedNode = null;
+                return;
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "[StageManager] 이 노드의 (chapter, stage)가 서버 목록에 없습니다. " +
+                    $"노드=({clickedNode.stageLevel},{clickedNode.stageIndex}). " +
+                    $"서버에 있는 쌍: {DbCacheManager.BuildChapterStageListDebugString()} " +
+                    "— 인스펙터의 stageLevel·stageIndex를 DB의 Chapter·Stage와 일치시키세요.");
+                _currentSelectedNode = null;
+                return;
+            }
         }
 
         OnReceiveStageInfo(stageInfo);
+    }
+
+    private static StageInfo BuildLocalFallbackStageInfo(StageNode node)
+    {
+        int ch = node.stageLevel;
+        int st = node.stageIndex;
+        int mapId = node.localMapIdOverride != 0
+            ? node.localMapIdOverride
+            : ch * 100 + st;
+
+        string name = string.IsNullOrEmpty(node.localDisplayName)
+            ? $"스테이지 {ch} - {st}"
+            : node.localDisplayName;
+
+        return new StageInfo
+        {
+            MapId = mapId,
+            Chapter = ch,
+            Stage = st,
+            StageName = name,
+            Description = "서버 S_STAGE_INFO 미수신 — 로컬 표시(입장·시작은 mapId·서버 설정 확인).",
+            Difficulty = 1,
+            IsBossStage = false,
+            EstimatedClearTime = 0
+        };
     }
 
     public void OnReceiveStageInfo(StageInfo stageInfo)

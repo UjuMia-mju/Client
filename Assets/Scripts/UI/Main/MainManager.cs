@@ -19,6 +19,7 @@ public class MainManager : MonoBehaviour
     private void Awake()
     {
         if (animator == null) animator = GetComponent<UIPanelAnimator>();
+        if (animator == null) animator = UIPanelAnimator.Instance;
     }
 
     private void Start()

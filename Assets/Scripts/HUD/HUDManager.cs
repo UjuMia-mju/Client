@@ -22,6 +22,7 @@ public class HUDManager : MonoBehaviour
     {
         // 인스펙터에서 할당하지 않았을 경우를 대비한 자동 할당
         if (animator == null) animator = GetComponent<UIPanelAnimator>();
+        if (animator == null) animator = UIPanelAnimator.Instance;
     }
 
     public bool IsPanelOpen => currentActivePanel != null; 

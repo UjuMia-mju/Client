@@ -16,6 +16,7 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_LOGIN> OnLoginResultEvent;
     public event Action<S_GACHA> OnGachaResultEvent;
     public event Action<S_GACHA_POOL_LIST> OnGachaPoolListEvent;
+    public event Action<S_SKIN_LIST> OnSkinListEvent;
     public event Action<S_MY_SKINS> OnMySkinsEvent;
     public event Action<S_ENTER_GAME> OnEnterGameResultEvent;
     public event Action<S_PLAYER_LIST> OnPlayerListEvent;
@@ -37,6 +38,7 @@ public class PacketHandler : Singleton<PacketHandler>
     
     public event Action<S_START_STAGE> OnStartStageEvent;
     public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
+    public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -48,8 +50,27 @@ public class PacketHandler : Singleton<PacketHandler>
             case PacketId.PKT_S_RELAY_PACKET:
                 RelayPacketHandler.Instance.HandleRelayPacket(S_RELAY_PACKET.Parser.ParseFrom(data));
                 break;
+            case PacketId.PKT_S_GACHA:
+                HandleGachaResult(data);
+                break;
+            case PacketId.PKT_S_GACHA_POOL_LIST:
+                HandleGachaPoolList(data);
+                break;
+            case PacketId.PKT_S_SKIN_LIST:
+                HandleSkinList(data);
+                break;
+            case PacketId.PKT_S_MY_SKINS:
+                HandleMySkins(data);
+                break;
             case PacketId.PKT_S_ENTER_GAME:
                 HandleEnterGameResult(data);
+                break;
+            case PacketId.PKT_C_ENTER_GAME:
+                // 일부 서버가 입장 응답에 1045(C_ENTER_GAME) ID를 쓰는 경우 — 페이로드는 S_ENTER_GAME인 경우가 많음
+                HandleEnterGamePossiblyWrongPacketId(data);
+                break;
+            case PacketId.PKT_S_GAME_READY_TO_START:
+                HandleGameReadyToStart(data);
                 break;
             case PacketId.PKT_S_PLAYER_LIST:
                 HandlePlayerList(data);
@@ -105,8 +126,17 @@ public class PacketHandler : Singleton<PacketHandler>
             case PacketId.PKT_S_GET_CLEAR_INFO:
                 HandleGetClearInfo(data);
                 break;
+            case PacketId.PKT_C_GET_DB_DATA:
+                // 일부 서버가 C_GET_DB_DATA(1000) ID로 S_STAGE_INFO 응답을 보내는 경우
+                TryIngestSStageInfoPayloadAsWrongPacketId(packetId, data);
+                break;
             default:
-                Debug.LogWarning($"Unhandled packet ID: {packetId} ({(ushort)packetId})");
+                // 알 수 없는 ID지만 페이로드가 S_STAGE_INFO인 경우(잘못된 패킷 ID)
+                if (TryIngestSStageInfoPayloadAsWrongPacketId(packetId, data))
+                    break;
+                Debug.LogWarning(
+                    $"[PacketHandler] Unhandled packet ID: {packetId} ({(ushort)packetId}), payloadLen={data?.Length ?? 0}. " +
+                    "S_STAGE_INFO는 1036으로 보내는 것이 맞습니다.");
                 break;
         }
     }
@@ -127,7 +157,16 @@ public class PacketHandler : Singleton<PacketHandler>
             Debug.Log($"  Player ID: {result.Player.Id}");
             Debug.Log($"  Player Name: {result.Player.Name}");
 
+            // 1) GameManager 등에서 _playerId·DB요청·UI 갱신
             OnLoginResultEvent?.Invoke(result);
+
+            // 2) 씬 전환은 항상 여기서 한 번만 (구독 누락/GameManager 파괴/코루틴 끊김 방지; SceneLoader는 DDOL)
+            string active = SceneManager.GetActiveScene().name;
+            if (active != Define.Scene.MAIN && active != Define.Scene.GAME_1_1)
+            {
+                Debug.Log($"[PacketHandler] 로그인 성공 → 씬 전환: {active} → {Define.Scene.MAIN}");
+                SceneLoader.Instance.LoadScene(Define.Scene.MAIN);
+            }
         }
         else
         {
@@ -150,6 +189,44 @@ public class PacketHandler : Singleton<PacketHandler>
         }
     }
 
+    private void HandleEnterGamePossiblyWrongPacketId(byte[] data)
+    {
+        S_ENTER_GAME s;
+        try
+        {
+            s = S_ENTER_GAME.Parser.ParseFrom(data);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[PacketHandler] PKT_C_ENTER_GAME(1045) S_ENTER_GAME 파싱 실패: {e.Message}");
+            return;
+        }
+
+        Debug.LogWarning(
+            "[PacketHandler] PKT_C_ENTER_GAME(1045) ID로 응답이 왔습니다. 서버는 PKT_S_ENTER_GAME(1046)를 쓰는 것이 맞습니다.");
+
+        if (s.Success)
+        {
+            Debug.Log(" Entered Game Successfully!");
+            OnEnterGameResultEvent?.Invoke(s);
+            return;
+        }
+
+        // C_ENTER_GAME(및 C_TEST_ENTER_GAME)과 S_ENTER_GAME이 모두 field 1을 쓰면서, PlayerIndex(0)가
+        // S.success=false와 동일한 바이트(08 00)로 읽힌다. playerIndex==로컬 ID면 S 실패로 오인한 것으로 처리.
+        C_ENTER_GAME c = C_ENTER_GAME.Parser.ParseFrom(data);
+        if (c.PlayerIndex == NetManager.Instance._playerId)
+        {
+            Debug.Log(
+                "[PacketHandler] 1045 응답: field-1이 playerIndex(로컬과 일치)로 보입니다. 입장 성공으로 처리합니다.");
+            var ok = new S_ENTER_GAME { Success = true };
+            OnEnterGameResultEvent?.Invoke(ok);
+            return;
+        }
+
+        Debug.LogError(" Failed to Enter Game!");
+    }
+
     private void HandleGachaResult(byte[] data)
     {
         S_GACHA result = S_GACHA.Parser.ParseFrom(data);
@@ -160,6 +237,12 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_GACHA_POOL_LIST result = S_GACHA_POOL_LIST.Parser.ParseFrom(data);
         OnGachaPoolListEvent?.Invoke(result);
+    }
+
+    private void HandleSkinList(byte[] data)
+    {
+        S_SKIN_LIST result = S_SKIN_LIST.Parser.ParseFrom(data);
+        OnSkinListEvent?.Invoke(result);
     }
 
     private void HandleMySkins(byte[] data)
@@ -277,8 +360,52 @@ public class PacketHandler : Singleton<PacketHandler>
     private void HandleStageInfo(byte[] payloadData)
     {
         S_STAGE_INFO packet = S_STAGE_INFO.Parser.ParseFrom(payloadData);
-        DbCacheManager.Instance.CacheStageInfos(packet.Stages);
+        ApplySStageInfo(packet, sourceWasWrongPacketId: false, wrongId: 0);
+    }
+
+    private void ApplySStageInfo(S_STAGE_INFO packet, bool sourceWasWrongPacketId, ushort wrongId)
+    {
+        int count = packet?.Stages?.Count ?? 0;
+        if (!sourceWasWrongPacketId)
+        {
+            Debug.Log($"[PacketHandler] S_STAGE_INFO(1036) 수신, 스테이지 {count}개 — DbCacheManager에 반영");
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[PacketHandler] S_STAGE_INFO 페이로드가 잘못된 패킷 ID(" + wrongId +
+                ")로 왔습니다. 서버는 PKT_S_STAGE_INFO(1036)를 쓰는 것이 맞습니다. " +
+                $"스테이지 {count}개(적용함)");
+        }
+
+        DbCacheManager.CacheStageInfos(packet.Stages);
         OnStageInfoEvent?.Invoke(packet);
+    }
+
+    /// <summary>
+    /// S_STAGE_INFO 본문인데 1036이 아닌 ID로 온 경우(서버/프로토 불일치) 캐시에 반영.
+    /// Stages가 비어 있으면 본문이 S_STAGE_INFO가 아닐 수 있어 무시(다른 메시지 오인 방지).
+    /// </summary>
+    private bool TryIngestSStageInfoPayloadAsWrongPacketId(PacketId sourcePacketId, byte[] data)
+    {
+        if (sourcePacketId == PacketId.PKT_S_STAGE_INFO || data == null || data.Length == 0)
+            return false;
+
+        S_STAGE_INFO packet;
+        try
+        {
+            packet = S_STAGE_INFO.Parser.ParseFrom(data);
+        }
+        catch
+        {
+            return false;
+        }
+
+        if (packet == null || packet.Stages == null || packet.Stages.Count == 0)
+            return false;
+
+        ApplySStageInfo(packet, true, (ushort)sourcePacketId);
+        return true;
     }
 
     private void HandleStartStage(byte[] payloadData)
@@ -291,6 +418,12 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
         OnGetClearInfoEvent?.Invoke(packet);
+    }
+
+    private void HandleGameReadyToStart(byte[] payloadData)
+    {
+        S_GAME_READY_TO_START packet = S_GAME_READY_TO_START.Parser.ParseFrom(payloadData);
+        OnGameReadyToStartEvent?.Invoke(packet);
     }
 
 }

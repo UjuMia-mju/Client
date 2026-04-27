@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ConnectManager : SceneSingleton<ConnectManager>
 {
@@ -60,7 +60,13 @@ public class ConnectManager : SceneSingleton<ConnectManager>
         // 중개 서버 연결 (일단은 그냥 중앙 서버로)
         NetManager.Instance.Connect(centralServerIp, centralServerPort);
         await System.Threading.Tasks.Task.Delay(2000); // 2초 대기 -> 테스트 단계에서 중앙 서버 소켓에 connect된 후에 패킷을 보내야 하기 때문에 딜레이 준거임. 실제에서는 제거.
-        // 로그인 시도
+
+        // Login 씬: 아이디/비밀번호는 LoginManager에서만 전송. 여기서 자동 로그인하면
+        // 입력 없이 S_LOGIN → GameManager가 Main으로 넘기는 문제가 난다.
+        if (SceneManager.GetActiveScene().name == Define.Scene.LOGIN)
+            return;
+
+        // 이하: Login이 아닌 씬에서만 기존 에디터/단말 테스트용 자동 로그인 (하드코딩)
         if (isHost)
         {
             SendLogin(hostId, hostPassword);

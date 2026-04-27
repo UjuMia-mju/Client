@@ -38,10 +38,12 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
                 fadeCanvasGroup.blocksRaycasts = false;
             }
 
-            // 애니메이터가 없다면 인스턴스에서 찾거나 추가
+            // 프리팹에 없으면: DontDestroy로 유지된 싱글톤 우선(중복 AddComponent 시 파괴 방지)
             if (animator == null)
             {
-                animator = fadeInstance.GetComponent<UIPanelAnimator>() ?? fadeInstance.AddComponent<UIPanelAnimator>();
+                animator = UIPanelAnimator.Instance
+                    ?? fadeInstance.GetComponent<UIPanelAnimator>()
+                    ?? fadeInstance.AddComponent<UIPanelAnimator>();
             }
         }
     }
@@ -51,10 +53,39 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
         if (fadeInstance == null) InitFadeCanvas();
         
         StopAllCoroutines();
-        StartCoroutine(LoadAsyncSequence(sceneName));
+        if (CanRunFadeLoad())
+        {
+            StartCoroutine(LoadAsyncSequenceWithFade(sceneName));
+        }
+        else
+        {
+            StartCoroutine(LoadAsyncSequenceNoFade(sceneName));
+        }
     }
 
-    private IEnumerator LoadAsyncSequence(string sceneName)
+    private bool CanRunFadeLoad()
+    {
+        return fadeInstance != null && fadeCanvasGroup != null && animator != null;
+    }
+
+    /// <summary>fadePrefab 미배정 등 — 페이드 없이 비동기 씬 전환만 수행 (모든 경로를 SceneLoader로 맞출 때용)</summary>
+    private IEnumerator LoadAsyncSequenceNoFade(string sceneName)
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
+        op.allowSceneActivation = false;
+
+        while (!op.isDone)
+        {
+            if (op.progress >= 0.9f)
+            {
+                yield return new WaitForSecondsRealtime(0.1f);
+                op.allowSceneActivation = true;
+            }
+            yield return null;
+        }
+    }
+
+    private IEnumerator LoadAsyncSequenceWithFade(string sceneName)
     {
         // 1. 페이드 인 시작 (검은 화면 채우기)
         fadeInstance.SetActive(true);
