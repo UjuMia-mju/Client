@@ -6,6 +6,12 @@ public class PlayManager : SceneSingleton<PlayManager>
 {
     [SerializeField] private GameObject remotePlayerPrefab;
 
+    [Header("Spawn Points (입장 순서대로 인덱스 배정)")]
+    [SerializeField] private Transform[] spawnPoints;
+
+    [Tooltip("스폰 포인트가 부족할 때 fallback 위치")]
+    [SerializeField] private Vector3 fallbackSpawnPos = new Vector3(0, 23, 2);
+
     private GameObject _localPlayer;
     public Dictionary<ulong, GameObject> _remotePlayers = new();
 
@@ -40,6 +46,17 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnTimerSyncEvent += OnHostTimerSync;
         HostPacketHandler.Instance.OnResourceSpawnEvent += OnHostResourceSpawn;
         HostPacketHandler.Instance.OnResourceDestroyEvent += OnHostResourceDestroy;
+
+
+
+
+
+        var localPlayer = FindFirstObjectByType<Player>();
+        if (localPlayer != null)
+        {
+            var (pos, rot) = ResolveSpawnPose((ulong)NetManager.Instance._playerId, new PlayerGameInfo());
+            localPlayer.transform.SetPositionAndRotation(pos, rot);
+        }
     }
 
     void OnDestroy()
@@ -341,10 +358,7 @@ public class PlayManager : SceneSingleton<PlayManager>
             return;
         }
 
-        Vector3 pos = new Vector3(0, 23, 2);
-        Quaternion rot = playerInfo.Rot != null
-            ? new Quaternion(playerInfo.Rot.X, playerInfo.Rot.Y, playerInfo.Rot.Z, playerInfo.Rot.W)
-            : Quaternion.identity;
+        (Vector3 pos, Quaternion rot) = ResolveSpawnPose(id, playerInfo);
 
         GameObject playerObj = Instantiate(remotePlayerPrefab, pos, rot);
         playerObj.name = $"RemotePlayer_{playerInfo.PlayerId}";
@@ -357,7 +371,44 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
 
         _remotePlayers[id] = playerObj;
-        Debug.Log($"✓ Spawned remote player: {playerInfo.Name} ({playerInfo.PlayerId})");
+        Debug.Log($"✓ Spawned remote player: {playerInfo.Name} ({playerInfo.PlayerId}) @ {pos}");
+    }
+
+    /// <summary>
+    /// 스폰 위치 결정 우선순위:
+    /// 1) RoomMembershipTracker의 입장 순서로 spawnPoints 인덱스 배정
+    /// 2) 패킷에 의미 있는 위치가 들어있으면 그 위치
+    /// 3) fallbackSpawnPos
+    /// </summary>
+    private (Vector3 pos, Quaternion rot) ResolveSpawnPose(ulong playerId, PlayerGameInfo playerInfo)
+    {
+        // 1) 입장 순서 기반 인덱스
+        var ordered = RoomMembershipTracker.Instance?.OrderedIds;
+        if (ordered != null && spawnPoints != null && spawnPoints.Length > 0)
+        {
+            int idx = -1;
+            for (int i = 0; i < ordered.Count; i++)
+            {
+                if (ordered[i] == playerId) { idx = i; break; }
+            }
+
+            if (idx >= 0 && idx < spawnPoints.Length && spawnPoints[idx] != null)
+                return (spawnPoints[idx].position, spawnPoints[idx].rotation);
+        }
+
+        // 2) 패킷이 (0,0,0)이 아니면 그 값을 사용
+        if (playerInfo.Pos != null &&
+            (playerInfo.Pos.X != 0f || playerInfo.Pos.Y != 0f || playerInfo.Pos.Z != 0f))
+        {
+            Vector3 pktPos = new Vector3(playerInfo.Pos.X, playerInfo.Pos.Y, playerInfo.Pos.Z);
+            Quaternion pktRot = playerInfo.Rot != null
+                ? new Quaternion(playerInfo.Rot.X, playerInfo.Rot.Y, playerInfo.Rot.Z, playerInfo.Rot.W)
+                : Quaternion.identity;
+            return (pktPos, pktRot);
+        }
+
+        // 3) fallback
+        return (fallbackSpawnPos, Quaternion.identity);
     }
 
     private void RemoveRemotePlayer(ulong playerId)
