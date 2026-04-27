@@ -26,6 +26,8 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_ENTER_GAME> OnEnterGameEvent;
     public event Action<S_RESOURCE_SPAWN> OnResourceSpawnEvent;
     public event Action<S_RESOURCE_DESTROY> OnResourceDestroyEvent;
+    public event Action<S_PLAYER_DEAD> OnPlayerDeadEvent;
+    public event Action<S_PLAYER_REVIVE> OnPlayerReviveEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -87,6 +89,12 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_RESOURCE_DESTROY:
                 HandleResourceDestroy(data);
+                break;
+            case PacketId.PKT_S_PLAYER_DEAD:
+                HandlePlayerDead(data);
+                break;
+            case PacketId.PKT_S_PLAYER_REVIVE:
+                HandlePlayerRevive(data);
                 break;
             default:
                 Debug.LogWarning($"[HostPacketHandler] Unhandled packet ID: {packetId}");
@@ -220,6 +228,16 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
         S_RESOURCE_DESTROY packet = S_RESOURCE_DESTROY.Parser.ParseFrom(data);
         OnResourceDestroyEvent?.Invoke(packet);
     }
+
+    private void HandlePlayerDead(byte[] data)
+    {
+        S_PLAYER_DEAD packet = S_PLAYER_DEAD.Parser.ParseFrom(data);
+        OnPlayerDeadEvent?.Invoke(packet);
+    }
+
+    private void HandlePlayerRevive(byte[] data)
+    {
+        S_PLAYER_REVIVE packet = S_PLAYER_REVIVE.Parser.ParseFrom(data);
+        OnPlayerReviveEvent?.Invoke(packet);
+    }
 }
-
-

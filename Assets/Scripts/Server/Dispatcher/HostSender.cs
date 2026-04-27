@@ -256,4 +256,22 @@ public class HostSender : IHostSender
         BroadcastRelayPacket(PacketId.PKT_S_RESOURCE_DESTROY, packet);
         Debug.Log($"[HostSender] BroadcastResourceDestroy: id={resourceId}");
     }
+
+
+    public void BroadCastPlayerDead(ulong playerId)
+    {
+        S_PLAYER_DEAD packet = new S_PLAYER_DEAD { PlayerId = playerId };
+        BroadcastRelayPacket(PacketId.PKT_S_PLAYER_DEAD, packet);
+    }
+
+    public void BroadCastPlayerRevive(ulong playerId, Vector3 pos, Quaternion rot)
+    {
+        S_PLAYER_REVIVE packet = new S_PLAYER_REVIVE
+        {
+            PlayerId = playerId,
+            Pos = new PosInfo {X = pos.x, Y = pos.y, Z = pos.z},
+            Rot = new RotInfo {X = rot.x, Y = rot.y, Z = rot.z, W = rot.w}
+        };
+        BroadcastRelayPacket(PacketId.PKT_S_PLAYER_REVIVE, packet);
+    }
 }

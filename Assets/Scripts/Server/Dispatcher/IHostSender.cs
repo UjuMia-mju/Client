@@ -27,4 +27,8 @@ public interface IHostSender
     // 자원: 호스트 → 피어
     void BroadcastResourceSpawn(ResourceObject resource);
     void BroadcastResourceDestroy(int resourceId);
+
+    // 플레이어 사망과 부활
+    void BroadCastPlayerDead(ulong playerId);
+    void BroadCastPlayerRevive(ulong playerId, Vector3 pos, Quaternion rot);
 }

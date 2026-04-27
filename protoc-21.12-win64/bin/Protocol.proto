@@ -517,3 +517,17 @@ message S_RESOURCE_SPAWN {
 message S_RESOURCE_DESTROY {
     int32 resource_id = 1;
 }
+
+message C_PLAYER_DEAD{
+	uint64 player_id = 1;
+}
+
+message S_PLAYER_DEAD{
+	uint64 player_id = 1;
+}
+
+message S_PLAYER_REVIVE{
+	uint64 player_id = 1;
+	PosInfo pos = 2;
+	RotInfo rot = 3;
+}

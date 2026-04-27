@@ -116,6 +116,10 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     // 자원: 피어 → 호스트
     public void SendResourceHit(int resourceId)
         => TryClientSend(() => clientSender.SendResourceHit(resourceId));
+
+    // 플레이어 사망 보고
+    public void SendPlayerDead(ulong playerId)
+        => TryClientSend(() => clientSender.SendPlayerDead(playerId));
     #endregion
 
     #region Host Broadcasts
@@ -166,5 +170,11 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
 
     public void BroadcastResourceDestroy(int resourceId)
         => TryHostBroadcast(() => hostSender.BroadcastResourceDestroy(resourceId));
+
+    public void BroadcastPlayerDead(ulong playerId)
+        => TryHostBroadcast(() => hostSender.BroadCastPlayerDead(playerId));
+
+    public void BroadcastPlayerRevive(ulong playerId, Vector3 pos, Quaternion rot)
+        => TryHostBroadcast(() => hostSender.BroadCastPlayerRevive(playerId, pos, rot));
     #endregion
 }

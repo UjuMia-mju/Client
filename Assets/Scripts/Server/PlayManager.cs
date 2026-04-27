@@ -30,6 +30,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent += OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent += OnPeerSpaceshipInsert;
         PeerPacketHandler.Instance.OnPeerResourceHitEvent += OnPeerResourceHit;
+        PeerPacketHandler.Instance.OnPeerPlayerDeadEvent += OnPeerPlayerDead;
 
         HostPacketHandler.Instance.OnEnterGameEvent += OnHostEnterGame;
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
@@ -46,7 +47,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnTimerSyncEvent += OnHostTimerSync;
         HostPacketHandler.Instance.OnResourceSpawnEvent += OnHostResourceSpawn;
         HostPacketHandler.Instance.OnResourceDestroyEvent += OnHostResourceDestroy;
-
+        HostPacketHandler.Instance.OnPlayerDeadEvent += OnHostPlayerDead;
+        HostPacketHandler.Instance.OnPlayerReviveEvent += OnHostPlayerRevive;
 
 
 
@@ -70,6 +72,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent -= OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent -= OnPeerSpaceshipInsert;
         PeerPacketHandler.Instance.OnPeerResourceHitEvent -= OnPeerResourceHit;
+        PeerPacketHandler.Instance.OnPeerPlayerDeadEvent -= OnPeerPlayerDead;
 
         HostPacketHandler.Instance.OnEnterGameEvent -= OnHostEnterGame;
         HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
@@ -84,6 +87,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent -= OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent -= OnHostSpaceshipComplete;
         HostPacketHandler.Instance.OnTimerSyncEvent -= OnHostTimerSync;
+        HostPacketHandler.Instance.OnPlayerDeadEvent -= OnHostPlayerDead;
+        HostPacketHandler.Instance.OnPlayerReviveEvent -= OnHostPlayerRevive;
     }
 
     private void Update() { }
@@ -217,6 +222,69 @@ public class PlayManager : SceneSingleton<PlayManager>
         ResourceManager.Instance.DestroyResourceFromNetwork(packet.ResourceId);
     }
 
+    private void OnHostPlayerDead(S_PLAYER_DEAD packet)
+        => ApplyPlayerDeadLocally(packet.PlayerId);
+
+    private void OnHostPlayerRevive(S_PLAYER_REVIVE packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+        ApplyPlayerReviveLocally(packet.PlayerId, pos, rot);
+    }
+
+    /// <summary>
+    /// 호스트는 자기 자신의 broadcast echo를 받지 않으므로,
+    /// PlayerLifeServerManager가 broadcast 직후 이 메서드를 직접 호출해 로컬에도 적용한다.
+    /// 피어는 S_PLAYER_DEAD 수신 → OnHostPlayerDead 경로로 같은 메서드를 탄다.
+    /// </summary>
+    public void ApplyPlayerDeadLocally(ulong playerId)
+    {
+        Debug.Log($"[PlayManager] ApplyPlayerDeadLocally. playerId={playerId}");
+
+        if (playerId == NetManager.Instance._playerId)
+        {
+            var localPlayer = FindFirstObjectByType<Player>();
+            if (localPlayer != null)
+            {
+                var stat = localPlayer.GetComponent<PlayerStat>();
+                if (stat != null) stat.ApplyDeathFromNetwork();
+            }
+        }
+        else
+        {
+            if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+            {
+                var op = playerObj.GetComponent<OtherPlayers>();
+                if (op != null) op.ApplyDeath();
+            }
+            else Debug.LogWarning($"[PlayManager] ApplyPlayerDeadLocally: unknown remote player {playerId}");
+        }
+    }
+
+    public void ApplyPlayerReviveLocally(ulong playerId, Vector3 pos, Quaternion rot)
+    {
+        Debug.Log($"[PlayManager] ApplyPlayerReviveLocally. playerId={playerId}, pos={pos}");
+
+        if (playerId == NetManager.Instance._playerId)
+        {
+            var localPlayer = FindFirstObjectByType<Player>();
+            if (localPlayer != null)
+            {
+                var stat = localPlayer.GetComponent<PlayerStat>();
+                if (stat != null) stat.ApplyReviveFromNetwork(pos, rot);
+            }
+        }
+        else
+        {
+            if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+            {
+                var op = playerObj.GetComponent<OtherPlayers>();
+                if (op != null) op.ApplyRevive(pos, rot);
+            }
+            else Debug.LogWarning($"[PlayManager] ApplyPlayerReviveLocally: unknown remote player {playerId}");
+        }
+    }
+
     #endregion
 
     #region 피어 → 호스트 수신
@@ -326,6 +394,12 @@ public class PlayManager : SceneSingleton<PlayManager>
         Items item = ItemManager.Instance.GetItem(packet.ItemId);
         if (item == null) { Debug.LogWarning($"[OnPeerSpaceshipInsert] itemId={packet.ItemId} not found."); return; }
         spaceshipAssembly.AddTargetItems(item.gameObject);
+    }
+
+    private void OnPeerPlayerDead(int peerId, C_PLAYER_DEAD packet)
+    {
+        Debug.Log($"[PlayManager] 피어 사망 보고 수신: peerId={peerId}, playerId={packet.PlayerId}");
+        PlayerLifeServerManager.Instance.OnReceivePlayerDead(packet.PlayerId);
     }
 
     #endregion
@@ -443,5 +517,10 @@ public class PlayManager : SceneSingleton<PlayManager>
     {
         Debug.Log($"[PlayManager] 피어 자원 타격 수신: peerId={peerId}, resourceId={packet.ResourceId}");
         ResourceServerManager.Instance.OnReceiveHit(packet.ResourceId);
+    }
+
+    public (Vector3 pos, Quaternion rot) GetSpawnPoseForPlayer(ulong playerId)
+    {
+        return ResolveSpawnPose(playerId, new Protocol.PlayerGameInfo());
     }
 }

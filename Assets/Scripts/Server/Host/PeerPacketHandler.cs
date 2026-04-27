@@ -26,7 +26,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_SPACESHIP_INSERT> OnPeerSpaceshipInsertEvent;
     public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
     public event Action<int, C_RESOURCE_HIT> OnPeerResourceHitEvent;
-
+    public event Action<int, C_PLAYER_DEAD> OnPeerPlayerDeadEvent;
 
 
     /// <summary>
@@ -84,6 +84,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 break;
             case PacketId.PKT_C_RESOURCE_HIT:
                 HandlePeerResourceHit(peerId, data);
+                break;
+            case PacketId.PKT_C_PLAYER_DEAD:
+                HandlePeerPlayerDead(peerId, data);
                 break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
@@ -348,6 +351,12 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         C_RESOURCE_HIT packet = C_RESOURCE_HIT.Parser.ParseFrom(data);
         Debug.Log($"[PeerPacketHandler] PeerResourceHit: peerId={peerId}, resourceId={packet.ResourceId}");
         OnPeerResourceHitEvent?.Invoke(peerId, packet);
+    }
+
+    private void HandlePeerPlayerDead(int peerId, byte[] data)
+    {
+        C_PLAYER_DEAD packet = C_PLAYER_DEAD.Parser.ParseFrom(data);
+        OnPeerPlayerDeadEvent?.Invoke(peerId, packet);
     }
 }
 
