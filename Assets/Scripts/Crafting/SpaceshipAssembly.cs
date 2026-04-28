@@ -16,8 +16,6 @@ public class SpaceshipAssembly : MonoBehaviour
     private List<SpaceshipMission> targetMission; // 목표 미션
     public IReadOnlyList<SpaceshipMission> TargetMission => targetMission;
 
-    public IReadOnlyList<SpaceshipMission> TargetMission => targetMission;
-
     // data는 현재 우주선에 넣으려는 아이템의 게임 오브젝트
     // 호스트 전용: 직접 판정 (피어 요청은 PlayManager.OnPeerSpaceshipInsert에서 호출)
     // 반환값: 아이템 삽입 성공 여부

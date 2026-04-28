@@ -1492,7 +1492,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67ea88092fc8a314b9dfa7a8e175fec0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::HUDManager
   pausePanel: {fileID: 6091618347145964930, guid: 0e99ccf2cdcf78740a57b1161edcad75, type: 3}
   animator: {fileID: 0}
 --- !u!4 &710526184
@@ -1759,7 +1759,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c09768346718788439cc671d508778d3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RocketCraftBubble
+  m_EditorClassIdentifier: Assembly-CSharp::SpaceShipCraftBubble
   bubblePrefab: {fileID: 4681354145857251170, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
 --- !u!1 &853245646
 GameObject:
@@ -2140,6 +2140,116 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1173255007}
   m_CullTransparentMesh: 1
+--- !u!1001 &1302688146
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4943720041582861401}
+    m_Modifications:
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1337512447365996502, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: hideUnusedSlots
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1337512447365996502, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: spaceshipAssembly
+      value: 
+      objectReference: {fileID: 819753115}
+    - target: {fileID: 4681354145857251170, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+      propertyPath: m_Name
+      value: CraftBubble
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+--- !u!224 &1302688147 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1149820595358982973, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+  m_PrefabInstance: {fileID: 1302688146}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1412737631
 GameObject:
   m_ObjectHideFlags: 0
@@ -2507,7 +2617,6 @@ MonoBehaviour:
   isHost: 1
   centralServerIp: 127.0.0.1
   centralServerPort: 7777
-  isSecondPeer: 0
   hostIpFromServer: 127.0.0.1
   hostPortFromServer: 7788
 --- !u!4 &1686717108
@@ -2891,7 +3000,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 356727976cd2a1240820dad8de276b2c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::TimerController
   timerText: {fileID: 1779398799}
 --- !u!114 &1997255344
 MonoBehaviour:
@@ -4893,6 +5002,7 @@ Transform:
   m_LocalScale: {x: 2000, y: 2000, z: 2000}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1302688147}
   - {fileID: 819753111}
   - {fileID: 377323710}
   - {fileID: 268140079}
