@@ -886,7 +886,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7136ba25396a03149b9c8cda42fc4416, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::CraftBubbleController
   ingredientSlots:
   - root: {fileID: 6945377730895608537}
     icon: {fileID: 7645763948566446571}
@@ -900,7 +900,8 @@ MonoBehaviour:
   - root: {fileID: 3735654144394484254}
     icon: {fileID: 3079143605674944471}
     label: {fileID: 3084398806534212533}
-  ingredientDictionaryData: {fileID: 11400000, guid: 9c4a8bd516b54c0f9f3e2a5d7c6b1e20, type: 2}
+  itemCatalog: {fileID: 11400000, guid: e2f3a4b5c6d798e90a1b2c3d4e5f6a01, type: 2}
+  ingredientDictionaryData: {fileID: 0}
   hideUnusedSlots: 1
   spaceshipAssembly: {fileID: 0}
   autoFindSpaceshipAssembly: 1

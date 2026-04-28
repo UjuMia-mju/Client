@@ -17,8 +17,11 @@ public class CraftBubbleController : MonoBehaviour
     [Header("Ingredients")]
     [SerializeField] private List<Ingredient> ingredientSlots = new List<Ingredient>();
 
-    [Header("Ingredient Dictionary")]
+    [Header("표시 이름·아이콘 소스")]
+    [SerializeField] private ItemCatalog itemCatalog;
+    [Tooltip("카탈로그가 비어 있을 때만 사용됩니다.")]
     [SerializeField] private IngredientDictionaryData ingredientDictionaryData;
+
     [SerializeField] private bool hideUnusedSlots = true;
 
     [Header("Spaceship Binding")]
@@ -29,8 +32,14 @@ public class CraftBubbleController : MonoBehaviour
 
     public IReadOnlyList<Ingredient> IngredientSlots => ingredientSlots;
 
-    private readonly Dictionary<string, IngredientDictionaryData.Entry> _iconByKey =
-        new Dictionary<string, IngredientDictionaryData.Entry>();
+    private readonly Dictionary<string, UIRow> _displayByKey = new Dictionary<string, UIRow>();
+
+    /// <summary>아이콘·표시 문자열 캐시 (카탈로그 또는 레거시 사전에서 채움)</summary>
+    private sealed class UIRow
+    {
+        public Sprite Icon;
+        public string DisplayName;
+    }
 
     private void Awake()
     {
@@ -99,18 +108,18 @@ public class CraftBubbleController : MonoBehaviour
         int current = mission != null ? Mathf.Max(0, mission.currentCount) : 0;
         int target = mission != null ? Mathf.Max(0, mission.targetCount) : 0;
 
-        if (_iconByKey.TryGetValue(key, out IngredientDictionaryData.Entry info))
+        if (_displayByKey.TryGetValue(key, out UIRow info))
         {
             if (slot.icon != null)
             {
-                slot.icon.sprite = info.icon;
-                slot.icon.enabled = info.icon != null;
+                slot.icon.sprite = info.Icon;
+                slot.icon.enabled = info.Icon != null;
             }
 
             if (slot.label != null)
             {
-                string display = string.IsNullOrWhiteSpace(info.displayName) ? key : info.displayName;
-                slot.label.text = showProgress ? $"{display} x ({current}/{target})" : $"{display} x ({target})";
+                string display = string.IsNullOrWhiteSpace(info.DisplayName) ? key : info.DisplayName;
+                slot.label.text = showProgress ? $"{display} ({current}/{target})" : $"{display} x ({target})";
             }
             return;
         }
@@ -122,7 +131,7 @@ public class CraftBubbleController : MonoBehaviour
         }
 
         if (slot.label != null)
-            slot.label.text = showProgress ? $"{key} x ({current}/{target})" : $"{key} x ({target})";
+            slot.label.text = showProgress ? $"{key} ({current}/{target})" : $"{key} x ({target})";
     }
 
     private void BindEmptySlot(Ingredient slot)
@@ -166,19 +175,34 @@ public class CraftBubbleController : MonoBehaviour
 
     private void RebuildIngredientDictionary()
     {
-        _iconByKey.Clear();
+        _displayByKey.Clear();
+
+        if (itemCatalog != null)
+        {
+            IReadOnlyList<ItemCatalog.Entry> catalogEntries = itemCatalog.Entries;
+            for (int i = 0; i < catalogEntries.Count; i++)
+            {
+                ItemCatalog.Entry e = catalogEntries[i];
+                if (e == null || string.IsNullOrWhiteSpace(e.key))
+                    continue;
+
+                _displayByKey[e.key] = new UIRow { Icon = e.icon, DisplayName = e.displayName };
+            }
+            return;
+        }
+
         if (ingredientDictionaryData == null)
             return;
 
-        IReadOnlyList<IngredientDictionaryData.Entry> entries = ingredientDictionaryData.Entries;
-        for (int i = 0; i < entries.Count; i++)
+        IReadOnlyList<IngredientDictionaryData.Entry> dictionaryEntries = ingredientDictionaryData.Entries;
+        for (int i = 0; i < dictionaryEntries.Count; i++)
         {
-            IngredientDictionaryData.Entry entry = entries[i];
+            IngredientDictionaryData.Entry entry = dictionaryEntries[i];
             if (entry == null || string.IsNullOrWhiteSpace(entry.key))
                 continue;
 
-            _iconByKey[entry.key] = entry;
+            _displayByKey[entry.key] = new UIRow { Icon = entry.icon, DisplayName = entry.displayName };
         }
     }
 
- }
+}

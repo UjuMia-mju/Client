@@ -9,31 +9,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5ce126871e5bad4f9285719b61d801e, type: 3}
-  m_Name: IngredientDictionaryData_Sample
-  m_EditorClassIdentifier: Assembly-CSharp::IngredientDictionaryData
+  m_Script: {fileID: 11500000, guid: f1e2d3c4b5a6978890a1b2c3d4e5f6a9, type: 3}
+  m_Name: GameItemCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::ItemCatalog
   entries:
   - key: stone_ore
     displayName: "\uB3CC \uC6D0\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 0}
   - key: stone
     displayName: "\uB3CC"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 0}
   - key: glow_ore
     displayName: "\uBC1C\uAD11 \uC6D0\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 0}
   - key: glow
     displayName: "\uBC1C\uAD11\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 0}
   - key: iron_ore
     displayName: "\uCCA0 \uC6D0\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 0}
   - key: iron
     displayName: "\uCCA0 \uAD11\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 0}
   - key: wood
     displayName: "\uB098\uBB34"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-  - key: SmeltedTestCube
-    displayName: "\uB179\uC778\uD14C\uC2A4\uD2B8\uD050\uBE0C"
+    prefab: {fileID: 0}
+  - key: TestCube
+    displayName: "\uD14C\uC2A4\uD2B8\uD050\uBE0C"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  - key: TestCube2
+    displayName: "\uD14C\uC2A4\uD2B8\uD050\uBE0C2"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 5248076910442429696, guid: 28d3c555b89de824dac8f647c007d843, type: 3}
+  - key: SmeltedTestCube
+    displayName: "\uC6A9\uAD11\uB85C\uD6C4\uD050\uBE0C"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}

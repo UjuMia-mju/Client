@@ -9,15 +9,8 @@ public class ItemManager : MonoBehaviour
 
     private Dictionary<int, Items> itemDic = new Dictionary<int, Items>();
 
-    [System.Serializable]
-    public class ItemPrefabData
-    {
-        public string itemStringKey;
-        public GameObject prefab;
-    }
-
-    [Header("Item Prefab Table")]
-    [SerializeField] private List<ItemPrefabData> itemPrefabList = new List<ItemPrefabData>();
+    [Header("아이템 카탈로그 (키·표시명·아이콘·프리팹 단일 관리)")]
+    [SerializeField] private ItemCatalog itemCatalog;
 
     private static int _nextItemId = 1;
 
@@ -194,8 +187,9 @@ public class ItemManager : MonoBehaviour
 
     public GameObject GetPrefabByKey(string key)
     {
-        ItemPrefabData data = itemPrefabList.Find(x => x.itemStringKey == key);
-        return data?.prefab;
+        if (itemCatalog == null)
+            return null;
+        return itemCatalog.GetPrefab(key);
     }
 
     /// <summary>

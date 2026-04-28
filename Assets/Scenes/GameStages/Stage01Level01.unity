@@ -1287,13 +1287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69afb27bc9a488b4c812904a58f10e89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemManager
-  itemPrefabList:
-  - itemStringKey: TestCube
-    prefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
-  - itemStringKey: SmeltedTestCube
-    prefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
-  - itemStringKey: TestCube2
-    prefab: {fileID: 5248076910442429696, guid: 28d3c555b89de824dac8f647c007d843, type: 3}
+  itemCatalog: {fileID: 11400000, guid: e2f3a4b5c6d798e90a1b2c3d4e5f6a01, type: 2}
 --- !u!1 &669581819
 GameObject:
   m_ObjectHideFlags: 0
