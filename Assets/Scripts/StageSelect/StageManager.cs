@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Protocol;
@@ -158,22 +159,19 @@ public class StageManager : MonoBehaviour
         int level = _currentSelectedNode.stageLevel;
         int index = _currentSelectedNode.stageIndex;
 
-        if (DbCacheManager.Instance.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
-        // MapId·Chapter·Stage는 서버 DB와 한 세트. 캐시의 StageInfo 기준으로 보낸다(C_START_STAGE의 StageIndex = StageInfo.Stage).
-        if (DbCacheManager.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
-        {
-            if (info.Chapter != level || info.Stage != index)
-            {
-                Debug.LogWarning(
-                    $"[StageManager] 노드({level},{index})와 StageInfo({info.Chapter},{info.Stage}) 불일치. StageInfo 기준으로 전송합니다.");
-            }
+        // MapId·Chapter·Stage는 서버 DB와 한 세트. 캐시의 StageInfo 기준 (C_START_STAGE.StageIndex = StageInfo.Stage)
+        if (!DbCacheManager.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
+            return;
 
-            Debug.Log($"[StageManager] 스테이지 시작 요청 MapId={info.MapId}, Chapter={info.Chapter}, Stage={info.Stage}");
-            PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
-            Debug.Log(
-                $"[StageManager] C_START_STAGE 전송 MapId={info.MapId}, Chapter={info.Chapter}, StageIndex(=Stage)={info.Stage}");
-            PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
+        if (info.Chapter != level || info.Stage != index)
+        {
+            Debug.LogWarning(
+                $"[StageManager] 노드({level},{index})와 StageInfo({info.Chapter},{info.Stage}) 불일치. StageInfo 기준으로 전송합니다.");
         }
+
+        Debug.Log(
+            $"[StageManager] C_START_STAGE MapId={info.MapId}, Chapter={info.Chapter}, StageIndex(=Stage)={info.Stage}");
+        PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
     }
     
     private void HandleStartStageResponse(S_START_STAGE packet)
@@ -199,11 +197,9 @@ public class StageManager : MonoBehaviour
             chapter = packet.Stage.Chapter;
             stageNum = packet.Stage.Stage;
             Debug.Log($"[StageManager] 스테이지 시작 허가됨! 씬 이동 준비: {packet.Stage.StageName}");
-            
-            SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_1); 
         }
         else if (_currentSelectedNode != null &&
-                 DbCacheManager.Instance.TryGetStageInfoByChapterStage(
+                 DbCacheManager.TryGetStageInfoByChapterStage(
                      _currentSelectedNode.stageLevel,
                      _currentSelectedNode.stageIndex,
                      out StageInfo cached))

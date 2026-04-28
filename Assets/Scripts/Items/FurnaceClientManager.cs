@@ -31,15 +31,15 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         }
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
-        // 메모리 누수 방지를 위해 이벤트 구독 해제
         if (HostPacketHandler.Instance != null)
         {
             HostPacketHandler.Instance.OnSmeltEvent -= HandleSmeltStarted;
             HostPacketHandler.Instance.OnSmeltCompleteEvent -= HandleSmeltCompleted;
             HostPacketHandler.Instance.OnFurnaceRetrieveEvent -= HandleFurnaceRetrieve;
         }
+        base.OnDestroy();
     }
 
     public FurnaceObject GetFurnaceObject(int furnaceId)

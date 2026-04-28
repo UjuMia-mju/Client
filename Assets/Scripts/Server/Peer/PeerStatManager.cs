@@ -15,10 +15,11 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnterReceived;
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         if (HostPacketHandler.Instance != null)
             HostPacketHandler.Instance.OnPlayerEnterEvent -= OnPlayerEnterReceived;
+        base.OnDestroy();
     }
 
     // S_PLAYER_ENTER에서 첫 번째 패킷이 자기 자신의 ID

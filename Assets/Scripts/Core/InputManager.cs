@@ -42,10 +42,10 @@ public class InputManager : MonoBehaviorSingleton<InputManager>
         _actions?.Disable();
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
-        // 싱글톤 인스턴스가 파괴될 때만 정리
         _actions?.Disable();
         _actions = null;
+        base.OnDestroy();
     }
 }
