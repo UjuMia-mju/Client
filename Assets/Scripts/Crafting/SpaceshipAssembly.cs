@@ -14,6 +14,7 @@ public class SpaceshipAssembly : MonoBehaviour
 {
     [SerializeField]
     private List<SpaceshipMission> targetMission; // 목표 미션
+    public IReadOnlyList<SpaceshipMission> TargetMission => targetMission;
 
     public IReadOnlyList<SpaceshipMission> TargetMission => targetMission;
 

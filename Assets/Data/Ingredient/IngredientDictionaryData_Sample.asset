@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5ce126871e5bad4f9285719b61d801e, type: 3}
+  m_Name: IngredientDictionaryData_Sample
+  m_EditorClassIdentifier: Assembly-CSharp::IngredientDictionaryData
+  entries:
+  - key: stone_ore
+    displayName: "\uB3CC \uC6D0\uC11D"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+  - key: stone
+    displayName: "\uB3CC"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+  - key: glow_ore
+    displayName: "\uBC1C\uAD11 \uC6D0\uC11D"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+  - key: glow
+    displayName: "\uBC1C\uAD11\uC11D"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+  - key: iron_ore
+    displayName: "\uCCA0 \uC6D0\uC11D"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+  - key: iron
+    displayName: "\uCCA0 \uAD11\uC11D"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+  - key: wood
+    displayName: "\uB098\uBB34"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
