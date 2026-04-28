@@ -180,15 +180,13 @@ public class StageManager : MonoBehaviour
 
         Debug.Log(
             $"[StageManager] C_START_STAGE MapId={info.MapId}, Chapter={info.Chapter}, StageIndex(=Stage)={info.Stage}");
-        PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
-            // S_GAME_READY_TO_START 수신 시 씬 전환에 쓸 스테이지 정보를 미리 저장
-            _pendingMapId = info.MapId;
-            _pendingChapter = info.Chapter;
-            _pendingStageNum = info.Stage;
+        // S_GAME_READY_TO_START 수신 시 씬 전환에 쓸 스테이지 정보를 미리 저장
+        _pendingMapId = info.MapId;
+        _pendingChapter = info.Chapter;
+        _pendingStageNum = info.Stage;
 
-            Debug.Log($"[StageManager] 스테이지 시작 요청 MapId={info.MapId}, Chapter={info.Chapter}, Stage={info.Stage}");
-            PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
-        
+        Debug.Log($"[StageManager] 스테이지 시작 요청 MapId={info.MapId}, Chapter={info.Chapter}, Stage={info.Stage}");
+        PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
     }
 
     /// <summary>
@@ -260,12 +258,12 @@ public class StageManager : MonoBehaviour
         int chapter = 1;
         int stageNum = 1;
 
-        if (packet.Stage != null)
+        if (_pendingMapId != 0)
         {
-            mapId = packet.Stage.MapId;
-            chapter = packet.Stage.Chapter;
-            stageNum = packet.Stage.Stage;
-            Debug.Log($"[StageManager] 스테이지 시작 허가됨! 씬 이동 준비: {packet.Stage.StageName}");
+            mapId = _pendingMapId;
+            chapter = _pendingChapter;
+            stageNum = _pendingStageNum;
+            Debug.Log($"[StageManager] 스테이지 시작 허가됨! 씬 이동 준비: MapId={mapId}, Chapter={chapter}, Stage={stageNum}");
         }
         else if (_currentSelectedNode != null &&
                  DbCacheManager.TryGetStageInfoByChapterStage(
@@ -279,7 +277,6 @@ public class StageManager : MonoBehaviour
         }
 
         if (!Define.Scene.TryGetGameplayScene(mapId, chapter, stageNum, out string sceneName))
-        if (!Define.Scene.TryGetGameplayScene(_pendingMapId, _pendingChapter, _pendingStageNum, out string sceneName))
         {
             Debug.LogWarning(
                 $"[StageManager] Define.Scene에 없는 스테이지입니다. map={_pendingMapId}, chapter={_pendingChapter}, stage={_pendingStageNum}. " +

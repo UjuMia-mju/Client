@@ -30,7 +30,7 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
         ulong myId = NetManager.Instance._playerId;
         if (myId != 0 && !_playerStats.ContainsKey(myId))
         {
-            _playerStats.Add(myId, new PlayerStat());
+            _playerStats.Add(myId, new PlayerStatState(5));
             Debug.Log($"[PeerStatManager] 자기 자신 등록(S_ENTER_GAME): playerId={myId}");
         }
 
@@ -40,7 +40,7 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
             ulong id = (ulong)playerInfo.PlayerId;
             if (!_playerStats.ContainsKey(id))
             {
-                _playerStats.Add(id, new PlayerStat());
+                _playerStats.Add(id, new PlayerStatState(5));
                 Debug.Log($"[PeerStatManager] 플레이어 등록(S_ENTER_GAME): playerId={id}");
             }
         }
@@ -63,7 +63,7 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
         }
     }
 
-    public IReadOnlyDictionary<ulong, PlayerStat> GetAllRemoteStats() => _playerStats;
+    public IReadOnlyDictionary<ulong, PlayerStatState> GetAllRemoteStats() => _playerStats;
 
     #region stat update methods
 
@@ -99,7 +99,7 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
         PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, oxygen);
     }
 
-    public IReadOnlyDictionary<ulong, PlayerStat> GetAllStats() => _playerStats;
+    public IReadOnlyDictionary<ulong, PlayerStatState> GetAllStats() => _playerStats;
 
     #endregion
 }

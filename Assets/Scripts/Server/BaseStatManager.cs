@@ -11,7 +11,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
         {
             // S_ENTER_GAME보다 S_PLAYER_STAT이 먼저 도착하는 경쟁 조건 대응.
             // 미등록 플레이어는 즉시 등록 후 처리.
-            stat = new PlayerStat();
+            stat = new PlayerStatState(5);
             _playerStats[playerId] = stat;
             Debug.Log($"[StatManager] 미등록 플레이어 자동 등록: playerId={playerId}");
         }
@@ -31,7 +31,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
         return null;
     }
 
-    public bool TryGetPlayerStat(ulong playerId, out PlayerStat stat)
+    public bool TryGetPlayerStat(ulong playerId, out PlayerStatState stat)
     {
         return _playerStats.TryGetValue(playerId, out stat);
     }
