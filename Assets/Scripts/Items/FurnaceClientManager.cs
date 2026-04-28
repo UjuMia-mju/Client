@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 
@@ -12,17 +13,18 @@ public class ResultPrefabData
 
 public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
 {
-    // 씬에 존재하는 용광로 컨트롤러들을 관리하는 딕셔너리
-    private Dictionary<int, FurnaceObject> furnaceControllers = new ();
-    private const float ITEM_THROW_HEIGHT = 3.5f; 
-    private const float ITEM_THROW_FORCE = 200f;
+    private Dictionary<int, FurnaceObject> furnaceControllers = new();
+    private HashSet<int> retrievedFurnaces = new();
+
+    private const float ITEM_THROW_HEIGHT = 3.5f;
+    // 스폰 위치 기반 용광로 탐색 거리 (throw_height보다 넉넉하게)
+    private const float FURNACE_SPAWN_RESET_DISTANCE = 8f;
 
     [Header("Result Prefab Settings")]
     [SerializeField] private List<ResultPrefabData> resultPrefabList = new();
 
     private void Start()
     {
-        // HostPacketHandler의 패킷 수신 이벤트 구독
         if (HostPacketHandler.Instance != null)
         {
             HostPacketHandler.Instance.OnSmeltEvent += HandleSmeltStarted;
@@ -45,9 +47,7 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
     public FurnaceObject GetFurnaceObject(int furnaceId)
     {
         if (furnaceControllers.TryGetValue(furnaceId, out FurnaceObject obj))
-        {
             return obj;
-        }
 
         Debug.LogWarning($"[FurnaceClientManager] {furnaceId}번 용광로를 찾을 수 없습니다.");
         return null;
@@ -59,17 +59,13 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
     public void RegisterFurnace(int furnaceId, FurnaceObject furnaceObject)
     {
         if (!furnaceControllers.ContainsKey(furnaceId))
-        {
             furnaceControllers.Add(furnaceId, furnaceObject);
-        }
     }
 
     public void UnregisterFurnace(int furnaceId)
     {
-        if (furnaceControllers.ContainsKey(furnaceId))
-        {
-            furnaceControllers.Remove(furnaceId);
-        }
+        furnaceControllers.Remove(furnaceId);
+        retrievedFurnaces.Remove(furnaceId);
     }
 
     // ==========================================
@@ -80,15 +76,16 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         int furnaceId = packet.FurnaceId;
         int smeltTime = packet.MeltTime;
 
+        retrievedFurnaces.Remove(furnaceId);
+
         if (furnaceControllers.TryGetValue(furnaceId, out FurnaceObject furnaceObject))
         {
-            // 해당 용광로의 파티클, 사운드 등 작동 시작 연출 (UI적인 처리)
             furnaceObject.OnSmeltStarted(smeltTime);
-            Debug.Log($"[Client] {furnaceId}번 용광로 작동 시작 (대기 시간: {smeltTime}초)");
+            Debug.Log($"[FurnaceClientManager] {furnaceId}번 용광로 작동 시작 ({smeltTime}초)");
         }
         else
         {
-            Debug.LogWarning($"[Client] {furnaceId}번 용광로 컨트롤러를 찾을 수 없습니다.");
+            Debug.LogWarning($"[FurnaceClientManager] {furnaceId}번 용광로를 찾을 수 없습니다.");
         }
     }
 
@@ -96,53 +93,111 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
     {
         int furnaceId = packet.FurnaceId;
 
-        if (furnaceControllers.TryGetValue(furnaceId, out FurnaceObject furnaceObject))
+        if (!furnaceControllers.TryGetValue(furnaceId, out FurnaceObject furnaceObject))
+            return;
+
+        if (retrievedFurnaces.Contains(furnaceId))
         {
-            furnaceObject.OnSmeltCompleted();
+            Debug.Log($"[FurnaceClientManager] 늦게 도착한 SmeltComplete 무시 (이미 수거됨): furnaceId={furnaceId}");
+            furnaceObject.OnItemRetrieved();
+            return;
         }
+
+        furnaceObject.OnSmeltCompleted();
+        Debug.Log($"[FurnaceClientManager] {furnaceId}번 용광로 완료 이미지 표시");
     }
 
-    // 서버로부터 용광로에서 아이템이 완성되어 수거하라는 패킷을 받았을 때 처리
     private void HandleFurnaceRetrieve(S_FURNACE_RETRIEVE packet)
     {
-        int furnaceId = packet.FurnaceId;
-        int resultItemType = (int)packet.ItemResult;
+        Debug.Log($"[FurnaceClientManager] HandleFurnaceRetrieve 수신. isHost={ConnectManager.Instance?.isHost}, furnaceId={packet.FurnaceId}");
 
-        if (ConnectManager.Instance.isHost) return;
+        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost) return;
+
+        int furnaceId = packet.FurnaceId;
+        retrievedFurnaces.Add(furnaceId);
 
         FurnaceObject furnaceObj = GetFurnaceObject(furnaceId);
-        if (furnaceObj == null) return;
+        if (furnaceObj == null)
+        {
+            Debug.LogWarning($"[FurnaceClientManager] 수거 대상 용광로 없음: furnaceId={furnaceId}");
+            return;
+        }
 
-        furnaceObj.OnSmeltCompleted();
+        furnaceObj.OnItemRetrieved();
+        Debug.Log($"[FurnaceClientManager] 피어 용광로 UI 초기화 완료: furnaceId={furnaceId}");
+    }
+
+    /// <summary>
+    /// S_OBJECT_SPAWN 도착 시 S_FURNACE_RETRIEVE 누락/지연 대비 안전장치.
+    /// spawnPosition은 반드시 용광로의 원점 스폰 위치여야 한다.
+    /// </summary>
+    public void TryResetNearestFurnaceBySpawnPosition(Vector3 spawnPosition)
+    {
+        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost) return;
+
+        FurnaceObject nearestFurnace = null;
+        float nearestDistance = Mathf.Infinity;
+
+        foreach (var pair in furnaceControllers)
+        {
+            if (pair.Value == null) continue;
+            float dist = Vector3.Distance(pair.Value.transform.position, spawnPosition);
+            if (dist < nearestDistance)
+            {
+                nearestDistance = dist;
+                nearestFurnace = pair.Value;
+            }
+        }
+
+        Debug.Log($"[FurnaceClientManager] TryReset: nearestDist={nearestDistance:F2}, threshold={FURNACE_SPAWN_RESET_DISTANCE}");
+
+        if (nearestFurnace == null || nearestDistance > FURNACE_SPAWN_RESET_DISTANCE)
+            return;
+
+        retrievedFurnaces.Add(nearestFurnace.furnaceId);
+        nearestFurnace.OnItemRetrieved();
+        Debug.Log($"[FurnaceClientManager] 스폰 기반 용광로 UI 초기화: furnaceId={nearestFurnace.furnaceId}");
+    }
+
+    // ==========================================
+    // 호스트 전용: 로컬 아이템 생성 + 피어 스폰 브로드캐스트
+    // ==========================================
+    public void SpawnResultItemLocal(int furnaceId, int resultItemType)
+    {
+        if (!furnaceControllers.TryGetValue(furnaceId, out FurnaceObject furnaceObj))
+        {
+            Debug.LogWarning($"[FurnaceClientManager] SpawnResultItemLocal: furnaceId={furnaceId} 없음");
+            return;
+        }
 
         ResultPrefabData foundData = resultPrefabList.Find(x => x.resultItemType == resultItemType);
         if (foundData == null || foundData.resultPrefab == null)
         {
-            Debug.LogError($"[FurnaceClientManager] 타입({resultItemType})의 프리팹이 누락되었습니다!");
+            Debug.LogError($"[FurnaceClientManager] ResultPrefabList에 타입({resultItemType}) 프리팹 누락!");
             return;
         }
 
-        // ThrowSmeltedItem과 동일한 방식으로 직접 생성 (용광로 기준 방향)
-        furnaceObj.ThrowSmeltedItem(foundData.resultPrefab);
+        // 피어에게 전달할 원점 스폰 위치/회전 미리 기록
+        // (1프레임 뒤 브로드캐스트할 때 아이템이 이미 날아간 위치 대신 스폰 원점을 전송)
+        Vector3 spawnOrigin = furnaceObj.transform.position + furnaceObj.transform.up * ITEM_THROW_HEIGHT;
+        Quaternion spawnRot = Quaternion.LookRotation(furnaceObj.transform.forward, furnaceObj.transform.up);
+
+        Items spawnedItem = furnaceObj.ThrowSmeltedItem(foundData.resultPrefab);
+
+        if (spawnedItem != null)
+            StartCoroutine(BroadcastSpawnNextFrame(spawnedItem, spawnOrigin, spawnRot));
     }
 
-    public void SpawnResultItemLocal(int furnaceId, int resultItemType)
+    /// <summary>
+    /// Items.Start()에서 itemId 등록이 완료될 때까지 1프레임 대기 후 브로드캐스트.
+    /// 피어가 용광로 스폰 원점에서 아이템을 생성할 수 있도록 원점 위치/회전을 전송한다.
+    /// </summary>
+    private IEnumerator BroadcastSpawnNextFrame(Items item, Vector3 spawnOrigin, Quaternion spawnRot)
     {
-        // 1. 해당 ID의 용광로 확인
-        if (furnaceControllers.TryGetValue(furnaceId, out FurnaceObject furnaceObj))
-        {
-            // 2. 인스펙터에 등록된 리스트에서 아이템 ID 탐색
-            ResultPrefabData foundData = resultPrefabList.Find(x => x.resultItemType == resultItemType);
+        yield return null;
+        if (item == null) yield break;
 
-            if (foundData != null && foundData.resultPrefab != null)
-            {
-                // 3. 실제 배출 (던지기)
-                furnaceObj.ThrowSmeltedItem(foundData.resultPrefab);
-            }
-            else
-            {
-                Debug.LogError($"[ClientManager] 인스펙터(ResultPrefabList)에 타입({resultItemType})의 프리팹이 누락되었습니다!");
-            }
-        }
+        PacketSender.Instance.BroadcastObjectSpawn(item, spawnOrigin, spawnRot);
+        Debug.Log($"[FurnaceClientManager] 스폰 브로드캐스트: itemId={item.itemId}, origin={spawnOrigin}");
     }
 }

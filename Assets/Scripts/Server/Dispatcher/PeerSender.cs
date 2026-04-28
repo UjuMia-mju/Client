@@ -30,13 +30,13 @@ public class PeerSender : IClientSender
     public void SendEnterGame()
     {
         ulong localPlayerId = (ulong)NetManager.Instance._playerId;
-        Debug.Log($"Sending EnterGame for playerIndex: {localPlayerId}");
-        C_TEST_ENTER_GAME enterGamePacket = new C_TEST_ENTER_GAME
+        Debug.Log($"[PeerSender] C_ENTER_GAME 전송. playerId={localPlayerId}");
+
+        C_ENTER_GAME enterPacket = new C_ENTER_GAME
         {
             PlayerIndex = localPlayerId
         };
-
-        SendRelayPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
+        SendRelayPacket(PacketId.PKT_C_ENTER_GAME, enterPacket);
     }
 
     public void SendChat(string message)

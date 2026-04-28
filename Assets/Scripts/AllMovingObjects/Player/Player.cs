@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Protocol;
 
 public class Player : MovingObject
 {
@@ -56,11 +57,7 @@ public class Player : MovingObject
         if (ConnectManager.Instance.isHost)
         {
             playerStat = gameObject.AddComponent<HostPlayerStat>();
-            HostStatManager.Instance.RegisterPlayer(1, playerStat); 
-            // 나중에 밑에걸로 바꿔야 합니다. 지금은 타이밍 이슈로 Host인 1로 고정해놨습니다.
-            // 나중에는 로그인->방 생성->인게임 순으로 동작하기 때문에 Netmanager가 초기화가 되어있고, 
-            // 플레이어 ID도 확정된 시점에 playerStat을 생성하고 등록하는 구조로 바꿔야 합니다.
-            //HostStatManager.Instance.RegisterPlayer(NetManager.Instance._playerId, playerStat);
+            HostStatManager.Instance.RegisterPlayer((ulong)NetManager.Instance._playerId, playerStat);
         }
         else
         {
@@ -81,7 +78,6 @@ public class Player : MovingObject
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;
 
-        // 자동으로 자식 중 PlayerMesh를 찾아 할당 (Inspector에 없으면)
         if (playerMesh == null)
         {
             Transform t = transform.Find("PlayerMesh");
@@ -89,15 +85,14 @@ public class Player : MovingObject
                 playerMesh = t.gameObject;
         }
 
-
-        // 산소/HP 이벤트 기반 로직
-        // lastHP = playerStat.GetHp();
-        // lastOxygen = playerStat.GetOxygen();
-
         playerStat.OnHpChanged += HandleHpChanged;
         playerStat.OnOxygenChanged += HandleOxygenChanged;
         playerStat.OnPlayerDead += HandlePlayerDead;
         playerStat.OnPlayerRevive += HandlePlayerRevive;
+
+        // 씬 로드 후 서버/호스트에 입장을 알립니다.
+        // (기존: ConnectManager.Start()에서 호출 → 자동 로그인 제거 때 함께 삭제됨)
+        OnNetworkReady();
     }
 
     // 이벤트 구독 해제 0324 (추가)
@@ -152,18 +147,20 @@ public class Player : MovingObject
 
     public void OnNetworkReady()
     {
-        Debug.Log("Player: Network is ready, sending EnterGame packet.");
-        // if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost)
-        // {
-        //     PacketSender.Instance.SendEnterGame(0);
+        Debug.Log($"[Player] OnNetworkReady. isHost={ConnectManager.Instance.isHost}");
 
-        //     Debug.Log("Player: Sent EnterGame packet to server.");
-        // }
-        
-        PacketSender.Instance.SendEnterGame();
+        if (ConnectManager.Instance.isHost)
+        {
+            // 호스트: 자신의 입장을 피어들에게 즉시 알림 (S_PLAYER_ANIMATION보다 반드시 먼저 전송)
+            PacketSender.Instance.BroadcastPlayerEnter((ulong)NetManager.Instance._playerId);
+        }
+        else
+        {
+            // 피어: C_ENTER_GAME 전송 → 호스트가 S_ENTER_GAME으로 전체 플레이어 목록 응답
+            PacketSender.Instance.SendEnterGame();
+        }
+
         SendEnterPosToServer();
-
-        // 네트워크 준비 후 산소 감소 시작 (EnterGame 패킷 이후에 산소 패킷이 전송되도록)
         playerStat.StartOxygenDecrease();
     }
 
@@ -228,7 +225,9 @@ public class Player : MovingObject
 
                 if (furnace != null)
                 {
-                    if (furnace.hasResult)
+                    Debug.Log($"[Player] Furnace interact: furnaceId={furnace.furnaceId}, hasResult={furnace.hasResult}, isWorking={furnace.isWorking}, isPlayerGetSomething={isPlayerGetSomething}");
+
+                    if (furnace.hasResult || (!furnace.isWorking && !isPlayerGetSomething))
                     {
                         furnace.RequestRetrieve();
                         Debug.Log("용광로 결과물 수거 요청!");
@@ -250,7 +249,7 @@ public class Player : MovingObject
                             }
                             // 피어: 로컬 처리 없음
                             // FurnaceServerManager -> SendObjectDestroy 브로드캐스트
-                            // → OnHostObjectDestroy ->아이템 파괴 + DetachItem
+                            // → OnHostObjectDestroy -> 아이템 파괴 + DetachItem
                         }
                     }
                     else

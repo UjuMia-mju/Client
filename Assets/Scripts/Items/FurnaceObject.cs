@@ -25,8 +25,9 @@ public class FurnaceObject : MonoBehaviour
         {
             progressBar.fillAmount = 0f;
             progressBar.gameObject.SetActive(false);
-            finishImage.gameObject.SetActive(false);
         }
+        if (finishImage != null)
+            finishImage.gameObject.SetActive(false);
 
         FurnaceClientManager.Instance?.RegisterFurnace(furnaceId, this);
     }
@@ -116,54 +117,54 @@ public class FurnaceObject : MonoBehaviour
     // 서버(통신 Manager)로부터 작동 완료 명령을 받았을 때 호출
     public void OnSmeltCompleted(/* ItemType resultItem */)
     {
-        isWorking = false; // 작동 상태 해제
-        hasResult = true; // 결과 아이템이 생성된 상태로 전환 (수거 대기)
+        isWorking = false;
+        hasResult = true;
 
-        // 1. 진행 중이던 이펙트/사운드 정지
         if (fireEffect != null) fireEffect.Stop();
         if (workingSound != null) workingSound.Stop();
 
-        // 2. 타이머 코루틴 중지 시키기 (메모리 낭비/버그 방지)
         if (visualTimerCoroutine != null)
         {
             StopCoroutine(visualTimerCoroutine);
             visualTimerCoroutine = null;
         }
 
-        // 3. UI(Progress Bar) 숨기기
         if (progressBar != null)
         {
-            progressBar.fillAmount = 0f; // 다음 작업을 위해 0으로 초기화
-            progressBar.gameObject.SetActive(false); // 게이지 끄기
-            finishImage.gameObject.SetActive(true); // 제련 완료 이미지 켜기
+            progressBar.fillAmount = 0f;
+            progressBar.gameObject.SetActive(false);
         }
+        if (finishImage != null)
+            finishImage.gameObject.SetActive(true);
 
-        // 필요 시 완성 알림음이나 완성 이펙트 재생 (아이템 생성은 서버의 몫)
         Debug.Log($"[Client] 용광로({furnaceId}) 완료! 결과물 드랍 대기중...");
     }
 
     // 서버로부터 아이템 회수 명령을 받았을 때 호출 (C_FURNACE_RETRIEVE 패킷 처리)
     public void RequestRetrieve()
     {
-        if (!hasResult)
+        Debug.Log($"[FurnaceObject] 수거 요청 시도: furnaceId={furnaceId}, hasResult={hasResult}, isWorking={isWorking}");
+
+        if (isWorking)
         {
-            Debug.LogWarning($"[Client] 용광로({furnaceId})에는 아직 수거할 결과물이 없습니다.");
+            Debug.LogWarning($"[Client] 용광로({furnaceId})는 아직 작동 중입니다.");
             return;
         }
 
         if (ConnectManager.Instance.isHost)
         {
-            // 호스트는 직접 서버 매니저에 retrieve 요청
+            // 최종 수거 가능 여부는 FurnaceServerManager.completedFurnaces 기준으로 판단
             FurnaceServerManager.Instance.OnReceiveFurnaceRetrieve(furnaceId);
         }
         else
         {
-            // 클라이언트는 패킷 송신을 통해 호스트에게 요청
+            // 피어도 로컬 hasResult에 의존하지 않고 호스트에게 요청
             PacketSender.Instance.SendFurnaceRetrieveRequest(furnaceId);
         }
     }
 
-    public void ThrowSmeltedItem(GameObject resultPrefab)
+    // 호스트 전용: 아이템 생성 및 배출. 생성된 Items 컴포넌트를 반환
+    public Items ThrowSmeltedItem(GameObject resultPrefab)
     {
         hasResult = false;
         isWorking = false;
@@ -172,7 +173,8 @@ public class FurnaceObject : MonoBehaviour
             finishImage.gameObject.SetActive(false);
 
         Vector3 spawnPos = this.transform.position + this.transform.up * item_throw_height;
-        GameObject itemToThrow = Instantiate(resultPrefab, spawnPos, Quaternion.identity);
+        Quaternion spawnRot = Quaternion.LookRotation(this.transform.forward, this.transform.up);
+        GameObject itemToThrow = Instantiate(resultPrefab, spawnPos, spawnRot);
 
         Rigidbody rb = itemToThrow.GetComponent<Rigidbody>();
         if (rb != null)
@@ -182,5 +184,18 @@ public class FurnaceObject : MonoBehaviour
         }
 
         Debug.Log($"[FurnaceObject] ({furnaceId}) 배출 완료!");
+        return itemToThrow.GetComponent<Items>();
+    }
+
+    // 피어 전용: 아이템 생성 없이 용광로 상태 및 UI만 초기화
+    public void OnItemRetrieved()
+    {
+        hasResult = false;
+        isWorking = false;
+
+        if (finishImage != null)
+            finishImage.gameObject.SetActive(false);
+
+        Debug.Log($"[FurnaceObject] ({furnaceId}) 피어 - 수거 상태 초기화 완료.");
     }
 }

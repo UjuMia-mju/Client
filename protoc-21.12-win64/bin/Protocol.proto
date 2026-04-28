@@ -312,7 +312,8 @@ message S_GAME_READY_TO_START
 {
 	int32 start_delay_seconds = 1;        // "3초 뒤 시작" 등 UI 표현용
 	uint64 server_start_timestamp = 2;    // 서버 기준 시작 타임스탬프 (핑 차이 보정용)
-	int32 random_seed = 3;                // 일단 랜덤 시드를 같이 보냄. (추후에 사용 가능성)
+	int32 random_seed = 3;                // 일단 랜덤 시드를 같이 보냄. (추후에 사용..?)
+	repeated uint64 id_order = 4;
 }
 
 // ==================== 게임 플레이 ====================

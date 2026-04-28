@@ -7,7 +7,7 @@ using System;
 /// 호스트가 피어로부터 받은 패킷을 처리하는 클래스
 /// NetManager의 피어 receive 루프에서 호출됨
 /// 각 C_ 패킷에 대한 이벤트를 정의하여 게임 로직에서 구독할 수 있도록 함
-/// 예: 플레이어 이동, 채팅 메시지, 애니메이션 상태 변경, 아이템 상호작용 등
+/// 예: 플레이어 이동, 채팅 메시지, 애니메이션 상태 변경, 아이템 상호작유속 등
 /// </summary>
 public class PeerPacketHandler : Singleton<PeerPacketHandler>
 {
@@ -17,13 +17,14 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_PLAYER_ANIMATION> OnPeerAnimationEvent;
     public event Action<int, C_OBJECT_PICKUP> OnPeerItemAttachedEvent;
     public event Action<int, C_OBJECT_DROP> OnPeerItemDetachedEvent;
-    public event Action<int, C_TEST_ENTER_GAME> OnPeerEnterGameEvent;
+    public event Action<int, C_ENTER_GAME> OnPeerEnterGameEvent;
     public event Action<int, C_PLAYER_STAT_EVENT> OnPeerStatEvent;
     public event Action<int, ulong> OnPeerSmeltRequestEvent;
     public event Action<int> OnPeerFurnaceRetrieveEvent;
     public event Action<int, C_OBJECT_SPAWN> OnPeerObjectSpawnEvent;
     public event Action<int, C_OBJECT_DESTROY> OnPeerObjectDestroyEvent;
     public event Action<int, C_SPACESHIP_INSERT> OnPeerSpaceshipInsertEvent;
+    public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
 
 
 
@@ -37,8 +38,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
 
         switch (packetId)
         {
-            case PacketId.PKT_C_TEST_ENTER_GAME:
-                Debug.Log($"[Peer {peerId}] Handling EnterGame packet");
+            case PacketId.PKT_C_ENTER_GAME:             // PKT_C_TEST_ENTER_GAME → PKT_C_ENTER_GAME
+                Debug.Log($"[Peer {peerId}] Handling C_ENTER_GAME packet");
                 HandlePeerEnterGame(peerId, data);
                 break;
             case PacketId.PKT_C_MOVE:
@@ -77,6 +78,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             case PacketId.PKT_C_SPACESHIP_INSERT:
                 HandlePeerSpaceshipInsert(peerId, data);
                 break;
+            case PacketId.PKT_S_GAME_READY_TO_START:
+                HandleGameReadyToStart(data);
+                break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
                 break;
@@ -85,47 +89,53 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
 
     private void HandlePeerEnterGame(int peerId, byte[] data)
     {
-        C_TEST_ENTER_GAME packet = C_TEST_ENTER_GAME.Parser.ParseFrom(data);
+        C_ENTER_GAME packet = C_ENTER_GAME.Parser.ParseFrom(data);
 
-        // 1. 피어 스탯 먼저 등록 (이후 패킷 처리 전에 반드시 등록되어야 함)
+        // 1. 피어 스탯 등록
         HostStatManager.Instance?.AddPlayer((ulong)peerId);
 
-        // 2. 피어의 S_PLAYER_ENTER 패킷 생성
-        S_PLAYER_ENTER enterPacket = new S_PLAYER_ENTER
+        // 2. S_ENTER_GAME 구성: 호스트 + 기존 피어들 + 신규 피어
+        S_ENTER_GAME response = new S_ENTER_GAME { Success = true };
+
+        // 호스트 자신
+        response.Players.Add(new PlayerGameInfo
         {
-            Player = new PlayerGameInfo
-            {
-                PlayerId = peerId,
-                Name = "Peer",
-                Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
-                Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
-            }
-        };
+            PlayerId = (int)NetManager.Instance._playerId,
+            Name = "Host",
+            Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
+            Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
+        });
 
-        // 3. 다른 피어들에게 브로드캐스트 (새로 들어온 피어 제외)
-        //HostNetManager.Instance.BroadcastToPeers(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket, includeSender: false);
-
-        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_ENTER, enterPacket);
-
-        // 4. 새로 들어온 피어에게 자신의 정보 전송 (playerId 세팅용, 스폰 제외 플래그 없음)
-        //HostNetManager.Instance.SendToPeer(peerId, PacketId.PKT_S_PLAYER_ENTER, enterPacket);
-        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_ENTER, enterPacket);
-
-        // 5. 새로 들어온 피어에게 호스트 정보 전송
-        S_PLAYER_ENTER hostEnterPacket = new S_PLAYER_ENTER
+        // 기존 접속 중인 피어들
+        if (PlayManager.Instance != null)
         {
-            Player = new PlayerGameInfo
+            foreach (var existingId in PlayManager.Instance._remotePlayers.Keys)
             {
-                PlayerId = (int)NetManager.Instance._playerId,
-                Name = "Host",
-                Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
-                Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
+                response.Players.Add(new PlayerGameInfo
+                {
+                    PlayerId = (int)existingId,
+                    Name = "Peer",
+                    Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
+                    Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
+                });
             }
-        };
-        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_ENTER, hostEnterPacket);
+        }
 
-        // 6. PlayManager 이벤트 발생
-        OnPeerEnterGameEvent?.Invoke(peerId, packet);
+        // 신규 피어
+        response.Players.Add(new PlayerGameInfo
+        {
+            PlayerId = peerId,
+            Name = "Peer",
+            Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
+            Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
+        });
+
+        // 3. 전체 피어에게 브로드캐스트 (신규 피어 포함)
+        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_ENTER_GAME, response);
+        Debug.Log($"[PeerPacketHandler] S_ENTER_GAME 브로드캐스트. players={response.Players.Count}");
+
+        // 4. 호스트 측 PlayManager 스폰 이벤트
+        OnPeerEnterGameEvent?.Invoke(peerId,    packet);
     }
 
     private void HandlePeerMove(int peerId, byte[] data)
@@ -321,6 +331,12 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     {
         C_SPACESHIP_INSERT packet = C_SPACESHIP_INSERT.Parser.ParseFrom(data);
         OnPeerSpaceshipInsertEvent?.Invoke(peerId, packet);
+    }
+
+    private void HandleGameReadyToStart(byte[] data)
+    {
+        S_GAME_READY_TO_START packet = S_GAME_READY_TO_START.Parser.ParseFrom(data);
+        OnGameReadyToStartEvent?.Invoke(packet);
     }
 }
 

@@ -18,8 +18,6 @@ public class MonoBehaviorSingleton<T> : MonoBehaviour where T : MonoBehaviorSing
                         "Add the component to a scene to avoid this (disabled objects are now found by search).");
                     var obj = new GameObject(typeof(T).Name);
                     instance = obj.AddComponent<T>();
-                    
-                    // [수정] 해당 부분 누락으로 DontDestory가 되지 않는 오류가 발생했었습니다
                     DontDestroyOnLoad(obj); 
                 }
             }
@@ -36,7 +34,7 @@ public class MonoBehaviorSingleton<T> : MonoBehaviour where T : MonoBehaviorSing
         }
         else if (instance != this) 
         {
-            Destroy(gameObject);
+            Destroy(this); // gameObject 전체가 아닌 중복 컴포넌트만 제거
         }
         else if (instance == this) 
         {
