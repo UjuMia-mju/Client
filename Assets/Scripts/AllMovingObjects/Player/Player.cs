@@ -187,7 +187,7 @@ public class Player : MovingObject
             KeyFInteract();
         }
 
-        GetGroundNormal(groundMask | walkable);
+        GetGroundNormal(groundMask);
         SphereTriggerFunc();
     }
 
