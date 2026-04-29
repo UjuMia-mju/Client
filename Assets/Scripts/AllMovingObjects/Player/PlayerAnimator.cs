@@ -1,4 +1,4 @@
-﻿using Unity.VisualScripting;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum AnimState
@@ -7,7 +7,9 @@ public enum AnimState
     Run,
     Jump,
     Falling,
-    Mining
+    Mining,
+    Throw_Ready,
+    Throw_Release
 }
 
 public class PlayerAnimator : MonoBehaviour
@@ -20,8 +22,30 @@ public class PlayerAnimator : MonoBehaviour
         anim = gameObject.GetComponentInChildren<Animator>();
     }
 
-    public void PlayerAnimation(Vector3 moveDir, bool isJumping, bool isGrounded, bool inputFreeze, bool isMining)
+    public void PlayerAnimation(
+        Vector3 moveDir,
+        bool isJumping,
+        bool isGrounded,
+        bool inputFreeze,
+        bool isMining,
+        bool isHoldingThrow,
+        bool isReleaseThrow)
     {
+        // 기존 AnimationPar 구조를 유지하면서 던지기 상태만 우선 적용합니다.
+        if (isReleaseThrow && !isMining)
+        {
+            state = AnimState.Throw_Release;
+            anim.SetInteger("AnimationPar", (int)state);
+            return;
+        }
+
+        if (isHoldingThrow && !isMining)
+        {
+            state = AnimState.Throw_Ready;
+            anim.SetInteger("AnimationPar", (int)state);
+            return;
+        }
+
         if (inputFreeze || isGrounded && moveDir == Vector3.zero && !isMining)
         {
             state = AnimState.Idle;
