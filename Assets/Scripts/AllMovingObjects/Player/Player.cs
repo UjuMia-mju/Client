@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 
@@ -182,7 +182,9 @@ public class Player : MovingObject
                 playerInput.GetIsJumping(),
                 isGrounded, 
                 inputFreeze,
-                isMining);
+                 isMining,
+                IsHoldingThrowInput(),
+                WasThrowReleasedThisFrame());
 
             KeyEInteract();
             TryChargedAimThrow();
@@ -435,6 +437,26 @@ public class Player : MovingObject
         if (trajectoryPreview != null)
             trajectoryPreview.Hide();
         StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
+    }
+
+    private bool IsHoldingThrowInput()
+    {
+        if (Mouse.current == null) return false;
+        return isPlayerGetSomething &&
+               playerItemSystem.currentEquipItem != null &&
+               !isPlayerThrowSomething &&
+               Mouse.current.rightButton.isPressed;
+    }
+
+    private bool WasThrowReleasedThisFrame()
+    {
+        if (Mouse.current == null) return false;
+        return Mouse.current.rightButton.isPressed &&
+               Mouse.current.leftButton.wasPressedThisFrame &&
+               isPlayerGetSomething &&
+               playerItemSystem.currentEquipItem != null &&
+               !isPlayerThrowSomething &&
+               (nearestObject == null || !nearestObject.CompareTag(Define.Tag.CRAFT_TABLE));
     }
 
     /// <summary>
