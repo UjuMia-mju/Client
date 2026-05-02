@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 클라이언트에서 방 입장 순서를 자체 추적합니다.
@@ -87,6 +88,7 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
 
     private void OnMemberLeave(S_ROOM_MEMBER_LEAVE packet)
     {
+        bool wasHostLeaving = _orderedIds.Count > 0 && _orderedIds[0] == packet.PlayerId;
         ulong id = packet.PlayerId;
         if (_orderedIds.Remove(id))
             Debug.Log($"[RoomMembershipTracker] OnMemberLeave. id={id}, orderedIds=[{string.Join(",", _orderedIds)}]");
@@ -99,11 +101,28 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
             _orderedIds.Insert(0, newOwner);
             Debug.Log($"[RoomMembershipTracker] NewOwner 적용. orderedIds=[{string.Join(",", _orderedIds)}]");
         }
+        else if (wasHostLeaving)
+        {
+            // 방장이 나갔고 새 방장이 지정되지 않으면 방이 종료된 것으로 보고
+            // 인게임에 남아 있는 피어를 메인으로 되돌립니다.
+            GoMainIfInGame();
+        }
     }
 
     private void OnLeaveRoom(S_LEAVE_ROOM packet)
     {
         _orderedIds.Clear();
         Debug.Log("[RoomMembershipTracker] OnLeaveRoom -> 클리어");
+        GoMainIfInGame();
+    }
+
+    private void GoMainIfInGame()
+    {
+        string scene = SceneManager.GetActiveScene().name;
+        if (scene == Define.Scene.MAIN || scene == Define.Scene.LOBBY)
+            return;
+
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadScene(Define.Scene.MAIN);
     }
 }
