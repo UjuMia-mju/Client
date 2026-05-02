@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Protocol;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ConnectManager : MonoBehaviour
 {

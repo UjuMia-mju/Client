@@ -3,8 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// 순수 데이터 및 기본 연산
-public struct PlayerStatData
+// 순수 데이터 및 기본 연산 (class: StatManager와 씬 PlayerStat이 동일 statData 인스턴스를 공유)
+public class PlayerStatData
 {
     public float oxygen;
     public int hp;
@@ -44,6 +44,48 @@ public struct PlayerStatData
         float rawOxygen = oxygen - amount;
         oxygen = Mathf.Round(rawOxygen * 10000f) / 10000f;
         oxygen = Mathf.Clamp01(oxygen);
+    }
+}
+
+/// <summary>씬에 붙이지 않는 HP/산소 상태. StatManager에서 new로 생성합니다 (MonoBehaviour는 new 불가).</summary>
+public class PlayerStatState
+{
+    public PlayerStatData statData;
+    public event Action<float> OnOxygenChanged;
+    public event Action<int> OnHpChanged;
+    public event Action OnPlayerDead;
+    public PlayerStat boundPlayer;
+
+    public PlayerStatState(int maxHp = 5)
+    {
+        statData = new PlayerStatData(maxHp);
+    }
+
+    public int GetHp() => statData.hp;
+    public float GetOxygen() => statData.oxygen;
+
+    public void ChangeData(int hp, float oxygen)
+    {
+        statData.hp = hp;
+        statData.oxygen = oxygen;
+    }
+
+    public void CallOnHpChanged()
+    {
+        OnHpChanged?.Invoke(statData.hp);
+        boundPlayer?.CallOnHpChanged();
+    }
+
+    public void CallOnOxygenChanged()
+    {
+        OnOxygenChanged?.Invoke(statData.oxygen);
+        boundPlayer?.CallOnOxygenChanged();
+    }
+
+    public void CallOnPlayerDead()
+    {
+        OnPlayerDead?.Invoke();
+        boundPlayer?.CallOnPlayerDead();
     }
 }
 
@@ -221,4 +263,6 @@ public class PlayerStat : MonoBehaviour
         StartOxygenDecrease();
         Debug.Log($"[PlayerStat] ApplyReviveFromNetwork. pos={pos}");
     }
+
+    public void CallOnPlayerRevive() => OnPlayerRevive?.Invoke();
 }

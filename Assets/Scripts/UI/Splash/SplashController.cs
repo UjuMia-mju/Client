@@ -13,6 +13,8 @@ public class SplashController : MonoBehaviour
     private void Start()
     {
         SoundManager.Instance.PlayBGM("Splash");
+
+        if (animator == null) animator = UIPanelAnimator.Instance;
         
         if (logoObject != null && animator != null)
         {

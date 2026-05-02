@@ -3,7 +3,27 @@ using System.Collections;
 
 public class UIPanelAnimator : MonoBehaviour
 {
+    public static UIPanelAnimator Instance { get; private set; }
+
     [SerializeField] private float duration = 0.2f;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
 
     public IEnumerator FadeIn(GameObject panel, Vector3 targetScale)
     {

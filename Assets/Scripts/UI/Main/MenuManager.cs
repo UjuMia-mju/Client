@@ -27,6 +27,7 @@ public class MenuManager : MonoBehaviour
     {
         if (mainCamera == null) mainCamera = Camera.main;
         if (animator == null) animator = GetComponent<UIPanelAnimator>();
+        if (animator == null) animator = UIPanelAnimator.Instance;
         _menuPanelController = Object.FindFirstObjectByType<MenuPanelController>();
     }
 

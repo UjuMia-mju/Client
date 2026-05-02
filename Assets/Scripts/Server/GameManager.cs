@@ -1,18 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using Protocol;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviorSingleton<GameManager>
-{    
-    void Start()
+{
+    void OnEnable()
     {
-        // 패킷 이벤트 구독
         PacketHandler.Instance.OnLoginResultEvent += OnLoginResult;
         PacketHandler.Instance.OnStageInfoEvent += OnStageInfo;
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
         if (PacketHandler.Instance != null)
         {
@@ -20,20 +18,23 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
             PacketHandler.Instance.OnStageInfoEvent -= OnStageInfo;
         }
     }
+
     private void OnLoginResult(S_LOGIN packet)
     {
         if (packet.Success)
         {
             Debug.Log($"✓ Login Success! Player ID: {packet.Player.Id}, Name: {packet.Player.Name}");
             NetManager.Instance._playerId = (ulong)packet.Player.Id;
-            DbCacheManager.Instance.RequestDbData();
-
-            // 이미 게임 씬에 있으면 씬 전환 하지 않음 (단품 테스트 대응)
-            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            if (currentScene != Define.Scene.MAIN && currentScene != Define.Scene.GAME_1_1)
+            try
             {
-                SceneManager.LoadScene(Define.Scene.MAIN);
+                DbCacheManager.RequestDbData();
             }
+            catch (Exception e)
+            {
+                Debug.LogError($"[GameManager] DB 요청 실패(씬 전환은 계속): {e.Message}");
+            }
+
+            // 씬 전환은 PacketHandler.HandleLoginResult에서 S_LOGIN 직후 SceneLoader로 통일
         }
         else
         {

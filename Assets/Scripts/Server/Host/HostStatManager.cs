@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class HostStatManager : BaseStatManager<HostStatManager>
 {
     void Start()
     {
-        AddPlayer(NetManager.Instance._playerId);
+        if (!_playerStats.ContainsKey(NetManager.Instance._playerId))
+            _playerStats.Add(NetManager.Instance._playerId, new PlayerStatState(5));
     }
 
     public void DecreaseHp(ulong playerId, int amount)
@@ -18,7 +20,6 @@ public class HostStatManager : BaseStatManager<HostStatManager>
             stat.CallOnPlayerDead();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
-        // 호스트 로컬 RemotePlayer UI 갱신
         PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
@@ -41,9 +42,6 @@ public class HostStatManager : BaseStatManager<HostStatManager>
         stat.CallOnOxygenChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
-        //Debug.Log($"[HostStatManager] DecreaseOxygen: playerId={playerId}, oxygen={stat.GetOxygen()}");
-
-        // 확인 필요
         PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
     }
 
@@ -60,7 +58,23 @@ public class HostStatManager : BaseStatManager<HostStatManager>
 
     public void RegisterPlayer(ulong playerId, PlayerStat stat)
     {
-        _playerStats[playerId] = stat;
+        if (stat == null) return;
+        var staleKeys = _playerStats
+            .Where(kv => kv.Value != null && kv.Value.boundPlayer == stat && kv.Key != playerId)
+            .Select(kv => kv.Key)
+            .ToList();
+        foreach (var k in staleKeys)
+            _playerStats.Remove(k);
+
+        if (_playerStats.TryGetValue(playerId, out var existing) && existing != null)
+        {
+            existing.statData = stat.statData;
+            existing.boundPlayer = stat;
+        }
+        else
+        {
+            _playerStats[playerId] = new PlayerStatState(5) { statData = stat.statData, boundPlayer = stat };
+        }
         Debug.Log($"[HostStatManager] RegisterPlayer: {playerId}");
     }
 }
