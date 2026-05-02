@@ -127,7 +127,7 @@ public class HostSender : IHostSender
         BroadcastRelayPacket(PacketId.PKT_S_OBJECT_PICKUP, packet);
     }
 
-    public void BroadcastItemDetached(Items itemData)
+    public void BroadcastItemDetached(Items itemData, bool charged)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
         bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
@@ -140,7 +140,8 @@ public class HostSender : IHostSender
                 Type = isItem ? ObjectType.Item : ObjectType.Tool,
                 ItemId = (ulong)itemData.itemId
             },
-            PlayerId = GetLocalPlayerId()
+            PlayerId = GetLocalPlayerId(),
+            Charged = charged
         };
 
         BroadcastRelayPacket(PacketId.PKT_S_OBJECT_DROP, packet);

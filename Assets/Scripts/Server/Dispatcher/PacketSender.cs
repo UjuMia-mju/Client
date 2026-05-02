@@ -61,12 +61,12 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     }
 
     // 아이템 놓기: 호스트/피어 분기
-    public void SendItemDetatched(Items itemData)
+    public void SendItemDetatched(Items itemData, bool charged)
     {
         if (hostSender != null)
-            hostSender.BroadcastItemDetached(itemData);
+            hostSender.BroadcastItemDetached(itemData, charged);
         else
-            TryClientSend(() => clientSender.SendItemDetatched(itemData));
+            TryClientSend(() => clientSender.SendItemDetatched(itemData, charged));
     }
 
     // 아이템 이동: 호스트/피어 분기

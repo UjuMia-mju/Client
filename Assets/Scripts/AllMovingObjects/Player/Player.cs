@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 using Protocol;
@@ -408,7 +408,7 @@ public class Player : MovingObject
                         return;
 
                     isPlayerGetSomething = false;
-                    SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
+                    SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), false);
                     playerItemSystem.ThrowItem(GetMovingAmount());
                     StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
                 }
@@ -549,8 +549,93 @@ public class Player : MovingObject
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
-    private void SendItemDetatchedToServer(Items data)
+    private void SendItemDetatchedToServer(Items data, bool charged)
     {
-        PacketSender.Instance.SendItemDetatched(data);
+        PacketSender.Instance.SendItemDetatched(data, charged);
     }
+
+    private bool IsHoldingThrowInput()
+    {
+        if (Mouse.current == null) return false;
+        return isPlayerGetSomething &&
+               playerItemSystem.currentEquipItem != null &&
+               !isPlayerThrowSomething &&
+               Mouse.current.rightButton.isPressed;
+    }
+
+    private bool WasThrowReleasedThisFrame()
+    {
+        if (Mouse.current == null) return false;
+        return Mouse.current.rightButton.isPressed &&
+               Mouse.current.leftButton.wasPressedThisFrame &&
+               isPlayerGetSomething &&
+               playerItemSystem.currentEquipItem != null &&
+               !isPlayerThrowSomething &&
+               (nearestObject == null || !nearestObject.CompareTag(Define.Tag.CRAFT_TABLE));
+    }
+
+    private void TryChargedAimThrow()
+    {
+        if (Mouse.current == null)
+            return;
+        if (!Mouse.current.rightButton.isPressed || !Mouse.current.leftButton.wasPressedThisFrame)
+            return;
+        if (!isPlayerGetSomething || playerItemSystem.currentEquipItem == null || isPlayerThrowSomething)
+            return;
+        if (nearestObject != null && nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
+            return;
+
+        isPlayerGetSomething = false;
+        SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), true);
+        playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetThrowAimDirection());
+        if (trajectoryPreview != null)
+            trajectoryPreview.Hide();
+        StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
+    }
+
+
+    private void UpdateThrowAimPreview()
+    {
+        bool aimZoom = false;
+
+        if (trajectoryPreview != null && Mouse.current != null)
+        {
+            bool holdingItem = isPlayerGetSomething && playerItemSystem.currentEquipItem != null && !isPlayerThrowSomething;
+            if (holdingItem && Mouse.current.rightButton.isPressed)
+            {
+                aimZoom = true;
+                Vector3 aimDir = GetThrowAimDirection();
+                Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimDir, chargedThrow: true);
+                float mass = playerItemSystem.GetHeldItemMass();
+                Vector3 v0 = impulse / mass;
+                trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
+            }
+            else
+                trajectoryPreview.Hide();
+        }
+        else if (trajectoryPreview != null)
+            trajectoryPreview.Hide();
+
+        if (playerTPCamera != null)
+            playerTPCamera.SetThrowAimZoom(aimZoom);
+    }
+
+    private Vector3 GetThrowAimDirection()
+    {
+        Vector3 up = transform.up;
+        Vector3 flat = Vector3.ProjectOnPlane(transform.forward, up);
+        if (flat.sqrMagnitude < 1e-4f)
+            flat = Vector3.ProjectOnPlane(transform.right, up);
+        flat.Normalize();
+
+        if (Camera.main == null)
+            return flat;
+
+        float verticalDot = Mathf.Clamp(Vector3.Dot(Camera.main.transform.forward.normalized, up), -0.95f, 0.95f);
+        Vector3 aim = (flat + up * verticalDot).normalized;
+        return aim;
+    }
+
+
+
 }

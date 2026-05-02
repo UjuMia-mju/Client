@@ -78,9 +78,22 @@ public class OtherPlayers : MovingObject
         itemData.SetOwnedByMe(false);
     }
 
-    public void DetachEquipItem()
+    public void DetachEquipItem(bool charged)
     {
-        otherPlayerItemSystem.DetachForRemoteSync();
+        // 호스트 측: 이 OtherPlayers는 "피어 대역"이므로, 호스트가 권위 물리로 던지기를 시뮬해야 함
+        // 피어 측: 호스트가 broadcast하는 S_OBJECT_MOVE로 알아서 위치 동기화되므로 시각적 detach만
+        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+        {
+            float runningAmount = GetMovingAmount();
+            if (charged)
+                otherPlayerItemSystem.ThrowChargedAim(runningAmount, transform.forward);
+            else
+                otherPlayerItemSystem.ThrowItem(runningAmount);
+        }
+        else
+        {
+            otherPlayerItemSystem.DetachForRemoteSync();
+        }
     }
 
     public void SetStat(int hpData, float oxygenData)

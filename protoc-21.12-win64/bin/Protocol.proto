@@ -401,12 +401,14 @@ message S_OBJECT_PICKUP
 message C_OBJECT_DROP
 {
 	ObjectId object_id = 1;
+	bool charged = 2;
 }
 
 message S_OBJECT_DROP
 {
 	ObjectId object_id = 1;
 	uint64 player_id = 2;
+	bool charged = 3;
 }
 
 // 오브젝트 이동

@@ -26,7 +26,6 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerAnimationEvent += OnPeerAnimation;
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent += OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent += OnPeerItemDetach;
-        PeerPacketHandler.Instance.OnPeerObjectMoveEvent += OnPeerObjectMove;
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent += OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent += OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent += OnPeerSpaceshipInsert;
@@ -69,7 +68,6 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerAnimationEvent -= OnPeerAnimation;
         PeerPacketHandler.Instance.OnPeerItemAttachedEvent -= OnPeerItemPickup;
         PeerPacketHandler.Instance.OnPeerItemDetachedEvent -= OnPeerItemDetach;
-        PeerPacketHandler.Instance.OnPeerObjectMoveEvent -= OnPeerObjectMove;
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent -= OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent -= OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent -= OnPeerSpaceshipInsert;
@@ -151,7 +149,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
-            if (remotePlayer != null) remotePlayer.DetachEquipItem();
+            if (remotePlayer != null) remotePlayer.DetachEquipItem(packet.Charged);
         }
         else Debug.LogWarning($"[HostItemDetach] unknown player: {playerId}");
     }
@@ -369,7 +367,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         if (_remotePlayers.TryGetValue((ulong)playerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
-            if (remotePlayer != null) remotePlayer.DetachEquipItem();
+            if (remotePlayer != null) remotePlayer.DetachEquipItem(packet.Charged);
         }
         else Debug.LogWarning($"[PeerItemDetach] unknown player: {playerId}");
     }

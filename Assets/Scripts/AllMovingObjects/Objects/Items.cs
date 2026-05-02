@@ -112,9 +112,12 @@ public class Items : MovingObject
                 IsOwnedByMe = localPlayer != null;
             }
         }
+        else
+        {
+            IsOwnedByMe = false;
+        }
 
-        // 소유자만 아이템 이동 패킷을 보냅니다.
-        if (IsOwnedByMe)
+        if (!IsOwnedByMe)
             SendPositionToServer();
     }
 
