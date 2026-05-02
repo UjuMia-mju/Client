@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+<<<<<<< HEAD
 using UnityEngine.InputSystem;
+=======
 using Protocol;
+>>>>>>> dev
 
 public class Player : MovingObject
 {
@@ -187,13 +190,19 @@ public class Player : MovingObject
                 playerInput.GetIsJumping(),
                 isGrounded,
                 inputFreeze,
-                 isUsingTool,
+<<<<<<< HEAD
+                 isMining,
                 IsHoldingThrowInput(),
                 WasThrowReleasedThisFrame());
 
             KeyEInteract();
-            KeyLeftClickInteract();
             TryChargedAimThrow();
+=======
+                isUsingTool);
+
+            KeyEInteract();
+            KeyLeftClickInteract();
+>>>>>>> dev
             KeyFInteract();
             UpdateThrowAimPreview();
         }
@@ -205,7 +214,6 @@ public class Player : MovingObject
                 playerTPCamera.SetThrowAimZoom(false);
         }
 
-        // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
         GetGroundNormal(groundMask);
         SphereTriggerFunc();
     }
@@ -391,6 +399,208 @@ public class Player : MovingObject
         base.Moving(movDir);
     }
 
+<<<<<<< HEAD
+    // E키 상호작용
+    // NOTE : nearestObject는 항상 SphereTriggerFunc로 트리거 감지합니다. 뭔가 만들었는데 안된다 싶으면, 해당 함수에서 태그를 검사하고 있는지 확인해주세요!
+    private void KeyEInteract()
+    {
+        if (playerInput.GetIsInteract())
+        {
+            playerInput.MakeIsInteractFalse();
+            // 플레이어가 아이템을 들고 있고, 그게 어떤 도구일 때
+            if (playerItemSystem.GetItemTag() != null && playerItemSystem.GetItemTag().Equals(Define.Tag.PICKAXE) && isPlayerGetSomething && !isPlayerThrowSomething)
+            {
+                isMining = true;
+            }
+
+            else if (nearestObject == null)
+            {
+                return;
+            }
+
+            // 플레이어에게서 가장.closest오브젝트의 태그가 아이템이며, 빈 손일 때
+            // 혹은 태그가 Tool인 것도 포함함.
+            else if (nearestObject.CompareTag(Define.Tag.ITEM) && !isPlayerGetSomething && !isPlayerThrowSomething ||
+                nearestObject.CompareTag(Define.Tag.PICKAXE) && !isPlayerGetSomething && !isPlayerThrowSomething)
+            {
+                isPlayerGetSomething = true;
+                playerItemSystem.AttachItem(nearestObject);
+                //SendItemAttachedToServer(nearestObject.GetComponent<Items>());
+                SendItemAttachedToServer(playerItemSystem.GetCurrentEquipItemClass());
+            }
+
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 조합대이며, 아이템을 들고 있을 때
+            // 또한 투입할 때 플레이어의 손에서 Detach
+            else if (nearestObject.CompareTag(Define.Tag.CRAFT_TABLE) && isPlayerGetSomething)
+            {
+                Crafting craftTable = nearestObject.GetComponent<Crafting>();
+                isPlayerGetSomething = false;
+                craftTable.AddCraftItems(playerItemSystem.currentEquipItem);
+                playerItemSystem.DetachItem();
+            }
+
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 용광로.
+            else if (nearestObject.CompareTag(Define.Tag.FURNACE))
+            {
+                FurnaceObject furnace = nearestObject.GetComponent<FurnaceObject>();
+            
+                if (furnace != null)
+                {
+                    // 1. 용광로가 작업이 끝났으면 아이템 회수하기
+
+                    if (furnace.hasResult)
+                    {
+                        // 클라이언트가 서버로 C_FURNACE_RETRIEVE 패킷을 보내도록 FurnaceObject에 함수(예: RequestRetrieve) 구현 필요
+                        furnace.RequestRetrieve();
+                        Debug.Log("용광로 결과물 수거 요청!");
+                    }
+                    else if (!furnace.isWorking && isPlayerGetSomething)
+                    {
+                        // 손에 든 아이템의 실제 itemId를 사용
+                        Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
+                        if (currentItem == null) return;
+
+                        int objectId = currentItem.itemId;
+
+                        if (furnace.RequestSmelt(objectId))
+                        {
+                            Debug.Log("용광로에 아이템 투입 요청 성공!");
+                            PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
+                            Destroy(playerItemSystem.currentEquipItem);
+                            isPlayerGetSomething = false;
+                            playerItemSystem.DetachItem();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("아직 용광로가 이전 작업을 처리 중입니다!");
+                    }
+                }
+            }
+
+            // 플레이어에게서 가장 가까운 오브젝트의 태그가 우주선이며, 아이템을 들고 있을 때
+            // 또한 투입할 때 플레이어의 손에서 Detach
+            else if (nearestObject.CompareTag(Define.Tag.SPACESHIP) && isPlayerGetSomething)
+            {
+                SpaceshipAssembly spaceshipAssembly = nearestObject.GetComponent<SpaceshipAssembly>();
+
+                Items currentItem = playerItemSystem.GetCurrentEquipItemClass();
+                if (currentItem == null) return;
+
+                if (ConnectManager.Instance.isHost)
+                {
+                    // 호스트: 직접 판정 후 브로드캐스트
+                    spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
+                    isPlayerGetSomething = false;
+                    playerItemSystem.DetachItem();
+                }
+                else
+                {
+                    // 피어: 패킷 전송 후 로컬 정리
+                    PacketSender.Instance.SendSpaceshipInsert(currentItem.itemStringKey, currentItem.itemId);
+                    PacketSender.Instance.SendObjectDestroy(currentItem.itemId);
+                    Destroy(playerItemSystem.currentEquipItem);
+                    isPlayerGetSomething = false;
+                    playerItemSystem.DetachItem();
+                }
+
+                //if (spaceshipAssembly != null)
+                //{
+                //    spaceshipAssembly.AddTargetItems(playerItemSystem.currentEquipItem);
+                //    isPlayerGetSomething = false;
+                //    playerItemSystem.DetachItem();
+                //}
+            }
+        }
+    }
+
+    private void UpdateThrowAimPreview()
+    {
+        bool aimZoom = false;
+
+        if (trajectoryPreview != null && Mouse.current != null)
+        {
+            bool holdingItem = isPlayerGetSomething && playerItemSystem.currentEquipItem != null && !isPlayerThrowSomething;
+            if (holdingItem && Mouse.current.rightButton.isPressed)
+            {
+                aimZoom = true;
+                Vector3 aimDir = GetThrowAimDirection();
+                Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimDir, chargedThrow: true);
+                float mass = playerItemSystem.GetHeldItemMass();
+                Vector3 v0 = impulse / mass;
+                trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
+            }
+            else
+                trajectoryPreview.Hide();
+        }
+        else if (trajectoryPreview != null)
+            trajectoryPreview.Hide();
+
+        if (playerTPCamera != null)
+            playerTPCamera.SetThrowAimZoom(aimZoom);
+    }
+
+    private void TryChargedAimThrow()
+    {
+        if (Mouse.current == null)
+            return;
+        if (!Mouse.current.rightButton.isPressed || !Mouse.current.leftButton.wasPressedThisFrame)
+            return;
+        if (!isPlayerGetSomething || playerItemSystem.currentEquipItem == null || isPlayerThrowSomething)
+            return;
+        if (nearestObject != null && nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
+            return;
+
+        isPlayerGetSomething = false;
+        SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
+        playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetThrowAimDirection());
+        if (trajectoryPreview != null)
+            trajectoryPreview.Hide();
+        StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
+    }
+
+    private bool IsHoldingThrowInput()
+    {
+        if (Mouse.current == null) return false;
+        return isPlayerGetSomething &&
+               playerItemSystem.currentEquipItem != null &&
+               !isPlayerThrowSomething &&
+               Mouse.current.rightButton.isPressed;
+    }
+
+    private bool WasThrowReleasedThisFrame()
+    {
+        if (Mouse.current == null) return false;
+        return Mouse.current.rightButton.isPressed &&
+               Mouse.current.leftButton.wasPressedThisFrame &&
+               isPlayerGetSomething &&
+               playerItemSystem.currentEquipItem != null &&
+               !isPlayerThrowSomething &&
+               (nearestObject == null || !nearestObject.CompareTag(Define.Tag.CRAFT_TABLE));
+    }
+
+    /// <summary>
+    /// 던지기 조준 방향(수평은 플레이어 전방, 수직은 카메라 pitch 기반).
+    /// 우클릭 중 마우스 위/아래 입력으로 던지기 각도를 조절할 수 있습니다.
+    /// </summary>
+    private Vector3 GetThrowAimDirection()
+    {
+        Vector3 up = transform.up;
+        Vector3 flat = Vector3.ProjectOnPlane(transform.forward, up);
+        if (flat.sqrMagnitude < 1e-4f)
+            flat = Vector3.ProjectOnPlane(transform.right, up);
+        flat.Normalize();
+
+        if (Camera.main == null)
+            return flat;
+
+        float verticalDot = Mathf.Clamp(Vector3.Dot(Camera.main.transform.forward.normalized, up), -0.95f, 0.95f);
+        Vector3 aim = (flat + up * verticalDot).normalized;
+        return aim;
+    }
+
+=======
+>>>>>>> dev
     // F키 상호작용
     private void KeyFInteract()
     {
@@ -408,7 +618,7 @@ public class Player : MovingObject
                         return;
 
                     isPlayerGetSomething = false;
-                    SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), false);
+                    SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
                     playerItemSystem.ThrowItem(GetMovingAmount());
                     StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
                 }
@@ -549,93 +759,8 @@ public class Player : MovingObject
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
-    private void SendItemDetatchedToServer(Items data, bool charged)
+    private void SendItemDetatchedToServer(Items data)
     {
-        PacketSender.Instance.SendItemDetatched(data, charged);
+        PacketSender.Instance.SendItemDetatched(data);
     }
-
-    private bool IsHoldingThrowInput()
-    {
-        if (Mouse.current == null) return false;
-        return isPlayerGetSomething &&
-               playerItemSystem.currentEquipItem != null &&
-               !isPlayerThrowSomething &&
-               Mouse.current.rightButton.isPressed;
-    }
-
-    private bool WasThrowReleasedThisFrame()
-    {
-        if (Mouse.current == null) return false;
-        return Mouse.current.rightButton.isPressed &&
-               Mouse.current.leftButton.wasPressedThisFrame &&
-               isPlayerGetSomething &&
-               playerItemSystem.currentEquipItem != null &&
-               !isPlayerThrowSomething &&
-               (nearestObject == null || !nearestObject.CompareTag(Define.Tag.CRAFT_TABLE));
-    }
-
-    private void TryChargedAimThrow()
-    {
-        if (Mouse.current == null)
-            return;
-        if (!Mouse.current.rightButton.isPressed || !Mouse.current.leftButton.wasPressedThisFrame)
-            return;
-        if (!isPlayerGetSomething || playerItemSystem.currentEquipItem == null || isPlayerThrowSomething)
-            return;
-        if (nearestObject != null && nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
-            return;
-
-        isPlayerGetSomething = false;
-        SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), true);
-        playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetThrowAimDirection());
-        if (trajectoryPreview != null)
-            trajectoryPreview.Hide();
-        StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
-    }
-
-
-    private void UpdateThrowAimPreview()
-    {
-        bool aimZoom = false;
-
-        if (trajectoryPreview != null && Mouse.current != null)
-        {
-            bool holdingItem = isPlayerGetSomething && playerItemSystem.currentEquipItem != null && !isPlayerThrowSomething;
-            if (holdingItem && Mouse.current.rightButton.isPressed)
-            {
-                aimZoom = true;
-                Vector3 aimDir = GetThrowAimDirection();
-                Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimDir, chargedThrow: true);
-                float mass = playerItemSystem.GetHeldItemMass();
-                Vector3 v0 = impulse / mass;
-                trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
-            }
-            else
-                trajectoryPreview.Hide();
-        }
-        else if (trajectoryPreview != null)
-            trajectoryPreview.Hide();
-
-        if (playerTPCamera != null)
-            playerTPCamera.SetThrowAimZoom(aimZoom);
-    }
-
-    private Vector3 GetThrowAimDirection()
-    {
-        Vector3 up = transform.up;
-        Vector3 flat = Vector3.ProjectOnPlane(transform.forward, up);
-        if (flat.sqrMagnitude < 1e-4f)
-            flat = Vector3.ProjectOnPlane(transform.right, up);
-        flat.Normalize();
-
-        if (Camera.main == null)
-            return flat;
-
-        float verticalDot = Mathf.Clamp(Vector3.Dot(Camera.main.transform.forward.normalized, up), -0.95f, 0.95f);
-        Vector3 aim = (flat + up * verticalDot).normalized;
-        return aim;
-    }
-
-
-
 }

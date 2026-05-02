@@ -58,9 +58,6 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             case PacketId.PKT_C_OBJECT_DROP:
                 HandlePeerItemDetached(peerId, data);
                 break;
-            case PacketId.PKT_C_OBJECT_MOVE:
-                HandlePeerObjectMove(peerId, data);
-                break;
             case PacketId.PKT_C_PLAYER_STAT_EVENT:
                 HandlePeerStatEvent(peerId, data);
                 break;
@@ -212,24 +209,11 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         S_OBJECT_DROP relay = new S_OBJECT_DROP
         {
             ObjectId = packet.ObjectId?.Clone(),
-            PlayerId = (ulong)peerId
+            PlayerId = (ulong)peerId,
+            Charged = packet.Charged
         };
 
         PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_DROP, relay);
-    }
-
-
-    private void HandlePeerObjectMove(int peerId, byte[] data)
-    {
-        C_OBJECT_MOVE packet = C_OBJECT_MOVE.Parser.ParseFrom(data);
-        S_OBJECT_MOVE relay = new S_OBJECT_MOVE
-        {
-            ObjectId = packet.ObjectId?.Clone(),
-            Pos = packet.Pos?.Clone(),
-            Rot = packet.Rot?.Clone()
-        };
-
-        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_MOVE, relay);
     }
 
     private void HandlePeerStatEvent(int peerId, byte[] data)

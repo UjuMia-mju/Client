@@ -149,7 +149,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
-            if (remotePlayer != null) remotePlayer.DetachEquipItem();
+            if (remotePlayer != null) remotePlayer.DetachEquipItem(packet.Charged);
         }
         else Debug.LogWarning($"[HostItemDetach] unknown player: {playerId}");
     }
@@ -367,7 +367,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         if (_remotePlayers.TryGetValue((ulong)playerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
-            if (remotePlayer != null) remotePlayer.DetachEquipItem();
+            if (remotePlayer != null) remotePlayer.DetachEquipItem(packet.Charged);
         }
         else Debug.LogWarning($"[PeerItemDetach] unknown player: {playerId}");
     }

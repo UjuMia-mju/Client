@@ -8,7 +8,7 @@ public interface IClientSender
     void SendMove(Vector3 position, Quaternion rotation);
     void SendAnimation(AnimState animState);
     void SendItemAttached(Items itemData);
-    void SendItemDetatched(Items itemData);
+    void SendItemDetatched(Items itemData, bool charged);
     void SendItemMove(int itemId, Vector3 position, Quaternion rotation);
     void SendToolMove(ToolType data, Vector3 position, Quaternion rotation);
     void SendPlayerStatEvent(

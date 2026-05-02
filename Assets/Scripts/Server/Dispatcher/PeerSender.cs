@@ -91,7 +91,7 @@ public class PeerSender : IClientSender
         SendRelayPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
     }
 
-    public void SendItemDetatched(Items itemData)
+    public void SendItemDetatched(Items itemData, bool charged)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
         bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
@@ -102,8 +102,9 @@ public class PeerSender : IClientSender
             ObjectId = new ObjectId
             {
                 Type = isItem ? ObjectType.Item : ObjectType.Tool,
-                ItemId = (ulong)itemData.itemId
-            }
+                ItemId = (ulong)itemData.itemId,
+            },
+            Charged = charged
         };
         SendRelayPacket(PacketId.PKT_C_OBJECT_DROP, packet);
     }

@@ -4,7 +4,10 @@ using static UnityEngine.Rendering.ReloadAttribute;
 
 public class Items : MovingObject
 {
+<<<<<<< HEAD
     // 로컬 클라이언트가 이 아이템의 위치 송신 권한을 갖는지 여부
+=======
+>>>>>>> dev
     private bool IsOwnedByMe;
     protected const string SOCKET = "Socket";
 
@@ -112,12 +115,14 @@ public class Items : MovingObject
                 IsOwnedByMe = localPlayer != null;
             }
         }
-        else
-        {
-            IsOwnedByMe = false;
-        }
 
+<<<<<<< HEAD
+        // 소유자만 아이템 이동 패킷을 보냅니다.
+        if (IsOwnedByMe)
+        {
+=======
         if (!IsOwnedByMe)
+>>>>>>> dev
             SendPositionToServer();
     }
 
@@ -153,11 +158,17 @@ public class Items : MovingObject
         }
     }
 
+<<<<<<< HEAD
     // 아이템을 놓을 때 소유권을 갱신하고 즉시 위치 동기화가 시작되도록 초기화
     public void OnDetached(bool ownedByMeAfterDetach)
     {
         IsOwnedByMe = ownedByMeAfterDetach;
         _lastSendPos = Vector3.zero; // 강제로 변화 감지되게 초기화
+=======
+    public void OnDetached()
+    {
+        _lastSendPos = Vector3.zero;
+>>>>>>> dev
         _lastSendRot = Quaternion.identity;
         _lastSendTime = 0f;
     }
