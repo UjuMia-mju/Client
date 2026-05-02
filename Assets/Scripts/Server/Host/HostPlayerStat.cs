@@ -23,7 +23,7 @@ public class HostPlayerStat : PlayerStat
         while (statData.oxygen > 0)
         {
             HostStatManager.Instance.DecreaseOxygen(GetMyPlayerId());
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(OxygenTickInterval);
         }
 
         if (!isRespawning)
@@ -39,7 +39,7 @@ public class HostPlayerStat : PlayerStat
         while (oxygen < 1f)
         {
             HostStatManager.Instance.IncreaseOxygen(GetMyPlayerId());
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(OxygenTickInterval);
         }
     }
 

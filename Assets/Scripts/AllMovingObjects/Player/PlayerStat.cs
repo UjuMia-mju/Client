@@ -104,6 +104,13 @@ public class PlayerStat : MonoBehaviour
     protected Coroutine oxygenHpDrainRoutine;
     protected float oxygenHpDrainInterval = 5f;
 
+    // Oxygen 튜닝 값은 Player 컴포넌트(프리팹 정적 부착)에서 읽음
+    private Player _ownerPlayer;
+    private Player OwnerPlayer => _ownerPlayer != null ? _ownerPlayer : (_ownerPlayer = GetComponent<Player>());
+    public float OxygenDecreasePerTick => OwnerPlayer != null ? OwnerPlayer.oxygenDecreasePerTick : 0.01f;
+    public float OxygenIncreasePerTick => OwnerPlayer != null ? OwnerPlayer.oxygenIncreasePerTick : 0.02f;
+    public float OxygenTickInterval    => OwnerPlayer != null ? OwnerPlayer.oxygenTickInterval    : 1.0f;
+
     public float GetOxygen() => statData.oxygen;
     public int GetHp() => statData.hp;
 

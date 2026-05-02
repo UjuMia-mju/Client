@@ -29,12 +29,12 @@ public class PeerPlayerStat : PlayerStat
     {
         while (statData.oxygen > 0)
         {
-            statData.DecreaseOxygen(0.01f);
+            statData.DecreaseOxygen(OxygenDecreasePerTick);
             CallOnOxygenChanged();
 
             PeerStatManager.Instance.DecreaseOxygen(GetMyPlayerId());
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(OxygenTickInterval);
         }
 
         if (!isRespawning)
@@ -48,11 +48,11 @@ public class PeerPlayerStat : PlayerStat
     {
         while (statData.oxygen < 1f)
         {
-            statData.IncreaseOxygen(0.02f);
+            statData.IncreaseOxygen(OxygenIncreasePerTick);
             CallOnOxygenChanged();
 
             PeerStatManager.Instance.IncreaseOxygen(GetMyPlayerId());
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(OxygenTickInterval);
         }
     }
 
