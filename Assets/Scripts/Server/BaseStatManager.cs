@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : BaseStatManager<T>
 {
-    protected Dictionary<ulong, PlayerStat> _playerStats = new();
+    protected Dictionary<ulong, PlayerStatState> _playerStats = new();
 
     public virtual void UpdateStat(ulong playerId, int hp, float oxygen)
     {
@@ -11,7 +11,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
         {
             // S_ENTER_GAME보다 S_PLAYER_STAT이 먼저 도착하는 경쟁 조건 대응.
             // 미등록 플레이어는 즉시 등록 후 처리.
-            stat = new PlayerStat();
+            stat = new PlayerStatState(5);
             _playerStats[playerId] = stat;
             Debug.Log($"[StatManager] 미등록 플레이어 자동 등록: playerId={playerId}");
         }
@@ -21,7 +21,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
         stat.CallOnOxygenChanged();
     }
 
-    public PlayerStat GetPlayerStat(ulong playerId)
+    public PlayerStatState GetPlayerStat(ulong playerId)
     {
         if (_playerStats.TryGetValue(playerId, out var stat))
             return stat;
@@ -31,7 +31,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
         return null;
     }
 
-    public bool TryGetPlayerStat(ulong playerId, out PlayerStat stat)
+    public bool TryGetPlayerStat(ulong playerId, out PlayerStatState stat)
     {
         return _playerStats.TryGetValue(playerId, out stat);
     }
@@ -39,7 +39,7 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
     public void AddPlayer(ulong playerId)
     {
         if (!_playerStats.ContainsKey(playerId))
-            _playerStats.Add(playerId, new PlayerStat());
+            _playerStats.Add(playerId, new PlayerStatState(5));
     }
 
     public void RemovePlayer(ulong playerId) => _playerStats.Remove(playerId);

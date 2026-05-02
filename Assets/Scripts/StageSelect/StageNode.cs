@@ -7,6 +7,12 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [Header("Stage Identity")]
     public int stageLevel = 1; 
     public int stageIndex = 1;
+
+    [Header("로컬 폴백 (서버 S_STAGE_INFO가 없을 때)")]
+    [Tooltip("0이면 MapId = stageLevel*100+stageIndex 로 임시 사용. 실제 DB map_id를 알면 여기에 넣으세요.")]
+    public int localMapIdOverride;
+    [Tooltip("비어 있으면 '스테이지 (chapter)-(stage)' 형식")]
+    public string localDisplayName = "";
     
     [Tooltip("이 체크박스를 켜면 클리어 테두리가 나타납니다.")]
     public bool isClearedStage = false; 

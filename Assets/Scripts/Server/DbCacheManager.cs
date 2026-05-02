@@ -3,52 +3,87 @@ using Protocol;
 using UnityEngine;
 
 /// <summary>
-/// 로그인 전/후 공통으로 사용하는 고정 DB 데이터(스테이지 등) 캐시.
+/// 서버 S_STAGE_INFO 기반 스테이지 메타 캐시.
+/// 데이터는 정적 보관 — MonoBehaviour 싱글톤이 파괴/재생성돼도 목록이 사라지지 않게 함.
 /// </summary>
 public class DbCacheManager : MonoBehaviorSingleton<DbCacheManager>
 {
-    private readonly Dictionary<(int mapId, int chapter, int stage), StageInfo> _stageInfoByKey
+    private static readonly List<StageInfo> s_stageInfos = new List<StageInfo>();
+    private static readonly Dictionary<(int mapId, int chapter, int stage), StageInfo> s_stageInfoByKey
         = new Dictionary<(int mapId, int chapter, int stage), StageInfo>();
 
-    private readonly List<StageInfo> _stageInfos = new List<StageInfo>();
+    public static bool HasStageInfo => s_stageInfos.Count > 0;
 
-    public bool HasStageInfo => _stageInfos.Count > 0;
+    public static IReadOnlyList<StageInfo> StageInfos => s_stageInfos;
 
-    public IReadOnlyList<StageInfo> StageInfos => _stageInfos;
-
-    public void RequestDbData()
+    public static void RequestDbData()
     {
         PacketDispatcher.Instance.SendGetDbData();
     }
 
-    public void CacheStageInfos(IEnumerable<StageInfo> stages)
+    /// <summary>S_STAGE_INFO 수신 시 호출. 인스턴스 없이도 동작.</summary>
+    public static void CacheStageInfos(IEnumerable<StageInfo> stages)
     {
-        _stageInfos.Clear();
-        _stageInfoByKey.Clear();
+        s_stageInfos.Clear();
+        s_stageInfoByKey.Clear();
 
         if (stages == null)
+        {
+            Debug.LogWarning("[DbCacheManager] CacheStageInfos: stages가 null입니다.");
             return;
+        }
 
         foreach (StageInfo stage in stages)
         {
             if (stage == null)
                 continue;
 
-            _stageInfos.Add(stage);
-            _stageInfoByKey[(stage.MapId, stage.Chapter, stage.Stage)] = stage;
+            s_stageInfos.Add(stage);
+            s_stageInfoByKey[(stage.MapId, stage.Chapter, stage.Stage)] = stage;
         }
 
-        Debug.Log($"[DbCacheManager] StageInfo 캐시 완료: {_stageInfos.Count}개");
+        Debug.Log($"[DbCacheManager] StageInfo 캐시 전체 갱신(정적): {s_stageInfos.Count}개");
     }
 
-    public bool TryGetStageInfo(int mapId, int chapter, int stage, out StageInfo stageInfo)
+    /// <summary>
+    /// 서버 목록이 없을 때 로컬 폴백 1건만 넣을 때 사용. (전체 replace 아님)
+    /// </summary>
+    public static void MergeStageInfoEntry(StageInfo stage)
     {
-        return _stageInfoByKey.TryGetValue((mapId, chapter, stage), out stageInfo);
+        if (stage == null) return;
+
+        for (int i = s_stageInfos.Count - 1; i >= 0; i--)
+        {
+            StageInfo s = s_stageInfos[i];
+            if (s == null) continue;
+            if (s.Chapter == stage.Chapter && s.Stage == stage.Stage)
+            {
+                s_stageInfos.RemoveAt(i);
+                s_stageInfoByKey.Remove((s.MapId, s.Chapter, s.Stage));
+                break;
+            }
+        }
+
+        s_stageInfos.Add(stage);
+        s_stageInfoByKey[(stage.MapId, stage.Chapter, stage.Stage)] = stage;
+        Debug.Log($"[DbCacheManager] 항목 병합(로컬/단건): MapId={stage.MapId} Chapter={stage.Chapter} Stage={stage.Stage}");
     }
 
-    public bool TryGetStageInfoByChapterStage(int chapter, int stage, out StageInfo stageInfo)
+    public static void ClearStageCache()
     {
-        foreach (StageInfo info in _stageInfos)
+        s_stageInfos.Clear();
+        s_stageInfoByKey.Clear();
+        Debug.Log("[DbCacheManager] 스테이지 캐시 비움");
+    }
+
+    public static bool TryGetStageInfo(int mapId, int chapter, int stage, out StageInfo stageInfo)
+    {
+        return s_stageInfoByKey.TryGetValue((mapId, chapter, stage), out stageInfo);
+    }
+
+    public static bool TryGetStageInfoByChapterStage(int chapter, int stage, out StageInfo stageInfo)
+    {
+        foreach (StageInfo info in s_stageInfos)
         {
             if (info == null)
                 continue;
@@ -62,5 +97,20 @@ public class DbCacheManager : MonoBehaviorSingleton<DbCacheManager>
 
         stageInfo = null;
         return false;
+    }
+
+    public static string BuildChapterStageListDebugString()
+    {
+        if (s_stageInfos.Count == 0)
+            return "캐시 없음(아직 S_STAGE_INFO를 못 받았거나 목록이 비어 있음)";
+
+        var parts = new List<string>(s_stageInfos.Count);
+        for (int i = 0; i < s_stageInfos.Count; i++)
+        {
+            var s = s_stageInfos[i];
+            if (s != null)
+                parts.Add($"({s.Chapter},{s.Stage})");
+        }
+        return string.Join(", ", parts);
     }
 }

@@ -16,10 +16,11 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
         PeerPacketHandler.Instance.OnPeerFurnaceRetrieveEvent += OnReceiveFurnaceRetrieve;
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         PeerPacketHandler.Instance.OnPeerSmeltRequestEvent -= OnReceiveSmeltRequest;
         PeerPacketHandler.Instance.OnPeerFurnaceRetrieveEvent -= OnReceiveFurnaceRetrieve;
+        base.OnDestroy();
     }
 
     // 클라이언트로부터 C_OBJECT_SMELT 패킷을 받았을 때 호출 (어떤 용광로인지 정보가 필요함)

@@ -33,7 +33,7 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         }
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         if (HostPacketHandler.Instance != null)
         {
@@ -41,6 +41,7 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
             HostPacketHandler.Instance.OnSmeltCompleteEvent -= HandleSmeltCompleted;
             HostPacketHandler.Instance.OnFurnaceRetrieveEvent -= HandleFurnaceRetrieve;
         }
+        base.OnDestroy();
     }
 
     public FurnaceObject GetFurnaceObject(int furnaceId)

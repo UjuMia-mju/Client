@@ -2668,6 +2668,7 @@ MonoBehaviour:
   isHost: 1
   centralServerIp: 127.0.0.1
   centralServerPort: 7777
+  isSecondPeer: 0
   hostIpFromServer: 127.0.0.1
   hostPortFromServer: 7788
 --- !u!114 &983795604
@@ -4030,6 +4031,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1525449569}
   - component: {fileID: 1525449568}
+  - component: {fileID: 1525449570}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4064,6 +4066,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1525449570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525449567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a131069599d0704d975e552a2d87d63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DbCacheManager
 --- !u!1 &1577053963
 GameObject:
   m_ObjectHideFlags: 0
