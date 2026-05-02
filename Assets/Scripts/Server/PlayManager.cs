@@ -6,6 +6,12 @@ public class PlayManager : SceneSingleton<PlayManager>
 {
     [SerializeField] private GameObject remotePlayerPrefab;
 
+    [Header("Spawn Points (입장 순서대로 인덱스 배정)")]
+    [SerializeField] private Transform[] spawnPoints;
+
+    [Tooltip("스폰 포인트가 부족할 때 fallback 위치")]
+    [SerializeField] private Vector3 fallbackSpawnPos = new Vector3(0, 23, 2);
+
     private GameObject _localPlayer;
     public Dictionary<ulong, GameObject> _remotePlayers = new();
 
@@ -23,9 +29,11 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent += OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent += OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent += OnPeerSpaceshipInsert;
+        PeerPacketHandler.Instance.OnPeerResourceHitEvent += OnPeerResourceHit;
+        PeerPacketHandler.Instance.OnPeerPlayerDeadEvent += OnPeerPlayerDead;
 
         HostPacketHandler.Instance.OnEnterGameEvent += OnHostEnterGame;
-        HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter; // 복원: 호스트 즉시 스폰용
+        HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent += OnHostMove;
         HostPacketHandler.Instance.OnAnimationEvent += OnHostAnimation;
         HostPacketHandler.Instance.OnItemAttached += OnHostItemPickup;
@@ -37,6 +45,20 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent += OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent += OnHostSpaceshipComplete;
         HostPacketHandler.Instance.OnTimerSyncEvent += OnHostTimerSync;
+        HostPacketHandler.Instance.OnResourceSpawnEvent += OnHostResourceSpawn;
+        HostPacketHandler.Instance.OnResourceDestroyEvent += OnHostResourceDestroy;
+        HostPacketHandler.Instance.OnPlayerDeadEvent += OnHostPlayerDead;
+        HostPacketHandler.Instance.OnPlayerReviveEvent += OnHostPlayerRevive;
+
+
+
+
+        var localPlayer = FindFirstObjectByType<Player>();
+        if (localPlayer != null)
+        {
+            var (pos, rot) = ResolveSpawnPose((ulong)NetManager.Instance._playerId, new PlayerGameInfo());
+            localPlayer.transform.SetPositionAndRotation(pos, rot);
+        }
     }
 
     void OnDestroy()
@@ -49,9 +71,11 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerObjectSpawnEvent -= OnPeerObjectSpawn;
         PeerPacketHandler.Instance.OnPeerObjectDestroyEvent -= OnPeerObjectDestroy;
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent -= OnPeerSpaceshipInsert;
+        PeerPacketHandler.Instance.OnPeerResourceHitEvent -= OnPeerResourceHit;
+        PeerPacketHandler.Instance.OnPeerPlayerDeadEvent -= OnPeerPlayerDead;
 
         HostPacketHandler.Instance.OnEnterGameEvent -= OnHostEnterGame;
-        HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter; // 복원
+        HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
         HostPacketHandler.Instance.OnMoveEvent -= OnHostMove;
         HostPacketHandler.Instance.OnAnimationEvent -= OnHostAnimation;
         HostPacketHandler.Instance.OnItemAttached -= OnHostItemPickup;
@@ -63,6 +87,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent -= OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent -= OnHostSpaceshipComplete;
         HostPacketHandler.Instance.OnTimerSyncEvent -= OnHostTimerSync;
+        HostPacketHandler.Instance.OnPlayerDeadEvent -= OnHostPlayerDead;
+        HostPacketHandler.Instance.OnPlayerReviveEvent -= OnHostPlayerRevive;
     }
 
     private void Update() { }
@@ -185,6 +211,80 @@ public class PlayManager : SceneSingleton<PlayManager>
     private void OnHostTimerSync(S_TIMER_SYNC packet)
         => GameRuleManager.Instance.SyncTimer(packet.RemainingTime);
 
+    private void OnHostResourceSpawn(S_RESOURCE_SPAWN packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        ResourceManager.Instance.ApplyResourceIdFromNetwork(packet.ResourceId, packet.ResourceStringKey, pos);
+    }
+
+    private void OnHostResourceDestroy(S_RESOURCE_DESTROY packet)
+    {
+        ResourceManager.Instance.DestroyResourceFromNetwork(packet.ResourceId);
+    }
+
+    private void OnHostPlayerDead(S_PLAYER_DEAD packet)
+        => ApplyPlayerDeadLocally(packet.PlayerId);
+
+    private void OnHostPlayerRevive(S_PLAYER_REVIVE packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+        ApplyPlayerReviveLocally(packet.PlayerId, pos, rot);
+    }
+
+    /// <summary>
+    /// 호스트는 자기 자신의 broadcast echo를 받지 않으므로,
+    /// PlayerLifeServerManager가 broadcast 직후 이 메서드를 직접 호출해 로컬에도 적용한다.
+    /// 피어는 S_PLAYER_DEAD 수신 → OnHostPlayerDead 경로로 같은 메서드를 탄다.
+    /// </summary>
+    public void ApplyPlayerDeadLocally(ulong playerId)
+    {
+        Debug.Log($"[PlayManager] ApplyPlayerDeadLocally. playerId={playerId}");
+
+        if (playerId == NetManager.Instance._playerId)
+        {
+            var localPlayer = FindFirstObjectByType<Player>();
+            if (localPlayer != null)
+            {
+                var stat = localPlayer.GetComponent<PlayerStat>();
+                if (stat != null) stat.ApplyDeathFromNetwork();
+            }
+        }
+        else
+        {
+            if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+            {
+                var op = playerObj.GetComponent<OtherPlayers>();
+                if (op != null) op.ApplyDeath();
+            }
+            else Debug.LogWarning($"[PlayManager] ApplyPlayerDeadLocally: unknown remote player {playerId}");
+        }
+    }
+
+    public void ApplyPlayerReviveLocally(ulong playerId, Vector3 pos, Quaternion rot)
+    {
+        Debug.Log($"[PlayManager] ApplyPlayerReviveLocally. playerId={playerId}, pos={pos}");
+
+        if (playerId == NetManager.Instance._playerId)
+        {
+            var localPlayer = FindFirstObjectByType<Player>();
+            if (localPlayer != null)
+            {
+                var stat = localPlayer.GetComponent<PlayerStat>();
+                if (stat != null) stat.ApplyReviveFromNetwork(pos, rot);
+            }
+        }
+        else
+        {
+            if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
+            {
+                var op = playerObj.GetComponent<OtherPlayers>();
+                if (op != null) op.ApplyRevive(pos, rot);
+            }
+            else Debug.LogWarning($"[PlayManager] ApplyPlayerReviveLocally: unknown remote player {playerId}");
+        }
+    }
+
     #endregion
 
     #region 피어 → 호스트 수신
@@ -296,6 +396,12 @@ public class PlayManager : SceneSingleton<PlayManager>
         spaceshipAssembly.AddTargetItems(item.gameObject);
     }
 
+    private void OnPeerPlayerDead(int peerId, C_PLAYER_DEAD packet)
+    {
+        Debug.Log($"[PlayManager] 피어 사망 보고 수신: peerId={peerId}, playerId={packet.PlayerId}");
+        PlayerLifeServerManager.Instance.OnReceivePlayerDead(packet.PlayerId);
+    }
+
     #endregion
 
     private void OnPlayerEnter(int peerId, S_PLAYER_ENTER packet)
@@ -326,10 +432,7 @@ public class PlayManager : SceneSingleton<PlayManager>
             return;
         }
 
-        Vector3 pos = new Vector3(0, 23, 2);
-        Quaternion rot = playerInfo.Rot != null
-            ? new Quaternion(playerInfo.Rot.X, playerInfo.Rot.Y, playerInfo.Rot.Z, playerInfo.Rot.W)
-            : Quaternion.identity;
+        (Vector3 pos, Quaternion rot) = ResolveSpawnPose(id, playerInfo);
 
         GameObject playerObj = Instantiate(remotePlayerPrefab, pos, rot);
         playerObj.name = $"RemotePlayer_{playerInfo.PlayerId}";
@@ -342,7 +445,44 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
 
         _remotePlayers[id] = playerObj;
-        Debug.Log($"✓ Spawned remote player: {playerInfo.Name} ({playerInfo.PlayerId})");
+        Debug.Log($"✓ Spawned remote player: {playerInfo.Name} ({playerInfo.PlayerId}) @ {pos}");
+    }
+
+    /// <summary>
+    /// 스폰 위치 결정 우선순위:
+    /// 1) RoomMembershipTracker의 입장 순서로 spawnPoints 인덱스 배정
+    /// 2) 패킷에 의미 있는 위치가 들어있으면 그 위치
+    /// 3) fallbackSpawnPos
+    /// </summary>
+    private (Vector3 pos, Quaternion rot) ResolveSpawnPose(ulong playerId, PlayerGameInfo playerInfo)
+    {
+        // 1) 입장 순서 기반 인덱스
+        var ordered = RoomMembershipTracker.Instance?.OrderedIds;
+        if (ordered != null && spawnPoints != null && spawnPoints.Length > 0)
+        {
+            int idx = -1;
+            for (int i = 0; i < ordered.Count; i++)
+            {
+                if (ordered[i] == playerId) { idx = i; break; }
+            }
+
+            if (idx >= 0 && idx < spawnPoints.Length && spawnPoints[idx] != null)
+                return (spawnPoints[idx].position, spawnPoints[idx].rotation);
+        }
+
+        // 2) 패킷이 (0,0,0)이 아니면 그 값을 사용
+        if (playerInfo.Pos != null &&
+            (playerInfo.Pos.X != 0f || playerInfo.Pos.Y != 0f || playerInfo.Pos.Z != 0f))
+        {
+            Vector3 pktPos = new Vector3(playerInfo.Pos.X, playerInfo.Pos.Y, playerInfo.Pos.Z);
+            Quaternion pktRot = playerInfo.Rot != null
+                ? new Quaternion(playerInfo.Rot.X, playerInfo.Rot.Y, playerInfo.Rot.Z, playerInfo.Rot.W)
+                : Quaternion.identity;
+            return (pktPos, pktRot);
+        }
+
+        // 3) fallback
+        return (fallbackSpawnPos, Quaternion.identity);
     }
 
     private void RemoveRemotePlayer(ulong playerId)
@@ -371,5 +511,16 @@ public class PlayManager : SceneSingleton<PlayManager>
     private void OnServerPlayerEnter(S_PLAYER_ENTER packet)
     {
         SpawnRemotePlayer(packet.Player);
+    }
+
+    private void OnPeerResourceHit(int peerId, C_RESOURCE_HIT packet)
+    {
+        Debug.Log($"[PlayManager] 피어 자원 타격 수신: peerId={peerId}, resourceId={packet.ResourceId}");
+        ResourceServerManager.Instance.OnReceiveHit(packet.ResourceId);
+    }
+
+    public (Vector3 pos, Quaternion rot) GetSpawnPoseForPlayer(ulong playerId)
+    {
+        return ResolveSpawnPose(playerId, new Protocol.PlayerGameInfo());
     }
 }

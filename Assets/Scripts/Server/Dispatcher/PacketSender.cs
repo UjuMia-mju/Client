@@ -112,6 +112,14 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     // 피어 전용: 아이템 스폰 요청 (로컬 스폰 없이 키+위치만 전송)
     public void SendObjectSpawnRequest(string itemStringKey, Vector3 position, Quaternion rotation)
         => TryClientSend(() => clientSender.SendObjectSpawn(itemStringKey, position, rotation));
+
+    // 자원: 피어 → 호스트
+    public void SendResourceHit(int resourceId)
+        => TryClientSend(() => clientSender.SendResourceHit(resourceId));
+
+    // 플레이어 사망 보고
+    public void SendPlayerDead(ulong playerId)
+        => TryClientSend(() => clientSender.SendPlayerDead(playerId));
     #endregion
 
     #region Host Broadcasts
@@ -156,5 +164,17 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
 
     public void BroadcastTimerSync(float remainingTime)
         => TryHostBroadcast(() => hostSender.BroadcastTimerSync(remainingTime));
+
+    public void BroadcastResourceSpawn(ResourceObject resource)
+        => TryHostBroadcast(() => hostSender.BroadcastResourceSpawn(resource));
+
+    public void BroadcastResourceDestroy(int resourceId)
+        => TryHostBroadcast(() => hostSender.BroadcastResourceDestroy(resourceId));
+
+    public void BroadcastPlayerDead(ulong playerId)
+        => TryHostBroadcast(() => hostSender.BroadCastPlayerDead(playerId));
+
+    public void BroadcastPlayerRevive(ulong playerId, Vector3 pos, Quaternion rot)
+        => TryHostBroadcast(() => hostSender.BroadCastPlayerRevive(playerId, pos, rot));
     #endregion
 }
