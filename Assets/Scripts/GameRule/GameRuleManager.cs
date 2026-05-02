@@ -5,15 +5,16 @@ public class GameRuleManager : MonoBehaviour
 {
     public static GameRuleManager Instance { get; private set; }
 
-    [SerializeField]
-    private float timerDuration;
+    [SerializeField] private float timerDuration;
     private float remainingTime;
     public float GetRemainingTime() => remainingTime;
     private bool isVictory = false;
     private bool isGameDone = false;
 
-    private const float TIMER_SYNC_INTERVAL = 1f; // 1초마다 동기화
+    private const float TIMER_SYNC_INTERVAL = 1f;
     private float _lastSyncTime = 0f;
+
+    private Coroutine _timerCoroutine;
 
     void Start()
     {
@@ -25,10 +26,14 @@ public class GameRuleManager : MonoBehaviour
             return;
         }
 
-        // 호스트만 타이머 실행
-        if (ConnectManager.Instance == null || ConnectManager.Instance.isHost)
-            StartCoroutine(StartTimer());
+        Debug.Log($"[GameRuleManager] Start. ConnectManager.isHost={ConnectManager.Instance?.isHost}");
+
+        if (IsHostNow())
+            _timerCoroutine = StartCoroutine(StartTimer());
     }
+
+    private static bool IsHostNow()
+        => ConnectManager.Instance != null && ConnectManager.Instance.isHost;
 
     IEnumerator StartTimer()
     {
@@ -37,10 +42,18 @@ public class GameRuleManager : MonoBehaviour
         while (remainingTime > 0)
         {
             yield return new WaitForSeconds(1f);
+
+            // 매 틱마다 재확인: 도중에 역할이 피어로 바뀌었다면 즉시 중단
+            if (!IsHostNow())
+            {
+                Debug.LogWarning("[GameRuleManager] 호스트 권한 상실, 타이머 코루틴 중단");
+                _timerCoroutine = null;
+                yield break;
+            }
+
             remainingTime -= 1f;
 
-            // 5초마다 피어들에게 타이머 동기화
-            if (ConnectManager.Instance != null && Time.time - _lastSyncTime >= TIMER_SYNC_INTERVAL)
+            if (Time.time - _lastSyncTime >= TIMER_SYNC_INTERVAL)
             {
                 PacketSender.Instance.BroadcastTimerSync(remainingTime);
                 _lastSyncTime = Time.time;
@@ -48,6 +61,7 @@ public class GameRuleManager : MonoBehaviour
         }
 
         Debug.Log("타이머 종료!");
+        _timerCoroutine = null;
         OnTimerEnd();
     }
 
@@ -55,18 +69,18 @@ public class GameRuleManager : MonoBehaviour
     {
         Debug.Log("타이머가 종료되어 게임이 실패로 끝났습니다.");
 
-        // 호스트가 피어들에게 패배 브로드캐스트
-        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+        if (IsHostNow())
             PacketSender.Instance.BroadcastSpaceshipComplete(false);
 
         ReturnToStageSelectScene(false);
     }
 
-    // 피어 전용: 호스트로부터 받은 타이머 동기화
     public void SyncTimer(float time)
     {
+        // 피어 전용. 호스트가 자신의 echo로 SyncTimer를 받지 않도록 방어.
+        if (IsHostNow()) return;
+
         remainingTime = time;
-        Debug.Log($"[GameRuleManager] 타이머 동기화: {remainingTime}초");
     }
 
     public void ReturnToStageSelectScene(bool data)
@@ -74,19 +88,16 @@ public class GameRuleManager : MonoBehaviour
         if (isGameDone) return;
 
         isVictory = data;
-        Time.timeScale = 0f;
         isGameDone = true;
+        Time.timeScale = 0f;
 
-        Debug.Log("게임 종료! 승리 여부: " + isVictory);
+        Debug.Log($"게임 종료! 승리 여부: {isVictory}");
 
-        //if (SceneLoader.Instance != null)
-        //{
-        //    Debug.Log("SceneLoader가 있으므로 스테이지 선택 씬으로 돌아갑니다.");
-        //    SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
-        //}
-        //else
-        //{
-        //    Debug.Log("SceneLoader가 없습니다. 씬을 단독으로 실행해 테스트중일 가능성이 있습니다.");
-        //}
+        if (SceneLoader.Instance != null)
+        {
+            Time.timeScale = 1f;
+            Debug.Log("스테이지 선택 씬으로 이동합니다.");
+            SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
+        }
     }
 }

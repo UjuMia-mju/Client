@@ -3,7 +3,7 @@ using Protocol;
 
 public interface IClientSender
 {
-    void SendEnterGame(ulong playerIndex);
+    void SendEnterGame();
     void SendChat(string message);
     void SendMove(Vector3 position, Quaternion rotation);
     void SendAnimation(AnimState animState);
@@ -27,4 +27,9 @@ public interface IClientSender
 
     void SendSpaceshipInsert(string itemStringKey, int itemId);
 
+    // 자원: 피어 → 호스트, "이 자원을 1회 타격했다"
+    void SendResourceHit(int resourceId);
+
+    // 플레이어 사망 보고\
+    void SendPlayerDead(ulong playerId);
 }

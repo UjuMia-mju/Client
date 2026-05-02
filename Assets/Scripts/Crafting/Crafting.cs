@@ -18,8 +18,6 @@ public class Crafting : MonoBehaviour
     private const float ITEM_THROW_HEIGHT = 3.5f; 
     private const float ITEM_THROW_FORCE = 200f;
 
-    private int lastItemCount = 0;
-
     private void Awake()
     {
         foreach (var prefab in itemPrefabList)
@@ -101,12 +99,8 @@ public class Crafting : MonoBehaviour
     //private void SendItemListToServer()
     //{
     //    int itemCount = craftItems.Count;
-
-    //    if (itemCount != lastItemCount)
-    //    {
-    //        NetManager.Instance.SendCraftingList(craftItems.ConvertAll(item => item.name));
-    //        lastItemCount = itemCount;
-    //    }
+    //    // static int lastItemCount; // 재활성화 시 이전 수와 비교용
+    //    // if (itemCount != lastItemCount) { ... lastItemCount = itemCount; }
     //}
 
     public void SetItemList(List<string> data)

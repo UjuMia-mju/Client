@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using Protocol;
+using Google.Protobuf;
 
 public class PeerSender : IClientSender
 {
-    PeerNetManager peerNet = PeerNetManager.Instance;
     private readonly PosInfo _movePosInfo = new PosInfo();
     private readonly RotInfo _moveRotInfo = new RotInfo();
     private Vector3 _lastSentPos;
@@ -13,20 +13,37 @@ public class PeerSender : IClientSender
     private readonly C_PLAYER_ANIMATION _animPacket = new C_PLAYER_ANIMATION();
     private readonly C_PLAYER_STAT_EVENT _eventPacket = new C_PLAYER_STAT_EVENT();
 
-    public void SendEnterGame(ulong playerIndex)
+    private void SendRelayPacket(PacketId packetId, IMessage innerPacket)
     {
-        Debug.Log($"Sending EnterGame for playerIndex: {playerIndex}");
-        C_TEST_ENTER_GAME enterGamePacket = new C_TEST_ENTER_GAME
+        var payload = innerPacket.ToByteString();
+        C_RELAY_PACKET relayPacket = new C_RELAY_PACKET
         {
-            PlayerIndex = playerIndex
+            RequireHostAuthority = true,
+            PacketId = (uint)packetId,
+            Payload = payload
         };
-        peerNet.SendPacket(PacketId.PKT_C_TEST_ENTER_GAME, enterGamePacket);
+
+        //RelayNetManager.Instance.SendPacket(PacketId.PKT_C_RELAY_PACKET, relayPacket);
+        NetManager.Instance.SendPacket(PacketId.PKT_C_RELAY_PACKET, relayPacket);
+    }
+
+    public void SendEnterGame()
+    {
+        ulong localPlayerId = (ulong)NetManager.Instance._playerId;
+        Debug.Log($"[PeerSender] C_ENTER_GAME 전송. playerId={localPlayerId}");
+
+        C_ENTER_GAME enterPacket = new C_ENTER_GAME
+        {
+            PlayerIndex = localPlayerId
+        };
+        SendRelayPacket(PacketId.PKT_C_ENTER_GAME, enterPacket);
     }
 
     public void SendChat(string message)
     {
         C_CHAT chatPacket = new C_CHAT { Msg = message };
-        peerNet.SendPacket(PacketId.PKT_C_CHAT, chatPacket);
+
+        SendRelayPacket(PacketId.PKT_C_CHAT, chatPacket);
     }
 
     public void SendMove(Vector3 position, Quaternion rotation)
@@ -47,19 +64,20 @@ public class PeerSender : IClientSender
 
         _movePacket.Pos = _movePosInfo;
         _movePacket.Rot = _moveRotInfo;
-        peerNet.SendPacket(PacketId.PKT_C_MOVE, _movePacket);
+
+        SendRelayPacket(PacketId.PKT_C_MOVE, _movePacket);
     }
 
     public void SendAnimation(AnimState animState)
     {
         _animPacket.State = (int)animState;
-        peerNet.SendPacket(PacketId.PKT_C_PLAYER_ANIMATION, _animPacket);
+        SendRelayPacket(PacketId.PKT_C_PLAYER_ANIMATION, _animPacket);
     }
 
     public void SendItemAttached(Items itemData)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
         if (!isItem && !isTool) return;
 
         C_OBJECT_PICKUP packet = new C_OBJECT_PICKUP
@@ -70,13 +88,13 @@ public class PeerSender : IClientSender
                 ItemId = (ulong)itemData.itemId
             }
         };
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
+        SendRelayPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
     }
 
     public void SendItemDetatched(Items itemData)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
-        bool isTool = itemData.gameObject.CompareTag(Define.Tag.PICKAXE);
+        bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
         if (!isItem && !isTool) return;
 
         C_OBJECT_DROP packet = new C_OBJECT_DROP
@@ -87,7 +105,7 @@ public class PeerSender : IClientSender
                 ItemId = (ulong)itemData.itemId
             }
         };
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_DROP, packet);
+        SendRelayPacket(PacketId.PKT_C_OBJECT_DROP, packet);
     }
 
     public void SendItemMove(int itemId, Vector3 position, Quaternion rotation)
@@ -98,7 +116,7 @@ public class PeerSender : IClientSender
             Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
             Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
         };
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
+        SendRelayPacket(PacketId.PKT_C_OBJECT_MOVE, packet);
     }
 
     public void SendToolMove(ToolType data, Vector3 position, Quaternion rotation) { }
@@ -130,7 +148,8 @@ public class PeerSender : IClientSender
                 if (itemUse != null) _eventPacket.ItemUse = itemUse;
                 break;
         }
-        peerNet.SendPacket(PacketId.PKT_C_PLAYER_STAT_EVENT, _eventPacket);
+
+        SendRelayPacket(PacketId.PKT_C_PLAYER_STAT_EVENT, _eventPacket);
     }
 
     public void BroadcastStatResult(ulong targetPlayerId, int hp, float oxygen)
@@ -144,14 +163,16 @@ public class PeerSender : IClientSender
         ObjectId objectId_p = new ObjectId { ItemId = objectId, Type = ObjectType.Item };
 
         C_OBJECT_SMELT reqPacket = new C_OBJECT_SMELT { ObjectId = objectId_p, FurnaceId = furnaceId };
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_SMELT, reqPacket);
+
+        SendRelayPacket(PacketId.PKT_C_OBJECT_SMELT, reqPacket);
     }
 
     // 용광로에서 아이템 회수 요청
     public void SendFurnaceRetrieveRequest(int furnaceId)
     {
         C_FURNACE_RETRIEVE reqPacket = new C_FURNACE_RETRIEVE { FurnaceId = furnaceId };
-        peerNet.SendPacket(PacketId.PKT_C_FURNACE_RETRIEVE, reqPacket);
+
+        SendRelayPacket(PacketId.PKT_C_FURNACE_RETRIEVE, reqPacket);
     }
 
     public void SendObjectSpawn(string itemStringKey, Vector3 position, Quaternion rotation)
@@ -162,18 +183,33 @@ public class PeerSender : IClientSender
             Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z },
             Rot = new RotInfo { X = rotation.x, Y = rotation.y, Z = rotation.z, W = rotation.w }
         };
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_SPAWN, packet);
+
+        SendRelayPacket(PacketId.PKT_C_OBJECT_SPAWN, packet);
     }
 
     public void SendObjectDestroy(int itemId)
     {
         C_OBJECT_DESTROY packet = new C_OBJECT_DESTROY { ItemId = itemId };
-        peerNet.SendPacket(PacketId.PKT_C_OBJECT_DESTROY, packet);
+
+        SendRelayPacket(PacketId.PKT_C_OBJECT_DESTROY, packet);
     }
 
     public void SendSpaceshipInsert(string itemStringKey, int itemId)
     {
         C_SPACESHIP_INSERT packet = new C_SPACESHIP_INSERT { ItemStringKey = itemStringKey, ItemId = itemId };
-        peerNet.SendPacket(PacketId.PKT_C_SPACESHIP_INSERT, packet);
+
+        SendRelayPacket(PacketId.PKT_C_SPACESHIP_INSERT, packet);
+    }
+
+    public void SendResourceHit(int resourceId)
+    {
+        C_RESOURCE_HIT packet = new C_RESOURCE_HIT { ResourceId = resourceId };
+        SendRelayPacket(PacketId.PKT_C_RESOURCE_HIT, packet);
+    }
+
+    public void SendPlayerDead(ulong playerId)
+    {
+        C_PLAYER_DEAD packet = new C_PLAYER_DEAD { PlayerId = playerId };
+        SendRelayPacket(PacketId.PKT_C_PLAYER_DEAD, packet);
     }
 }

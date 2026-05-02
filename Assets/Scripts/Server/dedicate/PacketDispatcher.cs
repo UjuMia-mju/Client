@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Google.Protobuf;
+using UnityEngine;
 using Protocol;
 
 
@@ -50,6 +51,18 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_MY_SKINS, packet);
     }
 
+    public void SendGetDbData()
+    {
+        C_GET_DB_DATA packet = new C_GET_DB_DATA();
+        net.SendPacket(PacketId.PKT_C_GET_DB_DATA, packet);
+    }
+
+    public void SendGetClearInfo()
+    {
+        C_GET_CLEAR_INFO packet = new C_GET_CLEAR_INFO();
+        net.SendPacket(PacketId.PKT_C_GET_CLEAR_INFO, packet);
+    }
+
     // ==================== Lobby/Room ====================
 
     public void SendCreateRoom()
@@ -71,6 +84,14 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             RoomId = roomId
         };
         net.SendPacket(PacketId.PKT_C_ENTER_ROOM, packet);
+    }
+
+    public void SendEnterTestRoom()
+    {
+        C_TEST_ENTER_ROOM enterRoomPacket = new C_TEST_ENTER_ROOM
+        {
+        };
+        net.SendPacket(PacketId.PKT_C_TEST_ENTER_ROOM, enterRoomPacket);
     }
 
     public void SendLeaveRoom()
@@ -126,6 +147,18 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_INVITE_RESPONSE, inviteResponsePacket);
     }
 
+    public void SendStartStage(int mapId, int chapter, int stageIndex)
+    {
+        C_START_STAGE packet = new C_START_STAGE
+        {
+            MapId = mapId,
+            Chapter = chapter,
+            StageIndex = stageIndex
+        };
+        
+        NetManager.Instance.SendPacket(PacketId.PKT_C_START_STAGE, packet);
+    }
+    
     #endregion
 
 

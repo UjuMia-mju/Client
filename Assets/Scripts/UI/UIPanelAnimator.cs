@@ -3,7 +3,27 @@ using System.Collections;
 
 public class UIPanelAnimator : MonoBehaviour
 {
+    public static UIPanelAnimator Instance { get; private set; }
+
     [SerializeField] private float duration = 0.2f;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
 
     public IEnumerator FadeIn(GameObject panel, Vector3 targetScale)
     {
@@ -22,9 +42,11 @@ public class UIPanelAnimator : MonoBehaviour
         }
     }
 
-    public IEnumerator FadeOut(GameObject panel)
+    public IEnumerator FadeOut(GameObject panel, bool destroyOnEnd = true)
     {
         CanvasGroup cg = panel.GetComponent<CanvasGroup>();
+        if (cg == null) yield break;
+
         float elapsed = 0f;
         while (elapsed < duration)
         {
@@ -33,6 +55,14 @@ public class UIPanelAnimator : MonoBehaviour
             cg.alpha = Mathf.Lerp(1f, 0f, t);
             yield return null;
         }
-        Destroy(panel);
+
+        if (destroyOnEnd)
+        {
+            Destroy(panel);
+        }
+        else
+        {
+            panel.SetActive(false);
+        }
     }
 }

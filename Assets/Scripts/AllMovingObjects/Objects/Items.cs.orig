@@ -1,0 +1,198 @@
+﻿using UnityEngine;
+using UnityEngine.Animations;
+using static UnityEngine.Rendering.ReloadAttribute;
+
+public class Items : MovingObject
+{
+<<<<<<< HEAD
+    // 로컬 클라이언트가 이 아이템의 위치 송신 권한을 갖는지 여부
+=======
+>>>>>>> dev
+    private bool IsOwnedByMe;
+    protected const string SOCKET = "Socket";
+
+    protected float _lastSendTime = 0f;
+    protected Vector3 _lastSendPos;
+    protected Quaternion _lastSendRot;
+
+    [HideInInspector] public int itemId;
+    public string itemStringKey;
+
+    [SerializeField] private float lerpSpeed = 10f;
+
+    private Vector3 _targetPos;
+    private Quaternion _targetRot = Quaternion.identity;
+
+    private PlanetGravity _planet;
+
+    [Tooltip("씬에 미리 배치된 아이템이면 체크. 호스트가 피어에게 초기 ID를 동기화합니다.")]
+    [SerializeField] private bool isScenePlacedItem = false;
+    public bool IsScenePlacedItem => isScenePlacedItem;
+
+    private void Start()
+    {
+        ItemManager.Instance.RegisterItem(this);
+        _planet = FindFirstObjectByType<PlanetGravity>();
+        _targetPos = transform.position;
+        _targetRot = transform.rotation;
+        _lastSendPos = transform.position;
+        _lastSendRot = transform.rotation;
+        _lastSendTime = Time.time;
+
+        // 피어 클라이언트에서는 물리 시뮬레이션 비활성화
+        // 호스트 위치를 받아서 따라가기만 하면 되므로 물리가 필요 없음
+        if (ConnectManager.Instance != null && !ConnectManager.Instance.isHost)
+        {
+            rb.isKinematic = true;
+
+            ObjectsGravityController gravController = GetComponent<ObjectsGravityController>();
+            if (gravController != null)
+                gravController.enabled = false;
+        }
+
+        // OtherPlayers와 물리 충돌 무시 (밀림 방지)
+        Collider myCol = GetComponent<Collider>();
+        if (myCol != null)
+        {
+            foreach (var rp in FindObjectsByType<OtherPlayers>(FindObjectsSortMode.None))
+            {
+                Collider rpCol = rp.GetComponent<Collider>();
+                if (rpCol != null)
+                    Physics.IgnoreCollision(myCol, rpCol, true);
+            }
+        }
+
+        if (isScenePlacedItem && ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+            StartCoroutine(BroadcastSpawnNextFrame());
+    }
+
+    private System.Collections.IEnumerator BroadcastSpawnNextFrame()
+    {
+        yield return null;
+        PacketSender.Instance.SendObjectSpawn(this, transform.position, transform.rotation);
+        Debug.Log($"[Items] 씬 배치 아이템 동기화: itemId={itemId}, key={itemStringKey}");
+    }
+
+    private void FixedUpdate()
+    {
+        if (_planet != null)
+        {
+            // 호스트만 로컬 물리로 _targetPos 갱신
+            // 피어는 SetPos()로 받은 호스트 위치를 유지해야 함
+            if (ConnectManager.Instance == null || ConnectManager.Instance.isHost)
+            {
+                Vector3 gravityDir = (transform.position - _planet.transform.position).normalized;
+                LayerMask groundMask = LayerMask.GetMask(Define.Layer.GROUND, Define.Layer.WALKABLE_COLLIDER);
+
+                if (Physics.Raycast(transform.position, -gravityDir, 0.6f, groundMask))
+                {
+                    _targetPos = transform.position;
+                    _targetRot = transform.rotation;
+                }
+            }
+        }
+
+        if (Vector3.Distance(transform.position, _targetPos) > 0.01f ||
+            Quaternion.Angle(transform.rotation, _targetRot) > 0.5f)
+        {
+            Moving(Vector3.zero);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (transform.parent != null && transform.parent.name == SOCKET)
+        {
+            this.transform.localPosition = Vector3.zero;
+            this.transform.localRotation = Quaternion.identity;
+
+            OtherPlayers otherPlayer = transform.parent.GetComponentInParent<OtherPlayers>();
+            if (otherPlayer != null)
+                IsOwnedByMe = false;
+            else
+            {
+                Player localPlayer = transform.parent.GetComponentInParent<Player>();
+                IsOwnedByMe = localPlayer != null;
+            }
+        }
+
+<<<<<<< HEAD
+        // 소유자만 아이템 이동 패킷을 보냅니다.
+        if (IsOwnedByMe)
+        {
+=======
+        if (!IsOwnedByMe)
+>>>>>>> dev
+            SendPositionToServer();
+    }
+
+    private void SendPositionToServer()
+    {
+        // 아이템 위치 송신 권한은 호스트에게만 있음
+        if (ConnectManager.Instance != null && !ConnectManager.Instance.isHost) return;
+
+        Vector3 gravityDir = (transform.position - _planet.transform.position).normalized;
+        Vector3 horizontalVelocity = rb.linearVelocity - Vector3.Project(rb.linearVelocity, gravityDir);
+        float interval = horizontalVelocity.sqrMagnitude > 0.1f ? 0.05f : 0.5f;
+
+        if (Time.time - _lastSendTime < interval) return;
+
+        bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.1f;
+        bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 5f;
+
+        if (posChanged || rotChanged)
+        {
+            PacketSender.Instance.SendItemMove(itemId, transform.position, transform.rotation);
+            _lastSendPos = transform.position;
+            _lastSendRot = transform.rotation;
+            _lastSendTime = Time.time;
+        }
+    }
+
+    public void SetPos(Vector3 pos, Quaternion rot)
+    {
+        if (!IsOwnedByMe)
+        {
+            _targetPos = pos;
+            _targetRot = rot;
+        }
+    }
+
+<<<<<<< HEAD
+    // 아이템을 놓을 때 소유권을 갱신하고 즉시 위치 동기화가 시작되도록 초기화
+    public void OnDetached(bool ownedByMeAfterDetach)
+    {
+        IsOwnedByMe = ownedByMeAfterDetach;
+        _lastSendPos = Vector3.zero; // 강제로 변화 감지되게 초기화
+=======
+    public void OnDetached()
+    {
+        _lastSendPos = Vector3.zero;
+>>>>>>> dev
+        _lastSendRot = Quaternion.identity;
+        _lastSendTime = 0f;
+    }
+
+    public void SetOwnedByMe(bool ownedByMe)
+    {
+        IsOwnedByMe = ownedByMe;
+    }
+
+    protected override void Moving(Vector3 movDir)
+    {
+        if (IsOwnedByMe) return;
+
+        if (rb.isKinematic)
+        {
+            // 피어: transform 직접 보간 (물리 없음)
+            transform.position = Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed);
+        }
+        else if (rb.linearVelocity.sqrMagnitude < 0.0001f)
+        {
+            // 호스트: 물리 기반 보간
+            rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed));
+            rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed));
+        }
+    }
+}

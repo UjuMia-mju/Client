@@ -7,12 +7,13 @@ public class HostPlayerStat : PlayerStat
     #region HP 증/감소 로직
     public override void DecreaseHp(int damage)
     {
-        HostStatManager.Instance.DecreaseHp(playerId, damage);
+        // ... 호스트 측 추가 로직 ...
+        base.DecreaseHp(damage);  // ← 이게 빠져있으면 ReportDeathToHost가 안 탐
     }
 
     public override void IncreaseHp(int amount)
     {
-        HostStatManager.Instance.IncreaseHp(playerId, amount);
+        HostStatManager.Instance.IncreaseHp(GetMyPlayerId(), amount);
     }
     #endregion
 
@@ -21,7 +22,7 @@ public class HostPlayerStat : PlayerStat
     {
         while (statData.oxygen > 0)
         {
-            HostStatManager.Instance.DecreaseOxygen(playerId);
+            HostStatManager.Instance.DecreaseOxygen(GetMyPlayerId());
             yield return new WaitForSeconds(1.0f);
         }
 
@@ -34,18 +35,18 @@ public class HostPlayerStat : PlayerStat
 
     public override IEnumerator IncreaseOxygen()
     {
-        float oxygen = HostStatManager.Instance.GetPlayerStat(playerId).statData.oxygen;
+        float oxygen = HostStatManager.Instance.GetPlayerStat(GetMyPlayerId()).statData.oxygen;
         while (oxygen < 1f)
         {
-            HostStatManager.Instance.IncreaseOxygen(playerId);
+            HostStatManager.Instance.IncreaseOxygen(GetMyPlayerId());
             yield return new WaitForSeconds(1.0f);
         }
     }
 
     public override IEnumerator OxygenHpDrainCoroutine()
     {
-        float oxygen = HostStatManager.Instance.GetPlayerStat(playerId).statData.oxygen;
-        int hp = HostStatManager.Instance.GetPlayerStat(playerId).statData.hp;
+        float oxygen = HostStatManager.Instance.GetPlayerStat(GetMyPlayerId()).statData.oxygen;
+        int hp = HostStatManager.Instance.GetPlayerStat(GetMyPlayerId()).statData.hp;
 
         while (oxygen <= 0f && !isRespawning && hp > 0)
         {

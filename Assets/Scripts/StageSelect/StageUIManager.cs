@@ -18,8 +18,8 @@ public class StageUIManager : MonoBehaviour
         if (leftButton != null) leftButton.SetActive(isVisible);
         if (rightButton != null) rightButton.SetActive(isVisible);
     }
-
-    public IEnumerator OpenPanel(GameObject panelPrefab, string stageName, int difficulty, string description)
+    
+    public IEnumerator OpenPanel(GameObject panelPrefab, string stageName, int difficulty, string description, int estimatedClearTimeSeconds, int clearStarCount)
     {
         if (panelPrefab == null) yield break;
 
@@ -28,7 +28,7 @@ public class StageUIManager : MonoBehaviour
         SelectPanelController panelInfo = _currentPanel.GetComponent<SelectPanelController>();
         if (panelInfo != null)
         {
-            panelInfo.SetInfo(stageName, difficulty, description);
+            panelInfo.SetInfo(stageName, difficulty, description, estimatedClearTimeSeconds, clearStarCount);
         }
 
         RectTransform rect = _currentPanel.GetComponent<RectTransform>();

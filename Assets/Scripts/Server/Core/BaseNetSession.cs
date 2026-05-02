@@ -12,6 +12,7 @@ public delegate void PacketReceivedHandler(PacketId packetId, byte[] data);
 public class BaseNetSession
 {
     protected Socket _socket; // dedicate
+    protected Socket _relaySocket;
     protected bool _isConnected = false;
     public bool IsConnected => _isConnected;
     protected const int BUFFER_SIZE = 65536; // 64KB
@@ -76,6 +77,14 @@ public class BaseNetSession
             Debug.LogError($"OnConnect failed: {ex.Message}");
         }
     }
+
+    public void ConnectToRelayServer(string ip, int port)
+    {
+    }
+
+    private void OnRelayConnectCallback(IAsyncResult ar)
+    {
+    } 
     
     #endregion
 

@@ -25,7 +25,7 @@ public class LobbyRoomClient : MonoBehaviour
         PacketHandler.Instance.OnReadyEvent += OnReady;
 
         // 방 생성 후 로비 씬 전환 시, S_ENTER_ROOM이 로비 로드 전에 도착해 이벤트를 놓친 경우 캐시에서 복구
-        S_ENTER_ROOM cached = PacketManager.GetAndClearCachedEnterRoom();
+        S_ENTER_ROOM cached = PacketHandler.GetAndClearCachedEnterRoom();
         if (cached != null)
         {
             Debug.Log("[LobbyRoomClient] 캐시된 S_ENTER_ROOM 적용 (방 생성 후 로비 전환)");

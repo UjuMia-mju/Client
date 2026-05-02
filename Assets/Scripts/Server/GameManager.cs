@@ -1,34 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using Protocol;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviorSingleton<GameManager>
-{    
-    void Start()
+{
+    void OnEnable()
     {
-        // 패킷 이벤트 구독
         PacketHandler.Instance.OnLoginResultEvent += OnLoginResult;
+        PacketHandler.Instance.OnStageInfoEvent += OnStageInfo;
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
         if (PacketHandler.Instance != null)
         {
             PacketHandler.Instance.OnLoginResultEvent -= OnLoginResult;
+            PacketHandler.Instance.OnStageInfoEvent -= OnStageInfo;
         }
     }
+
     private void OnLoginResult(S_LOGIN packet)
     {
         if (packet.Success)
         {
             Debug.Log($"✓ Login Success! Player ID: {packet.Player.Id}, Name: {packet.Player.Name}");
-            NetManager.Instance._playerId = (ulong)packet.Player.Id; //  이런 캐스팅 부분 나중에 수정해야함.
-            SceneManager.LoadScene(Define.Scene.SPLASH);  // 로그인 성공 시 게임 씬으로 이동            
+            NetManager.Instance._playerId = (ulong)packet.Player.Id;
+            try
+            {
+                DbCacheManager.RequestDbData();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[GameManager] DB 요청 실패(씬 전환은 계속): {e.Message}");
+            }
+
+            // 씬 전환은 PacketHandler.HandleLoginResult에서 S_LOGIN 직후 SceneLoader로 통일
         }
         else
         {
             Debug.LogError("✗ Login Failed!");
         }
+    }
+
+    private void OnStageInfo(S_STAGE_INFO packet)
+    {
+        Debug.Log($"[GameManager] S_STAGE_INFO 수신: {packet.Stages.Count}개");
     }
 }

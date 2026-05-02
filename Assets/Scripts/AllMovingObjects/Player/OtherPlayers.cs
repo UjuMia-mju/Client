@@ -9,9 +9,12 @@ public class OtherPlayers : MovingObject
 
     [SerializeField] private float lerpSpeed = 10f;
 
+    private GameObject[] toggleOnDeath;
+
     private Vector3 _targetPos;
     private Quaternion _targetRot;
     private bool _hasTarget = false;
+    private bool _isDead = false;
 
     private Animator otherPlayerAnimator;
     private OtherPlayerStats otherPlayerStats;  // UI 담당과 상의필요함.
@@ -32,6 +35,7 @@ public class OtherPlayers : MovingObject
 
     private void FixedUpdate()
     {
+        if (_isDead) return;
         Moving(Vector3.zero);
     }
 
@@ -82,5 +86,61 @@ public class OtherPlayers : MovingObject
     public void SetStat(int hpData, float oxygenData)
     {
         otherPlayerStats.SetStat(hpData, oxygenData);
+    }
+
+
+    public void EndMining()
+    {
+        //empty
+    }
+
+    // 특정 아이템을 들고 있는지 확인 후 분리
+    public bool TryDetachItem(GameObject item)
+    {
+        if (otherPlayerItemSystem.currentEquipItem == item)
+        {
+            otherPlayerItemSystem.DetachItem();
+            return true;
+        }
+        return false;
+    }
+
+    public void ApplyDeath()
+    {
+        if (_isDead) return;
+        _isDead = true;
+
+        Debug.Log($"[OtherPlayers] ApplyDeath 호출됨. playerId={PlayerId}, toggleOnDeath count={(toggleOnDeath != null ? toggleOnDeath.Length : 0)}");
+
+        SetVisible(false);
+    }
+
+    public void ApplyRevive(Vector3 pos, Quaternion rot)
+    {
+        _isDead = false;
+
+        // 위치/회전 즉시 이동 + 보간 타깃도 동기화 (안 그러면 직후 lerp가 옛 위치로 잡아당김)
+        transform.SetPositionAndRotation(pos, rot);
+        _targetPos = pos;
+        _targetRot = rot;
+        _hasTarget = true;
+
+        SetVisible(true);
+        Debug.Log($"[OtherPlayers] ApplyRevive. playerId={PlayerId}, pos={pos}");
+    }
+
+    private void SetVisible(bool visible)
+    {
+        if (toggleOnDeath != null && toggleOnDeath.Length > 0)
+        {
+            foreach (var go in toggleOnDeath)
+                if (go != null) go.SetActive(visible);
+        }
+        else
+        {
+            // 인스펙터에 안 넣었으면 fallback으로 렌더러/콜라이더 토글
+            foreach (var r in GetComponentsInChildren<Renderer>(true)) r.enabled = visible;
+            foreach (var c in GetComponentsInChildren<Collider>(true)) c.enabled = visible;
+        }
     }
 }

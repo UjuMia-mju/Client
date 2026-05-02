@@ -6,85 +6,100 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
 {
     void Start()
     {
-        // 호스트 플레이어 초기화
         if (!_playerStats.ContainsKey(0))
-            _playerStats.Add(0, new PlayerStat());
+            _playerStats.Add(0, new PlayerStatState(5));
 
-        // 자기 자신의 playerId는 S_PLAYER_ENTER 수신 후 확정되므로
-        // 이벤트 구독으로 처리
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnPlayerEnterReceived;
+        HostPacketHandler.Instance.OnEnterGameEvent += OnEnterGameReceived;
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         if (HostPacketHandler.Instance != null)
+        {
             HostPacketHandler.Instance.OnPlayerEnterEvent -= OnPlayerEnterReceived;
+            HostPacketHandler.Instance.OnEnterGameEvent -= OnEnterGameReceived;
+        }
+        base.OnDestroy();
     }
 
-    // S_PLAYER_ENTER에서 첫 번째 패킷이 자기 자신의 ID
-    // HostPacketHandler에서 _playerId=0일 때만 ID를 갱신하고 이벤트를 올리지 않음
-    // 즉 이 이벤트가 처음 발생하는 시점 = _playerId가 이미 확정된 이후
-    // 따라서 여기서 자기 자신을 등록
+    /// <summary>S_ENTER_GAME 수신 시 전체 플레이어 목록을 스탯 딕셔너리에 등록합니다.</summary>
+    private void OnEnterGameReceived(S_ENTER_GAME packet)
+    {
+        // 자기 자신 등록
+        ulong myId = NetManager.Instance._playerId;
+        if (myId != 0 && !_playerStats.ContainsKey(myId))
+        {
+            _playerStats.Add(myId, new PlayerStatState(5));
+            Debug.Log($"[PeerStatManager] 자기 자신 등록(S_ENTER_GAME): playerId={myId}");
+        }
+
+        // 전체 플레이어 등록
+        foreach (var playerInfo in packet.Players)
+        {
+            ulong id = (ulong)playerInfo.PlayerId;
+            if (!_playerStats.ContainsKey(id))
+            {
+                _playerStats.Add(id, new PlayerStatState(5));
+                Debug.Log($"[PeerStatManager] 플레이어 등록(S_ENTER_GAME): playerId={id}");
+            }
+        }
+    }
+
     private void OnPlayerEnterReceived(S_PLAYER_ENTER packet)
     {
         ulong myId = NetManager.Instance._playerId;
         if (myId != 0 && !_playerStats.ContainsKey(myId))
         {
-            _playerStats.Add(myId, new PlayerStat());
+            _playerStats.Add(myId, new PlayerStatState(5));
             Debug.Log($"[PeerStatManager] 자기 자신 등록: playerId={myId}");
         }
 
-        // 새로 입장한 다른 플레이어도 등록
         ulong remoteId = (ulong)packet.Player.PlayerId;
         if (!_playerStats.ContainsKey(remoteId))
         {
-            _playerStats.Add(remoteId, new PlayerStat());
+            _playerStats.Add(remoteId, new PlayerStatState(5));
             Debug.Log($"[PeerStatManager] 원격 플레이어 등록: playerId={remoteId}");
         }
     }
 
-    public IReadOnlyDictionary<ulong, PlayerStat> GetAllRemoteStats()
-    {
-        return _playerStats;
-    }
+    public IReadOnlyDictionary<ulong, PlayerStatState> GetAllRemoteStats() => _playerStats;
 
-    #region each player stat update methods
+    #region stat update methods
 
     public void DecreaseHp(ulong playerId, int amount)
     {
-        var Damage = new Protocol.DamageEventData { DamageAmount = amount };
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.DamageTaken, playerId, Damage);
+        var damage = new Protocol.DamageEventData { DamageAmount = amount };
+        PacketSender.Instance.SendPlayerStatEvent(StatEventType.DamageTaken, playerId, damage);
     }
 
     public void IncreaseHp(ulong playerId, int amount)
     {
-        var Heal = new HealEventData { HealAmount = amount };
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.Healed, playerId, null, Heal);
-    }   
+        var heal = new HealEventData { HealAmount = amount };
+        PacketSender.Instance.SendPlayerStatEvent(StatEventType.Healed, playerId, null, heal);
+    }
 
     public void DecreaseOxygen(ulong playerId)
     {
-        var Oxygen = new OxygenEventData
+        var oxygen = new OxygenEventData
         {
             ChangeType = OxygenChangeType.ConsumeNatural,
             Amount = 0.01f
         };
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, Oxygen);
+        PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, oxygen);
     }
 
     public void IncreaseOxygen(ulong playerId)
     {
-        var Oxygen = new OxygenEventData
+        var oxygen = new OxygenEventData
         {
             ChangeType = OxygenChangeType.RestoreArea,
             Amount = 0.02f
         };
-        PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, Oxygen);
+        PacketSender.Instance.SendPlayerStatEvent(StatEventType.OxygenChanged, playerId, null, null, oxygen);
     }
 
-    public IReadOnlyDictionary<ulong, PlayerStat> GetAllStats()
-    {
-        return _playerStats;
-    }
+    public IReadOnlyDictionary<ulong, PlayerStatState> GetAllStats() => _playerStats;
+
     #endregion
 }

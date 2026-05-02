@@ -16,16 +16,16 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
         PeerPacketHandler.Instance.OnPeerFurnaceRetrieveEvent += OnReceiveFurnaceRetrieve;
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         PeerPacketHandler.Instance.OnPeerSmeltRequestEvent -= OnReceiveSmeltRequest;
         PeerPacketHandler.Instance.OnPeerFurnaceRetrieveEvent -= OnReceiveFurnaceRetrieve;
+        base.OnDestroy();
     }
 
     // 클라이언트로부터 C_OBJECT_SMELT 패킷을 받았을 때 호출 (어떤 용광로인지 정보가 필요함)
     public void OnReceiveSmeltRequest(int furnaceId, ulong objectId)
     {
-        // 1. 해당 용광로가 이미 작동 중인지 확인
         if (activeFurnaces.ContainsKey(furnaceId))
         {
             Debug.LogWarning($"[Server] 용광로({furnaceId})는 이미 작동 중입니다.");
@@ -43,10 +43,22 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
 
         if (SmeltingRecipeManager.Instance.TryGetRecipe(item.itemStringKey, out SmeltingRecipe recipe))
         {
-            // 중앙 매니저에서 코루틴 시작 후 딕셔너리에 등록
+            // 피어들에게 아이템 파괴 브로드캐스트
+            PacketSender.Instance.SendObjectDestroy((int)objectId);
+
+            // 호스트 로컬에서도 아이템 처리
+            // OtherPlayers 손에서 분리 후 파괴
+            foreach (var rp in FindObjectsByType<OtherPlayers>(FindObjectsSortMode.None))
+            {
+                if (rp.TryDetachItem(item.gameObject))
+                    break;
+            }
+            ItemManager.Instance.UnregisterItem(item);
+            Destroy(item.gameObject);
+
             Coroutine routine = StartCoroutine(SmeltingRoutine(furnaceId, objectId, recipe));
             activeFurnaces.Add(furnaceId, routine);
-            Debug.Log($"[Server] 용광로({furnaceId})에서 제련 시작: 아이템 {item.itemStringKey} -> 결과 {recipe.outputItemID}, 소요 시간 {recipe.smeltingTime}초");
+            Debug.Log($"[Server] 용광로({furnaceId}) 제련 시작: {item.itemStringKey} → {recipe.outputItemID}");
         }
         else
         {
@@ -56,29 +68,25 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
 
     private IEnumerator SmeltingRoutine(int furnaceId, ulong objectId, SmeltingRecipe recipe)
     {
-        // 1. 다른 클라이언트들에게 작업 시작 패킷 브로드캐스트
-        PacketSender.Instance.BroadcastFurnanceSmeltStart(furnaceId, (int)objectId, (int)recipe.smeltingTime);
-
-        // 1-1. 호스트 ui 업데이트
+        // 1. 호스트 로컬 UI 먼저 갱신 (echo race 방지)
         if (FurnaceClientManager.Instance != null && ConnectManager.Instance.isHost)
         {
             FurnaceObject localFurnace = FurnaceClientManager.Instance.GetFurnaceObject(furnaceId);
             if (localFurnace != null)
-            {
-                // 호스트 눈에 띄게 UI와 파티클 바로 실행!
                 localFurnace.OnSmeltStarted((int)recipe.smeltingTime);
-            }
         }
-        
+
+        // 2. 그 다음에 피어들에게 시작 패킷 브로드캐스트
+        PacketSender.Instance.BroadcastFurnanceSmeltStart(furnaceId, (int)objectId, (int)recipe.smeltingTime);
+
         Debug.Log("녹이는중...");
-        // 2. 정해진 시간 동안 대기
         yield return new WaitForSeconds(recipe.smeltingTime);
         Debug.Log("녹이는 완료!");
-        
-        // 4. 추적 중인 리스트에서 제거하여 완료 상태로 전환
+
         activeFurnaces.Remove(furnaceId);
-        completedFurnaces.Add(furnaceId, recipe.outputItemID); // 용광로 ID와 완성된 아이템 ID 저장
-        // 4-1. 호스트 ui 업데이트 (작업 완료)
+        completedFurnaces.Add(furnaceId, recipe.outputItemID);
+
+        // 3. 호스트 로컬 UI 먼저 갱신
         if (FurnaceClientManager.Instance != null && ConnectManager.Instance.isHost)
         {
             FurnaceObject localFurnace = FurnaceClientManager.Instance.GetFurnaceObject(furnaceId);
@@ -90,7 +98,7 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
             }
         }
 
-        // 5. 다른 클라이언트들에게 작업 완료 패킷 브로드캐스트
+        // 4. 그 다음에 피어들에게 완료 패킷 브로드캐스트
         ItemType resultItemType = (ItemType)recipe.outputItemID;
         PacketSender.Instance.BroadcastFurnanceSmeltComplete((int)objectId, furnaceId, resultItemType);
     }
