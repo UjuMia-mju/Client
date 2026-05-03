@@ -9,12 +9,15 @@ using UnityEngine.UI;
 /// </summary>
 public class ClearPanelController : MonoBehaviour
 {
-    [Header("Navigation")]
-    [SerializeField] private Button exitButton;
+
+    [Header("Navigation")] [SerializeField]
+    private Button exitButton;
+
     [SerializeField] private Button replayButton;
 
-    [Header("Reveal (DOTween, Time.timeScale 무시)")]
-    [SerializeField] private float revealDuration = 0.28f;
+    [Header("Reveal (DOTween, Time.timeScale 무시)")] [SerializeField]
+    private float revealDuration = 0.28f;
+
     [SerializeField] private float pauseAfterEachStar = 0.06f;
 
     [SerializeField] private DualSpriteImage title;
@@ -26,6 +29,45 @@ public class ClearPanelController : MonoBehaviour
     public DualSpriteImage Title => title;
     public DualSpriteImage Subtitle => subtitle;
     public IReadOnlyList<StarSlot> Stars => stars;
+
+    [System.Serializable]
+    public class DualSpriteImage
+    {
+        [SerializeField] private Image image;
+        [SerializeField] private Sprite clearSprite;
+        [SerializeField] private Sprite gameOverSprite;
+
+        public Image Image => image;
+        public Sprite ClearSprite => clearSprite;
+        public Sprite GameOverSprite => gameOverSprite;
+
+        public void Apply(bool isClear)
+        {
+            if (image == null)
+                return;
+            image.sprite = isClear ? clearSprite : gameOverSprite;
+        }
+    }
+
+    /// <summary>별 Image와 채운 별(star) / 빈 별(star_empty) 스프라이트.</summary>
+    [System.Serializable]
+    public class StarSlot
+    {
+        [SerializeField] private Image image;
+        [SerializeField] private Sprite starSprite;
+        [SerializeField] private Sprite starEmptySprite;
+
+        public Image Image => image;
+        public Sprite StarSprite => starSprite;
+        public Sprite StarEmptySprite => starEmptySprite;
+
+        public void SetFilled(bool filled)
+        {
+            if (image == null)
+                return;
+            image.sprite = filled ? starSprite : starEmptySprite;
+        }
+    }
 
     /// <param name="filledStarCount"><see cref="GameRuleManager"/>가 정한 채운 별 개수만 반영합니다.</param>
     public void ApplyOutcome(bool isClear, int filledStarCount)
@@ -42,7 +84,7 @@ public class ClearPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// 스테이지 나가기 / 같은 스테이지 다시 하기 버튼에 동작을 연결합니다.
+    /// Clear Panel의 버튼에 동작을 연결합니다.
     /// </summary>
     public void ConfigureNavigation(Action onExitToStageSelect, Action onReplayCurrentStage = null)
     {
@@ -62,7 +104,7 @@ public class ClearPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// 순서: 별(한 개씩) → Title → Subtitle → 버튼들.
+    /// 순서: 별(한 개씩) → Title → Subtitle → 나가기.
     /// </summary>
     /// <param name="filledStarCount"><see cref="GameRuleManager"/>에서 계산·전달한 값.</param>
     public void PlayRevealSequence(bool isClear, int filledStarCount)
@@ -110,9 +152,6 @@ public class ClearPanelController : MonoBehaviour
         if (exitButton != null)
             AppendFadeInButtonTree(seq, exitButton.transform);
 
-        if (replayButton != null)
-            AppendFadeInButtonTree(seq, replayButton.transform);
-
         seq.OnComplete(() => SetButtonsInteractable(true));
     }
 
@@ -149,8 +188,6 @@ public class ClearPanelController : MonoBehaviour
 
         if (exitButton != null)
             HideGraphicTree(exitButton.transform);
-        if (replayButton != null)
-            HideGraphicTree(replayButton.transform);
     }
 
     private static void HideGraphicTree(Transform root)
@@ -179,8 +216,6 @@ public class ClearPanelController : MonoBehaviour
     {
         if (exitButton != null)
             exitButton.interactable = value;
-        if (replayButton != null)
-            replayButton.interactable = value;
     }
 
     private static void SetGraphicAlpha(Graphic g, float a)
@@ -191,43 +226,6 @@ public class ClearPanelController : MonoBehaviour
         c.a = a;
         g.color = c;
     }
-
-    [System.Serializable]
-    public class DualSpriteImage
-    {
-        [SerializeField] private Image image;
-        [SerializeField] private Sprite clearSprite;
-        [SerializeField] private Sprite gameOverSprite;
-
-        public Image Image => image;
-        public Sprite ClearSprite => clearSprite;
-        public Sprite GameOverSprite => gameOverSprite;
-
-        public void Apply(bool isClear)
-        {
-            if (image == null)
-                return;
-            image.sprite = isClear ? clearSprite : gameOverSprite;
-        }
-    }
-
-    /// <summary>별 Image와 채운 별(star) / 빈 별(star_empty) 스프라이트.</summary>
-    [System.Serializable]
-    public class StarSlot
-    {
-        [SerializeField] private Image image;
-        [SerializeField] private Sprite starSprite;
-        [SerializeField] private Sprite starEmptySprite;
-
-        public Image Image => image;
-        public Sprite StarSprite => starSprite;
-        public Sprite StarEmptySprite => starEmptySprite;
-
-        public void SetFilled(bool filled)
-        {
-            if (image == null)
-                return;
-            image.sprite = filled ? starSprite : starEmptySprite;
-        }
-    }
 }
+
+    

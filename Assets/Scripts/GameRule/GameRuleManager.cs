@@ -103,7 +103,7 @@ public class GameRuleManager : MonoBehaviour
         if (panel != null)
         {
             panel.gameObject.SetActive(true);
-            panel.ConfigureNavigation(GoStageSelectAfterPanel, ReloadCurrentStageAfterPanel);
+            panel.ConfigureNavigation(GoStageSelectAfterPanel);
             panel.PlayRevealSequence(data, filledStarCount);
             return;
         }
@@ -125,13 +125,9 @@ public class GameRuleManager : MonoBehaviour
             SceneManager.LoadScene(Define.Scene.STAGE_SELECT);
     }
 
-    private void ReloadCurrentStageAfterPanel()
-    {
-        Time.timeScale = 1f;
-        var name = SceneManager.GetActiveScene().name;
-        if (SceneLoader.Instance != null)
-            SceneLoader.Instance.LoadScene(name);
-        else
-            SceneManager.LoadScene(name);
+    /// <summary>다시하기</summary>
+    private void ReloadCurrentStageAfterPanel() 
+    { 
+        //TODO: 다시하기 기능 구현
     }
 }
