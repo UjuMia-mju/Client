@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class OtherPlayers : MovingObject
 {
@@ -8,6 +6,8 @@ public class OtherPlayers : MovingObject
     public string PlayerName { get; set; }
 
     [SerializeField] private float lerpSpeed = 10f;
+    [SerializeField] private HPUIController hpUIController;
+    [SerializeField] private OxygenUIController oxygenUIController;
 
     private GameObject[] toggleOnDeath;
 
@@ -17,20 +17,66 @@ public class OtherPlayers : MovingObject
     private bool _isDead = false;
 
     private Animator otherPlayerAnimator;
-    private OtherPlayerStats otherPlayerStats;  // UI 담당과 상의필요함.
+    private RemotePlayerStat remotePlayerStat;
     private PlayerItemSystem otherPlayerItemSystem;
+    private GameObject playerMesh;
 
     // 초기화
     protected override void Awake()
     {
         base.Awake();
         otherPlayerAnimator = GetComponent<Animator>();
-        otherPlayerStats = GetComponent<OtherPlayerStats>();
+        remotePlayerStat = GetComponent<RemotePlayerStat>();
         otherPlayerItemSystem = GetComponent<PlayerItemSystem>();
+
+        Transform meshT = transform.Find("PlayerMesh");
+        if (meshT != null)
+            playerMesh = meshT.gameObject;
+
+        if (hpUIController == null)
+            hpUIController = GetComponentInChildren<HPUIController>(true);
+        if (oxygenUIController == null)
+            oxygenUIController = GetComponentInChildren<OxygenUIController>(true);
+
+        if (remotePlayerStat != null)
+        {
+            hpUIController?.SetPlayerStat(remotePlayerStat);
+            oxygenUIController?.SetPlayerStat(remotePlayerStat);
+        }
 
         // 물리 충돌로 밀려 떨리는 현상 방지
         rb.isKinematic = true;
 
+    }
+
+    private void Start()
+    {
+        if (remotePlayerStat != null)
+        {
+            remotePlayerStat.OnPlayerDead += HandleRemoteDead;
+            remotePlayerStat.OnPlayerRevive += HandleRemoteRevive;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (remotePlayerStat != null)
+        {
+            remotePlayerStat.OnPlayerDead -= HandleRemoteDead;
+            remotePlayerStat.OnPlayerRevive -= HandleRemoteRevive;
+        }
+    }
+
+    private void HandleRemoteDead()
+    {
+        if (playerMesh != null)
+            playerMesh.SetActive(false);
+    }
+
+    private void HandleRemoteRevive()
+    {
+        if (playerMesh != null)
+            playerMesh.SetActive(true);
     }
 
     private void FixedUpdate()
@@ -98,7 +144,7 @@ public class OtherPlayers : MovingObject
 
     public void SetStat(int hpData, float oxygenData)
     {
-        otherPlayerStats.SetStat(hpData, oxygenData);
+        remotePlayerStat?.ApplyNetworkStat(hpData, oxygenData);
     }
 
 

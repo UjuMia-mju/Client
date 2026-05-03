@@ -163,7 +163,7 @@ public class PlayerStat : MonoBehaviour
 
     #region Oxygen 증/감소 로직
     public void CallOnOxygenChanged() => OnOxygenChanged?.Invoke(statData.oxygen);
-    public void StartOxygenDecrease()
+    public virtual void StartOxygenDecrease()
     {
         if (oxygenRoutine != null) StopCoroutine(oxygenRoutine);
         oxygenRoutine = StartCoroutine(DecreaseOxygen());

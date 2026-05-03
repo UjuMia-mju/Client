@@ -13,19 +13,42 @@ public class HPUIController : MonoBehaviour
     public float FADE_DURATION = 1.5f;
     public float DISPLAY_DURATION = 1.0f;
 
+    public void SetPlayerStat(PlayerStat stat)
+    {
+        if (playerStat == stat) return;
+        Unhook();
+        playerStat = stat;
+        if (isActiveAndEnabled)
+            Hook();
+    }
+
     private void Awake()
     {
         if (hpImageList.Count > 0) originalColor = hpImageList[0].color;
     }
 
+    private void Hook()
+    {
+        if (playerStat == null) return;
+        playerStat.OnHpChanged -= UpdateHPUI;
+        playerStat.OnHpChanged += UpdateHPUI;
+        UpdateHPUI(playerStat.GetHp());
+    }
+
+    private void Unhook()
+    {
+        if (playerStat == null) return;
+        playerStat.OnHpChanged -= UpdateHPUI;
+    }
+
     private void OnEnable()
     {
-        playerStat.OnHpChanged += UpdateHPUI;
+        Hook();
     }
 
     private void OnDisable()
     {
-        playerStat.OnHpChanged -= UpdateHPUI;
+        Unhook();
     }
 
     private void UpdateHPUI(int currentHp)

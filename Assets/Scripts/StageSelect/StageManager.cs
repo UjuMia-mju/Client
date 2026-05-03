@@ -18,6 +18,15 @@ public class StageManager : MonoBehaviour
     [Tooltip("서버가 S_STAGE_INFO를 안 보내도 SelectPanel·입장 UI를 켤지 (로컬 StageInfo)")]
     [SerializeField] private bool useLocalStageInfoWhenServerCacheEmpty = true;
 
+    [Header("스테이지 시작 대기 UI")]
+    [Tooltip("비어 있으면 비활성 포함 씬에서 ReadyToStartPanelController를 탐색합니다.")]
+    [SerializeField] private ReadyToStartPanelController readyToStartPanel;
+
+    [Tooltip(
+        "서버가 S_GAME_READY_TO_START를 보내지 않을 때 입장 순 폴백은 항상 동작합니다. " +
+        "그때 콘솔에 한 줄 남기려면 켜세요 (기본 끔).")]
+    [SerializeField] private bool logWhenGameReadyFallbackUsed;
+
     [Header("Nodes & Environment")] 
     public List<StageNode> stageNodes = new List<StageNode>();
     public bool isMovementPaused = false;
@@ -39,6 +48,21 @@ public class StageManager : MonoBehaviour
     private int _pendingStageNum;
 
     private Coroutine _fallbackCoroutine;
+
+    private ReadyToStartPanelController ResolveReadyToStartPanel()
+    {
+        if (readyToStartPanel != null)
+            return readyToStartPanel;
+        return FindFirstObjectByType<ReadyToStartPanelController>(FindObjectsInactive.Include);
+    }
+
+    /// <summary>패널이 씬 저장 시 활성 상태였던 경우 초기에는 끕니다. 플레이 버튼 → EnterSelectedStage에서 켭니다.</summary>
+    void EnsureReadyPanelHiddenOnStageSelectLoad()
+    {
+        var panel = ResolveReadyToStartPanel();
+        if (panel != null)
+            panel.gameObject.SetActive(false);
+    }
 
     private void Awake()
     {
@@ -70,6 +94,8 @@ public class StageManager : MonoBehaviour
             PacketHandler.Instance.OnGameReadyToStartEvent += HandleGameReadyToStart;
         }
         PacketDispatcher.Instance.SendGetClearInfo();
+
+        EnsureReadyPanelHiddenOnStageSelectLoad();
 
         if (!DbCacheManager.HasStageInfo)
         {
@@ -172,6 +198,9 @@ public class StageManager : MonoBehaviour
         if (!DbCacheManager.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
             return;
 
+        var readyPanel = ResolveReadyToStartPanel();
+        readyPanel?.ActivateForPlayRequestStaging();
+
         if (info.Chapter != level || info.Stage != index)
         {
             Debug.LogWarning(
@@ -198,6 +227,9 @@ public class StageManager : MonoBehaviour
         if (!packet.Success)
         {
             Debug.LogWarning("[StageManager] 서버가 스테이지 시작을 거절했습니다.");
+            var rp = ResolveReadyToStartPanel();
+            if (rp != null && rp.gameObject.activeSelf)
+                rp.gameObject.SetActive(false);
             return;
         }
 
@@ -216,13 +248,20 @@ public class StageManager : MonoBehaviour
         var tracker = RoomMembershipTracker.Instance;
         bool amIFirst = tracker.AmIFirst();
 
-        Debug.LogWarning(
-            $"[StageManager] S_GAME_READY_TO_START 미수신. 입장 순서 기반 폴백. " +
-            $"myId={NetManager.Instance._playerId}, " +
-            $"orderedIds=[{string.Join(",", tracker.OrderedIds)}], amIFirst={amIFirst}");
+        if (logWhenGameReadyFallbackUsed)
+        {
+            Debug.Log(
+                "[StageManager] S_GAME_READY_TO_START 없음 → 입장 순서 폴백(정상 처리 경로 가능). " +
+                $"myId={NetManager.Instance._playerId}, orderedIds=[{string.Join(",", tracker.OrderedIds)}], amIFirst={amIFirst}");
+        }
 
         ConnectManager.Instance.SetHostRole(amIFirst);
-        DoLoadGameplayScene();
+
+        var panel = ResolveReadyToStartPanel();
+        if (panel != null)
+            panel.BeginFallback(tracker.OrderedIds, 3, DoLoadGameplayScene);
+        else
+            DoLoadGameplayScene();
     }
 
     private void HandleGameReadyToStart(S_GAME_READY_TO_START packet)
@@ -243,7 +282,12 @@ public class StageManager : MonoBehaviour
                   $"idOrder=[{string.Join(",", packet.IdOrder)}], isHost={isHost}");
 
         ConnectManager.Instance.SetHostRole(isHost);
-        DoLoadGameplayScene();
+
+        var panel = ResolveReadyToStartPanel();
+        if (panel != null)
+            panel.BeginFromPacket(packet, DoLoadGameplayScene);
+        else
+            DoLoadGameplayScene();
     }
 
     /// <summary>씬 로드 진입점. 이중 호출 방지 포함.</summary>
