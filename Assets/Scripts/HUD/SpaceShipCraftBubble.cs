@@ -1,7 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Rocket의 Trigger Collider에 Player가 들어오면 CraftBubble 프리팹을 만들고 벗어나면 제거
+/// Rocket Trigger 안에 로컬 Player가 있을 때만 CraftBubble을 활성화합니다.
+/// Enter / Stay 동안 SetActive(true), Exit 및 비활성화 시 SetActive(false).
 /// </summary>
 public class SpaceShipCraftBubble : MonoBehaviour
 {
@@ -17,10 +18,17 @@ public class SpaceShipCraftBubble : MonoBehaviour
             return;
 
         _playerOverlapCount++;
-        if (_playerOverlapCount != 1 || bubblePrefab == null || _bubbleInstance != null)
+        EnsureBubbleInstance();
+        SetBubbleActive(true);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!IsPlayer(other))
             return;
-        
-        _bubbleInstance = Instantiate(bubblePrefab);
+
+        EnsureBubbleInstance();
+        SetBubbleActive(true);
     }
 
     private void OnTriggerExit(Collider other)
@@ -30,12 +38,12 @@ public class SpaceShipCraftBubble : MonoBehaviour
 
         _playerOverlapCount = Mathf.Max(0, _playerOverlapCount - 1);
         if (_playerOverlapCount == 0)
-            DestroyBubble();
+            SetBubbleActive(false);
     }
 
     private void OnDisable()
     {
-        DestroyBubble();
+        SetBubbleActive(false);
         _playerOverlapCount = 0;
     }
 
@@ -46,11 +54,19 @@ public class SpaceShipCraftBubble : MonoBehaviour
         return other.GetComponentInParent<Player>() != null;
     }
 
-    private void DestroyBubble()
+    private void EnsureBubbleInstance()
+    {
+        if (bubblePrefab == null || _bubbleInstance != null)
+            return;
+
+        _bubbleInstance = Instantiate(bubblePrefab);
+        _bubbleInstance.SetActive(false);
+    }
+
+    private void SetBubbleActive(bool active)
     {
         if (_bubbleInstance == null)
             return;
-        Destroy(_bubbleInstance);
-        _bubbleInstance = null;
+        _bubbleInstance.SetActive(active);
     }
 }
