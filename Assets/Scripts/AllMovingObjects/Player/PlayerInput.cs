@@ -48,28 +48,42 @@ public class PlayerInput : MonoBehaviour
 
     private void OnJump(InputAction.CallbackContext ctx)
     {
+        if (!inputEnabled) return;
         Debug.Log("점프 눌러짐");
         isJumping = true;
     }
 
     private void OnInteract(InputAction.CallbackContext ctx)
     {
+        if (!inputEnabled) return;
         isInteract = true;
     }
 
     private void OnThrowOrCancel(InputAction.CallbackContext ctx)
     {
+        if (!inputEnabled) return;
         isThrowOrCancel = true;
     }
 
     private void OnLeftClick(InputAction.CallbackContext ctx)
     {
+        if (!inputEnabled) return;
         isLeftClick = true;
     }
 
     // 입력받은 값으로 초기화
     public void InputProcess()
     {
+        if (!inputEnabled)
+        {
+            // 사망 등으로 입력이 막힌 동안에는 이동 입력을 0으로 강제.
+            // 액션맵 자체는 살아있어야 PlayerTPCamera의 Look이 동작함.
+            axisX = 0f;
+            axisY = 0f;
+            axisResultDir = Vector3.zero;
+            return;
+        }
+
         Vector2 move = inputActions.Player.Move.ReadValue<Vector2>();
 
         axisX = move.x;
@@ -119,13 +133,15 @@ public class PlayerInput : MonoBehaviour
     }
 
     // 외부에서 입력 전체 활성/비활성 토글
+    // 액션맵은 끄지 않는다 — PlayerTPCamera가 같은 맵의 Look을 사용하므로 카메라가 죽어버림.
+    // 대신 inputEnabled 플래그로 게이팅한다.
     public void SetInputEnabled(bool enabled)
     {
         inputEnabled = enabled;
 
         if (!inputEnabled)
         {
-            // 즉시 모든 입력 초기화
+            // 즉시 모든 입력 상태 초기화 (눌려있던 키가 잔존하지 않도록)
             isJumping = false;
             isInteract = false;
             isThrowOrCancel = false;
@@ -133,14 +149,6 @@ public class PlayerInput : MonoBehaviour
             axisX = 0f;
             axisY = 0f;
             axisResultDir = Vector3.zero;
-
-            // 비활성화된 상태에서는 액션맵을 비활성화하여 입력 트리거를 방지
-            inputActions.Player.Disable();
-        }
-        else
-        {
-            // 활성화 시 맵 다시 켬
-            inputActions.Player.Enable();
         }
 
         Debug.Log($"[PlayerInput] SetInputEnabled -> {inputEnabled}");

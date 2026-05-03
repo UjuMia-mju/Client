@@ -7,7 +7,8 @@ public class HostPlayerStat : PlayerStat
     #region HP 증/감소 로직
     public override void DecreaseHp(int damage)
     {
-        HostStatManager.Instance.DecreaseHp(GetMyPlayerId(), damage);
+        // ... 호스트 측 추가 로직 ...
+        base.DecreaseHp(damage);  // ← 이게 빠져있으면 ReportDeathToHost가 안 탐
     }
 
     public override void IncreaseHp(int amount)

@@ -91,7 +91,7 @@ public class PeerSender : IClientSender
         SendRelayPacket(PacketId.PKT_C_OBJECT_PICKUP, packet);
     }
 
-    public void SendItemDetatched(Items itemData)
+    public void SendItemDetatched(Items itemData, bool charged)
     {
         bool isItem = itemData.gameObject.CompareTag(Define.Tag.ITEM);
         bool isTool = itemData.gameObject.CompareTag(Define.Tag.TOOL);
@@ -102,8 +102,9 @@ public class PeerSender : IClientSender
             ObjectId = new ObjectId
             {
                 Type = isItem ? ObjectType.Item : ObjectType.Tool,
-                ItemId = (ulong)itemData.itemId
-            }
+                ItemId = (ulong)itemData.itemId,
+            },
+            Charged = charged
         };
         SendRelayPacket(PacketId.PKT_C_OBJECT_DROP, packet);
     }
@@ -199,5 +200,17 @@ public class PeerSender : IClientSender
         C_SPACESHIP_INSERT packet = new C_SPACESHIP_INSERT { ItemStringKey = itemStringKey, ItemId = itemId };
 
         SendRelayPacket(PacketId.PKT_C_SPACESHIP_INSERT, packet);
+    }
+
+    public void SendResourceHit(int resourceId)
+    {
+        C_RESOURCE_HIT packet = new C_RESOURCE_HIT { ResourceId = resourceId };
+        SendRelayPacket(PacketId.PKT_C_RESOURCE_HIT, packet);
+    }
+
+    public void SendPlayerDead(ulong playerId)
+    {
+        C_PLAYER_DEAD packet = new C_PLAYER_DEAD { PlayerId = playerId };
+        SendRelayPacket(PacketId.PKT_C_PLAYER_DEAD, packet);
     }
 }

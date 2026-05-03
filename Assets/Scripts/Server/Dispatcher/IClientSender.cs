@@ -8,7 +8,7 @@ public interface IClientSender
     void SendMove(Vector3 position, Quaternion rotation);
     void SendAnimation(AnimState animState);
     void SendItemAttached(Items itemData);
-    void SendItemDetatched(Items itemData);
+    void SendItemDetatched(Items itemData, bool charged);
     void SendItemMove(int itemId, Vector3 position, Quaternion rotation);
     void SendToolMove(ToolType data, Vector3 position, Quaternion rotation);
     void SendPlayerStatEvent(
@@ -27,4 +27,9 @@ public interface IClientSender
 
     void SendSpaceshipInsert(string itemStringKey, int itemId);
 
+    // 자원: 피어 → 호스트, "이 자원을 1회 타격했다"
+    void SendResourceHit(int resourceId);
+
+    // 플레이어 사망 보고\
+    void SendPlayerDead(ulong playerId);
 }

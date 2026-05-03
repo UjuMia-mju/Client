@@ -25,7 +25,8 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<int, C_OBJECT_DESTROY> OnPeerObjectDestroyEvent;
     public event Action<int, C_SPACESHIP_INSERT> OnPeerSpaceshipInsertEvent;
     public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
-
+    public event Action<int, C_RESOURCE_HIT> OnPeerResourceHitEvent;
+    public event Action<int, C_PLAYER_DEAD> OnPeerPlayerDeadEvent;
 
 
     /// <summary>
@@ -57,9 +58,6 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
             case PacketId.PKT_C_OBJECT_DROP:
                 HandlePeerItemDetached(peerId, data);
                 break;
-            case PacketId.PKT_C_OBJECT_MOVE:
-                HandlePeerObjectMove(peerId, data);
-                break;
             case PacketId.PKT_C_PLAYER_STAT_EVENT:
                 HandlePeerStatEvent(peerId, data);
                 break;
@@ -80,6 +78,12 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 break;
             case PacketId.PKT_S_GAME_READY_TO_START:
                 HandleGameReadyToStart(data);
+                break;
+            case PacketId.PKT_C_RESOURCE_HIT:
+                HandlePeerResourceHit(peerId, data);
+                break;
+            case PacketId.PKT_C_PLAYER_DEAD:
+                HandlePeerPlayerDead(peerId, data);
                 break;
             default:
                 Debug.LogWarning($"[Peer {peerId}] Unhandled packet ID: {packetId}");
@@ -205,24 +209,11 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         S_OBJECT_DROP relay = new S_OBJECT_DROP
         {
             ObjectId = packet.ObjectId?.Clone(),
-            PlayerId = (ulong)peerId
+            PlayerId = (ulong)peerId,
+            Charged = packet.Charged
         };
 
         PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_DROP, relay);
-    }
-
-
-    private void HandlePeerObjectMove(int peerId, byte[] data)
-    {
-        C_OBJECT_MOVE packet = C_OBJECT_MOVE.Parser.ParseFrom(data);
-        S_OBJECT_MOVE relay = new S_OBJECT_MOVE
-        {
-            ObjectId = packet.ObjectId?.Clone(),
-            Pos = packet.Pos?.Clone(),
-            Rot = packet.Rot?.Clone()
-        };
-
-        PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_OBJECT_MOVE, relay);
     }
 
     private void HandlePeerStatEvent(int peerId, byte[] data)
@@ -337,6 +328,19 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     {
         S_GAME_READY_TO_START packet = S_GAME_READY_TO_START.Parser.ParseFrom(data);
         OnGameReadyToStartEvent?.Invoke(packet);
+    }
+
+    private void HandlePeerResourceHit(int peerId, byte[] data)
+    {
+        C_RESOURCE_HIT packet = C_RESOURCE_HIT.Parser.ParseFrom(data);
+        Debug.Log($"[PeerPacketHandler] PeerResourceHit: peerId={peerId}, resourceId={packet.ResourceId}");
+        OnPeerResourceHitEvent?.Invoke(peerId, packet);
+    }
+
+    private void HandlePeerPlayerDead(int peerId, byte[] data)
+    {
+        C_PLAYER_DEAD packet = C_PLAYER_DEAD.Parser.ParseFrom(data);
+        OnPeerPlayerDeadEvent?.Invoke(peerId, packet);
     }
 }
 

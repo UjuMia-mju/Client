@@ -10,6 +10,13 @@ public class PlayerTPCamera : MonoBehaviour
     // 인스펙터에서 조정 가능한 카메라 거리
     public float distance = 5.0f;
 
+    [Header("던지기 조준 확대")]
+    [SerializeField] [Range(0.65f, 1f)] private float throwAimDistanceMultiplier = 0.86f;
+    [SerializeField] private float throwAimZoomLerp = 10f;
+
+    private float _distanceBase;
+    private bool _throwAimZoomActive;
+
     // 마우스로 입력하는 회전 수치
     private float currentX = 0.0f;
     private float currentY = 45.0f;
@@ -39,12 +46,19 @@ public class PlayerTPCamera : MonoBehaviour
     private void Awake()
     {
         playerMovingOffset = transform.GetChild(0);
+        _distanceBase = distance;
     }
 
     private void Start()
     {
         inputActions = InputManager.Instance.Actions;
         inputActions.Player.Enable();
+    }
+
+    /// <summary>아이템 조준(우클릭) 중이면 true — 거리를 줄여 확대 느낌</summary>
+    public void SetThrowAimZoom(bool active)
+    {
+        _throwAimZoomActive = active;
     }
 
     private void Update()
@@ -63,6 +77,12 @@ public class PlayerTPCamera : MonoBehaviour
 
     private void LateUpdate()
     {
+        float targetDist = _throwAimZoomActive
+            ? _distanceBase * throwAimDistanceMultiplier
+            : _distanceBase;
+        float t = 1f - Mathf.Exp(-throwAimZoomLerp * Time.deltaTime);
+        distance = Mathf.Lerp(distance, targetDist, t);
+
         CalculatingCameraRotate();
         CalculatingPlayerMovingOffsetRotate();
     }

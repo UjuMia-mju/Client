@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 using Protocol;
 
 public class Player : MovingObject
@@ -40,6 +41,7 @@ public class Player : MovingObject
     // 임시 UI 객체
     [SerializeField] private HPUIController hpUIController;
     [SerializeField] private OxygenUIController oxygenUIController;
+    [SerializeField] private ThrowTrajectoryPreview trajectoryPreview;
 
     // 초기화
     protected override void Awake()
@@ -50,6 +52,11 @@ public class Player : MovingObject
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
         playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
+
+        if (trajectoryPreview == null)
+            trajectoryPreview = GetComponent<ThrowTrajectoryPreview>();
+        if (trajectoryPreview == null)
+            trajectoryPreview = gameObject.AddComponent<ThrowTrajectoryPreview>();
 
         playerAnimator.Initialize();
         lastAnimState = AnimState.Idle;
@@ -180,13 +187,25 @@ public class Player : MovingObject
                 playerInput.GetIsJumping(),
                 isGrounded,
                 inputFreeze,
-                isUsingTool);
+                 isUsingTool,
+                IsHoldingThrowInput(),
+                WasThrowReleasedThisFrame());
 
             KeyEInteract();
             KeyLeftClickInteract();
+            TryChargedAimThrow();
             KeyFInteract();
+            UpdateThrowAimPreview();
+        }
+        else
+        {
+            if (trajectoryPreview != null)
+                trajectoryPreview.Hide();
+            if (playerTPCamera != null)
+                playerTPCamera.SetThrowAimZoom(false);
         }
 
+        // 현재 땅을 밟았는지 안 밟았는지와는 무관하게 레이캐스트를 길게 펼쳐 해당 지면의 접지면 벡터를 구합니다.
         GetGroundNormal(groundMask);
         SphereTriggerFunc();
     }
@@ -384,8 +403,12 @@ public class Player : MovingObject
                 // 아이템을 던지고, 플레이어의 손에서 Detach
                 if (isPlayerGetSomething)
                 {
+                    // 우클릭 조준 중에는 F로 약한 던지기 하지 않음(강한 던지기는 좌클릭)
+                    if (Mouse.current != null && Mouse.current.rightButton.isPressed)
+                        return;
+
                     isPlayerGetSomething = false;
-                    SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass());
+                    SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), false);
                     playerItemSystem.ThrowItem(GetMovingAmount());
                     StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
                 }
@@ -526,8 +549,93 @@ public class Player : MovingObject
     }
 
     // 아이템을 내려놓을 때 RemotePlayer의 소켓에서 분리시키기 위해 패킷을 1회 전송
-    private void SendItemDetatchedToServer(Items data)
+    private void SendItemDetatchedToServer(Items data, bool charged)
     {
-        PacketSender.Instance.SendItemDetatched(data);
+        PacketSender.Instance.SendItemDetatched(data, charged);
     }
+
+    private bool IsHoldingThrowInput()
+    {
+        if (Mouse.current == null) return false;
+        return isPlayerGetSomething &&
+               playerItemSystem.currentEquipItem != null &&
+               !isPlayerThrowSomething &&
+               Mouse.current.rightButton.isPressed;
+    }
+
+    private bool WasThrowReleasedThisFrame()
+    {
+        if (Mouse.current == null) return false;
+        return Mouse.current.rightButton.isPressed &&
+               Mouse.current.leftButton.wasPressedThisFrame &&
+               isPlayerGetSomething &&
+               playerItemSystem.currentEquipItem != null &&
+               !isPlayerThrowSomething &&
+               (nearestObject == null || !nearestObject.CompareTag(Define.Tag.CRAFT_TABLE));
+    }
+
+    private void TryChargedAimThrow()
+    {
+        if (Mouse.current == null)
+            return;
+        if (!Mouse.current.rightButton.isPressed || !Mouse.current.leftButton.wasPressedThisFrame)
+            return;
+        if (!isPlayerGetSomething || playerItemSystem.currentEquipItem == null || isPlayerThrowSomething)
+            return;
+        if (nearestObject != null && nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
+            return;
+
+        isPlayerGetSomething = false;
+        SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), true);
+        playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetThrowAimDirection());
+        if (trajectoryPreview != null)
+            trajectoryPreview.Hide();
+        StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
+    }
+
+
+    private void UpdateThrowAimPreview()
+    {
+        bool aimZoom = false;
+
+        if (trajectoryPreview != null && Mouse.current != null)
+        {
+            bool holdingItem = isPlayerGetSomething && playerItemSystem.currentEquipItem != null && !isPlayerThrowSomething;
+            if (holdingItem && Mouse.current.rightButton.isPressed)
+            {
+                aimZoom = true;
+                Vector3 aimDir = GetThrowAimDirection();
+                Vector3 impulse = playerItemSystem.ComputeThrowImpulse(GetMovingAmount(), aimDir, chargedThrow: true);
+                float mass = playerItemSystem.GetHeldItemMass();
+                Vector3 v0 = impulse / mass;
+                trajectoryPreview.ShowTrajectory(playerItemSystem.GetThrowStartPosition(), v0, mass);
+            }
+            else
+                trajectoryPreview.Hide();
+        }
+        else if (trajectoryPreview != null)
+            trajectoryPreview.Hide();
+
+        if (playerTPCamera != null)
+            playerTPCamera.SetThrowAimZoom(aimZoom);
+    }
+
+    private Vector3 GetThrowAimDirection()
+    {
+        Vector3 up = transform.up;
+        Vector3 flat = Vector3.ProjectOnPlane(transform.forward, up);
+        if (flat.sqrMagnitude < 1e-4f)
+            flat = Vector3.ProjectOnPlane(transform.right, up);
+        flat.Normalize();
+
+        if (Camera.main == null)
+            return flat;
+
+        float verticalDot = Mathf.Clamp(Vector3.Dot(Camera.main.transform.forward.normalized, up), -0.95f, 0.95f);
+        Vector3 aim = (flat + up * verticalDot).normalized;
+        return aim;
+    }
+
+
+
 }

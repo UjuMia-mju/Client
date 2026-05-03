@@ -18,13 +18,29 @@ public class MovingObject : MonoBehaviour
     protected LayerMask wallMask;
     protected LayerMask walkable;
 
-    public Vector3 groundDir {get; protected set; }
+    public Vector3 groundDir { get; protected set; }
 
     private const float RAY_LENGTH = 0.6f;
     private const float VELOCITY_HUNDRED = 100f;
 
     protected bool isGrounded = true;
 
+    // ============ Gizmos 디버그 캐시 ============
+    [Header("Debug Gizmos")]
+    [SerializeField] private bool drawDebugGizmos = true;
+
+    // 충돌 레이 (수평 방향)
+    private Vector3 _gz_collisionOrigin;
+    private Vector3 _gz_collisionDir;
+    private bool _gz_collisionHit;
+    private bool _gz_hasCollisionRay;
+
+    // 지면 레이 (아래 방향)
+    private Vector3 _gz_groundOrigin;
+    private Vector3 _gz_groundDir;
+    private bool _gz_groundHit;
+    private Vector3 _gz_groundHitPoint;
+    private Vector3 _gz_groundHitNormal;
 
     // 초기화
     protected virtual void Awake()
@@ -38,10 +54,7 @@ public class MovingObject : MonoBehaviour
     // 이동 처리
     protected virtual void Moving(Vector3 movDir)
     {
-        if (movDir == Vector3.zero)
-        {
-            return;
-        }
+        if (movDir == Vector3.zero) return;
 
         movDir.Normalize();
         rb.MovePosition(rb.position + movDir * walkSpeed * Time.fixedDeltaTime);
@@ -54,78 +67,87 @@ public class MovingObject : MonoBehaviour
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
-    // 캐릭터가 바라보는 방향을 트랜스폼 t 기준으로 입력이 있을 때만 한번 회전시킴
     protected virtual void RotateToDirection(Vector3 movDir)
     {
-        if (movDir == Vector3.zero)
-        {
-            return;
-        }
-        else
-        {
-            movDir.Normalize();
-            Quaternion targetRot = Quaternion.LookRotation(movDir, this.transform.position);
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
-        }
+        if (movDir == Vector3.zero) return;
+
+        movDir.Normalize();
+        Quaternion targetRot = Quaternion.LookRotation(movDir, this.transform.position);
+        rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
     }
 
     // 여러 LayerMask를 받을 수 있게 수정
     protected bool CollisionDetectWithRaycast(Vector3 dirData, params LayerMask[] masks)
     {
         if (dirData.sqrMagnitude < 0.01f)
+        {
+            _gz_hasCollisionRay = false;
             return false;
+        }
 
-        Ray ray = new Ray(this.transform.position, dirData.normalized);
-        RaycastHit hit;
+        // 레이 시작점을 발(pivot)에서 띄워서 시작.
+        // 발 높이에서 쏘면 walkable 발판 위에 올라갔을 때 발판 옆면에 그대로 박혀서
+        // inputFreeze가 영구로 켜져버림(점프맵에서 못 움직이는 원인).
+        Vector3 origin = transform.position + transform.up * 0.5f;
+        Vector3 dir = dirData.normalized;
+        Ray ray = new Ray(origin, dir);
 
-        Debug.DrawLine(ray.origin, ray.origin + dirData.normalized * 2.1f, Color.red);
+        // Gizmos용 캐시
+        _gz_hasCollisionRay = true;
+        _gz_collisionOrigin = origin;
+        _gz_collisionDir = dir;
+        _gz_collisionHit = false;
 
         foreach (var mask in masks)
         {
-            if (Physics.Raycast(ray, out hit, RAY_LENGTH, mask))
+            if (Physics.Raycast(ray, out _, RAY_LENGTH, mask))
             {
+                _gz_collisionHit = true;
+                Debug.DrawLine(origin, origin + dir * RAY_LENGTH, Color.yellow);
                 return true;
             }
         }
 
+        Debug.DrawLine(origin, origin + dir * RAY_LENGTH, Color.gray);
         return false;
     }
-
 
     // 땅에 닿았는지 레이캐스트로 감지
     protected void GroundDetectingWithRaycast(LayerMask maskData)
     {
-        // 행성 방향으로 레이캐스트 발사 - 레이캐스트
         Vector3 origin = transform.position + transform.up * 0.5f;
-        Ray ray = new Ray(origin, -transform.up);
+        Vector3 dir = -transform.up;
+        Ray ray = new Ray(origin, dir);
 
-        RaycastHit hit;
+        // Gizmos용 캐시
+        _gz_groundOrigin = origin;
+        _gz_groundDir = dir;
 
-        Debug.DrawLine(ray.origin, ray.origin + ray.direction * (RAY_LENGTH), Color.red);
-
-        // 발이 땅에 닿았을 때를 감지
-        if (Physics.Raycast(ray, out hit, RAY_LENGTH, maskData))
+        if (Physics.Raycast(ray, out RaycastHit hit, RAY_LENGTH, maskData))
         {
             isGrounded = true;
+            _gz_groundHit = true;
+            _gz_groundHitPoint = hit.point;
+            _gz_groundHitNormal = hit.normal;
+
+            Debug.DrawLine(origin, origin + dir * RAY_LENGTH, Color.green);
         }
         else
         {
             isGrounded = false;
+            _gz_groundHit = false;
+
+            Debug.DrawLine(origin, origin + dir * RAY_LENGTH, Color.red);
         }
     }
 
-    // 땅에 닿았는지와는 무관하게 땅의 법선 벡터를 구함
-    // 이 함수가 필요한 이유는 이 함수 참조중인 PlanetGravity 클래스에서 땅의 법선 벡터를 필요로 하기 때문입니다.
-    // 해당 참조로 이동해 확인바랍니다.
+    // 땅의 법선 벡터를 갱신
     protected void GetGroundNormal(LayerMask maskData)
     {
         Vector3 origin = transform.position + transform.up * 0.5f;
         Ray ray = new Ray(origin, -transform.up);
 
-        RaycastHit hit;
-
-        // 계속 땅을 감지해 법선 벡터를 수집
-        if (Physics.Raycast(ray, out hit, 10f, maskData))
+        if (Physics.Raycast(ray, out RaycastHit hit, 10f, maskData))
         {
             groundDir = hit.normal;
         }
@@ -134,5 +156,35 @@ public class MovingObject : MonoBehaviour
     protected float GetMovingAmount()
     {
         return rb.linearVelocity.magnitude * VELOCITY_HUNDRED;
+    }
+
+    // ============ Gizmos: Scene 뷰에 항상 표시 ============
+    protected virtual void OnDrawGizmos()
+    {
+        if (!drawDebugGizmos) return;
+
+        // 충돌 레이 (수평): hit=노랑, miss=회색
+        if (_gz_hasCollisionRay)
+        {
+            Gizmos.color = _gz_collisionHit ? Color.yellow : new Color(0.5f, 0.5f, 0.5f, 0.6f);
+            Gizmos.DrawLine(_gz_collisionOrigin, _gz_collisionOrigin + _gz_collisionDir * RAY_LENGTH);
+            Gizmos.DrawSphere(_gz_collisionOrigin + _gz_collisionDir * RAY_LENGTH, 0.05f);
+        }
+
+        // 지면 레이 (아래): hit=초록, miss=빨강
+        if (Application.isPlaying)
+        {
+            Gizmos.color = _gz_groundHit ? Color.green : Color.red;
+            Gizmos.DrawLine(_gz_groundOrigin, _gz_groundOrigin + _gz_groundDir * RAY_LENGTH);
+
+            if (_gz_groundHit)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawSphere(_gz_groundHitPoint, 0.07f);
+                // 법선
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(_gz_groundHitPoint, _gz_groundHitPoint + _gz_groundHitNormal * 0.5f);
+            }
+        }
     }
 }
