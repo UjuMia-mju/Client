@@ -38,7 +38,8 @@ public class HostStatManager : BaseStatManager<HostStatManager>
     {
         if (!_playerStats.TryGetValue(playerId, out var stat)) return;
 
-        stat.statData.DecreaseOxygen(0.01f);
+        float amount = stat.boundPlayer != null ? stat.boundPlayer.OxygenDecreasePerTick : 0.01f;
+        stat.statData.DecreaseOxygen(amount);
         stat.CallOnOxygenChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
@@ -49,7 +50,8 @@ public class HostStatManager : BaseStatManager<HostStatManager>
     {
         if (!_playerStats.TryGetValue(playerId, out var stat)) return;
 
-        stat.statData.IncreaseOxygen(0.02f);
+        float amount = stat.boundPlayer != null ? stat.boundPlayer.OxygenIncreasePerTick : 0.02f;
+        stat.statData.IncreaseOxygen(amount);
         stat.CallOnOxygenChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());

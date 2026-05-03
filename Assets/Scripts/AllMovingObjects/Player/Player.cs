@@ -641,6 +641,13 @@ public class Player : MovingObject
         return aim;
     }
 
+    [Header("Oxygen Tuning")]
+    [Tooltip("1초당 자연 감소량 (0~1 정규화)")]
+    [SerializeField, Range(0f, 0.5f)] public float oxygenDecreasePerTick = 0.01f;
 
+    [Tooltip("우주선 회복 영역에서 1초당 회복량")]
+    [SerializeField, Range(0f, 0.5f)] public float oxygenIncreasePerTick = 0.02f;
 
+    [Tooltip("감소/회복 코루틴 틱 간격(초)")]
+    [SerializeField, Range(0.1f, 5f)] public float oxygenTickInterval = 1.0f;
 }

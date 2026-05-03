@@ -2316,10 +2316,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpaceshipAssembly
   targetMission:
   - currentCount: 0
-    targetCount: 30
+    targetCount: 25
     targetItem: {fileID: 7013151031138945480, guid: 1d400eb317220e347bbe754976188690, type: 3}
   - currentCount: 0
-    targetCount: 15
+    targetCount: 10
     targetItem: {fileID: 7013151031138945480, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
 --- !u!114 &819753116
 MonoBehaviour:
@@ -7698,6 +7698,9 @@ MonoBehaviour:
   hpUIController: {fileID: 853245648}
   oxygenUIController: {fileID: 2122377701}
   trajectoryPreview: {fileID: 0}
+  oxygenDecreasePerTick: 0.01
+  oxygenIncreasePerTick: 0.08
+  oxygenTickInterval: 1
 --- !u!114 &130923350922639491
 MonoBehaviour:
   m_ObjectHideFlags: 0
