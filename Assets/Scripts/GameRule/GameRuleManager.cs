@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameRuleManager : MonoBehaviour
 {
     public static GameRuleManager Instance { get; private set; }
 
     [SerializeField] private float timerDuration;
+    [SerializeField] private ClearPanelController clearPanel;
     private float remainingTime;
     public float GetRemainingTime() => remainingTime;
     private bool isVictory = false;
@@ -72,7 +74,7 @@ public class GameRuleManager : MonoBehaviour
         if (IsHostNow())
             PacketSender.Instance.BroadcastSpaceshipComplete(false);
 
-        ReturnToStageSelectScene(false);
+        ReturnToStageSelectScene(false, 0);
     }
 
     public void SyncTimer(float time)
@@ -83,7 +85,8 @@ public class GameRuleManager : MonoBehaviour
         remainingTime = time;
     }
 
-    public void ReturnToStageSelectScene(bool data)
+    /// <param name="filledStarCount">패널에 표시할 채운 별 개수. 게임 오버면 0을 넘기면 됩니다.</param>
+    public void ReturnToStageSelectScene(bool data, int filledStarCount)
     {
         if (isGameDone) return;
 
@@ -91,13 +94,44 @@ public class GameRuleManager : MonoBehaviour
         isGameDone = true;
         Time.timeScale = 0f;
 
-        Debug.Log($"게임 종료! 승리 여부: {isVictory}");
+        Debug.Log($"게임 종료! 승리 여부: {isVictory}, 별: {filledStarCount}");
 
-        if (SceneLoader.Instance != null)
+        var panel = clearPanel != null
+            ? clearPanel
+            : FindFirstObjectByType<ClearPanelController>(FindObjectsInactive.Include);
+
+        if (panel != null)
         {
-            Time.timeScale = 1f;
-            Debug.Log("스테이지 선택 씬으로 이동합니다.");
-            SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
+            panel.gameObject.SetActive(true);
+            panel.ConfigureNavigation(GoStageSelectAfterPanel, ReloadCurrentStageAfterPanel);
+            panel.PlayRevealSequence(data, filledStarCount);
+            return;
         }
+
+        Time.timeScale = 1f;
+        Debug.Log("ClearPanel 없음 — 스테이지 선택으로 즉시 이동합니다.");
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
+        else
+            SceneManager.LoadScene(Define.Scene.STAGE_SELECT);
+    }
+
+    private void GoStageSelectAfterPanel()
+    {
+        Time.timeScale = 1f;
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
+        else
+            SceneManager.LoadScene(Define.Scene.STAGE_SELECT);
+    }
+
+    private void ReloadCurrentStageAfterPanel()
+    {
+        Time.timeScale = 1f;
+        var name = SceneManager.GetActiveScene().name;
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadScene(name);
+        else
+            SceneManager.LoadScene(name);
     }
 }

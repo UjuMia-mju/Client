@@ -73,7 +73,26 @@ public class SpaceshipAssembly : MonoBehaviour
         if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
             PacketSender.Instance.BroadcastSpaceshipComplete(true);
 
-        GameRuleManager.Instance.ReturnToStageSelectScene(true);
+        var stars = GetFilledStarCountForStageClear();
+        GameRuleManager.Instance.ReturnToStageSelectScene(true, stars);
+    }
+
+    /// <summary>
+    /// 목표 미션 충족 개수를 기준으로 별 개수(최대 3). 서버 패킷에 별 수가 없을 때 로컬·피어 공통으로 사용합니다.
+    /// </summary>
+    public int GetFilledStarCountForStageClear()
+    {
+        if (targetMission == null || targetMission.Count == 0)
+            return 3;
+
+        var satisfied = 0;
+        foreach (var m in targetMission)
+        {
+            if (m.currentCount >= m.targetCount)
+                satisfied++;
+        }
+
+        return Mathf.Clamp(satisfied, 0, 3);
     }
 
     // 피어 전용: 호스트로부터 받은 미션 카운트 동기화

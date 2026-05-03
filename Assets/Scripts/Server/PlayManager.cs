@@ -206,7 +206,17 @@ public class PlayManager : SceneSingleton<PlayManager>
     }
 
     private void OnHostSpaceshipComplete(S_SPACESHIP_COMPLETE packet)
-        => GameRuleManager.Instance.ReturnToStageSelectScene(packet.Success);
+    {
+        var stars = 0;
+        if (packet.Success)
+        {
+            var assembly = FindFirstObjectByType<SpaceshipAssembly>();
+            if (assembly != null)
+                stars = assembly.GetFilledStarCountForStageClear();
+        }
+
+        GameRuleManager.Instance.ReturnToStageSelectScene(packet.Success, stars);
+    }
 
     private void OnHostTimerSync(S_TIMER_SYNC packet)
         => GameRuleManager.Instance.SyncTimer(packet.RemainingTime);
