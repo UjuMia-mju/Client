@@ -453,9 +453,11 @@ public class Player : MovingObject
         nearestObject = foundObject;
     }
     
-    // 현재 콜라이더 탐지 범위를 시각화해 디버깅합니다.
-    void OnDrawGizmos()
+    // 현재 콜라이더 탐지 범위를 시각화해 디버깅합니다(MovingObject 충돌/지면 레이 기즈모 포함).
+    protected override void OnDrawGizmos()
     {
+        base.OnDrawGizmos();
+
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, DETECT_RADIUS);
     }
@@ -499,7 +501,10 @@ public class Player : MovingObject
     // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
     private void SendEnterPosToServer()
     {
-        PacketSender.Instance.SendMove(transform.position, transform.rotation);
+        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+            PacketSender.Instance.BroadcastMove(transform.position, transform.rotation);
+        else
+            PacketSender.Instance.SendMove(transform.position, transform.rotation);
 
         _lastSendPos = transform.position;
         _lastSendRot = transform.rotation;

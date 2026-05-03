@@ -22,10 +22,11 @@ public class ResourceServerManager : MonoBehaviorSingleton<ResourceServerManager
             PeerPacketHandler.Instance.OnPeerResourceHitEvent += OnPeerResourceHit;
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         if (PeerPacketHandler.Instance != null)
             PeerPacketHandler.Instance.OnPeerResourceHitEvent -= OnPeerResourceHit;
+        base.OnDestroy();
     }
 
     private void OnPeerResourceHit(int peerId, Protocol.C_RESOURCE_HIT packet)

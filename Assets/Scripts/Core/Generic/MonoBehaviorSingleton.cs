@@ -2,6 +2,14 @@
 
 public class MonoBehaviorSingleton<T> : MonoBehaviour where T : MonoBehaviorSingleton<T>
 {
+    static void MarkPersistentRoot(GameObject go)
+    {
+        if (go.transform.parent != null)
+            go.transform.SetParent(null, worldPositionStays: true);
+
+        DontDestroyOnLoad(go);
+    }
+
     private static T instance;
     public static T Instance 
     {
@@ -18,7 +26,7 @@ public class MonoBehaviorSingleton<T> : MonoBehaviour where T : MonoBehaviorSing
                         "Add the component to a scene to avoid this (disabled objects are now found by search).");
                     var obj = new GameObject(typeof(T).Name);
                     instance = obj.AddComponent<T>();
-                    DontDestroyOnLoad(obj); 
+                    MarkPersistentRoot(obj);
                 }
             }
             return instance;
@@ -30,15 +38,11 @@ public class MonoBehaviorSingleton<T> : MonoBehaviour where T : MonoBehaviorSing
         if (instance == null) 
         {
             instance = (T)this;
-            DontDestroyOnLoad(gameObject);
+            MarkPersistentRoot(gameObject);
         }
-        else if (instance != this) 
+        else if (instance != (T)this)
         {
             Destroy(this); // gameObject 전체가 아닌 중복 컴포넌트만 제거
-        }
-        else if (instance == this) 
-        {
-            DontDestroyOnLoad(gameObject);
         }
     }
 

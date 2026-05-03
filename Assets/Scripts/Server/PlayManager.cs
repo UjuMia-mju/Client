@@ -103,8 +103,15 @@ public class PlayManager : SceneSingleton<PlayManager>
             SpawnRemotePlayer(playerInfo);
     }
 
+    /// <summary>서버 브로드캐스트(S_MOVE 등)에는 내 플레이어도 포함될 수 있으며, 로컬은 Scene의 Player가 처리함.</summary>
+    static bool IsNetworkPacketForLocalPlayer(ulong playerId)
+        => NetManager.Instance != null && playerId == NetManager.Instance._playerId;
+
     private void OnHostMove(ulong playerId, S_MOVE packet)
     {
+        if (IsNetworkPacketForLocalPlayer(playerId))
+            return;
+
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
@@ -120,6 +127,9 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void OnHostAnimation(ulong playerId, S_PLAYER_ANIMATION packet)
     {
+        if (IsNetworkPacketForLocalPlayer(playerId))
+            return;
+
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
@@ -131,6 +141,9 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void OnHostItemPickup(ulong playerId, S_OBJECT_PICKUP packet)
     {
+        if (IsNetworkPacketForLocalPlayer(playerId))
+            return;
+
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
@@ -146,6 +159,9 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void OnHostItemDetach(ulong playerId, S_OBJECT_DROP packet)
     {
+        if (IsNetworkPacketForLocalPlayer(playerId))
+            return;
+
         if (_remotePlayers.TryGetValue(playerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
@@ -168,6 +184,9 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     private void OnHostStat(S_PLAYER_STAT packet)
     {
+        if (IsNetworkPacketForLocalPlayer(packet.PlayerId))
+            return;
+
         if (_remotePlayers.TryGetValue(packet.PlayerId, out GameObject playerObj))
         {
             OtherPlayers remotePlayer = playerObj.GetComponent<OtherPlayers>();
@@ -437,10 +456,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
 
         if (_remotePlayers.ContainsKey(id))
-        {
-            Debug.LogWarning($"Player {playerInfo.PlayerId} already exists!");
-            return;
-        }
+            return; // S_PLAYER_ENTER 직후 S_ENTER_GAME 등에서 동일 플레이어가 재전달되는 경우 허용
 
         (Vector3 pos, Quaternion rot) = ResolveSpawnPose(id, playerInfo);
 

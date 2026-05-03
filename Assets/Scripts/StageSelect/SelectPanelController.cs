@@ -104,6 +104,7 @@ public class SelectPanelController : MonoBehaviour
     
     public void OnClickPlayButton()
     {
+        // ReadyToStart 패널 켜짐은 스테이지 정보 검증이 끝난 직후 EnterSelectedStage 안에서 처리됩니다.
         StageManager.Instance.EnterSelectedStage();
     }
 }
