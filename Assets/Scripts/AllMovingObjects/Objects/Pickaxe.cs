@@ -7,6 +7,8 @@ public class Pickaxe : Items
 
     private bool hasMined = false; // 이미 채굴/타격했는지 여부
 
+
+
     private void OnTriggerStay(Collider other)
     {
         // 누군가의 손에 들린 상태에서만 동작
