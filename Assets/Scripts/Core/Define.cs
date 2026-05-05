@@ -28,7 +28,9 @@ public static class Define
         public static bool TryGetGameplayScene(int mapId, int chapter, int stage, out string sceneName)
         {
             sceneName = null;
-            if (mapId == 1 && chapter == 1)
+            // 스테이지 씬 매핑은 chapter/stage를 기준으로 판단합니다.
+            // mapId는 서버 식별자 용도로 유지하되 씬 이름 결정의 하드 조건으로 쓰지 않습니다.
+            if (chapter == 1)
             {
                 switch (stage)
                 {
