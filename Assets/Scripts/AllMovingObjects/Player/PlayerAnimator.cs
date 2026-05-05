@@ -9,7 +9,8 @@ public enum AnimState
     Falling,
     Mining,
     Throw_Ready,
-    Throw_Release
+    Throw_Release,
+    Suprise
 }
 
 public class PlayerAnimator : MonoBehaviour
@@ -29,8 +30,16 @@ public class PlayerAnimator : MonoBehaviour
         bool inputFreeze,
         bool isMining,
         bool isHoldingThrow,
-        bool isReleaseThrow)
+        bool isReleaseThrow,
+        bool isSuprise)
     {
+        if (isSuprise)
+        {
+            state = AnimState.Suprise;
+            anim.SetInteger("AnimationPar", (int)state);
+            return;
+        }
+
         // 기존 AnimationPar 구조를 유지하면서 던지기 상태만 우선 적용합니다.
         if (isReleaseThrow && !isMining)
         {

@@ -56,6 +56,7 @@ public class Player : MovingObject
     [SerializeField, Range(0.1f, 5f)] public float oxygenTickInterval = 1.0f;
 
     private float externalFreezeUntil = 0f;
+    private bool isExternallyFrozen => Time.time < externalFreezeUntil;
 
     // 초기화
     protected override void Awake()
@@ -219,7 +220,8 @@ public class Player : MovingObject
                 inputFreeze,
                  isUsingTool,
                 IsHoldingThrowInput(),
-                WasThrowReleasedThisFrame());
+                WasThrowReleasedThisFrame(),
+                isExternallyFrozen);
 
             KeyEInteract();
             KeyLeftClickInteract();
