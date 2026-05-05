@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerItemSystem : MonoBehaviour
 {
@@ -163,6 +163,43 @@ public class PlayerItemSystem : MonoBehaviour
 
     private void ThrowWithImpulse(Vector3 force)
     {
+        // [수정] 피어 측에서는 로컬 물리 throw를 수행하지 않는다.
+        //   - 던지기 권한은 호스트(피어 자신을 대역하는 OtherPlayers)에게 있고
+        //     호스트가 권위 물리 시뮬레이션 후 S_OBJECT_MOVE로 위치를 동기화한다.
+        //   - 피어가 로컬에서 isKinematic=false + AddForce를 적용하면 호스트와
+        //     별개의 물리 궤적이 만들어지고, 착지 시 velocity가 0에 근접하는
+        //     순간 Items.Moving()의 MovePosition(Lerp(pos, stale, 0.5)) 분기가
+        //     발사되어 지면 침투 → 물리 솔버가 위로 튕김(팝콘 현상)을 유발한다.
+        bool isPeer = ConnectManager.Instance != null && !ConnectManager.Instance.isHost;
+
+        if (isPeer)
+        {
+            // 시각적 detach만 수행. 물리는 호스트가 결정 → S_OBJECT_MOVE 추종.
+            Rigidbody rbPeer = currentEquipItem.GetComponent<Rigidbody>();
+            if (rbPeer != null)
+                rbPeer.isKinematic = true;
+
+            ObjectsGravityController peerGrav = currentEquipItem.GetComponent<ObjectsGravityController>();
+            if (peerGrav != null)
+                peerGrav.enabled = false;
+
+            BoxCollider peerBox = currentEquipItem.GetComponent<BoxCollider>();
+            if (peerBox != null)
+                peerBox.enabled = true;
+
+            currentEquipItem.transform.SetParent(null);
+
+            _lastThrownItem = currentEquipItem;
+
+            Items itemClassPeer = currentEquipItem.GetComponent<Items>();
+            if (itemClassPeer != null)
+                itemClassPeer.OnDetached(false); // 피어는 송신 권한 없음 → ownedByMeAfterDetach=false
+
+            DetachItem();
+            return;
+        }
+
+        // ↓ 호스트(권위 측) 경로: 기존 로직 유지 ↓
         Rigidbody rb = currentEquipItem.GetComponent<Rigidbody>();
         rb.isKinematic = false;
 
