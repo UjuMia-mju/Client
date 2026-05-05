@@ -18,6 +18,7 @@ public class Player : MovingObject
 
     private const float DETECT_RADIUS = 2.2f; // 구형 트리거 반지름 
     private const float THROW_IGNORE_COLLISION_DURATION = 0.65f; // 던진 후 충돌 무시 시간
+    private const string SOCKET = "Socket"; // 아이템이 플레이어 손에 들려있는 상태를 판단하기 위한 부모 이름 상수
 
     public bool isPlayerGetSomething = false;
     public bool isUsingTool { get; private set; } = false;
@@ -444,6 +445,17 @@ public class Player : MovingObject
                 float dist = Vector3.Distance(transform.position, col.transform.position);
                 if (dist < nearestDist)
                 {
+                    if (col.CompareTag(Define.Tag.ITEM) || col.CompareTag(Define.Tag.TOOL))
+                    {
+                        Items items = col.GetComponent<Items>();
+                        if (items != null &&
+                            items.transform.parent != null &&
+                            items.gameObject.transform.parent.name.Contains(SOCKET))
+                        {
+                            Debug.Log("이것은 이미 누군가의 소유입니다.");
+                            continue;
+                        }
+                    }
                     nearestDist = dist;
                     foundObject = col.gameObject;
                 }
@@ -498,7 +510,6 @@ public class Player : MovingObject
     }
 
 
-    // TODO : 처음 접속했을 때 위치가 초기화되어야 하는데 잘 안된다.
     private void SendEnterPosToServer()
     {
         if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)

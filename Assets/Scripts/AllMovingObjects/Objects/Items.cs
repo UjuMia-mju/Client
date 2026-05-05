@@ -4,7 +4,6 @@ using static UnityEngine.Rendering.ReloadAttribute;
 
 public class Items : MovingObject
 {
-    // 로컬 클라이언트가 이 아이템의 위치 송신 권한을 갖는지 여부
     private bool IsOwnedByMe;
     protected const string SOCKET = "Socket";
 
@@ -15,10 +14,11 @@ public class Items : MovingObject
     [HideInInspector] public int itemId;
     public string itemStringKey;
 
-    [SerializeField] private float lerpSpeed = 10f;
+    [SerializeField] private float lerpSpeed = 25f; // [수정] 10 → 25: 패킷 간격(0.05s) 내 ~95% 도달
 
     private Vector3 _targetPos;
     private Quaternion _targetRot = Quaternion.identity;
+    private Vector3 _targetVelocity = Vector3.zero; // [추가] Dead-reckoning용 속도
 
     private PlanetGravity _planet;
 
@@ -89,6 +89,12 @@ public class Items : MovingObject
             }
         }
 
+        // [수정] Dead-reckoning: 피어에서 패킷 사이 구간을 속도로 예측 이동
+        if (ConnectManager.Instance != null && !ConnectManager.Instance.isHost && rb.isKinematic)
+        {
+            _targetPos += _targetVelocity * Time.fixedDeltaTime;
+        }
+
         if (Vector3.Distance(transform.position, _targetPos) > 0.01f ||
             Quaternion.Angle(transform.rotation, _targetRot) > 0.5f)
         {
@@ -128,12 +134,15 @@ public class Items : MovingObject
 
         Vector3 gravityDir = (transform.position - _planet.transform.position).normalized;
         Vector3 horizontalVelocity = rb.linearVelocity - Vector3.Project(rb.linearVelocity, gravityDir);
-        float interval = horizontalVelocity.sqrMagnitude > 0.1f ? 0.05f : 0.5f;
+
+        // [수정] sqrMagnitude 0.1f(=속도 0.316m/s) → 0.01f(=속도 0.1m/s)로 정지 판정 엄격화
+        float interval = horizontalVelocity.sqrMagnitude > 0.01f ? 0.05f : 0.2f;
 
         if (Time.time - _lastSendTime < interval) return;
 
-        bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.1f;
-        bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 5f;
+        // [수정] 임계값 완화: 위치 0.1f→0.03f, 회전 5f→2f
+        bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.03f;
+        bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 2f;
 
         if (posChanged || rotChanged)
         {
@@ -144,20 +153,21 @@ public class Items : MovingObject
         }
     }
 
-    public void SetPos(Vector3 pos, Quaternion rot)
+    // [수정] velocity 파라미터 추가하여 Dead-reckoning 지원
+    public void SetPos(Vector3 pos, Quaternion rot, Vector3 velocity = default)
     {
         if (!IsOwnedByMe)
         {
             _targetPos = pos;
             _targetRot = rot;
+            _targetVelocity = velocity;
         }
     }
 
-    // 아이템을 놓을 때 소유권을 갱신하고 즉시 위치 동기화가 시작되도록 초기화
     public void OnDetached(bool ownedByMeAfterDetach)
     {
         IsOwnedByMe = ownedByMeAfterDetach;
-        _lastSendPos = Vector3.zero; // 강제로 변화 감지되게 초기화
+        _lastSendPos = Vector3.zero;
         _lastSendRot = Quaternion.identity;
         _lastSendTime = 0f;
     }
@@ -173,13 +183,11 @@ public class Items : MovingObject
 
         if (rb.isKinematic)
         {
-            // 피어: transform 직접 보간 (물리 없음)
             transform.position = Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed);
             transform.rotation = Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed);
         }
         else if (rb.linearVelocity.sqrMagnitude < 0.0001f)
         {
-            // 호스트: 물리 기반 보간
             rb.MovePosition(Vector3.Lerp(transform.position, _targetPos, Time.fixedDeltaTime * lerpSpeed));
             rb.MoveRotation(Quaternion.Slerp(transform.rotation, _targetRot, Time.fixedDeltaTime * lerpSpeed));
         }
