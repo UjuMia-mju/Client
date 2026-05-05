@@ -176,5 +176,12 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
 
     public void BroadcastPlayerRevive(ulong playerId, Vector3 pos, Quaternion rot)
         => TryHostBroadcast(() => hostSender.BroadCastPlayerRevive(playerId, pos, rot));
+
+    // [추가] 호스트 → 모든 피어: "스테이지 선택 씬으로 돌아가라" 신호.
+    // 일반 릴레이로만 처리되므로 서버 코드 변경 불필요.
+    public void BroadcastReturnToStageSelect()
+        => TryHostBroadcast(() => hostSender.BroadcastToPeers(
+            PacketId.PKT_S_RETURN_TO_STAGE_SELECT,
+            new Protocol.S_RETURN_TO_STAGE_SELECT()));
     #endregion
 }

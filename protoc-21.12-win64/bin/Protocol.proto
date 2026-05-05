@@ -316,6 +316,12 @@ message S_GAME_READY_TO_START
 	repeated uint64 id_order = 4;
 }
 
+message S_RETURN_TO_STAGE_SELECT
+{
+	// 스테이지 선택 신으로 돌아갈 때 대기를 위한 패킷입니다. 페이로드가 없는것은 정상입니다.
+}
+
+
 // ==================== 게임 플레이 ====================
 
 // 플레이어 움직임
