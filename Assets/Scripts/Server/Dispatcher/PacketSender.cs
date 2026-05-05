@@ -183,5 +183,9 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
         => TryHostBroadcast(() => hostSender.BroadcastToPeers(
             PacketId.PKT_S_RETURN_TO_STAGE_SELECT,
             new Protocol.S_RETURN_TO_STAGE_SELECT()));
+
+    // 추가 : 호스트 → 모든 피어: "플레이어가 피격당했다" 신호.
+    public void BroadcastPlayerHit(ulong victimPlayerId, float freezeSeconds)
+        => TryHostBroadcast(() => hostSender.BroadcastPlayerHit(victimPlayerId, freezeSeconds));
     #endregion
 }

@@ -29,6 +29,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_PLAYER_DEAD> OnPlayerDeadEvent;
     public event Action<S_PLAYER_REVIVE> OnPlayerReviveEvent;
     public event Action<S_RETURN_TO_STAGE_SELECT> OnReturnToStageSelectEvent;
+    public event Action<S_PLAYER_HIT> OnPlayerHitEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -99,6 +100,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_RETURN_TO_STAGE_SELECT:
                 HandleReturnToStageSelect(data);
+                break;
+            case PacketId.PKT_S_PLAYER_HIT:
+                HandlePlayerHit(data);
                 break;
             default:
                 Debug.LogWarning($"[HostPacketHandler] Unhandled packet ID: {packetId}");
@@ -249,5 +253,11 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         S_RETURN_TO_STAGE_SELECT packet = S_RETURN_TO_STAGE_SELECT.Parser.ParseFrom(data);
         OnReturnToStageSelectEvent?.Invoke(packet);
+    }
+
+    private void HandlePlayerHit(byte[] data)
+    {
+        S_PLAYER_HIT packet = S_PLAYER_HIT.Parser.ParseFrom(data);
+        OnPlayerHitEvent?.Invoke(packet);
     }
 }

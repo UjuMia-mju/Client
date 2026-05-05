@@ -44,6 +44,19 @@ public class Player : MovingObject
     [SerializeField] private OxygenUIController oxygenUIController;
     [SerializeField] private ThrowTrajectoryPreview trajectoryPreview;
 
+
+    [Header("Oxygen Tuning")]
+    [Tooltip("1초당 자연 감소량 (0~1 정규화)")]
+    [SerializeField, Range(0f, 0.5f)] public float oxygenDecreasePerTick = 0.01f;
+
+    [Tooltip("우주선 회복 영역에서 1초당 회복량")]
+    [SerializeField, Range(0f, 0.5f)] public float oxygenIncreasePerTick = 0.02f;
+
+    [Tooltip("감소/회복 코루틴 틱 간격(초)")]
+    [SerializeField, Range(0.1f, 5f)] public float oxygenTickInterval = 1.0f;
+
+    private float externalFreezeUntil = 0f;
+
     // 초기화
     protected override void Awake()
     {
@@ -98,6 +111,12 @@ public class Player : MovingObject
         playerStat.OnPlayerDead += HandlePlayerDead;
         playerStat.OnPlayerRevive += HandlePlayerRevive;
 
+
+        if (HostPacketHandler.Instance != null)
+        {
+            HostPacketHandler.Instance.OnPlayerHitEvent += OnPlayerHitReceived;
+        }
+
         // 씬 로드 후 서버/호스트에 입장을 알립니다.
         // (기존: ConnectManager.Start()에서 호출 → 자동 로그인 제거 때 함께 삭제됨)
         OnNetworkReady();
@@ -112,6 +131,11 @@ public class Player : MovingObject
             playerStat.OnOxygenChanged -= HandleOxygenChanged;
             playerStat.OnPlayerDead -= HandlePlayerDead;
             playerStat.OnPlayerRevive -= HandlePlayerRevive;
+        }
+
+        if (HostPacketHandler.Instance != null)
+        {
+            HostPacketHandler.Instance.OnPlayerHitEvent -= OnPlayerHitReceived;
         }
     }
 
@@ -179,6 +203,11 @@ public class Player : MovingObject
         playerInput.InputProcess();
 
         inputFreeze = CollisionDetectWithRaycast(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir), wallMask, walkable);
+
+        if (Time.time < externalFreezeUntil)
+        {
+            inputFreeze = true;
+        }
 
         if (!inputFreeze)
         {
@@ -652,13 +681,15 @@ public class Player : MovingObject
         return aim;
     }
 
-    [Header("Oxygen Tuning")]
-    [Tooltip("1초당 자연 감소량 (0~1 정규화)")]
-    [SerializeField, Range(0f, 0.5f)] public float oxygenDecreasePerTick = 0.01f;
+    public void FreezeFor(float seconds)
+    {
+        externalFreezeUntil = Mathf.Max(externalFreezeUntil, Time.time + seconds);
+    }
 
-    [Tooltip("우주선 회복 영역에서 1초당 회복량")]
-    [SerializeField, Range(0f, 0.5f)] public float oxygenIncreasePerTick = 0.02f;
+    private void OnPlayerHitReceived(S_PLAYER_HIT packet)
+    {
+        if (packet.VictimPlayerId != (ulong)NetManager.Instance._playerId) return;
+        FreezeFor(packet.FreezeSeconds);
+    }
 
-    [Tooltip("감소/회복 코루틴 틱 간격(초)")]
-    [SerializeField, Range(0.1f, 5f)] public float oxygenTickInterval = 1.0f;
 }

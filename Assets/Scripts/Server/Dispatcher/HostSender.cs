@@ -275,4 +275,14 @@ public class HostSender : IHostSender
         };
         BroadcastRelayPacket(PacketId.PKT_S_PLAYER_REVIVE, packet);
     }
+
+    public void BroadcastPlayerHit(ulong victimPlayerId, float freezeSeconds)
+    {
+        S_PLAYER_HIT packet = new S_PLAYER_HIT
+        {
+            VictimPlayerId = victimPlayerId,
+            FreezeSeconds = freezeSeconds
+        };
+        BroadcastRelayPacket(PacketId.PKT_S_PLAYER_HIT, packet);
+    }
 }
