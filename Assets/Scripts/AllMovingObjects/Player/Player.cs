@@ -210,6 +210,8 @@ public class Player : MovingObject
             inputFreeze = true;
         }
 
+        playerAnimator.SurpriseAnimation(isExternallyFrozen);
+
         if (!inputFreeze)
         {
             GroundDetectingWithRaycast(groundMask | walkable);
@@ -220,8 +222,7 @@ public class Player : MovingObject
                 inputFreeze,
                  isUsingTool,
                 IsHoldingThrowInput(),
-                WasThrowReleasedThisFrame(),
-                isExternallyFrozen);
+                WasThrowReleasedThisFrame());
 
             KeyEInteract();
             KeyLeftClickInteract();
@@ -483,7 +484,6 @@ public class Player : MovingObject
                             items.transform.parent != null &&
                             items.gameObject.transform.parent.name.Contains(SOCKET))
                         {
-                            Debug.Log("이것은 이미 누군가의 소유입니다.");
                             continue;
                         }
                     }
