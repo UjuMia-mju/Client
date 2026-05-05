@@ -99,6 +99,23 @@ public class DbCacheManager : MonoBehaviorSingleton<DbCacheManager>
         return false;
     }
 
+    /// <summary>S_HOST_SHOW_STAGE 등 map_id만으로 찾을 때(첫 일치).</summary>
+    public static bool TryGetStageInfoByMapId(int mapId, out StageInfo stageInfo)
+    {
+        foreach (StageInfo info in s_stageInfos)
+        {
+            if (info == null) continue;
+            if (info.MapId == mapId)
+            {
+                stageInfo = info;
+                return true;
+            }
+        }
+
+        stageInfo = null;
+        return false;
+    }
+
     public static string BuildChapterStageListDebugString()
     {
         if (s_stageInfos.Count == 0)

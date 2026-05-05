@@ -93,6 +93,8 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
         if (_orderedIds.Remove(id))
             Debug.Log($"[RoomMembershipTracker] OnMemberLeave. id={id}, orderedIds=[{string.Join(",", _orderedIds)}]");
 
+        // TODO(Server): 스테이지 선택에서 “전원 메인”이면 방장 퇴장 시 new_owner_id=0·방 해산과 맞춰야
+        // 아래 else if (wasHostLeaving) → GoMainIfInGame() 이 실행됨. (방장만 교체하면 여기 안 탈 수 있음.)
         // 서버가 새 방장 ID를 명시했다면 그 ID를 0번째로 보정
         if (packet.NewOwnerId != 0UL)
         {
@@ -103,8 +105,7 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
         }
         else if (wasHostLeaving)
         {
-            // 방장이 나갔고 새 방장이 지정되지 않으면 방이 종료된 것으로 보고
-            // 인게임에 남아 있는 피어를 메인으로 되돌립니다.
+            // 인게임·스테이지 선택 등 로비가 아닐 때는 메인으로 돌립니다.
             GoMainIfInGame();
         }
     }

@@ -1,9 +1,15 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class SelectPanelController : MonoBehaviour
 {
     private const int MaxStars = 3;
+
+    [Header("플레이(방장 전용) — 게스트 미리보기 시 끔")]
+    [Tooltip("비우면 playButton → 버튼 전체 비활성 순으로 처리")]
+    [SerializeField] private GameObject playControlsRoot;
+    [SerializeField] private Button playButton;
 
     [Header("UI Text References")]
     public TextMeshProUGUI titleText;
@@ -19,6 +25,28 @@ public class SelectPanelController : MonoBehaviour
     public GameObject clearImage;
     public GameObject unclearImage;
     
+    /// <summary>호스트가 띄운 상태를 다른 유저에게만 보여줄 때 — 입장은 불가.</summary>
+    public void SetGuestPreviewMode(bool isGuestPreview)
+    {
+        if (playControlsRoot != null)
+        {
+            playControlsRoot.SetActive(!isGuestPreview);
+            return;
+        }
+
+        if (playButton != null)
+        {
+            playButton.gameObject.SetActive(!isGuestPreview);
+            return;
+        }
+
+        if (isGuestPreview)
+        {
+            foreach (var b in GetComponentsInChildren<Button>(true))
+                b.interactable = false;
+        }
+    }
+
     public void SetInfo(string stageName, int difficulty, string description, int estimatedClearTimeSeconds, int clearStarCount)
     {
         if (titleText != null) titleText.text = stageName;

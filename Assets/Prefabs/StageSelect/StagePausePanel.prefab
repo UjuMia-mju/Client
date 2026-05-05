@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC885\uB8CC"
+  m_text: "\uAC8C\uC784\uC885\uB8CC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1d7a43fb382d852478312e7c0ed2d8ff, type: 2}
   m_sharedMaterial: {fileID: 1440945473178108944, guid: 1d7a43fb382d852478312e7c0ed2d8ff, type: 2}
@@ -689,7 +689,7 @@ GameObject:
   - component: {fileID: 1040295476694342672}
   - component: {fileID: 3123150609807397599}
   m_Layer: 5
-  m_Name: PausePanel
+  m_Name: StagePausePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -791,6 +791,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PausePanelController
   SettingsPanel: {fileID: 90857599718438145, guid: 3b5d8472ed4ee034bb2cc1c12911edba, type: 3}
+  targetSceneName: Main
+  leaveRoomTimeoutSeconds: 2
 --- !u!225 &3123150609807397599
 CanvasGroup:
   m_ObjectHideFlags: 0

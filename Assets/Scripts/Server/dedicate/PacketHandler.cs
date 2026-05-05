@@ -38,6 +38,7 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_START_STAGE> OnStartStageEvent;
     public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
     public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
+    public event Action<S_HOST_SHOW_STAGE> OnHostShowStageEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -124,6 +125,9 @@ public class PacketHandler : Singleton<PacketHandler>
                 break;
             case PacketId.PKT_S_GAME_READY_TO_START:
                 HandleGameReadyToStart(data);
+                break;
+            case PacketId.PKT_S_HOST_SHOW_STAGE:
+                HandleHostShowStage(data);
                 break;
             case PacketId.PKT_C_GET_DB_DATA:
                 // 일부 서버가 C_GET_DB_DATA(1000) ID로 S_STAGE_INFO 응답을 보내는 경우
@@ -434,6 +438,12 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_GAME_READY_TO_START packet = S_GAME_READY_TO_START.Parser.ParseFrom(payloadData);
         OnGameReadyToStartEvent?.Invoke(packet);
+    }
+
+    private void HandleHostShowStage(byte[] payloadData)
+    {
+        S_HOST_SHOW_STAGE packet = S_HOST_SHOW_STAGE.Parser.ParseFrom(payloadData);
+        OnHostShowStageEvent?.Invoke(packet);
     }
 
 }
