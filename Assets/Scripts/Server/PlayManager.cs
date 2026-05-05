@@ -2,8 +2,13 @@
 using Protocol;
 using UnityEngine;
 
+[DefaultExecutionOrder(-10)]
 public class PlayManager : SceneSingleton<PlayManager>
 {
+    [Header("인게임 시작 동기화 (스테이지 선택 → S_GAME_READY_TO_START 후 이 씬)")]
+    [Tooltip("인스펙터에 직접 연결하세요. 멀티 시작 동기화 시 카운트다운 UI에 사용됩니다.")]
+    [SerializeField] private ReadyToStartPanelController inGameReadyPanel;
+
     [SerializeField] private GameObject remotePlayerPrefab;
 
     [Header("Spawn Points (입장 순서대로 인덱스 배정)")]
@@ -19,6 +24,8 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     void Start()
     {
+        BootstrapInGameReadyPanelIfNeeded();
+
         spaceshipAssembly = FindFirstObjectByType<SpaceshipAssembly>();
 
         PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
@@ -59,6 +66,46 @@ public class PlayManager : SceneSingleton<PlayManager>
             var (pos, rot) = ResolveSpawnPose((ulong)NetManager.Instance._playerId, new PlayerGameInfo());
             localPlayer.transform.SetPositionAndRotation(pos, rot);
         }
+    }
+
+    /// <summary>
+    /// 서버 시작 시각까지 남은 시간을 씬 로드 이후에 맞추기 위해 보관된 S_GAME_READY_TO_START(또는 폴백)로
+    /// 인게임에서만 카운트다운합니다.
+    /// </summary>
+    void BootstrapInGameReadyPanelIfNeeded()
+    {
+        if (!GameplayReadyCoordinator.TryTakePendingForUi(
+                out S_GAME_READY_TO_START serverPacket,
+                out bool useFallback,
+                out IReadOnlyList<ulong> fallbackIds,
+                out int fallbackDelay))
+            return;
+
+        var panel = inGameReadyPanel;
+
+        void OnCountdownDone()
+        {
+            GameplayReadyCoordinator.NotifyGateReleased();
+            if (panel != null)
+                panel.gameObject.SetActive(false);
+        }
+
+        if (panel == null)
+        {
+            Debug.LogWarning(
+                "[PlayManager] 게임 시작 동기화 데이터가 있으나 inGameReadyPanel이 비어 있습니다. PlayManager에 ReadyToStartPanelController를 연결하세요. 게이트만 해제합니다.");
+            OnCountdownDone();
+            return;
+        }
+
+        panel.WarmUpBindings();
+
+        if (serverPacket != null)
+            panel.BeginFromPacket(serverPacket, OnCountdownDone);
+        else if (useFallback)
+            panel.BeginFallback(fallbackIds, fallbackDelay, OnCountdownDone);
+        else
+            OnCountdownDone();
     }
 
     void OnDestroy()

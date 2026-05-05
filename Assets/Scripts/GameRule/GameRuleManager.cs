@@ -8,6 +8,11 @@ public class GameRuleManager : MonoBehaviour
 
     [SerializeField] private float timerDuration;
     [SerializeField] private ClearPanelController clearPanel;
+
+    [Header("HUD")]
+    [Tooltip("미션 타이머 UI 루트(Timer 오브젝트). ReadyToStartPanel·게이트 종료 후 표시합니다.")]
+    [SerializeField] private GameObject missionTimerUiRoot;
+
     private float remainingTime;
     public float GetRemainingTime() => remainingTime;
     private bool isVictory = false;
@@ -30,8 +35,23 @@ public class GameRuleManager : MonoBehaviour
 
         Debug.Log($"[GameRuleManager] Start. ConnectManager.isHost={ConnectManager.Instance?.isHost}");
 
-        if (IsHostNow())
-            _timerCoroutine = StartCoroutine(StartTimer());
+        if (missionTimerUiRoot != null)
+            missionTimerUiRoot.SetActive(false);
+
+        GameplayReadyCoordinator.WhenGateReleased(TryStartHostMissionTimer);
+        GameplayReadyCoordinator.WhenGateReleased(ShowMissionTimerUiAfterReady);
+    }
+
+    void ShowMissionTimerUiAfterReady()
+    {
+        if (missionTimerUiRoot != null)
+            missionTimerUiRoot.SetActive(true);
+    }
+
+    void TryStartHostMissionTimer()
+    {
+        if (!IsHostNow() || _timerCoroutine != null) return;
+        _timerCoroutine = StartCoroutine(StartTimer());
     }
 
     private static bool IsHostNow()

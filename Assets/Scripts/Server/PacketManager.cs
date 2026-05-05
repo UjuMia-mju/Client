@@ -195,7 +195,7 @@ public class PacketManager : Singleton<PacketManager>
     private void HandleGetClearInfo(byte[] payloadData)
     {
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
-        Debug.Log($"[PacketManager] S_GET_CLEAR_INFO 수신! 클리어 데이터 개수: {packet.StageClears.Count}");
+        Debug.Log($"[PacketManager] S_GET_CLEAR_INFO 수신! Success: {packet.Success}, 클리어 데이터 개수: {packet.StageClears.Count}");
         OnGetClearInfoEvent?.Invoke(packet);
     }
 

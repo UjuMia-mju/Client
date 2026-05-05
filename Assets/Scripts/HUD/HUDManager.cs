@@ -17,6 +17,8 @@ public class HUDManager : MonoBehaviour
     private GameObject currentActivePanel;
     private bool isTransitioning = false; 
     private Key closeKey = Key.Escape;
+    /// <summary><see cref="InputManager.PushPauseMenuHold"/>를 이번 패널에 대해 걸었는지(교체·언로드 시 짝 맞춤).</summary>
+    private bool _pauseMenuHoldApplied;
     
     private void Awake() 
     {
@@ -29,10 +31,12 @@ public class HUDManager : MonoBehaviour
     
     private void Update()
     {
+        // 일시정지 중에는 ESC로 닫아야 하므로, Ready/코디네이터 게이트만 여기서 차단합니다.
+        if (InputManager.IsEscBlockedForHud)
+            return;
+
         if (Keyboard.current[closeKey].wasPressedThisFrame && !isTransitioning)
-        {
             HandleTogglePanel();
-        }
     }
 
     private void HandleTogglePanel()
@@ -46,9 +50,11 @@ public class HUDManager : MonoBehaviour
     public void OpenPanel(GameObject prefab, Vector3 customScale)
     {
         if (prefab == null || isTransitioning) return;
+        if (InputManager.IsEscBlockedForHud) return;
 
         if (currentActivePanel != null)
         {
+            ReleasePauseMenuHoldIfApplied();
             Destroy(currentActivePanel);
         }
 
@@ -69,12 +75,28 @@ public class HUDManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        ReleasePauseMenuHoldIfApplied();
+    }
+
+    void ReleasePauseMenuHoldIfApplied()
+    {
+        if (!_pauseMenuHoldApplied)
+            return;
+        _pauseMenuHoldApplied = false;
+        InputManager.PopPauseMenuHold();
+    }
+
     #region Wrapper Coroutines
     // Animator의 코루틴을 실행하고 상태(isTransitioning)를 관리하는 래퍼 함수
 
     private IEnumerator OpenSequence(GameObject panel, Vector3 target)
     {
         isTransitioning = true;
+
+        InputManager.PushPauseMenuHold();
+        _pauseMenuHoldApplied = true;
         
         // UIPanelAnimator의 FadeIn 코루틴이 끝날 때까지 대기
         yield return StartCoroutine(animator.FadeIn(panel, target));
@@ -89,6 +111,7 @@ public class HUDManager : MonoBehaviour
         // UIPanelAnimator의 FadeOut 코루틴이 끝날 때까지 대기
         yield return StartCoroutine(animator.FadeOut(currentActivePanel));
         
+        ReleasePauseMenuHoldIfApplied();
         currentActivePanel = null;
         isTransitioning = false;
     }

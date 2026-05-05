@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Rocket Trigger 안에 로컬 Player가 있을 때만 CraftBubble을 활성화합니다.
-/// Enter / Stay 동안 SetActive(true), Exit 및 비활성화 시 SetActive(false).
+/// Rocket Trigger 안에 로컬 Player가 있을 때 CraftBubble을 켤 후보로 두고,
+/// <see cref="InputManager.IsGameplaySuppressed"/> 동안(ReadyToStart 등)에는 비활성입니다.
 /// </summary>
 public class SpaceShipCraftBubble : MonoBehaviour
 {
@@ -11,6 +11,18 @@ public class SpaceShipCraftBubble : MonoBehaviour
 
     private GameObject _bubbleInstance;
     private int _playerOverlapCount;
+    /// <summary>트리거 조건상 버블을 켜야 할지. 실제 활성 여부는 <see cref="InputManager.IsGameplaySuppressed"/>와 함께 결정합니다.</summary>
+    private bool _desiredBubbleVisible;
+
+    private void Awake()
+    {
+        GameplayReadyCoordinator.WhenGateReleased(ApplyBubbleVisibility);
+    }
+
+    private void OnDestroy()
+    {
+        GameplayReadyCoordinator.CancelWhenGateReleased(ApplyBubbleVisibility);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -19,7 +31,7 @@ public class SpaceShipCraftBubble : MonoBehaviour
 
         _playerOverlapCount++;
         EnsureBubbleInstance();
-        SetBubbleActive(true);
+        SetBubbleDesiredVisible(true);
     }
 
     private void OnTriggerStay(Collider other)
@@ -28,7 +40,7 @@ public class SpaceShipCraftBubble : MonoBehaviour
             return;
 
         EnsureBubbleInstance();
-        SetBubbleActive(true);
+        SetBubbleDesiredVisible(true);
     }
 
     private void OnTriggerExit(Collider other)
@@ -38,12 +50,12 @@ public class SpaceShipCraftBubble : MonoBehaviour
 
         _playerOverlapCount = Mathf.Max(0, _playerOverlapCount - 1);
         if (_playerOverlapCount == 0)
-            SetBubbleActive(false);
+            SetBubbleDesiredVisible(false);
     }
 
     private void OnDisable()
     {
-        SetBubbleActive(false);
+        SetBubbleDesiredVisible(false);
         _playerOverlapCount = 0;
     }
 
@@ -60,13 +72,20 @@ public class SpaceShipCraftBubble : MonoBehaviour
             return;
 
         _bubbleInstance = Instantiate(bubblePrefab);
-        _bubbleInstance.SetActive(false);
+        ApplyBubbleVisibility();
     }
 
-    private void SetBubbleActive(bool active)
+    private void SetBubbleDesiredVisible(bool visible)
+    {
+        _desiredBubbleVisible = visible;
+        ApplyBubbleVisibility();
+    }
+
+    private void ApplyBubbleVisibility()
     {
         if (_bubbleInstance == null)
             return;
-        _bubbleInstance.SetActive(active);
+        bool visible = _desiredBubbleVisible && !InputManager.IsGameplaySuppressed;
+        _bubbleInstance.SetActive(visible);
     }
 }

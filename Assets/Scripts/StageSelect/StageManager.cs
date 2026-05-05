@@ -75,6 +75,9 @@ public class StageManager : MonoBehaviour
 
     private void Start()
     {
+        GameplayReadyCoordinator.ResetForStageSelect();
+        InputManager.ResetGameplaySuppressionForStageSelect();
+
         if (stageNodes.Count == 0)
             stageNodes = new List<StageNode>(Object.FindObjectsByType<StageNode>(FindObjectsSortMode.None));
 
@@ -141,6 +144,12 @@ public class StageManager : MonoBehaviour
 
     private void HandleGetClearInfoResponse(S_GET_CLEAR_INFO packet)
     {
+        if (!packet.Success)
+        {
+            Debug.LogWarning("[StageManager] S_GET_CLEAR_INFO 실패 — 기존 클리어 표시 유지");
+            return;
+        }
+
         _clearStarCountByMapId.Clear();
         foreach (var clearInfo in packet.StageClears)
         {
@@ -257,11 +266,11 @@ public class StageManager : MonoBehaviour
 
         ConnectManager.Instance.SetHostRole(amIFirst);
 
+        GameplayReadyCoordinator.SetPendingFallback(tracker.OrderedIds, 3);
         var panel = ResolveReadyToStartPanel();
-        if (panel != null)
-            panel.BeginFallback(tracker.OrderedIds, 3, DoLoadGameplayScene);
-        else
-            DoLoadGameplayScene();
+        if (panel != null && panel.gameObject.activeSelf)
+            panel.gameObject.SetActive(false);
+        DoLoadGameplayScene();
     }
 
     private void HandleGameReadyToStart(S_GAME_READY_TO_START packet)
@@ -283,11 +292,11 @@ public class StageManager : MonoBehaviour
 
         ConnectManager.Instance.SetHostRole(isHost);
 
+        GameplayReadyCoordinator.SetPendingFromServer(packet);
         var panel = ResolveReadyToStartPanel();
-        if (panel != null)
-            panel.BeginFromPacket(packet, DoLoadGameplayScene);
-        else
-            DoLoadGameplayScene();
+        if (panel != null && panel.gameObject.activeSelf)
+            panel.gameObject.SetActive(false);
+        DoLoadGameplayScene();
     }
 
     /// <summary>씬 로드 진입점. 이중 호출 방지 포함.</summary>
@@ -323,8 +332,8 @@ public class StageManager : MonoBehaviour
         if (!Define.Scene.TryGetGameplayScene(mapId, chapter, stageNum, out string sceneName))
         {
             Debug.LogWarning(
-                $"[StageManager] Define.Scene에 없는 스테이지입니다. map={_pendingMapId}, chapter={_pendingChapter}, stage={_pendingStageNum}. " +
-                $"fallback={Define.Scene.GAME_1_1}");
+                "[StageManager] 인게임 씬 매핑이 없습니다. " +
+                $"map={mapId}, chapter={chapter}, stage={stageNum}. fallback={Define.Scene.GAME_1_1}");
             sceneName = Define.Scene.GAME_1_1;
         }
 

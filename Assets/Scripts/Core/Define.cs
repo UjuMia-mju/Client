@@ -28,7 +28,9 @@ public static class Define
         public static bool TryGetGameplayScene(int mapId, int chapter, int stage, out string sceneName)
         {
             sceneName = null;
-            if (mapId == 1 && chapter == 1)
+            // DB의 map_id는 스테이지 고유키(·로컬 폴백 ch*100+st 등)로 올 수 있어,
+            // 인게임 씬은 프로토타입 기준 chapter·stage로만 맞춰도 됩니다.
+            if (chapter == 1 && stage >= 1 && stage <= 5)
             {
                 switch (stage)
                 {

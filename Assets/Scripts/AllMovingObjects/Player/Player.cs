@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.InputSystem;
 using Protocol;
 
+[DefaultExecutionOrder(50)]
 public class Player : MovingObject
 {
     // 입력 동결 플래그 (충돌 시 입력 무시용이며 최종 판단을 내리는 클래스라 판단해 이곳에 선언했습니다.)
@@ -78,6 +79,9 @@ public class Player : MovingObject
         hpUIController.gameObject.SetActive(true);
         oxygenUIController.gameObject.SetActive(true);
         // =====
+
+        if (InputManager.IsGameplaySuppressed && playerInput != null)
+            playerInput.SetInputEnabled(false);
     }
 
     private void Start()
@@ -97,8 +101,22 @@ public class Player : MovingObject
         playerStat.OnPlayerDead += HandlePlayerDead;
         playerStat.OnPlayerRevive += HandlePlayerRevive;
 
-        // 씬 로드 후 서버/호스트에 입장을 알립니다.
-        // (기존: ConnectManager.Start()에서 호출 → 자동 로그인 제거 때 함께 삭제됨)
+        // 스테이지 선택 → 멀티 시작 동기화(ReadyToStartPanel) 후에 네트워크·산소 감소를 켭니다.
+        GameplayReadyCoordinator.WhenGateReleased(OnNetworkReadyAfterReadyGate);
+        InputManager.WhenBecameUnblocked(OnInputUnblockedForGameplay);
+    }
+
+    void OnInputUnblockedForGameplay()
+    {
+        if (this == null) return;
+        if (playerStat != null && playerStat.statData.hp <= 0) return;
+        if (playerInput != null)
+            playerInput.SetInputEnabled(true);
+    }
+
+    void OnNetworkReadyAfterReadyGate()
+    {
+        if (this == null) return;
         OnNetworkReady();
     }
 
@@ -112,6 +130,8 @@ public class Player : MovingObject
             playerStat.OnPlayerDead -= HandlePlayerDead;
             playerStat.OnPlayerRevive -= HandlePlayerRevive;
         }
+
+        InputManager.CancelWhenBecameUnblocked(OnInputUnblockedForGameplay);
     }
 
 

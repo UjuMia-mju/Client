@@ -2,6 +2,11 @@
 using UnityEngine;
 using Protocol;
 
+/// <summary>
+/// 로그인·<c>S_STAGE_INFO</c> 등 공용 로직. <b>스테이지 씬의 미션 타이머 HUD</b>는
+/// 같은 <c>GameManagers</c> 아래 <see cref="GameRuleManager"/>의 <c>Mission Timer Ui Root</c>에서
+/// <see cref="GameplayReadyCoordinator"/> 게이트 해제 후 켜집니다(이 컴포넌트는 DDOL 싱글톤이라 씬 전용 레퍼런스에 부적합).
+/// </summary>
 public class GameManager : MonoBehaviorSingleton<GameManager>
 {
     void OnEnable()

@@ -426,6 +426,7 @@ public class PacketHandler : Singleton<PacketHandler>
     private void HandleGetClearInfo(byte[] payloadData)
     {
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
+        Debug.Log($"[PacketHandler] S_GET_CLEAR_INFO 수신! Success: {packet.Success}, 클리어 데이터 개수: {packet.StageClears.Count}");
         OnGetClearInfoEvent?.Invoke(packet);
     }
     
