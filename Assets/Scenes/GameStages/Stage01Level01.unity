@@ -5789,7 +5789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0ed162b0230c043b9de84fac61b4e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameRuleManager
-  timerDuration: 180
+  timerDuration: 10
   clearPanel: {fileID: 297164733}
 --- !u!1 &1963899701
 GameObject:

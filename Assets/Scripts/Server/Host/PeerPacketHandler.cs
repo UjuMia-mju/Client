@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using Protocol;
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// 호스트가 피어로부터 받은 패킷을 처리하는 클래스
@@ -27,6 +28,13 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
     public event Action<int, C_RESOURCE_HIT> OnPeerResourceHitEvent;
     public event Action<int, C_PLAYER_DEAD> OnPeerPlayerDeadEvent;
+
+    // [추가] 게임플레이 씬 로드 직후의 race 대응:
+    //   PlayManager가 아직 OnPeerEnterGameEvent를 구독하기 전에 C_ENTER_GAME이
+    //   도착하면 이벤트가 유실되어 호스트가 해당 피어를 영외 스폰하지 못한다.
+    //   peerId별 마지막 C_ENTER_GAME을 보관해두고, PlayManager.Start에서
+    //   ReplayPendingEnterGames()로 드레인한다.
+    private readonly Dictionary<int, C_ENTER_GAME> _pendingEnterGames = new Dictionary<int, C_ENTER_GAME>();
 
 
     /// <summary>
@@ -138,8 +146,36 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_ENTER_GAME, response);
         Debug.Log($"[PeerPacketHandler] S_ENTER_GAME 브로드캐스트. players={response.Players.Count}");
 
+        // [추가] 호스트 PlayManager가 아직 없을 수 있으므로 캐시.
+        //       PlayManager.Start에서 ReplayPendingEnterGames()로 드레인된다.
+        _pendingEnterGames[peerId] = packet;
+
         // 4. 호스트 측 PlayManager 스폰 이벤트
         OnPeerEnterGameEvent?.Invoke(peerId,    packet);
+    }
+
+    /// <summary>
+    /// PlayManager.Start에서 OnPeerEnterGameEvent 구독 직후 호출.
+    /// 구독 이전에 도착해 유실되었을 가능성이 있는 C_ENTER_GAME을 다시 흘려준다.
+    /// </summary>
+    public void ReplayPendingEnterGames()
+    {
+        if (_pendingEnterGames.Count == 0) return;
+
+        Debug.Log($"[PeerPacketHandler] ReplayPendingEnterGames: {_pendingEnterGames.Count}건 드레인");
+        foreach (var kv in _pendingEnterGames)
+            OnPeerEnterGameEvent?.Invoke(kv.Key, kv.Value);
+    }
+
+    /// <summary>피어가 방을 떠나거나 게임 종료 시 호출하여 stale 캐시 제거.</summary>
+    public void ClearPendingEnterGame(int peerId)
+    {
+        _pendingEnterGames.Remove(peerId);
+    }
+
+    public void ClearAllPendingEnterGames()
+    {
+        _pendingEnterGames.Clear();
     }
 
     private void HandlePeerMove(int peerId, byte[] data)
@@ -162,11 +198,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         C_CHAT packet = C_CHAT.Parser.ParseFrom(data);
         OnPeerChatEvent?.Invoke(peerId, packet);
 
-        S_CHAT relay = new S_CHAT
-        {
-            PlayerId = (ulong)peerId,
-            Msg = packet.Msg
-        };
+        S_CHAT relay = new S_CHAT { PlayerId = (ulong)peerId, Msg = packet.Msg };
 
         PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_CHAT, relay);
     }
@@ -176,11 +208,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         C_PLAYER_ANIMATION packet = C_PLAYER_ANIMATION.Parser.ParseFrom(data);
         OnPeerAnimationEvent?.Invoke(peerId, packet);
 
-        S_PLAYER_ANIMATION relay = new S_PLAYER_ANIMATION
-        {
-            PlayerId = (ulong)peerId,
-            State = packet.State
-        };
+        S_PLAYER_ANIMATION relay = new S_PLAYER_ANIMATION { PlayerId = (ulong)peerId, State = packet.State };
 
         PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_PLAYER_ANIMATION, relay);
     }
