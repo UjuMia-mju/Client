@@ -72,25 +72,20 @@ public class Items : MovingObject
 
     private void FixedUpdate()
     {
-        if (_planet != null)
-        {
-            // 호스트만 로컬 물리로 _targetPos 갱신
-            // 피어는 SetPos()로 받은 호스트 위치를 유지해야 함
-            if (ConnectManager.Instance == null || ConnectManager.Instance.isHost)
-            {
-                Vector3 gravityDir = (transform.position - _planet.transform.position).normalized;
-                LayerMask groundMask = LayerMask.GetMask(Define.Layer.GROUND, Define.Layer.WALKABLE_COLLIDER);
+        bool isPeer = ConnectManager.Instance != null && !ConnectManager.Instance.isHost;
 
-                if (Physics.Raycast(transform.position, -gravityDir, 0.6f, groundMask))
-                {
-                    _targetPos = transform.position;
-                    _targetRot = transform.rotation;
-                }
-            }
-        }
+        // [수정] 호스트는 Rigidbody 물리가 단일 진실의 원천이므로
+        //       _targetPos 기반 보정을 일절 수행하지 않는다.
+        //       기존 코드는 raycast miss(콜라이더가 두껍거나 경사면 등)로
+        //       _targetPos가 stale 상태에서 velocity가 순간적으로 0에 근접할 때
+        //       MovePosition(Lerp(pos, stale, 0.5))이 발사되어 지면 침투 →
+        //       물리 솔버가 위로 튕김(팝콘 현상)을 유발했다.
+        if (!isPeer) return;
 
-        // [수정] Dead-reckoning: 피어에서 패킷 사이 구간을 속도로 예측 이동
-        if (ConnectManager.Instance != null && !ConnectManager.Instance.isHost && rb.isKinematic)
+        // ↓ 이하 피어 전용 로직 ↓
+
+        // Dead-reckoning: 패킷 사이 구간을 마지막 수신 속도로 예측
+        if (rb.isKinematic)
         {
             _targetPos += _targetVelocity * Time.fixedDeltaTime;
         }

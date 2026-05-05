@@ -56,7 +56,12 @@ public class Ore : ResourceObject
         yield return null; // Items.Start()의 RegisterItem() 완료 대기
         if (itemComp == null) yield break;
 
-        PacketSender.Instance.SendObjectSpawn(itemComp, pos, rot);
-        Debug.Log($"[Ore] SendObjectSpawn: itemId={itemComp.itemId}, key={itemComp.itemStringKey}");
+        // [수정] 원점이 아닌 1프레임 물리 적용 후의 현재 위치/회전을 전송.
+        //       그래야 피어가 호스트와 어긋나지 않은 좌표에서 스폰됨.
+        Vector3 currentPos = itemComp.transform.position;
+        Quaternion currentRot = itemComp.transform.rotation;
+
+        PacketSender.Instance.SendObjectSpawn(itemComp, currentPos, currentRot);
+        Debug.Log($"[Ore] SendObjectSpawn: itemId={itemComp.itemId}, key={itemComp.itemStringKey}, pos={currentPos}");
     }
 }
