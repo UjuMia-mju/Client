@@ -11,7 +11,6 @@ public class PacketManager : Singleton<PacketManager>
     public event Action<S_ENTER_GAME> OnEnterGameResultEvent;
     public event Action<S_PLAYER_LIST> OnPlayerListEvent;
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
-    public event Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event Action<S_MOVE> OnMoveEvent;
     public event Action<S_CHAT> OnChatEvent;
     public event Action<S_SHOW_STAGE> OnShowStageEvent;
@@ -58,9 +57,6 @@ public class PacketManager : Singleton<PacketManager>
                 break;
             case PacketId.PKT_S_PLAYER_ENTER: 
                 HandlePlayerEnter(data);
-                break;
-            case PacketId.PKT_S_PLAYER_LEAVE: 
-                HandlePlayerLeave(data);
                 break;
             case PacketId.PKT_S_MOVE: 
                 HandleMove(data);
@@ -158,12 +154,6 @@ public class PacketManager : Singleton<PacketManager>
     {
         S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
         OnPlayerEnterEvent?.Invoke(packet);
-    }
-
-    private void HandlePlayerLeave(byte[] payloadData)
-    {
-        S_PLAYER_LEAVE packet = S_PLAYER_LEAVE.Parser.ParseFrom(payloadData);
-        OnPlayerLeaveEvent?.Invoke(packet);
     }
 
     private void HandleMove(byte[] payloadData)

@@ -110,7 +110,7 @@ public class LobbyRoomClient : MonoBehaviour
         int playerId = (int)packet.PlayerId;
         if (_members.Remove(playerId))
         {
-            Debug.Log($"[LobbyRoomClient] 멤버 퇴장: {packet.PlayerName} (id={packet.PlayerId}), newOwnerId={packet.NewOwnerId}");
+            Debug.Log($"[LobbyRoomClient] 멤버 퇴장: {packet.PlayerName} (id={packet.PlayerId})");
             lobbyManager?.DespawnPlayer(playerId);
         }
     }

@@ -21,8 +21,8 @@ public class PlayerTPCamera : MonoBehaviour
     private float currentX = 0.0f;
     private float currentY = 45.0f;
 
-    // 마우스 민감도, 추후 설정에 민감도 옵션 추가 시 이 상수는 제거하거나 리팩토링해야 합니다. 상의 필요합니다.
-    private const float SENSITIVITY = 0.2f;
+    /// <summary>설정 슬라이더 1.0일 때의 기준 배율 (이전 고정값 0.2f와 동일).</summary>
+    private const float BaseLookSensitivity = 0.2f;
 
     private PlayerInputSystem inputActions;
 
@@ -69,8 +69,9 @@ public class PlayerTPCamera : MonoBehaviour
         // 기존 마우스 입력 로직
         Vector2 look = inputActions.Player.Look.ReadValue<Vector2>();
 
-        currentX += look.x * SENSITIVITY;
-        currentY += -look.y * SENSITIVITY;
+        float sens = BaseLookSensitivity * ControlPanelController.MouseSensitivity;
+        currentX += look.x * sens;
+        currentY += -look.y * sens;
 
         currentY = Mathf.Clamp(currentY, Y_ANGLE_MIN, Y_ANGLE_MAX);
     }

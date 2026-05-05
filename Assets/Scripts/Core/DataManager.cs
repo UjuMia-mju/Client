@@ -1,7 +1,7 @@
+using System;
 using UnityEngine;
 using System.IO;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
 
 /// <summary>
 /// UI 데이터를 json 파일로 저장 / 불러오기
@@ -43,11 +43,54 @@ public class DataManager : MonoBehaviorSingleton<DataManager>
 
     public void Load()
     {
-        string json = PlayerPrefs.GetString("rebinds");
-        if (!string.IsNullOrEmpty(json))
+        LoadSettingsFromFile();
+        LoadKeybindOverridesFromFile();
+        ApplyDataToSystem();
+    }
+
+    void LoadSettingsFromFile()
+    {
+        try
         {
-            // InputManager의 Actions에 바로 바인딩 정보를 덮어씌움
-            InputManager.Instance.Actions.LoadBindingOverridesFromJson(json);
+            if (!File.Exists(settingsPath))
+                return;
+
+            string json = File.ReadAllText(settingsPath);
+            if (string.IsNullOrWhiteSpace(json))
+                return;
+
+            var loaded = JsonUtility.FromJson<SettingsData>(json);
+            if (loaded != null)
+                data = loaded;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"DataManager: settings.json 로드 실패 — {e.Message}");
+        }
+    }
+
+    /// <summary>Save()와 동일 출처: keybindings.json 우선, 없으면 예전 PlayerPrefs(rebinds).</summary>
+    void LoadKeybindOverridesFromFile()
+    {
+        try
+        {
+            string keyJson = null;
+            if (File.Exists(keybindPath))
+                keyJson = File.ReadAllText(keybindPath);
+            if (string.IsNullOrEmpty(keyJson))
+                keyJson = PlayerPrefs.GetString("rebinds");
+            if (string.IsNullOrEmpty(keyJson))
+                return;
+
+            if (playerInput != null)
+                playerInput.LoadBindingOverridesFromJson(keyJson);
+
+            if (InputManager.Instance != null)
+                InputManager.Instance.Actions.asset.LoadBindingOverridesFromJson(keyJson);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"DataManager: 키 바인딩 오버라이드 로드 실패 — {e.Message}");
         }
     }
 

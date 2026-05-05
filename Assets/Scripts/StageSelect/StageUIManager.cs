@@ -145,6 +145,27 @@ public class StageUIManager : MonoBehaviour
         }
     }
 
+    /// <summary>게스트 SelectPanel 닫기 버튼 — 플로우 중단 후 패널·미리보기 정리.</summary>
+    public void CloseGuestSelectPanelFromButton()
+    {
+        StopGuestPanelFlow();
+        StartCoroutine(CoCloseGuestSelectPanelFromButton());
+    }
+
+    IEnumerator CoCloseGuestSelectPanelFromButton()
+    {
+        if (_guestHostPanel != null)
+        {
+            yield return DynamicClosePanel(_guestHostPanel);
+            Destroy(_guestHostPanel);
+            _guestHostPanel = null;
+        }
+
+        StageManager sm = StageManager.Instance;
+        if (sm != null)
+            yield return sm.StartCoroutine(sm.CoEndGuestStagePreview());
+    }
+
     IEnumerator GuestSelectPanelFlow(StageInfo stageOrNull)
     {
         if (_guestHostPanel != null)
@@ -154,11 +175,18 @@ public class StageUIManager : MonoBehaviour
             _guestHostPanel = null;
         }
 
+        var sm = StageManager.Instance;
+        if (sm != null)
+            yield return sm.StartCoroutine(sm.CoEndGuestStagePreview());
+
         if (stageOrNull == null)
         {
             _guestPanelFlow = null;
             yield break;
         }
+
+        if (sm != null)
+            yield return sm.StartCoroutine(sm.CoGuestStagePreview(stageOrNull));
 
         GameObject prefab = guestSelectPanelPrefab != null
             ? guestSelectPanelPrefab

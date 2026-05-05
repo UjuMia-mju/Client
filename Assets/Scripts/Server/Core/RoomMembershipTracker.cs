@@ -88,24 +88,17 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
 
     private void OnMemberLeave(S_ROOM_MEMBER_LEAVE packet)
     {
-        bool wasHostLeaving = _orderedIds.Count > 0 && _orderedIds[0] == packet.PlayerId;
+        if (packet == null) return;
         ulong id = packet.PlayerId;
-        if (_orderedIds.Remove(id))
-            Debug.Log($"[RoomMembershipTracker] OnMemberLeave. id={id}, orderedIds=[{string.Join(",", _orderedIds)}]");
+        bool wasHostLeaving = _orderedIds.Count > 0 && _orderedIds[0] == id;
+        bool removed = _orderedIds.Remove(id);
+        Debug.Log(
+            $"[RoomMembershipTracker] S_ROOM_MEMBER_LEAVE id={id}, name='{packet.PlayerName}', removed={removed}, " +
+            $"wasHostLeaving={wasHostLeaving}, orderedIds=[{string.Join(",", _orderedIds)}]");
 
-        // TODO(Server): 스테이지 선택에서 “전원 메인”이면 방장 퇴장 시 new_owner_id=0·방 해산과 맞춰야
-        // 아래 else if (wasHostLeaving) → GoMainIfInGame() 이 실행됨. (방장만 교체하면 여기 안 탈 수 있음.)
-        // 서버가 새 방장 ID를 명시했다면 그 ID를 0번째로 보정
-        if (packet.NewOwnerId != 0UL)
+        // 방장(입장 순 0번) 퇴장이면 방 해산으로 보고 메인으로 — new_owner_id 필드는 프로토콜에서 제거됨.
+        if (wasHostLeaving)
         {
-            ulong newOwner = packet.NewOwnerId;
-            _orderedIds.Remove(newOwner);
-            _orderedIds.Insert(0, newOwner);
-            Debug.Log($"[RoomMembershipTracker] NewOwner 적용. orderedIds=[{string.Join(",", _orderedIds)}]");
-        }
-        else if (wasHostLeaving)
-        {
-            // 인게임·스테이지 선택 등 로비가 아닐 때는 메인으로 돌립니다.
             GoMainIfInGame();
         }
     }

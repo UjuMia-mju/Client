@@ -1,6 +1,7 @@
 /// <summary>
 /// 스테이지 선택 멀티 로비 — 서버 측 구현·QA용 체크리스트.
 /// 서버 배포 후 검증이 끝나면 <see cref="ServerRoomLeaveBroadcastsVerified"/> 만 true 로 바꾸면 됩니다(런타임 동작 스위치는 아님).
+/// 서버는 퇴장 브로드캐스트를 S_ROOM_MEMBER_LEAVE 로 통일했으며(S_PLAYER_LEAVE 제거), 클라도 해당 패킷만 처리합니다.
 /// </summary>
 public static class StageSelectLobbyServerContract
 {
@@ -12,9 +13,10 @@ public static class StageSelectLobbyServerContract
         (필요 시 잔여 멤버 각각에게 S_LEAVE_ROOM.)
 
     [ ] 스테이지 대기실 정책: 방장만 나가도 방 해산이면
-        S_ROOM_MEMBER_LEAVE.new_owner_id = 0 이어야
-        RoomMembershipTracker 가 GoMainIfInGame() 으로 스테이지 씬→메인 처리와 맞음.
-        (new_owner_id 로 방장만 바꾸면 클라는 “전원 메인”으로 안 갈 수 있음.)
+        잔여 멤버에게 S_ROOM_MEMBER_LEAVE(퇴장자=방장) 등이 브로드캐스트될 것.
+        (new_owner_id 필드 없음 — 방장 교체 없이 해산만.)
+
+    [ ] 위와 맞춰 RoomMembershipTracker: 방장(0번) 퇴장이면 GoMainIfInGame().
 
     [ ] 멤버 퇴장 시 S_ROOM_MEMBER_LEAVE.player_name 채울 것(퇴장 표시 UI).
 

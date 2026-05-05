@@ -57,8 +57,9 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnPlayerDeadEvent += OnHostPlayerDead;
         HostPacketHandler.Instance.OnPlayerReviveEvent += OnHostPlayerRevive;
 
-
-
+        var ph = PacketHandler.Instance;
+        if (ph != null)
+            ph.OnRoomMemberLeaveEvent += OnRoomMemberLeftInGame;
 
         var localPlayer = FindFirstObjectByType<Player>();
         if (localPlayer != null)
@@ -134,8 +135,14 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent -= OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent -= OnHostSpaceshipComplete;
         HostPacketHandler.Instance.OnTimerSyncEvent -= OnHostTimerSync;
+        HostPacketHandler.Instance.OnResourceSpawnEvent -= OnHostResourceSpawn;
+        HostPacketHandler.Instance.OnResourceDestroyEvent -= OnHostResourceDestroy;
         HostPacketHandler.Instance.OnPlayerDeadEvent -= OnHostPlayerDead;
         HostPacketHandler.Instance.OnPlayerReviveEvent -= OnHostPlayerRevive;
+
+        var ph = PacketHandler.Instance;
+        if (ph != null)
+            ph.OnRoomMemberLeaveEvent -= OnRoomMemberLeftInGame;
     }
 
     private void Update() { }
@@ -486,10 +493,11 @@ public class PlayManager : SceneSingleton<PlayManager>
         SpawnRemotePlayer(packet.Player);
     }
 
-    private void OnPlayerLeave(S_PLAYER_LEAVE packet)
+    private void OnRoomMemberLeftInGame(S_ROOM_MEMBER_LEAVE packet)
     {
-        Debug.Log($"👋 Player {packet.Player.PlayerId} left!");
-        RemoveRemotePlayer((ulong)packet.Player.PlayerId);
+        if (packet == null) return;
+        Debug.Log($"[PlayManager] Room member left (ingame despawn): playerId={packet.PlayerId}");
+        RemoveRemotePlayer(packet.PlayerId);
     }
 
     private void SpawnRemotePlayer(PlayerGameInfo playerInfo)

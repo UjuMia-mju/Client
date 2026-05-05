@@ -21,7 +21,6 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_ENTER_GAME> OnEnterGameResultEvent;
     public event Action<S_PLAYER_LIST> OnPlayerListEvent;
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
-    public event Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event Action<S_CREATE_ROOM> OnCreateRoomEvent;
     public event Action<S_ROOM_LIST> OnRoomListEvent;
     public event Action<S_ENTER_ROOM> OnEnterRoomEvent;
@@ -74,9 +73,6 @@ public class PacketHandler : Singleton<PacketHandler>
                 break;
             case PacketId.PKT_S_PLAYER_ENTER:
                 HandlePlayerEnter(data);
-                break;
-            case PacketId.PKT_S_PLAYER_LEAVE:
-                HandlePlayerLeave(data);
                 break;
             case PacketId.PKT_S_CREATE_ROOM:
                 HandleCreateRoom(data);
@@ -263,12 +259,6 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
         OnPlayerEnterEvent?.Invoke(packet);
-    }
-
-    private void HandlePlayerLeave(byte[] payloadData)
-    {
-        S_PLAYER_LEAVE packet = S_PLAYER_LEAVE.Parser.ParseFrom(payloadData);
-        OnPlayerLeaveEvent?.Invoke(packet);
     }
 
     private void HandleCreateRoom(byte[] payloadData)

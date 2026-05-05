@@ -41,6 +41,8 @@ public class StageManager : MonoBehaviour
     private StageUIManager _uiManager;
     
     private StageNode _currentSelectedNode;
+    /// <summary>게스트가 S_HOST_SHOW_STAGE로 호스트와 같은 행성 포커스를 볼 때만 사용 (호스트 선택 노드와 분리).</summary>
+    private StageNode _guestPreviewNode;
     private bool _isTransitioning = false;
     private bool _gameplaySceneLoadStarted;
     private GameObject[] _clickOffObjects;
@@ -151,6 +153,15 @@ public class StageManager : MonoBehaviour
 
         CancelInvoke(nameof(ClearStageRoomMemberNotice));
         CloseStagePausePanel(destroyInstance: true);
+
+        if (_guestPreviewNode != null)
+        {
+            isMovementPaused = false;
+            ToggleFocusMode(null, false);
+            _guestPreviewNode = null;
+            if (_cameraController != null)
+                _cameraController.ResetToOrigin();
+        }
     }
 
     private void OnStageInfoReceived(S_STAGE_INFO packet)
@@ -219,12 +230,6 @@ public class StageManager : MonoBehaviour
             return;
         }
 
-        if (_currentSelectedNode != null && !_isTransitioning)
-        {
-            StartCoroutine(ClosePanelSequence());
-            return;
-        }
-
         OpenStagePausePanel();
     }
 
@@ -232,13 +237,20 @@ public class StageManager : MonoBehaviour
     {
         if (!IsStageSelectActiveScene()) return;
         if (packet == null || NetManager.Instance == null) return;
-        if (packet.PlayerId == (ulong)NetManager.Instance._playerId) return;
-        if (stageRoomMemberNoticeText == null) return;
+
+        ulong localId = (ulong)NetManager.Instance._playerId;
+        if (packet.PlayerId == localId) return;
 
         string name = string.IsNullOrEmpty(packet.PlayerName) ? "플레이어" : packet.PlayerName;
-        stageRoomMemberNoticeText.text = $"{name}님이 방을 나갔습니다.";
-        CancelInvoke(nameof(ClearStageRoomMemberNotice));
-        Invoke(nameof(ClearStageRoomMemberNotice), 4f);
+        Debug.Log(
+            $"[StageManager] S_ROOM_MEMBER_LEAVE (스테이지 선택) 퇴장 알림: {name} (playerId={packet.PlayerId}), localId={localId}");
+
+        if (stageRoomMemberNoticeText != null)
+        {
+            stageRoomMemberNoticeText.text = $"{name}님이 방을 나갔습니다.";
+            CancelInvoke(nameof(ClearStageRoomMemberNotice));
+            Invoke(nameof(ClearStageRoomMemberNotice), 4f);
+        }
     }
 
     void ClearStageRoomMemberNotice()
@@ -254,7 +266,7 @@ public class StageManager : MonoBehaviour
 
     void OpenStagePausePanel()
     {
-        if (stagePausePanelPrefab == null || _isTransitioning)
+        if (stagePausePanelPrefab == null)
             return;
 
         if (_stagePauseInstance == null)
@@ -510,6 +522,15 @@ public class StageManager : MonoBehaviour
         _isTransitioning = false;
     }
 
+    /// <summary>SelectPanel 닫기 버튼 전용. ESC는 일시정지만 엽니다.</summary>
+    public void CloseHostSelectPanelFromButton()
+    {
+        if (_currentSelectedNode == null || _isTransitioning)
+            return;
+
+        StartCoroutine(ClosePanelSequence());
+    }
+
     private IEnumerator ClosePanelSequence()
     {
         _isTransitioning = true;
@@ -548,5 +569,60 @@ public class StageManager : MonoBehaviour
                 node.gameObject.SetActive(true);
             }
         }
+    }
+
+    /// <summary>호스트 미리보기 패킷과 같은 대상 행성을 찾습니다.</summary>
+    public StageNode FindStageNodeForStageInfo(StageInfo info)
+    {
+        if (info == null) return null;
+
+        foreach (var node in stageNodes)
+        {
+            if (node == null) continue;
+
+            if (node.stageLevel == info.Chapter && node.stageIndex == info.Stage)
+                return node;
+
+            if (DbCacheManager.TryGetStageInfoByChapterStage(node.stageLevel, node.stageIndex, out StageInfo cached)
+                && cached.MapId == info.MapId)
+                return node;
+        }
+
+        return null;
+    }
+
+    /// <summary>게스트 전용: 행성 포커스 + 줌인. 호스트 <see cref="_currentSelectedNode"/>는 건드리지 않습니다.</summary>
+    public IEnumerator CoGuestStagePreview(StageInfo stageInfo)
+    {
+        if (stageInfo == null) yield break;
+
+        StageNode node = FindStageNodeForStageInfo(stageInfo);
+        if (node == null)
+        {
+            Debug.LogWarning(
+                $"[StageManager] 게스트 미리보기: MapId={stageInfo.MapId}, Chapter={stageInfo.Chapter}, Stage={stageInfo.Stage}에 해당하는 StageNode 없음. 패널만 표시합니다.");
+            yield return StartCoroutine(CoEndGuestStagePreview());
+            yield break;
+        }
+
+        yield return StartCoroutine(CoEndGuestStagePreview());
+
+        _guestPreviewNode = node;
+        isMovementPaused = true;
+        ToggleFocusMode(_guestPreviewNode, true);
+        yield return StartCoroutine(_cameraController.ZoomIn(_guestPreviewNode.transform));
+    }
+
+    /// <summary>게스트 미리보기 해제. 호스트와 달리 ZoomOut 연출 없이 원점으로 스냅.</summary>
+    public IEnumerator CoEndGuestStagePreview()
+    {
+        if (_guestPreviewNode == null) yield break;
+
+        if (_cameraController != null)
+            _cameraController.ResetToOrigin();
+        ToggleFocusMode(null, false);
+        isMovementPaused = false;
+        _guestPreviewNode = null;
+        yield break;
     }
 }
