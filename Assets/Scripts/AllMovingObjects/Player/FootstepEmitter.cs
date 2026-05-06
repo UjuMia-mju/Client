@@ -13,8 +13,8 @@ public class FootstepEmitter : MonoBehaviour
     [SerializeField] private GameObject footstepParticlePrefab;
     [Tooltip("스폰 시 위로 띄울 오프셋 (z-fighting 방지)")]
     [SerializeField] private float yOffset = 0.02f;
-    [Tooltip("자동 정리 시간 (초)")]
-    [SerializeField] private float autoDestroyTime = 0.1f;
+    [Tooltip("N초 후 삭제됨")]
+    [SerializeField] private float autoDestroyTime = 2f;
 
     // Animation Event에서 호출
     public void OnFootstep()
