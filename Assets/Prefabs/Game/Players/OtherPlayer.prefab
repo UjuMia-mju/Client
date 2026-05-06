@@ -1154,7 +1154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FootstepEmitter
   footAnchor: {fileID: 8055391962389101892}
-  footstepParticlePrefab: {fileID: 1714582797607034, guid: 21818f5b47663f347a379e68d3dbb15a, type: 3}
+  footstepParticlePrefab: {fileID: 1984553849942408, guid: b88a8355c348a724996ae184e34372df, type: 3}
   yOffset: 0.02
   autoDestroyTime: 2
 --- !u!1 &2924304465846610978
