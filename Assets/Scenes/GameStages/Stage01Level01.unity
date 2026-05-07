@@ -336,6 +336,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 819753111}
   m_LocalEulerAnglesHint: {x: -16.715, y: 0, z: 0}
+--- !u!1 &135340374
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 135340375}
+  m_Layer: 9
+  m_Name: FootstepEmitter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &135340375
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135340374}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 130923350922639482}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &159937852
 GameObject:
   m_ObjectHideFlags: 0
@@ -7134,6 +7165,7 @@ GameObject:
   - component: {fileID: 130923350922639489}
   - component: {fileID: 130923350922639488}
   - component: {fileID: 130923350922639493}
+  - component: {fileID: 130923350922639494}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -7573,6 +7605,7 @@ Transform:
   - {fileID: 130923350922639430}
   - {fileID: 1820163869}
   - {fileID: 1592599576}
+  - {fileID: 135340375}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &130923350922639483
@@ -7741,6 +7774,22 @@ MonoBehaviour:
   throwPitchSensitivity: 0.9
   minUpWeight: 0.1
   maxUpWeight: 1.9
+--- !u!114 &130923350922639494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130923350922601562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad1044b551aa76d479018430fa3abc3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootstepEmitter
+  footAnchor: {fileID: 135340375}
+  footstepParticlePrefab: {fileID: 1984553849942408, guid: b88a8355c348a724996ae184e34372df, type: 3}
+  yOffset: 0.02
+  autoDestroyTime: 2
 --- !u!1 &132262778944443073
 GameObject:
   m_ObjectHideFlags: 0

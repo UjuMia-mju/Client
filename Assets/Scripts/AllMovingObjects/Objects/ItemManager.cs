@@ -14,9 +14,6 @@ public class ItemManager : MonoBehaviour
 
     private static int _nextItemId = 1;
 
-    private const float PEER_THROW_FORCE = 200f;
-    private const float PEER_THROW_DURATION = 0.4f;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -81,7 +78,7 @@ public class ItemManager : MonoBehaviour
 
     /// <summary>
     /// 네트워크 패킷으로 아이템 처리.
-    /// pos = FurnaceClientManager.BroadcastSpawnNextFrame에서 보내는 용광로 스폰 원점
+    /// pos = 호스트가 SendObjectSpawn 시점에 측정한 실제 아이템 위치(자원 드롭/용광로 배출 공통).
     /// </summary>
     public void SpawnItemFromNetwork(int itemId, string itemStringKey, Vector3 pos, Quaternion rot)
     {
@@ -112,7 +109,13 @@ public class ItemManager : MonoBehaviour
 
     /// <summary>
     /// Items.Start()에서 RegisterItem() 및 isKinematic 설정 완료 후 실행.
-    /// 1) ID 교체  2) 용광로 UI 초기화  3) 피어 배출 연출
+    /// 1) ID 교체  2) 용광로 UI 초기화
+    ///
+    /// [수정] 피어 측 독자 물리 throw(ApplyPeerThrowImpulse) 제거.
+    ///       호스트가 보내는 S_OBJECT_MOVE를 Items.cs의 dead-reckoning + lerp가
+    ///       그대로 추종하므로 피어에서 별도 AddForce를 가하면 호스트와
+    ///       force(150 vs 200)/방향/타이밍이 달라져 0.4초 후 isKinematic 복귀
+    ///       시점에 가시적인 텔레포트가 발생함.
     /// </summary>
     private IEnumerator PostSpawnSetup(Items itemComp, int newId, Vector3 spawnOrigin, Quaternion spawnRot)
     {
@@ -127,51 +130,7 @@ public class ItemManager : MonoBehaviour
         // 2. 스폰 원점 기반 근처 용광로 UI 초기화 (S_FURNACE_RETRIEVE 누락/지연 안전장치)
         FurnaceClientManager.Instance?.TryResetNearestFurnaceBySpawnPosition(spawnOrigin);
 
-        // 3. 피어에서만 배출 연출 적용
-        //    Items.Start()에서 isKinematic=true가 된 뒤이므로 여기서 켜야 함
-        bool isPeer = ConnectManager.Instance != null && !ConnectManager.Instance.isHost;
-        if (isPeer)
-            StartCoroutine(ApplyPeerThrowImpulse(itemComp.gameObject, spawnRot));
-
-        Debug.Log($"[ItemManager] PostSpawnSetup 완료: id={newId}, isPeer={isPeer}");
-    }
-
-    /// <summary>
-    /// 피어 전용 배출 연출.
-    /// isKinematic을 잠시 끄고 힘을 가한 뒤 다시 켜서 S_OBJECT_MOVE 동기화 모드로 복귀.
-    /// </summary>
-    private IEnumerator ApplyPeerThrowImpulse(GameObject obj, Quaternion spawnRot)
-    {
-        if (obj == null) yield break;
-
-        Rigidbody rb = obj.GetComponent<Rigidbody>();
-        if (rb == null)
-        {
-            Debug.LogWarning("[ItemManager] ApplyPeerThrowImpulse: Rigidbody 없음");
-            yield break;
-        }
-
-        PlanetGravity planet = FindFirstObjectByType<PlanetGravity>();
-        Vector3 up = planet != null ? planet.GetGravityUp(obj.transform) : Vector3.up;
-
-        // 용광로에서 뱉어나오는 방향: up + forward (FurnaceObject.ThrowSmeltedItem과 동일)
-        Vector3 throwDir = (up + (spawnRot * Vector3.forward)).normalized;
-
-        rb.isKinematic = false;
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        rb.AddForce(throwDir * PEER_THROW_FORCE);
-
-        Debug.Log($"[ItemManager] 피어 배출 impulse: dir={throwDir}, force={PEER_THROW_FORCE}");
-
-        yield return new WaitForSeconds(PEER_THROW_DURATION);
-
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
-        }
+        Debug.Log($"[ItemManager] PostSpawnSetup 완료: id={newId}");
     }
 
     private Items FindScenePlacedItem(string key, Vector3 pos)

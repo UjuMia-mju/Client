@@ -963,6 +963,7 @@ GameObject:
   - component: {fileID: 162494467932539835}
   - component: {fileID: 7062297371897531915}
   - component: {fileID: 888100010}
+  - component: {fileID: -4619282516625360130}
   m_Layer: 0
   m_Name: OtherPlayer
   m_TagString: Player
@@ -986,6 +987,7 @@ Transform:
   - {fileID: 2218564050996132839}
   - {fileID: 1829304513078208071}
   - {fileID: 8642750150564076917}
+  - {fileID: 8055391962389101892}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &281806573287783989
@@ -1084,6 +1086,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c20297dbdbb774581a06685e96e7f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGetItem
+  throwForce: 0.02
+  maxThrowForce: 20
+  minThrowForce: 5
+  controlRunningAmount: 0.15
+  minRunningAmount: 0.01
+  chargedMaxThrowForce: 38
+  chargedMinThrowForce: 16
+  chargedUpBlend: 0.3
+  throwPitchSensitivity: 0.9
+  minUpWeight: 0.1
+  maxUpWeight: 1.9
 --- !u!114 &162494467932539835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1099,6 +1112,7 @@ MonoBehaviour:
   walkSpeed: 10
   jumpForce: 5
   rotationSpeed: 10
+  drawDebugGizmos: 1
   lerpSpeed: 10
   hpUIController: {fileID: 888100002}
   oxygenUIController: {fileID: 888100003}
@@ -1127,6 +1141,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a8f21e6b3d4059a7e2d1c0f9b8e7a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RemotePlayerStat
+--- !u!114 &-4619282516625360130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2535703021972386252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad1044b551aa76d479018430fa3abc3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootstepEmitter
+  footAnchor: {fileID: 8055391962389101892}
+  footstepParticlePrefab: {fileID: 1984553849942408, guid: b88a8355c348a724996ae184e34372df, type: 3}
+  yOffset: 0.02
+  autoDestroyTime: 2
 --- !u!1 &2924304465846610978
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,6 +1414,37 @@ Transform:
   m_Children:
   - {fileID: 8952558335689800240}
   m_Father: {fileID: 2383050329455194830}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6044705139089792584
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8055391962389101892}
+  m_Layer: 0
+  m_Name: FootEmitter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8055391962389101892
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6044705139089792584}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1794668640213932636}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6056592594045756517
 GameObject:

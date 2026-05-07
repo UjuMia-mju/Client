@@ -49,6 +49,11 @@ public class StageManager : MonoBehaviour
 
     private Coroutine _fallbackCoroutine;
 
+    // [추가] 게임 씬 내부(GameRuleManager 등)에서 다시하기 호출 시 참조할 컨텍스트.
+    public static int LastLoadedMapId;
+    public static int LastLoadedChapter;
+    public static int LastLoadedStageNum;
+
     private ReadyToStartPanelController ResolveReadyToStartPanel()
     {
         if (readyToStartPanel != null)
@@ -319,6 +324,11 @@ public class StageManager : MonoBehaviour
             chapter = cached.Chapter;
             stageNum = cached.Stage;
         }
+
+        // [추가] 다시하기에서 재사용할 컨텍스트 보관.
+        LastLoadedMapId = mapId;
+        LastLoadedChapter = chapter;
+        LastLoadedStageNum = stageNum;
 
         if (!Define.Scene.TryGetGameplayScene(mapId, chapter, stageNum, out string sceneName))
         {

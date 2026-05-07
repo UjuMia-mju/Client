@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+﻿using Unity.VisualScripting;
 using UnityEngine;
 
 public enum AnimState
@@ -9,7 +9,8 @@ public enum AnimState
     Falling,
     Mining,
     Throw_Ready,
-    Throw_Release
+    Throw_Release,
+    Suprise
 }
 
 public class PlayerAnimator : MonoBehaviour
@@ -80,5 +81,12 @@ public class PlayerAnimator : MonoBehaviour
         return state;
     }
 
-    
+    public void SurpriseAnimation(bool isSurprise)
+    {
+        if (isSurprise)
+        {
+            state = AnimState.Suprise;
+            anim.SetInteger("AnimationPar", (int)state);
+        }
+    }
 }
