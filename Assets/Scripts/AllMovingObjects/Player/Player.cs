@@ -26,6 +26,7 @@ public class Player : MovingObject
     private bool isPlayerThrowSomething = false;    // 무언가를 던지는 플래그
     
     private PlayerStat playerStat;
+    private FootstepEmitter footstepEmitter;
 
     private GameObject playerMesh;
 
@@ -68,6 +69,7 @@ public class Player : MovingObject
         playerAnimator = GetComponent<PlayerAnimator>();
         playerItemSystem = GetComponent<PlayerItemSystem>();
         playerTPCamera = Camera.main.GetComponent<PlayerTPCamera>();
+        footstepEmitter = GetComponent<FootstepEmitter>();
 
         if (trajectoryPreview == null)
             trajectoryPreview = GetComponent<ThrowTrajectoryPreview>();
@@ -720,6 +722,19 @@ public class Player : MovingObject
     {
         if (packet.VictimPlayerId != (ulong)NetManager.Instance._playerId) return;
         FreezeFor(packet.FreezeSeconds);
+    }
+
+    /// <summary>
+    /// Run 애니메이션 이벤트 수신 지점.
+    /// FootstepEmitter가 연결되어 있으면 실제 파티클 재생을 위임한다.
+    /// </summary>
+    public void OnFootstep()
+    {
+        if (footstepEmitter == null)
+            footstepEmitter = GetComponent<FootstepEmitter>();
+
+        if (footstepEmitter != null)
+            footstepEmitter.OnFootstep();
     }
 
 }
