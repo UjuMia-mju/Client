@@ -10460,12 +10460,32 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 944724950615732746, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 944724950615732746, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 944724950615732746, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 944724950615732746, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 880
       objectReference: {fileID: 0}
     - target: {fileID: 944724950615732746, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -140
+      objectReference: {fileID: 0}
+    - target: {fileID: 944724950615732746, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 944724950615732746, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2382908784550816973, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
       propertyPath: m_Name
@@ -10595,6 +10615,8 @@ MonoBehaviour:
   indicatorRect: {fileID: 7642971927746215300}
   minX: -880
   maxX: 880
+  minY: -950
+  maxY: -140
   readyToStartPanel: {fileID: 88815819}
 --- !u!1 &7655938069595152619
 GameObject:

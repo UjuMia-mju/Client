@@ -1,9 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// 구형 행성 표면에서 우주선(로켓) 방향을 HUD로 표시합니다.
-/// 행성 중심(바깥이 '위')을 기준으로, 표면에서의 <b>최단(대원) 경로 초기 접선 방향</b>과
-/// 플레이어의 시선(접선으로 투영) 사이의 각도를 <see cref="indicatorRect"/>의 x에 매핑합니다.
+/// 구형 행성 표면에서 우주선(로켓) 위치를 HUD로 표시합니다.
+/// 행성 중심(바깥이 '위')을 기준으로, 표면에서의 <b>최단(대원) 경로 초기 접선 방향</b>을
+/// 플레이어 시선과 무관한 고정 축(동/북)으로 투영해 <see cref="indicatorRect"/>의 x/y에 매핑합니다.
 /// </summary>
 public class SpaceShipLocationController : MonoBehaviour
 {
@@ -21,9 +21,12 @@ public class SpaceShipLocationController : MonoBehaviour
     
     private GameObject hudRoot;
 
-    [Tooltip("방위를 x에 매핑할 때 ±180°를 이 구간으로 둡니다.")]
+    [Tooltip("동/서 성분을 이 구간으로 매핑합니다.")]
     [SerializeField] private float minX = -880f;
     [SerializeField] private float maxX = 880f;
+    [Tooltip("남/북 성분을 이 구간으로 매핑합니다.")]
+    [SerializeField] private float minY = -950f;
+    [SerializeField] private float maxY = -140f;
     
     [SerializeField] private GameObject readyToStartPanel;
 
@@ -99,14 +102,6 @@ public class SpaceShipLocationController : MonoBehaviour
 
         Vector3 surfaceUp = ResolveSurfaceUp();
 
-        // 표면 접선: 플레이어가 바라보는 방향(구 위쪽 기준 평면에 투영)
-        Vector3 flatFwd = Vector3.ProjectOnPlane(playerTransform.forward, surfaceUp);
-        if (flatFwd.sqrMagnitude < 1e-10f)
-            flatFwd = Vector3.ProjectOnPlane(playerTransform.right, surfaceUp);
-        if (flatFwd.sqrMagnitude < 1e-10f)
-            return;
-        flatFwd.Normalize();
-
         Vector3 flatToShip;
         if (planetCenter != null)
         {
@@ -124,17 +119,34 @@ public class SpaceShipLocationController : MonoBehaviour
 
         if (flatToShip.sqrMagnitude < 1e-10f)
         {
-            SetIndicatorX(0f);
+            SetIndicatorPosition(0f, 0f);
             return;
         }
         flatToShip.Normalize();
 
-        float signedDeg = Vector3.SignedAngle(flatFwd, flatToShip, surfaceUp);
-        float t = Mathf.Clamp(signedDeg / 180f, -1f, 1f);
-        float x = Mathf.LerpUnclamped(minX, maxX, (t + 1f) * 0.5f);
-        x = Mathf.Clamp(x, Mathf.Min(minX, maxX), Mathf.Max(minX, maxX));
+        Vector3 north = Vector3.ProjectOnPlane(Vector3.forward, surfaceUp);
+        if (north.sqrMagnitude < 1e-10f)
+            north = Vector3.ProjectOnPlane(Vector3.right, surfaceUp);
+        if (north.sqrMagnitude < 1e-10f)
+            north = Vector3.ProjectOnPlane(Vector3.up, surfaceUp);
+        if (north.sqrMagnitude < 1e-10f)
+            return;
+        north.Normalize();
 
-        SetIndicatorX(x);
+        Vector3 east = Vector3.Cross(surfaceUp, north);
+        if (east.sqrMagnitude < 1e-10f)
+            return;
+        east.Normalize();
+
+        float x01 = Mathf.Clamp01(Vector3.Dot(flatToShip, east) * 0.5f + 0.5f);
+        float y01 = Mathf.Clamp01(Vector3.Dot(flatToShip, north) * 0.5f + 0.5f);
+
+        float x = Mathf.LerpUnclamped(minX, maxX, x01);
+        float y = Mathf.LerpUnclamped(minY, maxY, y01);
+        x = Mathf.Clamp(x, Mathf.Min(minX, maxX), Mathf.Max(minX, maxX));
+        y = Mathf.Clamp(y, Mathf.Min(minY, maxY), Mathf.Max(minY, maxY));
+
+        SetIndicatorPosition(x, y);
     }
 
     /// <summary>플레이어 발 아래 바깥 방향(행성 반경). PlanetGravity와 동일: (플레이어 - 중심).normalized</summary>
@@ -160,10 +172,11 @@ public class SpaceShipLocationController : MonoBehaviour
         return tangent;
     }
 
-    void SetIndicatorX(float x)
+    void SetIndicatorPosition(float x, float y)
     {
         Vector2 p = indicatorRect.anchoredPosition;
         p.x = x;
+        p.y = y;
         indicatorRect.anchoredPosition = p;
     }
 
