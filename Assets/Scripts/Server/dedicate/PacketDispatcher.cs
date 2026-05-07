@@ -158,7 +158,14 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         
         NetManager.Instance.SendPacket(PacketId.PKT_C_START_STAGE, packet);
     }
-    
+
+    /// <summary>방장(입장 순 첫 멤버)이 스테이지 선택 화면에서 보고 있는 맵을 동기화합니다.</summary>
+    public void SendHostShowStage(int mapId)
+    {
+        var packet = new C_HOST_SHOW_STAGE { MapId = mapId };
+        NetManager.Instance.SendPacket(PacketId.PKT_C_HOST_SHOW_STAGE, packet);
+    }
+
     #endregion
 
 

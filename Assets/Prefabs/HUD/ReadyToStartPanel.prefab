@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 281589717568430973}
   - component: {fileID: 9015196994873002190}
   m_Layer: 5
-  m_Name: RedayToStartPanel
+  m_Name: ReadyToStartPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using TMPro;
-
 [RequireComponent(typeof(LineRenderer))]
 public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
@@ -20,7 +18,6 @@ public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private Gradient _originalGradient;
     private LineRenderer _lineRenderer;
     private MeshCollider _meshCollider;
-    private Color _originalTextColor;
 
     private void Start()
     {
@@ -77,23 +74,39 @@ public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!CanUseOrbitLineInteraction()) return;
+
         SetLineColor(hoverColor);
         if (targetNode != null) targetNode.OnPointerEnter(eventData);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _lineRenderer.colorGradient = _originalGradient;
-        if (targetNode != null) targetNode.OnPointerExit(eventData);
+        if (_lineRenderer != null)
+            _lineRenderer.colorGradient = _originalGradient;
+        if (targetNode != null && CanUseOrbitLineInteraction())
+            targetNode.OnPointerExit(eventData);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!CanUseOrbitLineInteraction()) return;
         if (targetNode != null) targetNode.OnPointerClick(eventData);
+    }
+
+    /// <summary>StageNode와 동일 정책: 게스트(비호스트)는 궤도 호버/클릭 불가.</summary>
+    static bool CanUseOrbitLineInteraction()
+    {
+        if (StageManager.Instance == null) return true;
+        if (StageManager.Instance.IsStagePauseMenuOpen) return false;
+        if (!StageManager.Instance.CanInteractWithStagePlanets()) return false;
+        if (StageManager.Instance.isMovementPaused) return false;
+        return true;
     }
 
     private void SetLineColor(Color color)
     {
+        if (_lineRenderer == null) return;
         Gradient gradient = new Gradient();
         gradient.SetKeys(
             new GradientColorKey[] { new GradientColorKey(color, 0.0f), new GradientColorKey(color, 1.0f) },

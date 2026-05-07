@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Protocol;
+using TMPro;
 
 [RequireComponent(typeof(StageCameraController))]
 [RequireComponent(typeof(StageUIManager))]
@@ -11,30 +12,37 @@ public class StageManager : MonoBehaviour
 {
     public static StageManager Instance { get; private set; }
 
-    [Header("UI Base Prefab")]
+    [Header("UI")]
     public GameObject selectPanel; 
-
-    [Header("캐시 없을 때")]
-    [Tooltip("서버가 S_STAGE_INFO를 안 보내도 SelectPanel·입장 UI를 켤지 (로컬 StageInfo)")]
-    [SerializeField] private bool useLocalStageInfoWhenServerCacheEmpty = true;
-
-    [Header("스테이지 시작 대기 UI")]
-    [Tooltip("비어 있으면 비활성 포함 씬에서 ReadyToStartPanelController를 탐색합니다.")]
-    [SerializeField] private ReadyToStartPanelController readyToStartPanel;
-
-    [Tooltip(
-        "서버가 S_GAME_READY_TO_START를 보내지 않을 때 입장 순 폴백은 항상 동작합니다. " +
-        "그때 콘솔에 한 줄 남기려면 켜세요 (기본 끔).")]
-    [SerializeField] private bool logWhenGameReadyFallbackUsed;
+    [Tooltip("ESC로 열고 닫는 일시정지 UI. 루트에 Canvas가 있는 프리팹(예: StagePausePanel)")]
+    [SerializeField] private GameObject stagePausePanelPrefab;
+    [Tooltip("다른 멤버가 방을 나갔을 때 잠시 표시(비어 있으면 무시)")]
+    [SerializeField] private TextMeshProUGUI stageRoomMemberNoticeText;
 
     [Header("Nodes & Environment")] 
     public List<StageNode> stageNodes = new List<StageNode>();
     public bool isMovementPaused = false;
 
+    /// <summary>
+    /// 멀티 방이면 입장 순 첫 멤버(호스트)만 행성 클릭·호버 가능. 방 미참여(멤버 목록 비어 있음)면 누구나 가능.
+    /// </summary>
+    public bool CanInteractWithStagePlanets()
+    {
+        var t = RoomMembershipTracker.Instance;
+        if (t == null) return true;
+        t.EnsureWired();
+        if (t.OrderedIds.Count == 0) return true;
+        return t.AmIFirst();
+    }
+
+    public bool IsStagePauseMenuOpen => _stagePauseInstance != null && _stagePauseInstance.activeInHierarchy;
+
     private StageCameraController _cameraController;
     private StageUIManager _uiManager;
     
     private StageNode _currentSelectedNode;
+    /// <summary>게스트가 S_HOST_SHOW_STAGE로 호스트와 같은 행성 포커스를 볼 때만 사용 (호스트 선택 노드와 분리).</summary>
+    private StageNode _guestPreviewNode;
     private bool _isTransitioning = false;
     private bool _gameplaySceneLoadStarted;
     private GameObject[] _clickOffObjects;
@@ -54,20 +62,30 @@ public class StageManager : MonoBehaviour
     public static int LastLoadedChapter;
     public static int LastLoadedStageNum;
 
-    private ReadyToStartPanelController ResolveReadyToStartPanel()
+    /// <summary>스테이지 씬에서 호스트가 메인/종료로 방을 나갈 때 호출됩니다. 게스트 이동은 서버의 S_ROOM_MEMBER_LEAVE 등에 의존합니다.</summary>
+    public static void NotifyHostEndingStageSessionForAllPeers()
     {
-        if (readyToStartPanel != null)
-            return readyToStartPanel;
-        return FindFirstObjectByType<ReadyToStartPanelController>(FindObjectsInactive.Include);
+        // TODO(Server): 실제 전원 처리는 패킷 수신 후 RoomMembershipTracker.OnMemberLeave / OnLeaveRoom 경로.
+        // QA: StageSelectLobbyServerContract 주석 체크 후 ServerRoomLeaveBroadcastsVerified = true.
+#if UNITY_EDITOR
+        if (!StageSelectLobbyServerContract.ServerRoomLeaveBroadcastsVerified)
+        {
+            Debug.Log(
+                "[StageManager] TODO(Server) 스테이지 로비: 방장 퇴장 브로드캐스트 QA 전. " +
+                "체크리스트 → StageSelectLobbyServerContract.cs");
+        }
+#endif
+        Debug.Log(
+            "[StageManager] 스테이지 선택 호스트가 방 나가기 요청. " +
+            "게스트가 메인으로 가려면 서버가 퇴장/방 종료를 브로드캐스트해야 합니다(S_ROOM_MEMBER_LEAVE, S_LEAVE_ROOM 등).");
+
+        // 서버 미구현 시 임시로 로컬만 메인으로 보내고 싶다면(멀티 테스트용)·운영에서는 절대 주석 해제 금지:
+        // if (SceneManager.GetActiveScene().name == Define.Scene.STAGE_SELECT)
+        //     SceneLoader.Instance.LoadScene(Define.Scene.MAIN);
     }
 
-    /// <summary>패널이 씬 저장 시 활성 상태였던 경우 초기에는 끕니다. 플레이 버튼 → EnterSelectedStage에서 켭니다.</summary>
-    void EnsureReadyPanelHiddenOnStageSelectLoad()
-    {
-        var panel = ResolveReadyToStartPanel();
-        if (panel != null)
-            panel.gameObject.SetActive(false);
-    }
+    GameObject _stagePauseInstance;
+    bool _stagePauseMenuHoldActive;
 
     private void Awake()
     {
@@ -80,6 +98,9 @@ public class StageManager : MonoBehaviour
 
     private void Start()
     {
+        GameplayReadyCoordinator.ResetForStageSelect();
+        InputManager.ResetGameplaySuppressionForStageSelect();
+
         if (stageNodes.Count == 0)
             stageNodes = new List<StageNode>(Object.FindObjectsByType<StageNode>(FindObjectsSortMode.None));
 
@@ -97,10 +118,10 @@ public class StageManager : MonoBehaviour
             PacketHandler.Instance.OnStartStageEvent += HandleStartStageResponse;
             PacketHandler.Instance.OnStageInfoEvent += OnStageInfoReceived;
             PacketHandler.Instance.OnGameReadyToStartEvent += HandleGameReadyToStart;
+            // TODO(Server): 퇴장 표시용 — S_ROOM_MEMBER_LEAVE 가 오면 아래에서 처리(player_name 등).
+            PacketHandler.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeftWhileOnStageSelect;
         }
         PacketDispatcher.Instance.SendGetClearInfo();
-
-        EnsureReadyPanelHiddenOnStageSelectLoad();
 
         if (!DbCacheManager.HasStageInfo)
         {
@@ -132,6 +153,19 @@ public class StageManager : MonoBehaviour
             PacketHandler.Instance.OnStartStageEvent -= HandleStartStageResponse;
             PacketHandler.Instance.OnGameReadyToStartEvent -= HandleGameReadyToStart;
             PacketHandler.Instance.OnStageInfoEvent -= OnStageInfoReceived;
+            PacketHandler.Instance.OnRoomMemberLeaveEvent -= OnRoomMemberLeftWhileOnStageSelect;
+        }
+
+        CancelInvoke(nameof(ClearStageRoomMemberNotice));
+        CloseStagePausePanel(destroyInstance: true);
+
+        if (_guestPreviewNode != null)
+        {
+            isMovementPaused = false;
+            ToggleFocusMode(null, false);
+            _guestPreviewNode = null;
+            if (_cameraController != null)
+                _cameraController.ResetToOrigin();
         }
     }
 
@@ -146,6 +180,12 @@ public class StageManager : MonoBehaviour
 
     private void HandleGetClearInfoResponse(S_GET_CLEAR_INFO packet)
     {
+        if (!packet.Success)
+        {
+            Debug.LogWarning("[StageManager] S_GET_CLEAR_INFO 실패 — 기존 클리어 표시 유지");
+            return;
+        }
+
         _clearStarCountByMapId.Clear();
         foreach (var clearInfo in packet.StageClears)
         {
@@ -186,9 +226,84 @@ public class StageManager : MonoBehaviour
             }
         }
 
-        if (_currentSelectedNode != null && !_isTransitioning && Keyboard.current[Key.Escape].wasPressedThisFrame)
+        if (Keyboard.current == null || !Keyboard.current[Key.Escape].wasPressedThisFrame)
+            return;
+
+        if (_stagePauseInstance != null && _stagePauseInstance.activeInHierarchy)
         {
-            StartCoroutine(ClosePanelSequence());
+            CloseStagePausePanel(destroyInstance: false);
+            return;
+        }
+
+        OpenStagePausePanel();
+    }
+
+    void OnRoomMemberLeftWhileOnStageSelect(S_ROOM_MEMBER_LEAVE packet)
+    {
+        if (!IsStageSelectActiveScene()) return;
+        if (packet == null || NetManager.Instance == null) return;
+
+        ulong localId = (ulong)NetManager.Instance._playerId;
+        if (packet.PlayerId == localId) return;
+
+        string name = string.IsNullOrEmpty(packet.PlayerName) ? "플레이어" : packet.PlayerName;
+        Debug.Log(
+            $"[StageManager] S_ROOM_MEMBER_LEAVE (스테이지 선택) 퇴장 알림: {name} (playerId={packet.PlayerId}), localId={localId}");
+
+        if (stageRoomMemberNoticeText != null)
+        {
+            stageRoomMemberNoticeText.text = $"{name}님이 방을 나갔습니다.";
+            CancelInvoke(nameof(ClearStageRoomMemberNotice));
+            Invoke(nameof(ClearStageRoomMemberNotice), 4f);
+        }
+    }
+
+    void ClearStageRoomMemberNotice()
+    {
+        if (stageRoomMemberNoticeText != null)
+            stageRoomMemberNoticeText.text = string.Empty;
+    }
+
+    static bool IsStageSelectActiveScene()
+    {
+        return SceneManager.GetActiveScene().name == Define.Scene.STAGE_SELECT;
+    }
+
+    void OpenStagePausePanel()
+    {
+        if (stagePausePanelPrefab == null)
+            return;
+
+        if (_stagePauseInstance == null)
+            _stagePauseInstance = Instantiate(stagePausePanelPrefab);
+
+        _stagePauseInstance.SetActive(true);
+
+        if (!_stagePauseMenuHoldActive)
+        {
+            InputManager.PushPauseMenuHold();
+            _stagePauseMenuHoldActive = true;
+        }
+    }
+
+    /// <param name="destroyInstance">씬 종료 시 true</param>
+    void CloseStagePausePanel(bool destroyInstance)
+    {
+        if (_stagePauseInstance != null)
+        {
+            if (destroyInstance)
+            {
+                Destroy(_stagePauseInstance);
+                _stagePauseInstance = null;
+            }
+            else
+                _stagePauseInstance.SetActive(false);
+        }
+
+        if (_stagePauseMenuHoldActive)
+        {
+            InputManager.PopPauseMenuHold();
+            _stagePauseMenuHoldActive = false;
         }
     }
     
@@ -202,9 +317,6 @@ public class StageManager : MonoBehaviour
         // MapId·Chapter·Stage는 서버 DB와 한 세트. 캐시의 StageInfo 기준 (C_START_STAGE.StageIndex = StageInfo.Stage)
         if (!DbCacheManager.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
             return;
-
-        var readyPanel = ResolveReadyToStartPanel();
-        readyPanel?.ActivateForPlayRequestStaging();
 
         if (info.Chapter != level || info.Stage != index)
         {
@@ -232,9 +344,6 @@ public class StageManager : MonoBehaviour
         if (!packet.Success)
         {
             Debug.LogWarning("[StageManager] 서버가 스테이지 시작을 거절했습니다.");
-            var rp = ResolveReadyToStartPanel();
-            if (rp != null && rp.gameObject.activeSelf)
-                rp.gameObject.SetActive(false);
             return;
         }
 
@@ -251,22 +360,10 @@ public class StageManager : MonoBehaviour
         if (_gameplaySceneLoadStarted) yield break;
 
         var tracker = RoomMembershipTracker.Instance;
-        bool amIFirst = tracker.AmIFirst();
+        ConnectManager.Instance.SetHostRole(tracker.AmIFirst());
 
-        if (logWhenGameReadyFallbackUsed)
-        {
-            Debug.Log(
-                "[StageManager] S_GAME_READY_TO_START 없음 → 입장 순서 폴백(정상 처리 경로 가능). " +
-                $"myId={NetManager.Instance._playerId}, orderedIds=[{string.Join(",", tracker.OrderedIds)}], amIFirst={amIFirst}");
-        }
-
-        ConnectManager.Instance.SetHostRole(amIFirst);
-
-        var panel = ResolveReadyToStartPanel();
-        if (panel != null)
-            panel.BeginFallback(tracker.OrderedIds, 3, DoLoadGameplayScene);
-        else
-            DoLoadGameplayScene();
+        GameplayReadyCoordinator.SetPendingFallback(tracker.OrderedIds, 3);
+        DoLoadGameplayScene();
     }
 
     private void HandleGameReadyToStart(S_GAME_READY_TO_START packet)
@@ -288,11 +385,8 @@ public class StageManager : MonoBehaviour
 
         ConnectManager.Instance.SetHostRole(isHost);
 
-        var panel = ResolveReadyToStartPanel();
-        if (panel != null)
-            panel.BeginFromPacket(packet, DoLoadGameplayScene);
-        else
-            DoLoadGameplayScene();
+        GameplayReadyCoordinator.SetPendingFromServer(packet);
+        DoLoadGameplayScene();
     }
 
     /// <summary>씬 로드 진입점. 이중 호출 방지 포함.</summary>
@@ -333,8 +427,8 @@ public class StageManager : MonoBehaviour
         if (!Define.Scene.TryGetGameplayScene(mapId, chapter, stageNum, out string sceneName))
         {
             Debug.LogWarning(
-                $"[StageManager] Define.Scene에 없는 스테이지입니다. map={_pendingMapId}, chapter={_pendingChapter}, stage={_pendingStageNum}. " +
-                $"fallback={Define.Scene.GAME_1_1}");
+                "[StageManager] 인게임 씬 매핑이 없습니다. " +
+                $"map={mapId}, chapter={chapter}, stage={stageNum}. fallback={Define.Scene.GAME_1_1}");
             sceneName = Define.Scene.GAME_1_1;
         }
 
@@ -356,7 +450,7 @@ public class StageManager : MonoBehaviour
                 clickedNode.stageIndex,
                 out StageInfo stageInfo))
         {
-            if (!DbCacheManager.HasStageInfo && useLocalStageInfoWhenServerCacheEmpty)
+            if (!DbCacheManager.HasStageInfo)
             {
                 stageInfo = BuildLocalFallbackStageInfo(clickedNode);
                 Debug.LogWarning(
@@ -364,16 +458,6 @@ public class StageManager : MonoBehaviour
                     "StageNode의 localMapIdOverride를 실제 map_id에 맞추면 서버 스타트가 안정적입니다. " +
                     $"(임시 MapId={stageInfo.MapId})");
                 DbCacheManager.MergeStageInfoEntry(stageInfo);
-            }
-            else if (!DbCacheManager.HasStageInfo)
-            {
-                Debug.LogWarning(
-                    "[StageManager] S_STAGE_INFO가 아직 캐시에 없습니다. " +
-                    "로그인·서버 응답을 기다리거나, 잠시 후 다시 누르세요. (필요 시 DB 재요청을 보냅니다.) " +
-                    "또는 StageManager의 '캐시 없을 때' 로컬 폴백을 켜세요.");
-                DbCacheManager.RequestDbData();
-                _currentSelectedNode = null;
-                return;
             }
             else
             {
@@ -420,6 +504,7 @@ public class StageManager : MonoBehaviour
         if (stageInfo == null)
             return;
 
+        StageUIManager.NotifyHostConsideringStage(stageInfo);
         StartCoroutine(OpenPanelSequence(_currentSelectedNode, stageInfo));
     }
 
@@ -429,7 +514,6 @@ public class StageManager : MonoBehaviour
         isMovementPaused = true; 
 
         ToggleFocusMode(targetNode, true);
-        _uiManager.ToggleNavButtons(false);
 
         yield return StartCoroutine(_cameraController.ZoomIn(targetNode.transform));
 
@@ -448,6 +532,15 @@ public class StageManager : MonoBehaviour
         _isTransitioning = false;
     }
 
+    /// <summary>SelectPanel 닫기 버튼 전용. ESC는 일시정지만 엽니다.</summary>
+    public void CloseHostSelectPanelFromButton()
+    {
+        if (_currentSelectedNode == null || _isTransitioning)
+            return;
+
+        StartCoroutine(ClosePanelSequence());
+    }
+
     private IEnumerator ClosePanelSequence()
     {
         _isTransitioning = true;
@@ -460,8 +553,6 @@ public class StageManager : MonoBehaviour
         isMovementPaused = false; 
         _currentSelectedNode = null;
         _isTransitioning = false;
-
-        _uiManager.ToggleNavButtons(true);
     }
 
     private void ToggleFocusMode(StageNode targetNode, bool isFocusing)
@@ -488,5 +579,60 @@ public class StageManager : MonoBehaviour
                 node.gameObject.SetActive(true);
             }
         }
+    }
+
+    /// <summary>호스트 미리보기 패킷과 같은 대상 행성을 찾습니다.</summary>
+    public StageNode FindStageNodeForStageInfo(StageInfo info)
+    {
+        if (info == null) return null;
+
+        foreach (var node in stageNodes)
+        {
+            if (node == null) continue;
+
+            if (node.stageLevel == info.Chapter && node.stageIndex == info.Stage)
+                return node;
+
+            if (DbCacheManager.TryGetStageInfoByChapterStage(node.stageLevel, node.stageIndex, out StageInfo cached)
+                && cached.MapId == info.MapId)
+                return node;
+        }
+
+        return null;
+    }
+
+    /// <summary>게스트 전용: 행성 포커스 + 줌인. 호스트 <see cref="_currentSelectedNode"/>는 건드리지 않습니다.</summary>
+    public IEnumerator CoGuestStagePreview(StageInfo stageInfo)
+    {
+        if (stageInfo == null) yield break;
+
+        StageNode node = FindStageNodeForStageInfo(stageInfo);
+        if (node == null)
+        {
+            Debug.LogWarning(
+                $"[StageManager] 게스트 미리보기: MapId={stageInfo.MapId}, Chapter={stageInfo.Chapter}, Stage={stageInfo.Stage}에 해당하는 StageNode 없음. 패널만 표시합니다.");
+            yield return StartCoroutine(CoEndGuestStagePreview());
+            yield break;
+        }
+
+        yield return StartCoroutine(CoEndGuestStagePreview());
+
+        _guestPreviewNode = node;
+        isMovementPaused = true;
+        ToggleFocusMode(_guestPreviewNode, true);
+        yield return StartCoroutine(_cameraController.ZoomIn(_guestPreviewNode.transform));
+    }
+
+    /// <summary>게스트 미리보기 해제. 호스트와 달리 ZoomOut 연출 없이 원점으로 스냅.</summary>
+    public IEnumerator CoEndGuestStagePreview()
+    {
+        if (_guestPreviewNode == null) yield break;
+
+        if (_cameraController != null)
+            _cameraController.ResetToOrigin();
+        ToggleFocusMode(null, false);
+        isMovementPaused = false;
+        _guestPreviewNode = null;
+        yield break;
     }
 }

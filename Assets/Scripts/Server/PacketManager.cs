@@ -11,7 +11,6 @@ public class PacketManager : Singleton<PacketManager>
     public event Action<S_ENTER_GAME> OnEnterGameResultEvent;
     public event Action<S_PLAYER_LIST> OnPlayerListEvent;
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
-    public event Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event Action<S_MOVE> OnMoveEvent;
     public event Action<S_CHAT> OnChatEvent;
     public event Action<S_SHOW_STAGE> OnShowStageEvent;
@@ -58,9 +57,6 @@ public class PacketManager : Singleton<PacketManager>
                 break;
             case PacketId.PKT_S_PLAYER_ENTER: 
                 HandlePlayerEnter(data);
-                break;
-            case PacketId.PKT_S_PLAYER_LEAVE: 
-                HandlePlayerLeave(data);
                 break;
             case PacketId.PKT_S_MOVE: 
                 HandleMove(data);
@@ -160,12 +156,6 @@ public class PacketManager : Singleton<PacketManager>
         OnPlayerEnterEvent?.Invoke(packet);
     }
 
-    private void HandlePlayerLeave(byte[] payloadData)
-    {
-        S_PLAYER_LEAVE packet = S_PLAYER_LEAVE.Parser.ParseFrom(payloadData);
-        OnPlayerLeaveEvent?.Invoke(packet);
-    }
-
     private void HandleMove(byte[] payloadData)
     {
         S_MOVE packet = S_MOVE.Parser.ParseFrom(payloadData);
@@ -195,7 +185,7 @@ public class PacketManager : Singleton<PacketManager>
     private void HandleGetClearInfo(byte[] payloadData)
     {
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
-        Debug.Log($"[PacketManager] S_GET_CLEAR_INFO 수신! 클리어 데이터 개수: {packet.StageClears.Count}");
+        Debug.Log($"[PacketManager] S_GET_CLEAR_INFO 수신! Success: {packet.Success}, 클리어 데이터 개수: {packet.StageClears.Count}");
         OnGetClearInfoEvent?.Invoke(packet);
     }
 

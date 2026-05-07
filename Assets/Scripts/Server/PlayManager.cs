@@ -2,8 +2,13 @@
 using Protocol;
 using UnityEngine;
 
+[DefaultExecutionOrder(-10)]
 public class PlayManager : SceneSingleton<PlayManager>
 {
+    [Header("인게임 시작 동기화 (스테이지 선택 → S_GAME_READY_TO_START 후 이 씬)")]
+    [Tooltip("인스펙터에 직접 연결하세요. 멀티 시작 동기화 시 카운트다운 UI에 사용됩니다.")]
+    [SerializeField] private ReadyToStartPanelController inGameReadyPanel;
+
     [SerializeField] private GameObject remotePlayerPrefab;
 
     [Header("Spawn Points (입장 순서대로 인덱스 배정)")]
@@ -19,6 +24,8 @@ public class PlayManager : SceneSingleton<PlayManager>
 
     void Start()
     {
+        BootstrapInGameReadyPanelIfNeeded();
+
         spaceshipAssembly = FindFirstObjectByType<SpaceshipAssembly>();
 
         PeerPacketHandler.Instance.OnPeerEnterGameEvent += OnPeerEnterGame;
@@ -50,8 +57,9 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnPlayerDeadEvent += OnHostPlayerDead;
         HostPacketHandler.Instance.OnPlayerReviveEvent += OnHostPlayerRevive;
 
-
-
+        var ph = PacketHandler.Instance;
+        if (ph != null)
+            ph.OnRoomMemberLeaveEvent += OnRoomMemberLeftInGame;
 
         var localPlayer = FindFirstObjectByType<Player>();
         if (localPlayer != null)
@@ -59,6 +67,46 @@ public class PlayManager : SceneSingleton<PlayManager>
             var (pos, rot) = ResolveSpawnPose((ulong)NetManager.Instance._playerId, new PlayerGameInfo());
             localPlayer.transform.SetPositionAndRotation(pos, rot);
         }
+    }
+
+    /// <summary>
+    /// 서버 시작 시각까지 남은 시간을 씬 로드 이후에 맞추기 위해 보관된 S_GAME_READY_TO_START(또는 폴백)로
+    /// 인게임에서만 카운트다운합니다.
+    /// </summary>
+    void BootstrapInGameReadyPanelIfNeeded()
+    {
+        if (!GameplayReadyCoordinator.TryTakePendingForUi(
+                out S_GAME_READY_TO_START serverPacket,
+                out bool useFallback,
+                out IReadOnlyList<ulong> fallbackIds,
+                out int fallbackDelay))
+            return;
+
+        var panel = inGameReadyPanel;
+
+        void OnCountdownDone()
+        {
+            GameplayReadyCoordinator.NotifyGateReleased();
+            if (panel != null)
+                panel.gameObject.SetActive(false);
+        }
+
+        if (panel == null)
+        {
+            Debug.LogWarning(
+                "[PlayManager] 게임 시작 동기화 데이터가 있으나 inGameReadyPanel이 비어 있습니다. PlayManager에 ReadyToStartPanelController를 연결하세요. 게이트만 해제합니다.");
+            OnCountdownDone();
+            return;
+        }
+
+        panel.WarmUpBindings();
+
+        if (serverPacket != null)
+            panel.BeginFromPacket(serverPacket, OnCountdownDone);
+        else if (useFallback)
+            panel.BeginFallback(fallbackIds, fallbackDelay, OnCountdownDone);
+        else
+            OnCountdownDone();
     }
 
     void OnDestroy()
@@ -87,16 +135,19 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent -= OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent -= OnHostSpaceshipComplete;
         HostPacketHandler.Instance.OnTimerSyncEvent -= OnHostTimerSync;
+        HostPacketHandler.Instance.OnResourceSpawnEvent -= OnHostResourceSpawn;
+        HostPacketHandler.Instance.OnResourceDestroyEvent -= OnHostResourceDestroy;
         HostPacketHandler.Instance.OnPlayerDeadEvent -= OnHostPlayerDead;
         HostPacketHandler.Instance.OnPlayerReviveEvent -= OnHostPlayerRevive;
 
+        var ph = PacketHandler.Instance;
+        if (ph != null)
+            ph.OnRoomMemberLeaveEvent -= OnRoomMemberLeftInGame;
         // [추가] 구독 이전에 도착해 유실되었을 수 있는 C_ENTER_GAME을 재처리.
         //       재진입 시 피어 씬이 호스트보다 먼저 로드되면 호스트의
         //       PlayManager가 구독하기 전에 C_ENTER_GAME이 도착해 호스트가
         //       피어를 스폰하지 못하는 race를 방지한다.
         PeerPacketHandler.Instance.ReplayPendingEnterGames();
-
-        var localPlayer = FindFirstObjectByType<Player>();
     }
 
     private void Update() { }
@@ -447,10 +498,11 @@ public class PlayManager : SceneSingleton<PlayManager>
         SpawnRemotePlayer(packet.Player);
     }
 
-    private void OnPlayerLeave(S_PLAYER_LEAVE packet)
+    private void OnRoomMemberLeftInGame(S_ROOM_MEMBER_LEAVE packet)
     {
-        Debug.Log($"👋 Player {packet.Player.PlayerId} left!");
-        RemoveRemotePlayer((ulong)packet.Player.PlayerId);
+        if (packet == null) return;
+        Debug.Log($"[PlayManager] Room member left (ingame despawn): playerId={packet.PlayerId}");
+        RemoveRemotePlayer(packet.PlayerId);
     }
 
     private void SpawnRemotePlayer(PlayerGameInfo playerInfo)

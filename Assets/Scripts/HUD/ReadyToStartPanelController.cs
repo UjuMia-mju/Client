@@ -46,6 +46,9 @@ public class ReadyToStartPanelController : MonoBehaviour
 
     private Tween _panelFadeTween;
 
+    /// <summary>이 인스턴스가 <see cref="InputManager"/> Ready 홀드를 걸었는지.</summary>
+    private bool _holdsGameplayInput;
+
     /// <summary>Profile 이미지별 비(非)방장 스프라이트(최초 레퍼런스 캐시).</summary>
     readonly Dictionary<Image, Sprite> _baselineProfileSpriteByImage = new();
 
@@ -64,7 +67,7 @@ public class ReadyToStartPanelController : MonoBehaviour
         PrepareCanvasAlphaForInactive();
     }
 
-    /// <summary>SelectPanel 플레이 클릭 직후: 서버 S_GAME_READY_TO_START 전까지 패널을 켭니다.</summary>
+    /// <summary>스테이지 선택에서 플레이 직후: 서버 S_GAME_READY_TO_START 전까지 대기용으로 패널만 켭니다. 카운트다운은 게임 씬에서 소비됩니다.</summary>
     public void ActivateForPlayRequestStaging()
     {
         HideAllProfiles();
@@ -76,9 +79,10 @@ public class ReadyToStartPanelController : MonoBehaviour
         gameObject.SetActive(true);
 
         ShowOrRefreshPanel(animateFadeIn: fadeInDuration > 0f);
+        AcquireGameplayInputHold();
     }
 
-    /// <summary>서버 S_GAME_READY_TO_START 기준: 표시 시작 후 카운트다운 종료 시 onFinished 호출.</summary>
+    /// <summary>S_GAME_READY_TO_START 기준 남은 시간 표시. 카운트다운이 끝나면 onFinished 호출(스테이지 선택에서는 씬 전환, 인게임에서는 PlayManager가 게이트 해제).</summary>
     public void BeginFromPacket(S_GAME_READY_TO_START packet, Action onFinished)
     {
         if (packet == null)
@@ -163,6 +167,7 @@ public class ReadyToStartPanelController : MonoBehaviour
 
         _presentationActive = true;
         HookMemberCacheChanged();
+        AcquireGameplayInputHold();
     }
 
     private void HookMemberCacheChanged()
@@ -432,11 +437,33 @@ public class ReadyToStartPanelController : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        ReleaseGameplayInputHold();
+    }
+
     private void OnDestroy()
     {
+        ReleaseGameplayInputHold();
         KillPanelFadeTween();
         StopCountdownCoroutine();
         UnhookMemberCacheChanged();
+    }
+
+    void AcquireGameplayInputHold()
+    {
+        if (_holdsGameplayInput)
+            return;
+        _holdsGameplayInput = true;
+        InputManager.PushReadyPanelHold();
+    }
+
+    void ReleaseGameplayInputHold()
+    {
+        if (!_holdsGameplayInput)
+            return;
+        _holdsGameplayInput = false;
+        InputManager.PopReadyPanelHold();
     }
 
     private void BuildSlotsIfNeeded()

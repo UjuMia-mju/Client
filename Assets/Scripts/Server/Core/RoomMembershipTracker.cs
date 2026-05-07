@@ -88,23 +88,17 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
 
     private void OnMemberLeave(S_ROOM_MEMBER_LEAVE packet)
     {
-        bool wasHostLeaving = _orderedIds.Count > 0 && _orderedIds[0] == packet.PlayerId;
+        if (packet == null) return;
         ulong id = packet.PlayerId;
-        if (_orderedIds.Remove(id))
-            Debug.Log($"[RoomMembershipTracker] OnMemberLeave. id={id}, orderedIds=[{string.Join(",", _orderedIds)}]");
+        bool wasHostLeaving = _orderedIds.Count > 0 && _orderedIds[0] == id;
+        bool removed = _orderedIds.Remove(id);
+        Debug.Log(
+            $"[RoomMembershipTracker] S_ROOM_MEMBER_LEAVE id={id}, name='{packet.PlayerName}', removed={removed}, " +
+            $"wasHostLeaving={wasHostLeaving}, orderedIds=[{string.Join(",", _orderedIds)}]");
 
-        // 서버가 새 방장 ID를 명시했다면 그 ID를 0번째로 보정
-        if (packet.NewOwnerId != 0UL)
+        // 방장(입장 순 0번) 퇴장이면 방 해산으로 보고 메인으로 — new_owner_id 필드는 프로토콜에서 제거됨.
+        if (wasHostLeaving)
         {
-            ulong newOwner = packet.NewOwnerId;
-            _orderedIds.Remove(newOwner);
-            _orderedIds.Insert(0, newOwner);
-            Debug.Log($"[RoomMembershipTracker] NewOwner 적용. orderedIds=[{string.Join(",", _orderedIds)}]");
-        }
-        else if (wasHostLeaving)
-        {
-            // 방장이 나갔고 새 방장이 지정되지 않으면 방이 종료된 것으로 보고
-            // 인게임에 남아 있는 피어를 메인으로 되돌립니다.
             GoMainIfInGame();
         }
     }

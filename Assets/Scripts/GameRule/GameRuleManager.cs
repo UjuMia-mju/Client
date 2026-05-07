@@ -9,6 +9,11 @@ public class GameRuleManager : MonoBehaviour
 
     [SerializeField] private float timerDuration;
     [SerializeField] private ClearPanelController clearPanel;
+
+    [Header("HUD")]
+    [Tooltip("미션 타이머 UI 루트(Timer 오브젝트). ReadyToStartPanel·게이트 종료 후 표시합니다.")]
+    [SerializeField] private GameObject missionTimerUiRoot;
+
     private float remainingTime;
     public float GetRemainingTime() => remainingTime;
     private bool isVictory = false;
@@ -31,6 +36,11 @@ public class GameRuleManager : MonoBehaviour
 
         Debug.Log($"[GameRuleManager] Start. ConnectManager.isHost={ConnectManager.Instance?.isHost}");
 
+        if (missionTimerUiRoot != null)
+            missionTimerUiRoot.SetActive(false);
+
+        GameplayReadyCoordinator.WhenGateReleased(TryStartHostMissionTimer);
+        GameplayReadyCoordinator.WhenGateReleased(ShowMissionTimerUiAfterReady);
         // [추가] 게임 씬에서 호스트 다시하기 시 서버 응답 S_GAME_READY_TO_START를 받아 현재 씬 재로드.
         // 호스트 나가기 시 피어가 받는 S_RETURN_TO_STAGE_SELECT도 여기서 처리.
         // [수정] OnGameReadyToStartEvent는 데디 서버 발신 → PacketHandler에 있음.
@@ -42,6 +52,18 @@ public class GameRuleManager : MonoBehaviour
 
         if (IsHostNow())
             _timerCoroutine = StartCoroutine(StartTimer());
+    }
+
+    void ShowMissionTimerUiAfterReady()
+    {
+        if (missionTimerUiRoot != null)
+            missionTimerUiRoot.SetActive(true);
+    }
+
+    void TryStartHostMissionTimer()
+    {
+        if (!IsHostNow() || _timerCoroutine != null) return;
+        _timerCoroutine = StartCoroutine(StartTimer());
     }
 
     private void OnDestroy()

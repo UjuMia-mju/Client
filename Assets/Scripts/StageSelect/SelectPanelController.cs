@@ -1,9 +1,21 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class SelectPanelController : MonoBehaviour
 {
     private const int MaxStars = 3;
+
+    [Header("닫기")]
+    [Tooltip("게스트 미리보기에서 playControlsRoot·playButton 미사용 시, 전체 버튼 비활성에서 제외할 닫기 버튼")]
+    [SerializeField] private Button stageInfoCloseButton;
+
+    private bool _guestPreview;
+
+    [Header("플레이(방장 전용) — 게스트 미리보기 시 끔")]
+    [Tooltip("비우면 playButton → 버튼 전체 비활성 순으로 처리")]
+    [SerializeField] private GameObject playControlsRoot;
+    [SerializeField] private Button playButton;
 
     [Header("UI Text References")]
     public TextMeshProUGUI titleText;
@@ -19,6 +31,52 @@ public class SelectPanelController : MonoBehaviour
     public GameObject clearImage;
     public GameObject unclearImage;
     
+    /// <summary>호스트 미리보기를 다른 유저에게만 보여줄 때 — 입장은 불가.</summary>
+    public void SetGuestPreviewMode(bool isGuestPreview)
+    {
+        _guestPreview = isGuestPreview;
+        if (playControlsRoot != null)
+        {
+            playControlsRoot.SetActive(!isGuestPreview);
+            return;
+        }
+
+        if (playButton != null)
+        {
+            playButton.gameObject.SetActive(!isGuestPreview);
+            return;
+        }
+
+        if (isGuestPreview)
+        {
+            foreach (var b in GetComponentsInChildren<Button>(true))
+            {
+                if (b != null && b != stageInfoCloseButton)
+                    b.interactable = false;
+            }
+        }
+        else
+        {
+            foreach (var b in GetComponentsInChildren<Button>(true))
+            {
+                if (b != null)
+                    b.interactable = true;
+            }
+        }
+    }
+
+    /// <summary>SelectPanel 스테이지 정보 닫기(ESC 아님). 버튼 OnClick에 연결.</summary>
+    public void OnClickCloseButton()
+    {
+        if (_guestPreview)
+        {
+            StageUIManager.Instance?.CloseGuestSelectPanelFromButton();
+            return;
+        }
+
+        StageManager.Instance?.CloseHostSelectPanelFromButton();
+    }
+
     public void SetInfo(string stageName, int difficulty, string description, int estimatedClearTimeSeconds, int clearStarCount)
     {
         if (titleText != null) titleText.text = stageName;

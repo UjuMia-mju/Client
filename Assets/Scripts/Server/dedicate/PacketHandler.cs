@@ -21,7 +21,6 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_ENTER_GAME> OnEnterGameResultEvent;
     public event Action<S_PLAYER_LIST> OnPlayerListEvent;
     public event Action<S_PLAYER_ENTER> OnPlayerEnterEvent;
-    public event Action<S_PLAYER_LEAVE> OnPlayerLeaveEvent;
     public event Action<S_CREATE_ROOM> OnCreateRoomEvent;
     public event Action<S_ROOM_LIST> OnRoomListEvent;
     public event Action<S_ENTER_ROOM> OnEnterRoomEvent;
@@ -38,6 +37,7 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_START_STAGE> OnStartStageEvent;
     public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
     public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
+    public event Action<S_HOST_SHOW_STAGE> OnHostShowStageEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -73,9 +73,6 @@ public class PacketHandler : Singleton<PacketHandler>
                 break;
             case PacketId.PKT_S_PLAYER_ENTER:
                 HandlePlayerEnter(data);
-                break;
-            case PacketId.PKT_S_PLAYER_LEAVE:
-                HandlePlayerLeave(data);
                 break;
             case PacketId.PKT_S_CREATE_ROOM:
                 HandleCreateRoom(data);
@@ -124,6 +121,9 @@ public class PacketHandler : Singleton<PacketHandler>
                 break;
             case PacketId.PKT_S_GAME_READY_TO_START:
                 HandleGameReadyToStart(data);
+                break;
+            case PacketId.PKT_S_HOST_SHOW_STAGE:
+                HandleHostShowStage(data);
                 break;
             case PacketId.PKT_C_GET_DB_DATA:
                 // 일부 서버가 C_GET_DB_DATA(1000) ID로 S_STAGE_INFO 응답을 보내는 경우
@@ -259,12 +259,6 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_PLAYER_ENTER packet = S_PLAYER_ENTER.Parser.ParseFrom(payloadData);
         OnPlayerEnterEvent?.Invoke(packet);
-    }
-
-    private void HandlePlayerLeave(byte[] payloadData)
-    {
-        S_PLAYER_LEAVE packet = S_PLAYER_LEAVE.Parser.ParseFrom(payloadData);
-        OnPlayerLeaveEvent?.Invoke(packet);
     }
 
     private void HandleCreateRoom(byte[] payloadData)
@@ -426,6 +420,7 @@ public class PacketHandler : Singleton<PacketHandler>
     private void HandleGetClearInfo(byte[] payloadData)
     {
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
+        Debug.Log($"[PacketHandler] S_GET_CLEAR_INFO 수신! Success: {packet.Success}, 클리어 데이터 개수: {packet.StageClears.Count}");
         OnGetClearInfoEvent?.Invoke(packet);
     }
     
@@ -433,6 +428,12 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_GAME_READY_TO_START packet = S_GAME_READY_TO_START.Parser.ParseFrom(payloadData);
         OnGameReadyToStartEvent?.Invoke(packet);
+    }
+
+    private void HandleHostShowStage(byte[] payloadData)
+    {
+        S_HOST_SHOW_STAGE packet = S_HOST_SHOW_STAGE.Parser.ParseFrom(payloadData);
+        OnHostShowStageEvent?.Invoke(packet);
     }
 
 }

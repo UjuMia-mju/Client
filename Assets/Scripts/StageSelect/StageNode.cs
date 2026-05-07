@@ -105,6 +105,8 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (StageManager.Instance != null && StageManager.Instance.IsStagePauseMenuOpen) return;
+        if (StageManager.Instance != null && !StageManager.Instance.CanInteractWithStagePlanets()) return;
         // 줌인 상태일 때는 호버 이벤트 무시
         if (StageManager.Instance != null && StageManager.Instance.isMovementPaused) return;
         
@@ -114,6 +116,13 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (StageManager.Instance != null && StageManager.Instance.IsStagePauseMenuOpen)
+        {
+            _isHovered = false;
+            _targetScale = _originalScale;
+            return;
+        }
+        if (StageManager.Instance != null && !StageManager.Instance.CanInteractWithStagePlanets()) return;
         // 줌인 상태일 때는 호버 이벤트 무시
         if (StageManager.Instance != null && StageManager.Instance.isMovementPaused) return;
         
@@ -123,6 +132,8 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (StageManager.Instance != null && StageManager.Instance.IsStagePauseMenuOpen) return;
+        if (StageManager.Instance != null && !StageManager.Instance.CanInteractWithStagePlanets()) return;
         if (StageManager.Instance != null && StageManager.Instance.isMovementPaused) return;
         
         _isHovered = false; 

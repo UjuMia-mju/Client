@@ -1,7 +1,7 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using Protocol;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// PausePanel의 버튼 기능
@@ -46,6 +46,10 @@ public class PausePanelController : MonoBehaviour
         // 연결 중일 때는 먼저 방 나가기 패킷을 보냅니다.
         if (NetManager.Instance != null && NetManager.Instance.IsConnected)
         {
+            // TODO(Server): 스테이지 호스트만 — 잔여 멤버는 S_ROOM_MEMBER_LEAVE 등 수신 후 RoomMembershipTracker 가 메인 처리.
+            if (IsStageSelectMultiplayerHost())
+                StageManager.NotifyHostEndingStageSessionForAllPeers();
+
             _isLeavingToMain = true;
             PacketDispatcher.Instance.SendLeaveRoom();
             _leaveRoomTimeoutCoroutine = StartCoroutine(LeaveRoomTimeout());
@@ -58,10 +62,25 @@ public class PausePanelController : MonoBehaviour
     public void OnExitButtonClicked()
     {
         if (NetManager.Instance != null && NetManager.Instance.IsConnected)
+        {
+            // TODO(Server): Quit 직후에는 C_LEAVE_ROOM 이 안 나갈 수 있음 — 끊김 시 퇴장 브로드캐스트는 서버 담당.
+            if (IsStageSelectMultiplayerHost())
+                StageManager.NotifyHostEndingStageSessionForAllPeers();
             PacketDispatcher.Instance.SendLeaveRoom();
+        }
 
         // 1. 실제 빌드된 게임 종료
         Application.Quit();
+    }
+
+    static bool IsStageSelectMultiplayerHost()
+    {
+        if (SceneManager.GetActiveScene().name != Define.Scene.STAGE_SELECT)
+            return false;
+        var t = RoomMembershipTracker.Instance;
+        if (t == null) return false;
+        t.EnsureWired();
+        return t.OrderedIds.Count > 0 && t.AmIFirst();
     }
 
     private void OnLeaveRoomResult(S_LEAVE_ROOM packet)

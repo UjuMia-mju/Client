@@ -188,7 +188,6 @@ message S_ROOM_MEMBER_LEAVE
 {
 	uint64 player_id = 1;
 	string player_name = 2;
-	uint64 new_owner_id = 3; // 방장이 퇴장할 경우 새로운 방장 ID (0이면 방장 그대로)
 }
 
 // ==================== 준비 상태 변경 ====================
@@ -348,6 +347,7 @@ message S_PLAYER_ENTER
 	PlayerGameInfo player = 1;
 }
 
+// 사용 중단: 서버는 S_ROOM_MEMBER_LEAVE 로 통일. proto 호환을 위해 메시지 정의는 유지.
 message S_PLAYER_LEAVE
 {
 	PlayerGameInfo player = 1;
