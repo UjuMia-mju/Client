@@ -30,6 +30,8 @@ public class SpaceShipLocationController : MonoBehaviour
     [Tooltip("남/북 성분을 이 구간으로 매핑합니다.")]
     [SerializeField] private float minY = -950f;
     [SerializeField] private float maxY = -140f;
+    [Tooltip("플레이어가 우주선 주변 이 반경 안에 들어오면 Location UI를 숨깁니다.")]
+    [SerializeField] private float hideRadiusFromSpaceship = 8f;
     
     [SerializeField] private GameObject readyToStartPanel;
     private Vector3 lastValidFlatToShip;
@@ -93,7 +95,7 @@ public class SpaceShipLocationController : MonoBehaviour
         if (indicatorRect == null)
             return;
 
-        bool hide = ReadyUiShouldHide();
+        bool hide = ReadyUiShouldHide() || ShouldHideByDistance();
 
         if (hide)
         {
@@ -257,6 +259,18 @@ public class SpaceShipLocationController : MonoBehaviour
         float centerX = (minX + maxX) * 0.5f;
         float centerY = (minY + maxY) * 0.5f;
         SetIndicatorPosition(centerX, centerY);
+    }
+
+    bool ShouldHideByDistance()
+    {
+        if (hideRadiusFromSpaceship <= 0f)
+            return false;
+        if (playerTransform == null || spaceshipTransform == null)
+            return false;
+
+        float sqrDist = (playerTransform.position - spaceshipTransform.position).sqrMagnitude;
+        float sqrRadius = hideRadiusFromSpaceship * hideRadiusFromSpaceship;
+        return sqrDist <= sqrRadius;
     }
 
     /// <summary>런임에 플레이어/우주선 참조를 갈아끼울 때 사용.</summary>

@@ -10610,7 +10610,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpaceShipLocationController
   planetCenter: {fileID: 4943720041582861401}
-  northReference: {fileID: 0}
   playerTransform: {fileID: 130923350922639482}
   spaceshipTransform: {fileID: 819753111}
   viewTransform: {fileID: 126248257346529541}
@@ -10619,6 +10618,7 @@ MonoBehaviour:
   maxX: 880
   minY: -950
   maxY: -140
+  hideRadiusFromSpaceship: 15
   readyToStartPanel: {fileID: 88815819}
 --- !u!1 &7655938069595152619
 GameObject:
