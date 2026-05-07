@@ -7952,7 +7952,7 @@ MonoBehaviour:
   throwAimZoomLerp: 10
   cameraOffset: {fileID: 1820163869}
   planet: {fileID: 4943720041582861401}
-  hudManager: {fileID: 0}
+  hudManager: {fileID: 710526183}
 --- !u!23 &143787955350700741
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10610,8 +10610,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpaceShipLocationController
   planetCenter: {fileID: 4943720041582861401}
+  northReference: {fileID: 0}
   playerTransform: {fileID: 130923350922639482}
   spaceshipTransform: {fileID: 819753111}
+  viewTransform: {fileID: 126248257346529541}
   indicatorRect: {fileID: 7642971927746215300}
   minX: -880
   maxX: 880
