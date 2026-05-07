@@ -309,6 +309,9 @@ public class PacketHandler : Singleton<PacketHandler>
     private void HandleLeaveRoom(byte[] payloadData)
     {
         S_LEAVE_ROOM packet = S_LEAVE_ROOM.Parser.ParseFrom(payloadData);
+        Debug.Log(
+            $"[PacketHandler][LobbyQA] S_LEAVE_ROOM recv: success={packet.Success}, playerId={packet.PlayerId}, " +
+            $"scene={SceneManager.GetActiveScene().name}");
         OnLeaveRoomEvent?.Invoke(packet);
     }
 
@@ -321,6 +324,9 @@ public class PacketHandler : Singleton<PacketHandler>
     private void HandleRoomMemberLeave(byte[] payloadData)
     {
         S_ROOM_MEMBER_LEAVE packet = S_ROOM_MEMBER_LEAVE.Parser.ParseFrom(payloadData);
+        Debug.Log(
+            $"[PacketHandler][LobbyQA] S_ROOM_MEMBER_LEAVE recv: playerId={packet.PlayerId}, name='{packet.PlayerName}', " +
+            $"scene={SceneManager.GetActiveScene().name}");
         OnRoomMemberLeaveEvent?.Invoke(packet);
     }
 

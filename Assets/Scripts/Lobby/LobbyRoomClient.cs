@@ -23,6 +23,7 @@ public class LobbyRoomClient : MonoBehaviour
         PacketHandler.Instance.OnRoomMemberEnterEvent += OnRoomMemberEnter;
         PacketHandler.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeave;
         PacketHandler.Instance.OnReadyEvent += OnReady;
+        HostPacketHandler.Instance.OnReturnToStageSelectEvent += OnHostRequestedReturnToMain;
 
         // 방 생성 후 로비 씬 전환 시, S_ENTER_ROOM이 로비 로드 전에 도착해 이벤트를 놓친 경우 캐시에서 복구
         S_ENTER_ROOM cached = PacketHandler.GetAndClearCachedEnterRoom();
@@ -42,6 +43,7 @@ public class LobbyRoomClient : MonoBehaviour
         PacketHandler.Instance.OnRoomMemberEnterEvent -= OnRoomMemberEnter;
         PacketHandler.Instance.OnRoomMemberLeaveEvent -= OnRoomMemberLeave;
         PacketHandler.Instance.OnReadyEvent -= OnReady;
+        HostPacketHandler.Instance.OnReturnToStageSelectEvent -= OnHostRequestedReturnToMain;
     }
 
     /// <summary>방 입장 결과 수신. 성공 시 기존 스폰 전부 제거 후 현재 멤버 목록으로 이름 표시 스폰.</summary>
@@ -113,6 +115,13 @@ public class LobbyRoomClient : MonoBehaviour
             Debug.Log($"[LobbyRoomClient] 멤버 퇴장: {packet.PlayerName} (id={packet.PlayerId})");
             lobbyManager?.DespawnPlayer(playerId);
         }
+    }
+
+    private void OnHostRequestedReturnToMain(S_RETURN_TO_STAGE_SELECT _)
+    {
+        Debug.Log("[LobbyRoomClient] 호스트 퇴장 relay 수신 -> Main 씬으로 이동");
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadScene(Define.Scene.MAIN);
     }
 }
 

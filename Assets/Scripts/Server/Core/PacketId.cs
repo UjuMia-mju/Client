@@ -53,6 +53,8 @@
     PKT_S_MOVE = 1050,
     PKT_S_PLAYER_LIST = 1051,
     PKT_S_PLAYER_ENTER = 1052,
+    // Legacy lobby leave broadcast (deprecated, kept for backward compatibility).
+    PKT_S_PLAYER_LEAVE = 1053,
     PKT_C_PLAYER_ANIMATION = 1054,
     PKT_S_PLAYER_ANIMATION = 1055,
     PKT_C_PLAYER_STAT_EVENT = 1056,

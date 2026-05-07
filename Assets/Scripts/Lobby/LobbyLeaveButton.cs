@@ -42,6 +42,10 @@ public class LobbyLeaveButton : MonoBehaviour
         if (backButton != null)
             backButton.interactable = false;
 
+        // 방장이 나갈 때는 남은 피어가 즉시 메인으로 돌아가도록 relay 신호를 먼저 보낸다.
+        if (RoomMembershipTracker.Instance != null && RoomMembershipTracker.Instance.AmIFirst())
+            PacketSender.Instance.BroadcastReturnToStageSelect();
+
         PacketDispatcher.Instance.SendLeaveRoom();
     }
 

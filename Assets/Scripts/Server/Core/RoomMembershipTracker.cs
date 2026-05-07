@@ -89,31 +89,35 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
     private void OnMemberLeave(S_ROOM_MEMBER_LEAVE packet)
     {
         if (packet == null) return;
+        ulong localId = NetManager.Instance != null ? NetManager.Instance._playerId : 0UL;
         ulong id = packet.PlayerId;
+        ulong hostIdBefore = _orderedIds.Count > 0 ? _orderedIds[0] : 0UL;
         bool wasHostLeaving = _orderedIds.Count > 0 && _orderedIds[0] == id;
         bool removed = _orderedIds.Remove(id);
         Debug.Log(
             $"[RoomMembershipTracker] S_ROOM_MEMBER_LEAVE id={id}, name='{packet.PlayerName}', removed={removed}, " +
-            $"wasHostLeaving={wasHostLeaving}, orderedIds=[{string.Join(",", _orderedIds)}]");
+            $"wasHostLeaving={wasHostLeaving}, localId={localId}, hostIdBefore={hostIdBefore}, " +
+            $"orderedIds=[{string.Join(",", _orderedIds)}]");
 
-        // 방장(입장 순 0번) 퇴장이면 방 해산으로 보고 메인으로 — new_owner_id 필드는 프로토콜에서 제거됨.
+        // 방장(입장 순 0번) 퇴장이면 방 해산으로 보고 메인으로.
+        // 로비/스테이지/인게임 어디에 있든 모두 메인으로 보냅니다.
         if (wasHostLeaving)
         {
-            GoMainIfInGame();
+            GoMainIfNeeded();
         }
     }
 
     private void OnLeaveRoom(S_LEAVE_ROOM packet)
     {
         _orderedIds.Clear();
-        Debug.Log("[RoomMembershipTracker] OnLeaveRoom -> 클리어");
-        GoMainIfInGame();
+        Debug.Log($"[RoomMembershipTracker] OnLeaveRoom -> clear, success={packet?.Success}, localId={NetManager.Instance?._playerId}");
+        GoMainIfNeeded();
     }
 
-    private void GoMainIfInGame()
+    private void GoMainIfNeeded()
     {
         string scene = SceneManager.GetActiveScene().name;
-        if (scene == Define.Scene.MAIN || scene == Define.Scene.LOBBY)
+        if (scene == Define.Scene.MAIN)
             return;
 
         if (SceneLoader.Instance != null)
