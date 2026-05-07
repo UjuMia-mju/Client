@@ -2666,7 +2666,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestConnectManager
   isHost: 1
-  centralServerIp: 127.0.0.1
+  centralServerIp: 54.116.132.68
   centralServerPort: 7777
   hostIpFromServer: 127.0.0.1
   hostPortFromServer: 7788

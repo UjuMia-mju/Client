@@ -57,6 +57,11 @@ public class StageManager : MonoBehaviour
 
     private Coroutine _fallbackCoroutine;
 
+    // [추가] 게임 씬 내부(GameRuleManager 등)에서 다시하기 호출 시 참조할 컨텍스트.
+    public static int LastLoadedMapId;
+    public static int LastLoadedChapter;
+    public static int LastLoadedStageNum;
+
     /// <summary>스테이지 씬에서 호스트가 메인/종료로 방을 나갈 때 호출됩니다. 게스트 이동은 서버의 S_ROOM_MEMBER_LEAVE 등에 의존합니다.</summary>
     public static void NotifyHostEndingStageSessionForAllPeers()
     {
@@ -413,6 +418,11 @@ public class StageManager : MonoBehaviour
             chapter = cached.Chapter;
             stageNum = cached.Stage;
         }
+
+        // [추가] 다시하기에서 재사용할 컨텍스트 보관.
+        LastLoadedMapId = mapId;
+        LastLoadedChapter = chapter;
+        LastLoadedStageNum = stageNum;
 
         if (!Define.Scene.TryGetGameplayScene(mapId, chapter, stageNum, out string sceneName))
         {

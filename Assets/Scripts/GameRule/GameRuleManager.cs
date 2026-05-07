@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using Protocol;
 
 public class GameRuleManager : MonoBehaviour
 {
@@ -40,6 +41,17 @@ public class GameRuleManager : MonoBehaviour
 
         GameplayReadyCoordinator.WhenGateReleased(TryStartHostMissionTimer);
         GameplayReadyCoordinator.WhenGateReleased(ShowMissionTimerUiAfterReady);
+        // [추가] 게임 씬에서 호스트 다시하기 시 서버 응답 S_GAME_READY_TO_START를 받아 현재 씬 재로드.
+        // 호스트 나가기 시 피어가 받는 S_RETURN_TO_STAGE_SELECT도 여기서 처리.
+        // [수정] OnGameReadyToStartEvent는 데디 서버 발신 → PacketHandler에 있음.
+        if (PacketHandler.Instance != null)
+            PacketHandler.Instance.OnGameReadyToStartEvent += OnGameReadyToStartInGame;
+
+        if (HostPacketHandler.Instance != null)
+            HostPacketHandler.Instance.OnReturnToStageSelectEvent += OnReturnToStageSelectFromHost;
+
+        if (IsHostNow())
+            _timerCoroutine = StartCoroutine(StartTimer());
     }
 
     void ShowMissionTimerUiAfterReady()
@@ -54,6 +66,15 @@ public class GameRuleManager : MonoBehaviour
         _timerCoroutine = StartCoroutine(StartTimer());
     }
 
+    private void OnDestroy()
+    {
+        if (PacketHandler.Instance != null)
+            PacketHandler.Instance.OnGameReadyToStartEvent -= OnGameReadyToStartInGame;
+
+        if (HostPacketHandler.Instance != null)
+            HostPacketHandler.Instance.OnReturnToStageSelectEvent -= OnReturnToStageSelectFromHost;
+    }
+
     private static bool IsHostNow()
         => ConnectManager.Instance != null && ConnectManager.Instance.isHost;
 
@@ -65,7 +86,6 @@ public class GameRuleManager : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
 
-            // 매 틱마다 재확인: 도중에 역할이 피어로 바뀌었다면 즉시 중단
             if (!IsHostNow())
             {
                 Debug.LogWarning("[GameRuleManager] 호스트 권한 상실, 타이머 코루틴 중단");
@@ -99,9 +119,7 @@ public class GameRuleManager : MonoBehaviour
 
     public void SyncTimer(float time)
     {
-        // 피어 전용. 호스트가 자신의 echo로 SyncTimer를 받지 않도록 방어.
         if (IsHostNow()) return;
-
         remainingTime = time;
     }
 
@@ -123,31 +141,94 @@ public class GameRuleManager : MonoBehaviour
         if (panel != null)
         {
             panel.gameObject.SetActive(true);
-            panel.ConfigureNavigation(GoStageSelectAfterPanel);
+            // [수정] 다시하기 콜백도 함께 등록. 두 콜백 모두 내부에서 호스트 권한 체크.
+            panel.ConfigureNavigation(OnExitClicked, OnReplayClicked);
             panel.PlayRevealSequence(data, filledStarCount);
             return;
         }
 
         Time.timeScale = 1f;
         Debug.Log("ClearPanel 없음 — 스테이지 선택으로 즉시 이동합니다.");
-        if (SceneLoader.Instance != null)
-            SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
-        else
-            SceneManager.LoadScene(Define.Scene.STAGE_SELECT);
+        GoStageSelectLocal();
     }
 
-    private void GoStageSelectAfterPanel()
+    // ============================================================
+    // [추가] ClearPanel 버튼 콜백
+    // ============================================================
+
+    /// <summary>나가기 버튼. 호스트만 의미를 가짐. 피어는 클릭해도 무시.</summary>
+    private void OnExitClicked()
+    {
+        if (!IsHostNow())
+        {
+            Debug.Log("[GameRuleManager] 피어는 나가기 버튼 무시. 호스트의 결정을 기다리세요.");
+            return;
+        }
+
+        // 호스트: 모든 피어에게 신호 → 자기 자신도 즉시 이동
+        PacketSender.Instance.BroadcastReturnToStageSelect();
+        GoStageSelectLocal();
+    }
+
+    /// <summary>다시하기 버튼. 호스트만 의미를 가짐. 피어는 클릭해도 무시.</summary>
+    private void OnReplayClicked()
+    {
+        if (!IsHostNow())
+        {
+            Debug.Log("[GameRuleManager] 피어는 다시하기 버튼 무시. 호스트의 결정을 기다리세요.");
+            return;
+        }
+
+        int mapId = StageManager.LastLoadedMapId;
+        int chapter = StageManager.LastLoadedChapter;
+        int stage = StageManager.LastLoadedStageNum;
+
+        if (mapId == 0)
+        {
+            Debug.LogWarning("[GameRuleManager] LastLoadedMapId가 0. 다시하기 컨텍스트 없음.");
+            return;
+        }
+
+        Debug.Log($"[GameRuleManager] 다시하기 요청: MapId={mapId}, Chapter={chapter}, Stage={stage}");
+        // 서버가 응답으로 S_GAME_READY_TO_START를 모두에게 송신 → 양쪽 클라이언트가
+        // OnGameReadyToStartInGame에서 현재 씬을 재로드.
+        PacketDispatcher.Instance.SendStartStage(mapId, chapter, stage);
+    }
+
+    // ============================================================
+    // [추가] 호스트로부터 수신
+    // ============================================================
+
+    /// <summary>다시하기 응답: 서버가 보낸 S_GAME_READY_TO_START 수신 → 현재 씬 재로드.</summary>
+    private void OnGameReadyToStartInGame(S_GAME_READY_TO_START packet)
+    {
+        bool isHost = packet.IdOrder.Count > 0
+                      && packet.IdOrder[0] == (ulong)NetManager.Instance._playerId;
+        ConnectManager.Instance.SetHostRole(isHost);
+
+        string scene = SceneManager.GetActiveScene().name;
+        Debug.Log($"[GameRuleManager] 다시하기 수신 → 현재 씬 재로드: {scene}");
+
+        Time.timeScale = 1f;
+        if (SceneLoader.Instance != null)
+            SceneLoader.Instance.LoadScene(scene);
+        else
+            SceneManager.LoadScene(scene);
+    }
+
+    /// <summary>피어 측: 호스트의 나가기 신호 수신 → 스테이지 선택으로 이동.</summary>
+    private void OnReturnToStageSelectFromHost(S_RETURN_TO_STAGE_SELECT _)
+    {
+        Debug.Log("[GameRuleManager] 호스트 나가기 신호 수신 → StageSelect로 이동");
+        GoStageSelectLocal();
+    }
+
+    private void GoStageSelectLocal()
     {
         Time.timeScale = 1f;
         if (SceneLoader.Instance != null)
             SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
         else
             SceneManager.LoadScene(Define.Scene.STAGE_SELECT);
-    }
-
-    /// <summary>다시하기</summary>
-    private void ReloadCurrentStageAfterPanel() 
-    { 
-        //TODO: 다시하기 기능 구현
     }
 }

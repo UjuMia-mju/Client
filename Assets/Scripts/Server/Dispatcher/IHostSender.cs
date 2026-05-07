@@ -31,4 +31,7 @@ public interface IHostSender
     // 플레이어 사망과 부활
     void BroadCastPlayerDead(ulong playerId);
     void BroadCastPlayerRevive(ulong playerId, Vector3 pos, Quaternion rot);
+
+    // 피격
+    void BroadcastPlayerHit(ulong victimPlayerId, float freezeSeconds);
 }

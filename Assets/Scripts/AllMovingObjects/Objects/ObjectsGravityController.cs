@@ -31,8 +31,9 @@ public class ObjectsGravityController : MonoBehaviour
         float linVel = objects.rb.linearVelocity.sqrMagnitude;
         float angVel = objects.rb.angularVelocity.sqrMagnitude;
 
-        // 바닥에 닿아있고 거의 정지 상태면 속도만 제거, 중력은 계속 적용
-        if (grounded && linVel < 0.05f && angVel < 0.05f)
+        const float STOP_LIN_SQR = 0.5f * 0.5f;   // ≤ 0.5 m/s면정지
+        const float STOP_ANG_SQR = 1.0f * 1.0f;
+        if (grounded && linVel < STOP_LIN_SQR && angVel < STOP_ANG_SQR)
         {
             objects.rb.linearVelocity = Vector3.zero;
             objects.rb.angularVelocity = Vector3.zero;

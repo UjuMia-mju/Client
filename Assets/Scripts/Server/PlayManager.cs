@@ -143,6 +143,11 @@ public class PlayManager : SceneSingleton<PlayManager>
         var ph = PacketHandler.Instance;
         if (ph != null)
             ph.OnRoomMemberLeaveEvent -= OnRoomMemberLeftInGame;
+        // [추가] 구독 이전에 도착해 유실되었을 수 있는 C_ENTER_GAME을 재처리.
+        //       재진입 시 피어 씬이 호스트보다 먼저 로드되면 호스트의
+        //       PlayManager가 구독하기 전에 C_ENTER_GAME이 도착해 호스트가
+        //       피어를 스폰하지 못하는 race를 방지한다.
+        PeerPacketHandler.Instance.ReplayPendingEnterGames();
     }
 
     private void Update() { }

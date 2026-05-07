@@ -8410,6 +8410,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4943720041582861401}
   m_LocalEulerAnglesHint: {x: 178.906, y: -358.986, z: 65.35}
+--- !u!1 &2587447257953587417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2928365872316779107}
+  m_Layer: 0
+  m_Name: GlowStone.001
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2928365872316779107
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2587447257953587417}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.1587186, y: 19.238895, z: -9.596391}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2981278033875557489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11037,3 +11068,4 @@ SceneRoots:
   - {fileID: 1145330498}
   - {fileID: 947344227}
   - {fileID: 595604738}
+  - {fileID: 2928365872316779107}
