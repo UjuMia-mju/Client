@@ -130,11 +130,22 @@ public class OtherPlayers : MovingObject
         // 피어 측: 호스트가 broadcast하는 S_OBJECT_MOVE로 알아서 위치 동기화되므로 시각적 detach만
         if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
         {
+            // 호스트에서 피어 대역 던지기를 재현할 때 로컬 Player와 같은 튜닝값을 사용합니다.
+            Player localPlayer = FindFirstObjectByType<Player>();
+            if (localPlayer != null && localPlayer.playerItemSystem != null)
+                otherPlayerItemSystem.CopyThrowTuningFrom(localPlayer.playerItemSystem);
+
             float runningAmount = GetMovingAmount();
+            Vector3 up = transform.up;
+            Vector3 flatAimDir = Vector3.ProjectOnPlane(transform.forward, up);
+            if (flatAimDir.sqrMagnitude < 1e-6f)
+                flatAimDir = Vector3.ProjectOnPlane(transform.right, up);
+            flatAimDir.Normalize();
+
             if (charged)
-                otherPlayerItemSystem.ThrowChargedAim(runningAmount, transform.forward);
+                otherPlayerItemSystem.ThrowChargedAim(runningAmount, flatAimDir);
             else
-                otherPlayerItemSystem.ThrowItem(runningAmount);
+                otherPlayerItemSystem.ThrowItemWithAim(runningAmount, flatAimDir);
         }
         else
         {

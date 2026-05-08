@@ -558,16 +558,38 @@ public class Player : MovingObject
     {
         if (thrownItem == null) yield break;
 
-        Collider playerCollider = GetComponent<Collider>();
-        Collider itemCollider = thrownItem.GetComponent<Collider>();
-
-        if (playerCollider == null || itemCollider == null) yield break;
-
         isPlayerThrowSomething = true;
-        Physics.IgnoreCollision(playerCollider, itemCollider, true);
+        SetIgnoreCollisionWithPlayer(thrownItem, true);
         yield return new WaitForSeconds(THROW_IGNORE_COLLISION_DURATION);
-        Physics.IgnoreCollision(playerCollider, itemCollider, false);
+        SetIgnoreCollisionWithPlayer(thrownItem, false);
         isPlayerThrowSomething = false;
+    }
+
+    /// <summary>
+    /// 플레이어/아이템 계층의 모든 콜라이더 쌍에 IgnoreCollision을 적용합니다.
+    /// 루트 콜라이더 하나만 무시하면 자식 콜라이더와 재충돌해 튕기는 문제가 발생할 수 있습니다.
+    /// </summary>
+    private void SetIgnoreCollisionWithPlayer(GameObject thrownItem, bool ignore)
+    {
+        if (thrownItem == null) return;
+
+        Collider[] playerColliders = GetComponentsInChildren<Collider>(true);
+        Collider[] itemColliders = thrownItem.GetComponentsInChildren<Collider>(true);
+        if (playerColliders == null || itemColliders == null) return;
+
+        for (int i = 0; i < playerColliders.Length; i++)
+        {
+            Collider playerCollider = playerColliders[i];
+            if (playerCollider == null) continue;
+
+            for (int j = 0; j < itemColliders.Length; j++)
+            {
+                Collider itemCollider = itemColliders[j];
+                if (itemCollider == null) continue;
+
+                Physics.IgnoreCollision(playerCollider, itemCollider, ignore);
+            }
+        }
     }
 
 

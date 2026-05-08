@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerItemSystem : MonoBehaviour
 {
     public GameObject itemSocket {get; private set;}
     public GameObject currentEquipItem { get; private set; }
+    private const float THROWER_IGNORE_COLLISION_DURATION = 0.65f;
 
     [Header("Throw - Base")]
     [Tooltip("기본 던지기 벡터에 곱해지는 스케일. 전체 세기 체감에 가장 큰 영향을 줍니다.")]
@@ -188,6 +190,7 @@ public class PlayerItemSystem : MonoBehaviour
                 peerBox.enabled = true;
 
             currentEquipItem.transform.SetParent(null);
+            StartCoroutine(TemporarilyIgnoreThrowerCollision(currentEquipItem));
 
             _lastThrownItem = currentEquipItem;
 
@@ -210,6 +213,7 @@ public class PlayerItemSystem : MonoBehaviour
         boxCollider.enabled = true;
 
         this.currentEquipItem.transform.SetParent(null);
+        StartCoroutine(TemporarilyIgnoreThrowerCollision(currentEquipItem));
 
         rb.AddForce(force, ForceMode.Impulse);
 
@@ -224,6 +228,38 @@ public class PlayerItemSystem : MonoBehaviour
         }
 
         DetachItem();
+    }
+
+    private IEnumerator TemporarilyIgnoreThrowerCollision(GameObject thrownItem)
+    {
+        if (thrownItem == null) yield break;
+
+        SetIgnoreCollisionWithThrower(thrownItem, true);
+        yield return new WaitForSeconds(THROWER_IGNORE_COLLISION_DURATION);
+        SetIgnoreCollisionWithThrower(thrownItem, false);
+    }
+
+    private void SetIgnoreCollisionWithThrower(GameObject thrownItem, bool ignore)
+    {
+        if (thrownItem == null) return;
+
+        Collider[] throwerColliders = GetComponentsInChildren<Collider>(true);
+        Collider[] itemColliders = thrownItem.GetComponentsInChildren<Collider>(true);
+        if (throwerColliders == null || itemColliders == null) return;
+
+        for (int i = 0; i < throwerColliders.Length; i++)
+        {
+            Collider throwerCollider = throwerColliders[i];
+            if (throwerCollider == null) continue;
+
+            for (int j = 0; j < itemColliders.Length; j++)
+            {
+                Collider itemCollider = itemColliders[j];
+                if (itemCollider == null) continue;
+
+                Physics.IgnoreCollision(throwerCollider, itemCollider, ignore);
+            }
+        }
     }
 
     public void DetachItem()
@@ -254,5 +290,26 @@ public class PlayerItemSystem : MonoBehaviour
     public GameObject GetLastThrownItem()
     {
         return _lastThrownItem;
+    }
+
+    /// <summary>
+    /// 동일한 던지기 체감을 유지하기 위해 다른 PlayerItemSystem의 튜닝값을 복사합니다.
+    /// (예: 호스트에서 OtherPlayers 대역 throw 시 로컬 Player와 같은 수치 사용)
+    /// </summary>
+    public void CopyThrowTuningFrom(PlayerItemSystem source)
+    {
+        if (source == null) return;
+
+        throwForce = source.throwForce;
+        maxThrowForce = source.maxThrowForce;
+        minThrowForce = source.minThrowForce;
+        controlRunningAmount = source.controlRunningAmount;
+        minRunningAmount = source.minRunningAmount;
+        chargedMaxThrowForce = source.chargedMaxThrowForce;
+        chargedMinThrowForce = source.chargedMinThrowForce;
+        chargedUpBlend = source.chargedUpBlend;
+        throwPitchSensitivity = source.throwPitchSensitivity;
+        minUpWeight = source.minUpWeight;
+        maxUpWeight = source.maxUpWeight;
     }
 }
