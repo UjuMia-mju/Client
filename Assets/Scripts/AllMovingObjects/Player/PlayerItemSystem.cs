@@ -28,9 +28,7 @@ public class PlayerItemSystem : MonoBehaviour
     [Range(0f, 2f)]
     [SerializeField] private float chargedUpBlend = 0.3f;
 
-    [Header("Throw - Vertical Angle")]
-    [Tooltip("마우스 위/아래(pitch)가 상승 비율에 반영되는 민감도.")]
-    [SerializeField] private float throwPitchSensitivity = 0.9f;
+    [Header("Throw - Up Weight")]
     [Tooltip("상승 비율의 최소값.")]
     [SerializeField] private float minUpWeight = 0.1f;
     [Tooltip("상승 비율의 최대값.")]
@@ -98,10 +96,8 @@ public class PlayerItemSystem : MonoBehaviour
         else
             forwardVec = flatAimDirection * (runningAmount * controlRunningAmount);
 
-        // 카메라 pitch(위/아래 시선)를 던지기 각도에 반영합니다.
-        float verticalDot = Mathf.Clamp(Vector3.Dot(aimDirection.normalized, up), -1f, 1f);
         float upWeightBase = chargedThrow ? chargedUpBlend : 1f;
-        float upWeight = Mathf.Clamp(upWeightBase + verticalDot * throwPitchSensitivity, minUpWeight, maxUpWeight);
+        float upWeight = Mathf.Clamp(upWeightBase, minUpWeight, maxUpWeight);
 
         Vector3 force = (up * upWeight + forwardVec) * throwForce;
         float minF = chargedThrow ? chargedMinThrowForce : minThrowForce;
@@ -308,7 +304,6 @@ public class PlayerItemSystem : MonoBehaviour
         chargedMaxThrowForce = source.chargedMaxThrowForce;
         chargedMinThrowForce = source.chargedMinThrowForce;
         chargedUpBlend = source.chargedUpBlend;
-        throwPitchSensitivity = source.throwPitchSensitivity;
         minUpWeight = source.minUpWeight;
         maxUpWeight = source.maxUpWeight;
     }

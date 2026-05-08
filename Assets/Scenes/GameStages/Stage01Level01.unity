@@ -7944,8 +7944,7 @@ MonoBehaviour:
   minRunningAmount: 0.01
   chargedMaxThrowForce: 20
   chargedMinThrowForce: 10
-  chargedUpBlend: 0.5
-  throwPitchSensitivity: 0.9
+  chargedUpBlend: 0.4
   minUpWeight: 0.1
   maxUpWeight: 1.9
 --- !u!114 &130923350922639494

@@ -726,13 +726,7 @@ public class Player : MovingObject
         if (flat.sqrMagnitude < 1e-4f)
             flat = Vector3.ProjectOnPlane(transform.right, up);
         flat.Normalize();
-
-        if (Camera.main == null)
-            return flat;
-
-        float verticalDot = Mathf.Clamp(Vector3.Dot(Camera.main.transform.forward.normalized, up), -0.95f, 0.95f);
-        Vector3 aim = (flat + up * verticalDot).normalized;
-        return aim;
+        return flat;
     }
 
     public void FreezeFor(float seconds)
