@@ -5,7 +5,7 @@ public class PlayerItemSystem : MonoBehaviour
 {
     public GameObject itemSocket {get; private set;}
     public GameObject currentEquipItem { get; private set; }
-    private const float THROWER_IGNORE_COLLISION_DURATION = 0.65f;
+    private const float THROWER_IGNORE_COLLISION_DURATION = 0.8f;
 
     [Header("Throw - Base")]
     [Tooltip("기본 던지기 벡터에 곱해지는 스케일. 전체 세기 체감에 가장 큰 영향을 줍니다.")]

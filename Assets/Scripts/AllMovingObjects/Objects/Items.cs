@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Animations;
 using static UnityEngine.Rendering.ReloadAttribute;
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class OtherPlayers : MovingObject
 {
@@ -136,16 +136,14 @@ public class OtherPlayers : MovingObject
                 otherPlayerItemSystem.CopyThrowTuningFrom(localPlayer.playerItemSystem);
 
             float runningAmount = GetMovingAmount();
-            Vector3 up = transform.up;
-            Vector3 flatAimDir = Vector3.ProjectOnPlane(transform.forward, up);
-            if (flatAimDir.sqrMagnitude < 1e-6f)
-                flatAimDir = Vector3.ProjectOnPlane(transform.right, up);
-            flatAimDir.Normalize();
+            Vector3 aimDir = transform.forward.normalized;
+            if (aimDir.sqrMagnitude < 1e-6f)
+                aimDir = transform.up;
 
             if (charged)
-                otherPlayerItemSystem.ThrowChargedAim(runningAmount, flatAimDir);
+                otherPlayerItemSystem.ThrowChargedAim(runningAmount, aimDir);
             else
-                otherPlayerItemSystem.ThrowItemWithAim(runningAmount, flatAimDir);
+                otherPlayerItemSystem.ThrowItemWithAim(runningAmount, aimDir);
         }
         else
         {
