@@ -422,6 +422,7 @@ public class Player : MovingObject
     private void FixedUpdate()
     {
         RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
+
         if (!inputFreeze)
         {
             Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
@@ -434,8 +435,18 @@ public class Player : MovingObject
             }
             else if (!isGrounded)
             {
-                // 공중에서 눌린 점프 입력은 그냥 버림(중요)
                 playerInput.SetIsJumping(false);
+            }
+        }
+        else
+        {
+            // [추가] freeze 중에는 수평 속도를 0으로 깎아 "비비면서 올라가는" 미끄러짐 차단.
+            // 중력에 의한 수직 성분은 유지(낙하/접지는 정상).
+            if (rb != null)
+            {
+                Vector3 v = rb.linearVelocity;
+                Vector3 vUp = Vector3.Project(v, transform.up); // up 축 성분만 남김
+                rb.linearVelocity = vUp;
             }
         }
     }
