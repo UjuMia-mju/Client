@@ -402,13 +402,16 @@ public class Player : MovingObject
         }
         else
         {
-            // [추가] freeze 중에는 수평 속도를 0으로 깎아 "비비면서 올라가는" 미끄러짐 차단.
-            // 중력에 의한 수직 성분은 유지(낙하/접지는 정상).
+            // [수정] freeze 중에는:
+            //   - 수평 속도 0
+            //   - 위 방향 속도도 0 (벽 비비며 위로 기어오르기 차단)
+            //   - 아래 방향 속도(중력 낙하)만 유지
             if (rb != null)
             {
                 Vector3 v = rb.linearVelocity;
-                Vector3 vUp = Vector3.Project(v, transform.up); // up 축 성분만 남김
-                rb.linearVelocity = vUp;
+                float upDot = Vector3.Dot(v, transform.up);
+                if (upDot > 0f) upDot = 0f; // 위로 가는 성분 제거, 낙하는 유지
+                rb.linearVelocity = transform.up * upDot;
             }
         }
     }
@@ -462,7 +465,41 @@ public class Player : MovingObject
         {
             EndMining();
         }
-        base.Moving(movDir);
+
+        if (movDir == Vector3.zero || rb == null)
+        {
+            base.Moving(movDir);
+            return;
+        }
+
+        movDir.Normalize();
+        float dist = walkSpeed * Time.fixedDeltaTime;
+
+        // 1) sweep으로 진행 경로에 충돌이 있는지 확인.
+        //    충돌 있으면 벽 normal에 수직인 방향(슬라이드)으로 재시도.
+        if (rb.SweepTest(movDir, out RaycastHit hit, dist + 0.05f, QueryTriggerInteraction.Ignore))
+        {
+            Vector3 slideDir = Vector3.ProjectOnPlane(movDir, hit.normal);
+
+            // 슬라이드 방향이 위쪽(벽 타고 오르기)으로 향하면 위 성분 제거.
+            float upDot = Vector3.Dot(slideDir, transform.up);
+            if (upDot > 0f) slideDir -= transform.up * upDot;
+
+            // 슬라이드도 다시 sweep해서 안전한 거리만 이동.
+            if (slideDir.sqrMagnitude < 1e-4f) return; // 완전히 박힘 → 이동 X
+            slideDir.Normalize();
+
+            float slideDist = dist;
+            if (rb.SweepTest(slideDir, out RaycastHit hit2, dist + 0.05f, QueryTriggerInteraction.Ignore))
+            {
+                slideDist = Mathf.Max(0f, hit2.distance - 0.02f);
+            }
+            rb.MovePosition(rb.position + slideDir * slideDist);
+            return;
+        }
+
+        // 2) 진행 경로 깨끗 → 정상 이동
+        rb.MovePosition(rb.position + movDir * dist);
     }
 
     // F키 상호작용
