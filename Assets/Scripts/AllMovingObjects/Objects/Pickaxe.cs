@@ -7,6 +7,23 @@ public class Pickaxe : Items
 
     private bool hasMined = false; // 이미 채굴/타격했는지 여부
 
+    // Mining 애니메이션 사이클 중 hit를 인정할 구간 (0~1 정규화 시간).
+    // 0.3~0.6 = 곡괭이가 위에서 아래로 내려치는 중간 구간. 클립에 맞게 조절.
+    private const float HIT_WINDOW_START = 0.3f;
+    private const float HIT_WINDOW_END = 0.6f;
+
+    /// <summary>holder의 Mining 애니메이션이 hit window 구간에 있는지.</summary>
+    private bool IsInHitWindow(Animator anim)
+    {
+        if (anim == null) return false;
+        var info = anim.GetCurrentAnimatorStateInfo(0);
+        // Mining state가 아닐 땐 무시
+        if (anim.GetInteger("AnimationPar") != (int)AnimState.Mining) return false;
+
+        float t = info.normalizedTime % 1f; // 루프 대응
+        return t >= HIT_WINDOW_START && t <= HIT_WINDOW_END;
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (transform.parent == null || transform.parent.name != SOCKET) return;
@@ -22,6 +39,10 @@ public class Pickaxe : Items
         // 1) 광석 채굴 (로컬 holder가 도구 사용 중일 때만)
         if (holderLocal != null && holderLocal.isUsingTool && other.CompareTag(Define.Tag.ORE))
         {
+            // hit window 안에서만 채굴 인정
+            Animator localAnim = holderLocal.GetComponent<Animator>();
+            if (!IsInHitWindow(localAnim)) return;
+
             Ore o = other.GetComponent<Ore>();
             if (o != null) { o.Mine(); hasMined = true; }
             return;
@@ -32,8 +53,8 @@ public class Pickaxe : Items
 
         // 휘두르는 중일 때만 사람 hit 인정 (들고만 있거나 던지는 중에는 무시)
         bool swinging = holderLocal != null
-            ? holderLocal.isUsingTool
-            : (holderRemote != null && holderRemote.GetAnimStateRaw() == (int)AnimState.Mining);
+            ? (holderLocal.isUsingTool && IsInHitWindow(holderLocal.GetComponent<Animator>()))
+            : (holderRemote != null && IsInHitWindow(holderRemote.GetComponent<Animator>()));
         if (!swinging) return;
 
         // victim 식별 (콜라이더가 자식에 있을 수 있어 InParent 사용)
