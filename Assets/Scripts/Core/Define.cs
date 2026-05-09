@@ -77,6 +77,7 @@ public static class Define
         public const string GROUND = "Ground";
         public const string WALL = "Wall";
         public const string WALKABLE_COLLIDER = "WalkableCollider";
+        public const string HILL = "Hill";
     }
 
     public static readonly List<Vector2Int> Resolution = new List<Vector2Int>()
