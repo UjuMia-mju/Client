@@ -5721,13 +5721,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1031341189}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.055978015, y: 0.0035527041, z: -0.06323986, w: 0.99642086}
-  m_LocalPosition: {x: -0.85596204, y: 0.2093116, z: -0.091190815}
+  m_LocalRotation: {x: 0.056078732, y: -0.0011574922, z: 0.020602996, w: 0.99821305}
+  m_LocalPosition: {x: 0.012, y: 0.092, z: 0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1501175927}
-  m_LocalEulerAnglesHint: {x: 6.431, y: 0, z: -7.263}
+  m_LocalEulerAnglesHint: {x: 6.431, y: 0, z: 2.365}
 --- !u!23 &1031341191
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8399,7 +8399,7 @@ Transform:
   m_GameObject: {fileID: 1501175921}
   serializedVersion: 2
   m_LocalRotation: {x: 0.34906948, y: -0.55095845, z: 0.38908908, w: 0.65054214}
-  m_LocalPosition: {x: -11.15, y: 17.3, z: 0.98}
+  m_LocalPosition: {x: -9.787, y: 20.066, z: -0.683}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16351,7 +16351,7 @@ GameObject:
   - component: {fileID: 9202459294789920269}
   - component: {fileID: 5697135777062610549}
   - component: {fileID: 1069859715768806527}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: cables
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17107,7 +17107,7 @@ GameObject:
   - component: {fileID: 8130667494254091192}
   - component: {fileID: 6282829669582794610}
   - component: {fileID: 8130667494254091193}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: machine_barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18611,7 +18611,7 @@ Transform:
   m_GameObject: {fileID: 4774748908214025991}
   serializedVersion: 2
   m_LocalRotation: {x: 0.4642641, y: -0.45679677, z: 0.41129553, w: 0.63767666}
-  m_LocalPosition: {x: -10.96, y: 17.53, z: 1.5}
+  m_LocalPosition: {x: -9.49, y: 20.44, z: 1.01}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
