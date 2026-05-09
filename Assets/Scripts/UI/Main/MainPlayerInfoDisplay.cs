@@ -2,14 +2,13 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// 메인 화면에서 "내 이름#태그"를 표시한다.
-/// 상대방이 나를 초대할 때 이 정보를 입력하면 된다.
+/// 메인 화면에서 "이름#태그"를 표시한다.
 /// </summary>
 public class MainPlayerInfoDisplay : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI displayText;
-    [Tooltip("예: \"내 정보 (초대받을 때 상대가 입력): {0}\"")]
-    [SerializeField] private string format = "내 정보: {0}";
+    [Tooltip("{0}에 이름#Tag가 들어갑니다. 접두어 없이만 쓰려면 \"{0}\" 그대로 두면 됩니다.")]
+    [SerializeField] private string format = "{0}";
 
     private void OnEnable()
     {
