@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Security;
 using UnityEngine.InputSystem;
 using Protocol;
+using TMPro;
 
 [DefaultExecutionOrder(50)]
 public class Player : MovingObject
@@ -29,8 +31,7 @@ public class Player : MovingObject
     private FootstepEmitter footstepEmitter;
 
     private GameObject playerMesh;
-
-
+    
     // 서버 관련 변수들
     public float sendInterval = 0.05f; // 20fps로 위치 전송 (네트워크 부하 고려)
     protected float _lastSendTime = 0f;
@@ -41,11 +42,11 @@ public class Player : MovingObject
     private int lastHP;
     private float lastOxygen;
 
-    // 임시 UI 객체
+    [Header("Player UI")]
     [SerializeField] private HPUIController hpUIController;
     [SerializeField] private OxygenUIController oxygenUIController;
+    [SerializeField] private TextMeshProUGUI NicknameText;
     [SerializeField] private ThrowTrajectoryPreview trajectoryPreview;
-
 
     [Header("Oxygen Tuning")]
     [Tooltip("1초당 자연 감소량 (0~1 정규화)")]
@@ -125,6 +126,7 @@ public class Player : MovingObject
         if (HostPacketHandler.Instance != null)
         {
             HostPacketHandler.Instance.OnPlayerHitEvent += OnPlayerHitReceived;
+            HostPacketHandler.Instance.OnEnterGameEvent += OnEnterGameApplyLocalNickname;
         }
 
         // 씬 로드 후 서버/호스트에 입장을 알립니다.
@@ -167,6 +169,7 @@ public class Player : MovingObject
         if (HostPacketHandler.Instance != null)
         {
             HostPacketHandler.Instance.OnPlayerHitEvent -= OnPlayerHitReceived;
+            HostPacketHandler.Instance.OnEnterGameEvent -= OnEnterGameApplyLocalNickname;
         }
     }
 
@@ -225,6 +228,41 @@ public class Player : MovingObject
 
         SendEnterPosToServer();
         playerStat.StartOxygenDecrease();
+
+        RefreshLocalNicknameFromRoomCache();
+    }
+
+    private void OnEnterGameApplyLocalNickname(S_ENTER_GAME packet)
+    {
+        if (packet == null || NicknameText == null || NetManager.Instance == null)
+            return;
+
+        ulong myId = (ulong)NetManager.Instance._playerId;
+        foreach (var p in packet.Players)
+        {
+            if ((ulong)p.PlayerId != myId) continue;
+            if (!string.IsNullOrWhiteSpace(p.Name))
+                NicknameText.text = p.Name.Trim();
+            else
+                RefreshLocalNicknameFromRoomCache();
+            return;
+        }
+
+        RefreshLocalNicknameFromRoomCache();
+    }
+
+    private void RefreshLocalNicknameFromRoomCache()
+    {
+        if (NicknameText == null || NetManager.Instance == null) return;
+
+        ulong id = (ulong)NetManager.Instance._playerId;
+        if (id == 0) return;
+
+        RoomMemberDisplayCache.Instance?.WarmUp();
+        if (RoomMemberDisplayCache.Instance != null &&
+            RoomMemberDisplayCache.Instance.TryGet(id, out var entry) &&
+            !string.IsNullOrWhiteSpace(entry.DisplayName))
+            NicknameText.text = entry.DisplayName.Trim();
     }
 
 
@@ -384,6 +422,7 @@ public class Player : MovingObject
     private void FixedUpdate()
     {
         RotateToDirection(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
+
         if (!inputFreeze)
         {
             Moving(playerTPCamera.GetPlayerMovingOffset().TransformDirection(playerInput.axisResultDir));
@@ -396,8 +435,21 @@ public class Player : MovingObject
             }
             else if (!isGrounded)
             {
-                // 공중에서 눌린 점프 입력은 그냥 버림(중요)
                 playerInput.SetIsJumping(false);
+            }
+        }
+        else
+        {
+            // [수정] freeze 중에는:
+            //   - 수평 속도 0
+            //   - 위 방향 속도도 0 (벽 비비며 위로 기어오르기 차단)
+            //   - 아래 방향 속도(중력 낙하)만 유지
+            if (rb != null)
+            {
+                Vector3 v = rb.linearVelocity;
+                float upDot = Vector3.Dot(v, transform.up);
+                if (upDot > 0f) upDot = 0f; // 위로 가는 성분 제거, 낙하는 유지
+                rb.linearVelocity = transform.up * upDot;
             }
         }
     }
@@ -451,7 +503,45 @@ public class Player : MovingObject
         {
             EndMining();
         }
-        base.Moving(movDir);
+
+        if (movDir == Vector3.zero || rb == null)
+        {
+            base.Moving(movDir);
+            return;
+        }
+
+        movDir.Normalize();
+        float dist = walkSpeed * Time.fixedDeltaTime;
+
+        // 1) sweep으로 진행 경로에 충돌이 있는지 확인.
+        if (rb.SweepTest(movDir, out RaycastHit hit, dist + 0.05f, QueryTriggerInteraction.Ignore))
+        {
+            // [하드코드] 부모 이름이 "Crater"인 콜라이더는 sweep 무시 → 그냥 정상 이동.
+            if (hit.collider != null && hit.collider.transform.parent != null
+                && hit.collider.transform.parent.name.Contains("Crater"))
+            {
+                rb.MovePosition(rb.position + movDir * dist);
+                return;
+            }
+
+            Vector3 slideDir = Vector3.ProjectOnPlane(movDir, hit.normal);
+
+            float upDot = Vector3.Dot(slideDir, transform.up);
+            if (upDot > 0f) slideDir -= transform.up * upDot;
+
+            if (slideDir.sqrMagnitude < 1e-4f) return;
+            slideDir.Normalize();
+
+            float slideDist = dist;
+            if (rb.SweepTest(slideDir, out RaycastHit hit2, dist + 0.05f, QueryTriggerInteraction.Ignore))
+            {
+                slideDist = Mathf.Max(0f, hit2.distance - 0.02f);
+            }
+            rb.MovePosition(rb.position + slideDir * slideDist);
+            return;
+        }
+
+        rb.MovePosition(rb.position + movDir * dist);
     }
 
     // F키 상호작용

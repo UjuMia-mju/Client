@@ -85,30 +85,33 @@ public class MovingObject : MonoBehaviour
             return false;
         }
 
-        // 레이 시작점을 발(pivot)에서 띄워서 시작.
-        // 발 높이에서 쏘면 walkable 발판 위에 올라갔을 때 발판 옆면에 그대로 박혀서
-        // inputFreeze가 영구로 켜져버림(점프맵에서 못 움직이는 원인).
-        Vector3 origin = transform.position + transform.up * 0.5f;
         Vector3 dir = dirData.normalized;
-        Ray ray = new Ray(origin, dir);
-
-        // Gizmos용 캐시
         _gz_hasCollisionRay = true;
-        _gz_collisionOrigin = origin;
         _gz_collisionDir = dir;
         _gz_collisionHit = false;
 
-        foreach (var mask in masks)
+        // 0.5m: 기존 origin (walkable 옆면 false positive 회피용 안전 높이)
+        // 0.9m: 가슴 높이 추가 (높은 벽/턱 보강). walkable은 이 높이에서도 거의 안 겹침.
+        // 더 낮은 높이는 walkable 옆면(밟고 있는 발판)에 걸려서 inputFreeze가 영구로 켜지므로 사용 금지.
+        float[] heights = { 0.5f, 0.9f };
+
+        for (int h = 0; h < heights.Length; h++)
         {
-            if (Physics.Raycast(ray, out _, RAY_LENGTH, mask))
+            Vector3 origin = transform.position + transform.up * heights[h];
+            if (h == 0) _gz_collisionOrigin = origin;
+
+            foreach (var mask in masks)
             {
-                _gz_collisionHit = true;
-                Debug.DrawLine(origin, origin + dir * RAY_LENGTH, Color.yellow);
-                return true;
+                if (Physics.Raycast(origin, dir, RAY_LENGTH, mask))
+                {
+                    _gz_collisionHit = true;
+                    Debug.DrawLine(origin, origin + dir * RAY_LENGTH, Color.yellow);
+                    return true;
+                }
             }
+            Debug.DrawLine(origin, origin + dir * RAY_LENGTH, Color.gray);
         }
 
-        Debug.DrawLine(origin, origin + dir * RAY_LENGTH, Color.gray);
         return false;
     }
 

@@ -46,7 +46,7 @@ public class HostSender : IHostSender
             Player = new PlayerGameInfo
             {
                 PlayerId = (int)GetLocalPlayerId(),
-                Name = "Host",
+                Name = RoomMemberDisplayCache.GetDisplayNameOrFallback(GetLocalPlayerId(), "Host"),
                 Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
             }
