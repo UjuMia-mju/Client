@@ -3050,7 +3050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainPlayerInfoDisplay
   displayText: {fileID: 2012615274}
-  format: "\uD604\uC7AC \uB85C\uADF8\uC778: {0}"
+  format: "{0}"
 --- !u!114 &2012615274
 MonoBehaviour:
   m_ObjectHideFlags: 0
