@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class OtherPlayers : MovingObject
 {
@@ -8,6 +9,8 @@ public class OtherPlayers : MovingObject
     [SerializeField] private float lerpSpeed = 10f;
     [SerializeField] private HPUIController hpUIController;
     [SerializeField] private OxygenUIController oxygenUIController;
+    [SerializeField] private TextMeshProUGUI nicknameText;
+    [SerializeField] private GameObject nicknameTextPrefab;
 
     private GameObject[] toggleOnDeath;
 
@@ -37,6 +40,22 @@ public class OtherPlayers : MovingObject
             hpUIController = GetComponentInChildren<HPUIController>(true);
         if (oxygenUIController == null)
             oxygenUIController = GetComponentInChildren<OxygenUIController>(true);
+
+        if (nicknameText == null && nicknameTextPrefab != null)
+        {
+            Transform parent = hpUIController != null ? hpUIController.transform.parent : null;
+            if (parent == null)
+            {
+                Transform canvas = transform.Find("Canvas");
+                if (canvas != null)
+                    parent = canvas.Find("PlayerStats");
+            }
+            if (parent != null)
+            {
+                GameObject inst = Instantiate(nicknameTextPrefab, parent);
+                nicknameText = inst.GetComponent<TextMeshProUGUI>();
+            }
+        }
 
         if (remotePlayerStat != null)
         {
@@ -154,6 +173,12 @@ public class OtherPlayers : MovingObject
     public void SetStat(int hpData, float oxygenData)
     {
         remotePlayerStat?.ApplyNetworkStat(hpData, oxygenData);
+    }
+
+    public void SetNicknameDisplay(string name)
+    {
+        if (nicknameText == null) return;
+        nicknameText.text = string.IsNullOrEmpty(name) ? "" : name;
     }
 
 

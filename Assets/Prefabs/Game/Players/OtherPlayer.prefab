@@ -1116,6 +1116,8 @@ MonoBehaviour:
   lerpSpeed: 10
   hpUIController: {fileID: 888100002}
   oxygenUIController: {fileID: 888100003}
+  nicknameText: {fileID: 0}
+  nicknameTextPrefab: {fileID: 5331026810723986144, guid: 0074cb737fcb46b4cad42b0d5e1d24d9, type: 3}
 --- !u!114 &7062297371897531915
 MonoBehaviour:
   m_ObjectHideFlags: 0

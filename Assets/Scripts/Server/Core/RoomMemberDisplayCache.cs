@@ -61,6 +61,16 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
         return _byId.TryGetValue(playerId, out entry);
     }
 
+    /// <summary>인게임 입장 패킷 등에 넣을 표시 이름. 로비 캐시가 없으면 fallback.</summary>
+    public static string GetDisplayNameOrFallback(ulong playerId, string fallback)
+    {
+        var c = Instance;
+        c?.WarmUp();
+        if (c != null && c.TryGet(playerId, out var e) && !string.IsNullOrWhiteSpace(e.DisplayName))
+            return e.DisplayName;
+        return fallback;
+    }
+
     public void SetReady(ulong playerId, bool isReady)
     {
         TryWire();
