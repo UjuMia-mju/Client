@@ -85,19 +85,20 @@ public class MovingObject : MonoBehaviour
             return false;
         }
 
-        // 여러 높이에서 raycast → 짧은 턱(0.5m 미만)도 막아준다.
-        // 0.15m: 발목/낮은 턱, 0.5m: 허리, 0.9m: 가슴
-        float[] heights = { 0.15f, 0.5f, 0.9f };
         Vector3 dir = dirData.normalized;
-
         _gz_hasCollisionRay = true;
         _gz_collisionDir = dir;
         _gz_collisionHit = false;
 
+        // 0.5m: 기존 origin (walkable 옆면 false positive 회피용 안전 높이)
+        // 0.9m: 가슴 높이 추가 (높은 벽/턱 보강). walkable은 이 높이에서도 거의 안 겹침.
+        // 더 낮은 높이는 walkable 옆면(밟고 있는 발판)에 걸려서 inputFreeze가 영구로 켜지므로 사용 금지.
+        float[] heights = { 0.5f, 0.9f };
+
         for (int h = 0; h < heights.Length; h++)
         {
             Vector3 origin = transform.position + transform.up * heights[h];
-            if (h == 0) _gz_collisionOrigin = origin; // 기즈모는 첫 번째 ray만
+            if (h == 0) _gz_collisionOrigin = origin;
 
             foreach (var mask in masks)
             {
