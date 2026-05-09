@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Security;
 using UnityEngine.InputSystem;
 using Protocol;
+using TMPro;
 
 [DefaultExecutionOrder(50)]
 public class Player : MovingObject
@@ -29,8 +31,7 @@ public class Player : MovingObject
     private FootstepEmitter footstepEmitter;
 
     private GameObject playerMesh;
-
-
+    
     // 서버 관련 변수들
     public float sendInterval = 0.05f; // 20fps로 위치 전송 (네트워크 부하 고려)
     protected float _lastSendTime = 0f;
@@ -41,11 +42,11 @@ public class Player : MovingObject
     private int lastHP;
     private float lastOxygen;
 
-    // 임시 UI 객체
+    [Header("Player UI")]
     [SerializeField] private HPUIController hpUIController;
     [SerializeField] private OxygenUIController oxygenUIController;
+    [SerializeField] private TextMeshProUGUI NicknameText;
     [SerializeField] private ThrowTrajectoryPreview trajectoryPreview;
-
 
     [Header("Oxygen Tuning")]
     [Tooltip("1초당 자연 감소량 (0~1 정규화)")]
@@ -125,6 +126,7 @@ public class Player : MovingObject
         if (HostPacketHandler.Instance != null)
         {
             HostPacketHandler.Instance.OnPlayerHitEvent += OnPlayerHitReceived;
+            HostPacketHandler.Instance.OnEnterGameEvent += OnEnterGameApplyLocalNickname;
         }
 
         // 씬 로드 후 서버/호스트에 입장을 알립니다.
@@ -167,6 +169,7 @@ public class Player : MovingObject
         if (HostPacketHandler.Instance != null)
         {
             HostPacketHandler.Instance.OnPlayerHitEvent -= OnPlayerHitReceived;
+            HostPacketHandler.Instance.OnEnterGameEvent -= OnEnterGameApplyLocalNickname;
         }
     }
 
@@ -225,6 +228,41 @@ public class Player : MovingObject
 
         SendEnterPosToServer();
         playerStat.StartOxygenDecrease();
+
+        RefreshLocalNicknameFromRoomCache();
+    }
+
+    private void OnEnterGameApplyLocalNickname(S_ENTER_GAME packet)
+    {
+        if (packet == null || NicknameText == null || NetManager.Instance == null)
+            return;
+
+        ulong myId = (ulong)NetManager.Instance._playerId;
+        foreach (var p in packet.Players)
+        {
+            if ((ulong)p.PlayerId != myId) continue;
+            if (!string.IsNullOrWhiteSpace(p.Name))
+                NicknameText.text = p.Name.Trim();
+            else
+                RefreshLocalNicknameFromRoomCache();
+            return;
+        }
+
+        RefreshLocalNicknameFromRoomCache();
+    }
+
+    private void RefreshLocalNicknameFromRoomCache()
+    {
+        if (NicknameText == null || NetManager.Instance == null) return;
+
+        ulong id = (ulong)NetManager.Instance._playerId;
+        if (id == 0) return;
+
+        RoomMemberDisplayCache.Instance?.WarmUp();
+        if (RoomMemberDisplayCache.Instance != null &&
+            RoomMemberDisplayCache.Instance.TryGet(id, out var entry) &&
+            !string.IsNullOrWhiteSpace(entry.DisplayName))
+            NicknameText.text = entry.DisplayName.Trim();
     }
 
 

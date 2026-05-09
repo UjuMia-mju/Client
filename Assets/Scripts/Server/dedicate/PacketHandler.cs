@@ -151,9 +151,18 @@ public class PacketHandler : Singleton<PacketHandler>
         
         if (result.Success)
         {
-            Debug.Log($"  Login Success!");
-            Debug.Log($"  Player ID: {result.Player.Id}");
-            Debug.Log($"  Player Name: {result.Player.Name}");
+            Debug.Log("  Login Success!");
+            if (result.Player != null)
+            {
+                Debug.Log($"  Player(필드2) Id={result.Player.Id}, Name={result.Player.Name}, Tag={result.Player.Tag}");
+            }
+            else
+                Debug.LogWarning(
+                    "[PacketHandler] S_LOGIN에 Player(필드2)가 없습니다. 서버가 id/name/tag를 안 보내거나 proto 불일치일 수 있습니다. Json=" +
+                    JsonFormatter.Default.Format(result));
+
+            if (result.PlayerInfo != null)
+                Debug.Log($"  PlayerInfo PlayerId={result.PlayerInfo.PlayerId}, coin={result.PlayerInfo.Coin}, gem={result.PlayerInfo.Gem}");
 
             // 1) GameManager 등에서 _playerId·DB요청·UI 갱신
             OnLoginResultEvent?.Invoke(result);

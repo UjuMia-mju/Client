@@ -61,6 +61,16 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
         return _byId.TryGetValue(playerId, out entry);
     }
 
+    /// <summary>인게임 입장 패킷 등에 넣을 표시 이름. 로비 캐시가 없으면 fallback.</summary>
+    public static string GetDisplayNameOrFallback(ulong playerId, string fallback)
+    {
+        var c = Instance;
+        c?.WarmUp();
+        if (c != null && c.TryGet(playerId, out var e) && !string.IsNullOrWhiteSpace(e.DisplayName))
+            return e.DisplayName;
+        return fallback;
+    }
+
     public void SetReady(ulong playerId, bool isReady)
     {
         TryWire();
@@ -70,18 +80,16 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
         NotifyChanged();
     }
 
-    static string FormatPlayerLabel(global::Protocol.Player player)
+    static string FormatPlayerLabel(string name, int tag, int idForFallback)
     {
-        if (player == null)
-            return "Player";
-
-        bool hasTag = player.Tag != 0;
-        if (hasTag && !string.IsNullOrEmpty(player.Name))
-            return $"{player.Name}#{player.Tag}";
-        if (!string.IsNullOrEmpty(player.Name))
-            return player.Name;
-
-        return $"Player {player.Id}";
+        bool hasTag = tag != 0;
+        if (hasTag && !string.IsNullOrEmpty(name))
+            return $"{name}#{tag}";
+        if (!string.IsNullOrEmpty(name))
+            return name;
+        if (idForFallback != 0)
+            return $"Player {idForFallback}";
+        return "Player";
     }
 
     private void OnEnterRoom(S_ENTER_ROOM packet)
@@ -110,8 +118,45 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
             return;
 
         ulong id = (ulong)member.Player.Id;
-        string label = FormatPlayerLabel(member.Player);
+        string name = member.Player.Name ?? "";
+        int tag = member.Player.Tag;
+
+        // 로컬 플레이어(방장 포함): 서버가 S_ENTER_ROOM에서 Tag를 0으로 주는 경우가 있어 S_LOGIN 값으로 보강
+        var nm = NetManager.Instance;
+        if (nm != null && id == nm._playerId)
+        {
+            if (tag == 0 && nm.PlayerTag != 0)
+                tag = nm.PlayerTag;
+            if (string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(nm.PlayerName))
+                name = nm.PlayerName;
+        }
+
+        string label = FormatPlayerLabel(name, tag, member.Player.Id);
         _byId[id] = new Entry(label, member.IsReady);
+    }
+
+    /// <summary>로그인 직후 등, 이미 캐시된 로컬 멤버 행에 Tag/이름을 다시 반영합니다.</summary>
+    public void RefreshLocalMemberFromNetManager()
+    {
+        TryWire();
+        var nm = NetManager.Instance;
+        if (nm == null || nm._playerId == 0)
+            return;
+
+        ulong id = nm._playerId;
+        if (!_byId.TryGetValue(id, out var prev))
+            return;
+
+        string name = nm.PlayerName ?? "";
+        if (string.IsNullOrEmpty(name))
+        {
+            int h = prev.DisplayName.IndexOf('#');
+            name = h >= 0 ? prev.DisplayName.Substring(0, h) : prev.DisplayName;
+        }
+
+        string label = FormatPlayerLabel(name, nm.PlayerTag, (int)id);
+        _byId[id] = new Entry(label, prev.IsReady);
+        NotifyChanged();
     }
 
     private void OnReady(S_READY packet)

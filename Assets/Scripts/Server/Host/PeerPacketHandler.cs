@@ -113,7 +113,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         response.Players.Add(new PlayerGameInfo
         {
             PlayerId = (int)NetManager.Instance._playerId,
-            Name = "Host",
+            Name = RoomMemberDisplayCache.GetDisplayNameOrFallback(NetManager.Instance._playerId, "Host"),
             Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
             Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
         });
@@ -126,7 +126,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 response.Players.Add(new PlayerGameInfo
                 {
                     PlayerId = (int)existingId,
-                    Name = "Peer",
+                    Name = RoomMemberDisplayCache.GetDisplayNameOrFallback(existingId, "Peer"),
                     Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
                     Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
                 });
@@ -137,7 +137,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         response.Players.Add(new PlayerGameInfo
         {
             PlayerId = peerId,
-            Name = "Peer",
+            Name = RoomMemberDisplayCache.GetDisplayNameOrFallback((ulong)peerId, "Peer"),
             Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
             Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
         });

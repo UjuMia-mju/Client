@@ -116,10 +116,13 @@ public class PacketManager : Singleton<PacketManager>
 
         if (result.Success)
         {
-            Debug.Log($"✓ Login Success!");
-            Debug.Log($"  Player ID: {result.Player.Id}, Name: {result.Player.Name}");
+            Debug.Log("✓ Login Success!");
+            if (result.Player != null)
+                Debug.Log($"  Player: id={result.Player.Id}, name={result.Player.Name}, tag={result.Player.Tag}");
+            else
+                Debug.LogWarning("[PacketManager] S_LOGIN에 Player 없음.");
             if (result.PlayerInfo != null)
-                Debug.Log($"  PlayerInfo: coin={result.PlayerInfo.Coin}, gem={result.PlayerInfo.Gem}, owned_skins={result.PlayerInfo.OwnedSkins.Count}");
+                Debug.Log($"  PlayerInfo: playerId={result.PlayerInfo.PlayerId}, coin={result.PlayerInfo.Coin}, gem={result.PlayerInfo.Gem}");
 
             OnLoginResultEvent?.Invoke(result);
         }
