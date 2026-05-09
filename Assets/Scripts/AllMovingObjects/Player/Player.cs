@@ -734,6 +734,14 @@ public class Player : MovingObject
         externalFreezeUntil = Mathf.Max(externalFreezeUntil, Time.time + seconds);
     }
 
+    /// <summary>
+    /// 일정 시간 동안 이동 입력을 랜덤 패턴으로 섞습니다.
+    /// </summary>
+    public void ApplyMoveInputScramble(float seconds)
+    {
+        playerInput?.ApplyRandomMoveScramble(seconds);
+    }
+
     private void OnPlayerHitReceived(S_PLAYER_HIT packet)
     {
         if (packet.VictimPlayerId != (ulong)NetManager.Instance._playerId) return;
