@@ -28,8 +28,8 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     {
         if (packet.Success)
         {
-            Debug.Log($"✓ Login Success! Player ID: {packet.Player.Id}, Name: {packet.Player.Name}");
-            NetManager.Instance._playerId = (ulong)packet.Player.Id;
+            ApplySLoginToLocalSession(packet);
+
             try
             {
                 DbCacheManager.RequestDbData();
@@ -45,6 +45,36 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         {
             Debug.LogError("✗ Login Failed!");
         }
+    }
+
+    /// <summary>
+    /// 서버는 종종 <see cref="S_LOGIN.Player"/> 없이 <see cref="S_LOGIN.PlayerInfo"/>만 보냅니다.
+    /// proto 상 Player는 id/name/tag를 갖지만, 필드가 비어 있으면 로그인 시 입력한 userId로 이름을 보강합니다.
+    /// </summary>
+    static void ApplySLoginToLocalSession(S_LOGIN packet)
+    {
+        var nm = NetManager.Instance;
+        if (nm == null) return;
+
+        int id = packet.Player != null ? packet.Player.Id : 0;
+        string name = packet.Player != null ? packet.Player.Name ?? "" : "";
+        int tag = packet.Player != null ? packet.Player.Tag : 0;
+
+        if (id == 0 && packet.PlayerInfo != null && packet.PlayerInfo.PlayerId != 0)
+            id = packet.PlayerInfo.PlayerId;
+
+        if (string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(nm.LastAttemptedLoginUserId))
+            name = nm.LastAttemptedLoginUserId;
+
+        if (id != 0)
+            nm._playerId = (ulong)id;
+
+        nm.SetLocalPlayerProfile(name, tag);
+        RoomMemberDisplayCache.Instance?.RefreshLocalMemberFromNetManager();
+
+        Debug.Log(
+            $"[GameManager] 로컬 세션 반영: _playerId={nm._playerId}, PlayerName={nm.PlayerName}, PlayerTag={nm.PlayerTag} " +
+            $"(S_LOGIN.Player={(packet.Player != null)}, S_LOGIN.PlayerInfo={(packet.PlayerInfo != null)})");
     }
 
     private void OnStageInfo(S_STAGE_INFO packet)
