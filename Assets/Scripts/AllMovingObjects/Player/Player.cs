@@ -476,17 +476,22 @@ public class Player : MovingObject
         float dist = walkSpeed * Time.fixedDeltaTime;
 
         // 1) sweep으로 진행 경로에 충돌이 있는지 확인.
-        //    충돌 있으면 벽 normal에 수직인 방향(슬라이드)으로 재시도.
         if (rb.SweepTest(movDir, out RaycastHit hit, dist + 0.05f, QueryTriggerInteraction.Ignore))
         {
+            // [하드코드] 부모 이름이 "Crater"인 콜라이더는 sweep 무시 → 그냥 정상 이동.
+            if (hit.collider != null && hit.collider.transform.parent != null
+                && hit.collider.transform.parent.name.Contains("Crater"))
+            {
+                rb.MovePosition(rb.position + movDir * dist);
+                return;
+            }
+
             Vector3 slideDir = Vector3.ProjectOnPlane(movDir, hit.normal);
 
-            // 슬라이드 방향이 위쪽(벽 타고 오르기)으로 향하면 위 성분 제거.
             float upDot = Vector3.Dot(slideDir, transform.up);
             if (upDot > 0f) slideDir -= transform.up * upDot;
 
-            // 슬라이드도 다시 sweep해서 안전한 거리만 이동.
-            if (slideDir.sqrMagnitude < 1e-4f) return; // 완전히 박힘 → 이동 X
+            if (slideDir.sqrMagnitude < 1e-4f) return;
             slideDir.Normalize();
 
             float slideDist = dist;
@@ -498,7 +503,6 @@ public class Player : MovingObject
             return;
         }
 
-        // 2) 진행 경로 깨끗 → 정상 이동
         rb.MovePosition(rb.position + movDir * dist);
     }
 
