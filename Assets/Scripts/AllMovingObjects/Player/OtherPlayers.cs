@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 public class OtherPlayers : MovingObject
@@ -235,5 +235,11 @@ public class OtherPlayers : MovingObject
             foreach (var r in GetComponentsInChildren<Renderer>(true)) r.enabled = visible;
             foreach (var c in GetComponentsInChildren<Collider>(true)) c.enabled = visible;
         }
+    }
+
+    /// <summary>현재 동기화된 AnimationPar 값을 반환. 원격 swing 판정 등에 사용.</summary>
+    public int GetAnimStateRaw()
+    {
+        return otherPlayerAnimator != null ? otherPlayerAnimator.GetInteger("AnimationPar") : -1;
     }
 }

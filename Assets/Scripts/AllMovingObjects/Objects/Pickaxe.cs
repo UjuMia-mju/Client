@@ -7,15 +7,11 @@ public class Pickaxe : Items
 
     private bool hasMined = false; // 이미 채굴/타격했는지 여부
 
-
-
     private void OnTriggerStay(Collider other)
     {
-        // 누군가의 손에 들린 상태에서만 동작
         if (transform.parent == null || transform.parent.name != SOCKET) return;
         if (hasMined) return;
 
-        // holder 식별 (로컬 Player든 OtherPlayers든 가해자 루트)
         Player holderLocal = GetComponentInParent<Player>();
         OtherPlayers holderRemote = holderLocal == null ? GetComponentInParent<OtherPlayers>() : null;
         GameObject holderRoot = holderLocal != null ? holderLocal.gameObject
@@ -27,11 +23,7 @@ public class Pickaxe : Items
         if (holderLocal != null && holderLocal.isUsingTool && other.CompareTag(Define.Tag.ORE))
         {
             Ore o = other.GetComponent<Ore>();
-            if (o != null)
-            {
-                o.Mine();
-                hasMined = true;
-            }
+            if (o != null) { o.Mine(); hasMined = true; }
             return;
         }
 
@@ -41,7 +33,7 @@ public class Pickaxe : Items
         // 휘두르는 중일 때만 사람 hit 인정 (들고만 있거나 던지는 중에는 무시)
         bool swinging = holderLocal != null
             ? holderLocal.isUsingTool
-            : IsRemoteSwinging(holderRemote);
+            : (holderRemote != null && holderRemote.GetAnimStateRaw() == (int)AnimState.Mining);
         if (!swinging) return;
 
         // victim 식별 (콜라이더가 자식에 있을 수 있어 InParent 사용)
@@ -68,17 +60,33 @@ public class Pickaxe : Items
         hasMined = true;
     }
 
-    /// <summary>OtherPlayers가 도구를 휘두르는 중인지 애니메이션 state로 판정.</summary>
-    private static bool IsRemoteSwinging(OtherPlayers remote)
-    {
-        if (remote == null) return false;
-        Animator anim = remote.GetComponentInChildren<Animator>();
-        if (anim == null) return false;
-        return anim.GetInteger("AnimationPar") == (int)AnimState.Mining;
-    }
-
     public void ResetHasMined()
     {
+        hasMined = false;
+    }
+
+    private void Update()
+    {
+        // holder가 더 이상 swing 중이 아니면 hasMined 자동 해제.
+        // 로컬 Player의 EndMining은 호스트 머신의 OtherPlayers 손 곡괭이까지 못 닿으므로 여기서 보강.
+        if (!hasMined) return;
+
+        Player holderLocal = GetComponentInParent<Player>();
+        if (holderLocal != null)
+        {
+            if (!holderLocal.isUsingTool) hasMined = false;
+            return;
+        }
+
+        OtherPlayers holderRemote = GetComponentInParent<OtherPlayers>();
+        if (holderRemote != null)
+        {
+            if (holderRemote.GetAnimStateRaw() != (int)AnimState.Mining)
+                hasMined = false;
+            return;
+        }
+
+        // 누구의 손에도 안 들려있으면 reset.
         hasMined = false;
     }
 }
