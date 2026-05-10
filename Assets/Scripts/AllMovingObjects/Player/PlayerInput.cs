@@ -184,11 +184,18 @@ public class PlayerInput : MonoBehaviour
     {
         if (durationSeconds <= 0f) return;
 
+        // 이미 디버프가 걸린 상태에서 다시 닿으면 패턴은 유지하고 시간만 갱신합니다.
+        if (Time.time < scrambleMoveInputUntil)
+        {
+            scrambleMoveInputUntil = Time.time + durationSeconds;
+            return;
+        }
+
         int newPattern = Random.Range(0, MoveScramblePatterns.Length);
         if (MoveScramblePatterns.Length > 1 && newPattern == scramblePatternIndex)
             newPattern = (newPattern + 1) % MoveScramblePatterns.Length;
 
         scramblePatternIndex = newPattern;
-        scrambleMoveInputUntil = Mathf.Max(scrambleMoveInputUntil, Time.time + durationSeconds);
+        scrambleMoveInputUntil = Time.time + durationSeconds;
     }
 }
