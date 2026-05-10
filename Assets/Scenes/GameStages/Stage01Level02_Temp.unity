@@ -36775,7 +36775,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube3
+  itemStringKey: glow
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!54 &336797448
@@ -55284,7 +55284,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!54 &497090741
@@ -67249,7 +67249,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!54 &595604734
@@ -91892,6 +91892,9 @@ MonoBehaviour:
   - currentCount: 0
     targetCount: 10
     targetItem: {fileID: 7013151031138945480, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+  - currentCount: 0
+    targetCount: 5
+    targetItem: {fileID: 6141275627799525843, guid: a451540ed6f827146ba66ebc0ab4e944, type: 3}
 --- !u!114 &819753116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105577,7 +105580,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!54 &947344223
@@ -117837,7 +117840,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!54 &1067763732
@@ -126641,7 +126644,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!54 &1145330494
@@ -168190,6 +168193,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestCube2
       objectReference: {fileID: 0}
+    - target: {fileID: 7013151031138945480, guid: 28d3c555b89de824dac8f647c007d843, type: 3}
+      propertyPath: itemStringKey
+      value: iron
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -184246,6 +184253,8 @@ MonoBehaviour:
   centralServerPort: 7777
   hostIpFromServer: 127.0.0.1
   hostPortFromServer: 7788
+  initialConnectDelaySeconds: 2
+  reconnectIntervalSeconds: 2.5
 --- !u!4 &1686717108
 Transform:
   m_ObjectHideFlags: 0
@@ -190743,7 +190752,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmeltingRecipeManager
   recipes:
-  - inputItemStringKey: TestCube2
+  - inputItemStringKey: iron
     outputItemID: 2
     smeltingTime: 5
 --- !u!4 &1747493077
@@ -239292,7 +239301,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151030772543121
@@ -239312,7 +239321,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube3
+  itemStringKey: glow
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151030927457953
@@ -239332,7 +239341,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube3
+  itemStringKey: glow
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151031035502196
@@ -239352,7 +239361,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube3
+  itemStringKey: glow
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151031139252867
@@ -239372,7 +239381,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151031694296453
@@ -239392,7 +239401,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube3
+  itemStringKey: glow
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151032142452608
@@ -239412,7 +239421,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube3
+  itemStringKey: glow
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151032187080042
@@ -239432,7 +239441,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151032448233170
@@ -239452,7 +239461,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7013151032646458114
@@ -239472,7 +239481,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube
+  itemStringKey: stone
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &7017588133308848143

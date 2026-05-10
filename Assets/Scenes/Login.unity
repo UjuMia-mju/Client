@@ -2666,10 +2666,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestConnectManager
   isHost: 1
-  centralServerIp: 127.0.0.1
+  centralServerIp: 54.116.132.68
   centralServerPort: 7777
   hostIpFromServer: 127.0.0.1
   hostPortFromServer: 7788
+  initialConnectDelaySeconds: 2
+  reconnectIntervalSeconds: 2.5
 --- !u!114 &983795604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3479,6 +3481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   networkingText: {fileID: 1334708682}
+  showReconnectHintAfterSeconds: 3
   pulseSpeed: 1.15
 --- !u!114 &1334708682
 MonoBehaviour:

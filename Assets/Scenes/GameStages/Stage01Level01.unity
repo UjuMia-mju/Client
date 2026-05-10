@@ -4394,7 +4394,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpaceshipAssembly
   targetMission:
   - currentCount: 0
-    targetCount: 25
+    targetCount: 15
     targetItem: {fileID: 7013151031138945480, guid: 1d400eb317220e347bbe754976188690, type: 3}
   - currentCount: 0
     targetCount: 10
@@ -9020,6 +9020,8 @@ MonoBehaviour:
   centralServerPort: 7777
   hostIpFromServer: 127.0.0.1
   hostPortFromServer: 7788
+  initialConnectDelaySeconds: 2
+  reconnectIntervalSeconds: 2.5
 --- !u!4 &1686717108
 Transform:
   m_ObjectHideFlags: 0
