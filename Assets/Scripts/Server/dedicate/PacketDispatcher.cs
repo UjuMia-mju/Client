@@ -20,6 +20,8 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
     #region To Dedicate Server
     public void SendLogin(string userId, string password)
     {
+        NetManager.Instance.SetLastLoginCredentials(userId);
+
         C_LOGIN loginPacket = new C_LOGIN
         {
             UserId = userId,

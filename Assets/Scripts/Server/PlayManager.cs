@@ -389,7 +389,8 @@ public class PlayManager : SceneSingleton<PlayManager>
         {
             Player = new PlayerGameInfo
             {
-                PlayerId = peerId, Name = "Peer",
+                PlayerId = peerId,
+                Name = RoomMemberDisplayCache.GetDisplayNameOrFallback((ulong)peerId, "Peer"),
                 Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
                 Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
             }
@@ -404,7 +405,8 @@ public class PlayManager : SceneSingleton<PlayManager>
             {
                 Player = new PlayerGameInfo
                 {
-                    PlayerId = (int)existingId, Name = "Peer",
+                    PlayerId = (int)existingId,
+                    Name = RoomMemberDisplayCache.GetDisplayNameOrFallback(existingId, "Peer"),
                     Pos = new PosInfo { X = 0, Y = 0, Z = 0 },
                     Rot = new RotInfo { X = 0, Y = 0, Z = 0, W = 1 }
                 }
@@ -516,7 +518,18 @@ public class PlayManager : SceneSingleton<PlayManager>
         }
 
         if (_remotePlayers.ContainsKey(id))
+        {
+            if (_remotePlayers.TryGetValue(id, out GameObject existingObj))
+            {
+                OtherPlayers existing = existingObj.GetComponent<OtherPlayers>();
+                if (existing != null)
+                {
+                    existing.PlayerName = playerInfo.Name;
+                    existing.SetNicknameDisplay(playerInfo.Name);
+                }
+            }
             return; // S_PLAYER_ENTER 직후 S_ENTER_GAME 등에서 동일 플레이어가 재전달되는 경우 허용
+        }
 
         (Vector3 pos, Quaternion rot) = ResolveSpawnPose(id, playerInfo);
 
@@ -528,6 +541,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         {
             remotePlayer.PlayerId = id;
             remotePlayer.PlayerName = playerInfo.Name;
+            remotePlayer.SetNicknameDisplay(playerInfo.Name);
         }
 
         _remotePlayers[id] = playerObj;
