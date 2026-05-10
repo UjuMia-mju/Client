@@ -65,6 +65,18 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_GET_CLEAR_INFO, packet);
     }
 
+    /// <summary>호스트만: 스테이지 클리어를 서버에 기록 요청 (DB 반영 후 방 전원에게 S_GAME_CLEAR).</summary>
+    public void SendGameClear(int mapId, int star, int clearTimeSeconds)
+    {
+        var packet = new C_GAME_CLEAR
+        {
+            MapId = mapId,
+            Star = star,
+            ClearTimeSeconds = clearTimeSeconds
+        };
+        net.SendPacket(PacketId.PKT_C_GAME_CLEAR, packet);
+    }
+
     // ==================== Lobby/Room ====================
 
     public void SendCreateRoom()

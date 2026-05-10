@@ -16,6 +16,13 @@ public class GameRuleManager : MonoBehaviour
 
     private float remainingTime;
     public float GetRemainingTime() => remainingTime;
+
+    /// <summary>미션 제한 시간 대비 경과 초(반올림). 클리어 직전 호출을 가정합니다.</summary>
+    public int GetMissionElapsedSecondsRounded()
+    {
+        float elapsed = timerDuration - remainingTime;
+        return Mathf.Max(0, Mathf.RoundToInt(elapsed));
+    }
     private bool isVictory = false;
     private bool isGameDone = false;
 

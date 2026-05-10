@@ -115,6 +115,7 @@ public class StageManager : MonoBehaviour
         if (PacketHandler.Instance != null)
         {
             PacketHandler.Instance.OnGetClearInfoEvent += HandleGetClearInfoResponse;
+            PacketHandler.Instance.OnGameClearEvent += HandleGameClearResponse;
             PacketHandler.Instance.OnStartStageEvent += HandleStartStageResponse;
             PacketHandler.Instance.OnStageInfoEvent += OnStageInfoReceived;
             PacketHandler.Instance.OnGameReadyToStartEvent += HandleGameReadyToStart;
@@ -150,6 +151,7 @@ public class StageManager : MonoBehaviour
         if (PacketHandler.Instance != null) 
         {
             PacketHandler.Instance.OnGetClearInfoEvent -= HandleGetClearInfoResponse;
+            PacketHandler.Instance.OnGameClearEvent -= HandleGameClearResponse;
             PacketHandler.Instance.OnStartStageEvent -= HandleStartStageResponse;
             PacketHandler.Instance.OnGameReadyToStartEvent -= HandleGameReadyToStart;
             PacketHandler.Instance.OnStageInfoEvent -= OnStageInfoReceived;
@@ -195,6 +197,26 @@ public class StageManager : MonoBehaviour
             _clearStarCountByMapId[clearInfo.MapId] = stars;
         }
 
+        ApplyClearStarsToStageNodes();
+    }
+
+    private void HandleGameClearResponse(S_GAME_CLEAR packet)
+    {
+        if (!packet.Success)
+        {
+            Debug.LogWarning("[StageManager] S_GAME_CLEAR 실패 — 클리어 표시 유지");
+            return;
+        }
+
+        int stars = Mathf.Clamp(packet.Star, 0, 3);
+        if (_clearStarCountByMapId.TryGetValue(packet.MapId, out int prev))
+            stars = Mathf.Max(prev, stars);
+        _clearStarCountByMapId[packet.MapId] = stars;
+        ApplyClearStarsToStageNodes();
+    }
+
+    private void ApplyClearStarsToStageNodes()
+    {
         foreach (var node in stageNodes)
         {
             if (node == null) continue;

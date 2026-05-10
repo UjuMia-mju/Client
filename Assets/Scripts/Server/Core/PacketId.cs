@@ -65,6 +65,8 @@
     PKT_S_OBJECT_DROP = 1061,
     PKT_C_OBJECT_MOVE = 1062,
     PKT_S_OBJECT_MOVE = 1063,
+    PKT_C_GAME_CLEAR = 1064,
+    PKT_S_GAME_CLEAR = 1065,
 
     // 밑에는 클라 전용 헤더 (2000 이상)
     PKT_C_OBJECT_SMELT = 2000,

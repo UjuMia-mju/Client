@@ -74,6 +74,7 @@ public class ConnectManager : MonoBehaviour
         if (!NetManager.Instance.IsConnected)
         {
             Debug.LogError("[ConnectManager] 로그인 서버 연결 실패(타임아웃)");
+            MessageManager.Instance.Show("서버에 연결할 수 없습니다. 네트워크와 주소를 확인해 주세요.");
             _isLoginSendInProgress = false;
             yield break;
         }

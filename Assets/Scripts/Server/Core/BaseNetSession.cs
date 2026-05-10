@@ -26,6 +26,8 @@ public class BaseNetSession
     
     public event PacketReceivedHandler OnPacketReceivedEvent;
     public Action OnDisconnected;
+    /// <summary>TCP 연결이 맺어진 직후(메인 스레드에서 호출).</summary>
+    public Action OnConnectedToServer;
 
     // 생성자: RecvBuffer 초기화 추가
     public BaseNetSession()
@@ -68,9 +70,12 @@ public class BaseNetSession
         {
             _socket.EndConnect(ar);
             _isConnected = true;
-            Debug.Log("Connected to server!");
-            // start receiving data
             RegisterRecv();
+            MainThreadDispatcher.Enqueue(() =>
+            {
+                Debug.Log("ConnectedServer!");
+                OnConnectedToServer?.Invoke();
+            });
         }
         catch (Exception ex)
         {
