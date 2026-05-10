@@ -41,6 +41,8 @@ public class LobbyReadyButton : MonoBehaviour
 
     private void OnClickReady()
     {
+        SoundManager.Instance.PlaySFX("Click2");
+
         if (NetManager.Instance == null || !NetManager.Instance.IsConnected)
         {
             Debug.LogWarning("[LobbyReadyButton] 서버에 연결되지 않았습니다.");

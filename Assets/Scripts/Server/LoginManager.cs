@@ -20,6 +20,8 @@ public class LoginManager : SceneSingleton<LoginManager>
 
     public void OnLoginButton()
     {
+        SoundManager.Instance.PlaySFX("Click2");
+
         inputId = idInputField.text;
         inputPw = pwInputField.text;
 

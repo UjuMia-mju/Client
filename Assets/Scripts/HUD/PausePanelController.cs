@@ -29,6 +29,8 @@ public class PausePanelController : MonoBehaviour
 
     public void OnSettingsButtonClicked()
     {
+        SoundManager.Instance.PlaySFX("Click2");
+
         var hud = Object.FindFirstObjectByType<HUDManager>();
         if (hud != null)
         {
@@ -39,6 +41,8 @@ public class PausePanelController : MonoBehaviour
 
     public void OnMainMenuButtonClicked()
     {
+        SoundManager.Instance.PlaySFX("Click3");
+
         if (_isLeavingToMain)
             return;
 
@@ -61,6 +65,8 @@ public class PausePanelController : MonoBehaviour
 
     public void OnExitButtonClicked()
     {
+        SoundManager.Instance.PlaySFX("Click2");
+
         if (NetManager.Instance != null && NetManager.Instance.IsConnected)
         {
             // TODO(Server): Quit 직후에는 C_LEAVE_ROOM 이 안 나갈 수 있음 — 끊김 시 퇴장 브로드캐스트는 서버 담당.
