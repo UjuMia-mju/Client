@@ -33,6 +33,7 @@ public class LobbyInviteUI : MonoBehaviour
 
         if (openInvitePanelButton != null)
         {
+            UiButtonHoverSfx.Register(openInvitePanelButton);
             openInvitePanelButton.onClick.AddListener(OnClickOpenPanel);
         }
         else
@@ -48,7 +49,10 @@ public class LobbyInviteUI : MonoBehaviour
         //     closeButton.onClick.AddListener(OnClickClosePanel);
         
         if (inviteButton != null)
+        {
+            UiButtonHoverSfx.Register(inviteButton);
             inviteButton.onClick.AddListener(OnClickInvite);
+        }
 
         // 방 입장(S_ENTER_ROOM) 성공 전에는 초대 불가
         // if (inviteButton != null)
@@ -155,6 +159,6 @@ public class LobbyInviteUI : MonoBehaviour
             OnClickClosePanel();
         }
         else
-            Debug.LogWarning($"[LobbyInviteUI] 초대 전송 실패: {packet.ErrorMsg}");
+            MessageManager.Instance.ShowInvitePlayerFailed(packet.ErrorMsg);
     }
 }

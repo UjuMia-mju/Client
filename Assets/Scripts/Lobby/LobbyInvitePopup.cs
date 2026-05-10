@@ -47,9 +47,15 @@ public class LobbyInvitePopup : MonoBehaviour
             popupRoot.SetActive(false);
 
         if (acceptButton != null)
+        {
+            UiButtonHoverSfx.Register(acceptButton);
             acceptButton.onClick.AddListener(OnClickAccept);
+        }
         if (declineButton != null)
+        {
+            UiButtonHoverSfx.Register(declineButton);
             declineButton.onClick.AddListener(OnClickDecline);
+        }
     }
 
     // S_INVITE_NOTIFICATION 패킷 수신 시 호출. invite_id 저장 후 팝업에 메시지 표시하고 팝업 활성화.

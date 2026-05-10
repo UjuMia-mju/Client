@@ -18,10 +18,20 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
     const string LoginNetworkOrProtocolMessage =
         "서버와의 연결을 실패했습니다.";
     const string ServerDisconnectedMessage = "서버와의 연결이 끊어졌습니다.";
+    const string InvitePlayerFailedDefault = "초대를 보낼 수 없습니다.";
 
     [Header("표시 타이밍")]
     [SerializeField] private float visibleSecondsBeforeFade = 2f;
     [SerializeField] private float fadeOutDuration = 0.4f;
+
+    [Header("메시지 패널 크기 (배경 Image 기준)")]
+    [SerializeField] private bool resizePanelToFitText = true;
+    [SerializeField, Tooltip("텍스트 줄바꿈 최대 너비(내부). 그보다 짧으면 패널 폭이 줄어듭니다.")]
+    private float messageTextMaxWidth = 900f;
+    [SerializeField, Tooltip("한 줄 등 짧은 문구일 때 텍스트 영역 최소 너비.")]
+    private float messageTextMinWidth = 120f;
+    [SerializeField, Tooltip("배경에 더할 여백(좌·우 합, 상·하 합).")]
+    private Vector2 messagePanelExtraSize = new Vector2(56f, 40f);
 
     /// <summary>로그인 거부(자격 증명만 해당한다고 가정할 때).</summary>
     public void ShowLoginFailure() => Show(LoginFailureMessage);
@@ -40,6 +50,15 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
 
     /// <summary>빈 바디·깨진 프로토buf 등 로그인 응답을 신뢰할 수 없을 때.</summary>
     public void ShowLoginResponseUnreadable() => Show(LoginNetworkOrProtocolMessage);
+
+    /// <summary>서버 <c>S_INVITE_PLAYER.success == false</c>일 때 사유를 토스트로 표시합니다.</summary>
+    public void ShowInvitePlayerFailed(string errorMsg)
+    {
+        if (string.IsNullOrWhiteSpace(errorMsg))
+            Show(InvitePlayerFailedDefault);
+        else
+            Show($"초대 전송 실패: {errorMsg.Trim()}");
+    }
 
     /// <summary>기본 대기·페이드 시간으로 표시합니다.</summary>
     public void Show(string message) => Show(message, visibleSecondsBeforeFade, fadeOutDuration);
@@ -76,7 +95,10 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
 
         var tmp = instance.GetComponentInChildren<TMP_Text>(true);
         if (tmp != null)
+        {
             tmp.text = message;
+            FitMessageBackgroundToText(tmp);
+        }
 
         bool skipWait = false;
         var btn = instance.GetComponentInChildren<Button>(true);
@@ -88,6 +110,36 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
             });
 
         StartCoroutine(CoLifecycle(instance, cg, visibleSeconds, fadeSeconds, () => skipWait));
+    }
+
+    void FitMessageBackgroundToText(TMP_Text tmp)
+    {
+        if (!resizePanelToFitText || tmp == null) return;
+
+        var panelRt = tmp.transform.parent as RectTransform;
+        if (panelRt == null) return;
+
+        tmp.enableWordWrapping = true;
+        string text = tmp.text;
+        tmp.ForceMeshUpdate();
+
+        Vector2 unbound = tmp.GetPreferredValues(text, float.PositiveInfinity, 0);
+        float innerW;
+        float innerH;
+
+        if (unbound.x <= messageTextMaxWidth + 0.01f)
+        {
+            innerW = Mathf.Max(unbound.x, messageTextMinWidth);
+            innerH = unbound.y;
+        }
+        else
+        {
+            Vector2 wrapped = tmp.GetPreferredValues(text, messageTextMaxWidth, 0);
+            innerW = messageTextMaxWidth;
+            innerH = wrapped.y;
+        }
+
+        panelRt.sizeDelta = new Vector2(innerW + messagePanelExtraSize.x, innerH + messagePanelExtraSize.y);
     }
 
     void OnEnable()

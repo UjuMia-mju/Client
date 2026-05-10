@@ -14,6 +14,7 @@ public class LobbyLeaveButton : MonoBehaviour
     {
         if (backButton != null)
         {
+            UiButtonHoverSfx.Register(backButton);
             backButton.onClick.AddListener(OnClickBack);
             backButton.interactable = true;
         }

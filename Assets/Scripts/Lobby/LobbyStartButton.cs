@@ -16,6 +16,7 @@ public class LobbyStartButton : MonoBehaviour
     {
         if (startButton != null)
         {
+            UiButtonHoverSfx.Register(startButton);
             startButton.onClick.AddListener(OnClickStart);
             startButton.interactable = true;
         }

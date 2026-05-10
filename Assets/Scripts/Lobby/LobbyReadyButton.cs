@@ -21,7 +21,10 @@ public class LobbyReadyButton : MonoBehaviour
         UpdateLabel(false);
 
         if (readyButton != null)
+        {
+            UiButtonHoverSfx.Register(readyButton);
             readyButton.onClick.AddListener(OnClickReady);
+        }
 
         if (PacketHandler.Instance != null)
         {
