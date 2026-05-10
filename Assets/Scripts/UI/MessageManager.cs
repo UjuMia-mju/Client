@@ -81,7 +81,11 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
         bool skipWait = false;
         var btn = instance.GetComponentInChildren<Button>(true);
         if (btn != null)
-            btn.onClick.AddListener(() => skipWait = true);
+            btn.onClick.AddListener(() =>
+            {
+                SoundManager.Instance.PlaySFX("Click2");
+                skipWait = true;
+            });
 
         StartCoroutine(CoLifecycle(instance, cg, visibleSeconds, fadeSeconds, () => skipWait));
     }

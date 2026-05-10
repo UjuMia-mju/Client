@@ -14,7 +14,10 @@ public class BaseNetSession
     protected Socket _socket; // dedicate
     protected Socket _relaySocket;
     protected bool _isConnected = false;
+    /// <summary>비동기 BeginConnect가 끝나기 전까지 true. 재연결 루프에서 중복 Connect 방지용.</summary>
+    protected bool _connectAttemptInProgress;
     public bool IsConnected => _isConnected;
+    public bool HasPendingConnect => _connectAttemptInProgress;
     protected const int BUFFER_SIZE = 65536; // 64KB
 
     protected RecvBuffer _recvBuffer;
@@ -37,6 +40,20 @@ public class BaseNetSession
 
     // base connect, disconnect, send, receive implementation
     #region Connect
+    void CloseSocketSilently()
+    {
+        try
+        {
+            _socket?.Close();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[BaseNetSession] Socket close: {ex.Message}");
+        }
+
+        _socket = null;
+    }
+
     public void Connect(string ip, int port)
     {
         if (_isConnected)
@@ -44,6 +61,11 @@ public class BaseNetSession
             Debug.LogWarning("Already connected!");
             return;
         }
+
+        if (_connectAttemptInProgress)
+            return;
+
+        CloseSocketSilently();
 
         try
         {
@@ -53,12 +75,15 @@ public class BaseNetSession
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             _socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
+            _connectAttemptInProgress = true;
             // register async connect callback
             _socket.BeginConnect(endPoint, OnConnectCallback, null);
 
         }
         catch (Exception ex)
         {
+            _connectAttemptInProgress = false;
+            CloseSocketSilently();
             Debug.LogError($"Connect failed: {ex.Message}");
         }
     }
@@ -68,8 +93,9 @@ public class BaseNetSession
     {
         try
         {
-            _socket.EndConnect(ar);
+            _socket?.EndConnect(ar);
             _isConnected = true;
+            _connectAttemptInProgress = false;
             RegisterRecv();
             MainThreadDispatcher.Enqueue(() =>
             {
@@ -79,7 +105,9 @@ public class BaseNetSession
         }
         catch (Exception ex)
         {
+            _connectAttemptInProgress = false;
             Debug.LogError($"OnConnect failed: {ex.Message}");
+            CloseSocketSilently();
         }
     }
 
@@ -333,10 +361,10 @@ public class BaseNetSession
         }
 
         _isConnected = false;
+        _connectAttemptInProgress = false;
         Debug.Log($"Disconnected: {reason}");
 
-        _socket?.Close();
-        _socket = null;
+        CloseSocketSilently();
 
         MainThreadDispatcher.Enqueue(() =>
         {

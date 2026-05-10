@@ -1,8 +1,6 @@
 ﻿using System.Collections;
-using System.Threading.Tasks;
 using Protocol;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ConnectManager : MonoBehaviour
 {
@@ -14,9 +12,16 @@ public class ConnectManager : MonoBehaviour
     public string hostIpFromServer = "127.0.0.1";
     public int hostPortFromServer = 7788;
 
-    private bool _isLoginSendInProgress;
+    [Header("Reconnect")]
+    [SerializeField, Tooltip("첫 연결 시도 전 대기(초). 기존 Start 지연과 동일.")]
+    private float initialConnectDelaySeconds = 2f;
+    [SerializeField, Tooltip("연결 안 됐을 때 재시도 간격(실시간 초, Time.timeScale 무관).")]
+    private float reconnectIntervalSeconds = 2.5f;
 
-    private async void Start()
+    private bool _isLoginSendInProgress;
+    private Coroutine _connectionRoutine;
+
+    private void Start()
     {
         if (Instance == null)
         {
@@ -30,8 +35,39 @@ public class ConnectManager : MonoBehaviour
         }
 
         PacketSender.Instance.Init(isHost);
-        await Task.Delay(2000);
-        NetManager.Instance.Connect(centralServerIp, centralServerPort);
+        _connectionRoutine = StartCoroutine(PersistTcpConnectionLoop());
+    }
+
+    void OnDestroy()
+    {
+        if (Instance != this)
+            return;
+
+        if (_connectionRoutine != null)
+        {
+            StopCoroutine(_connectionRoutine);
+            _connectionRoutine = null;
+        }
+
+        Instance = null;
+    }
+
+    /// <summary>서버에 붙을 때까지 주기적으로 Connect를 시도합니다(이미 시도 중이면 건너뜀).</summary>
+    IEnumerator PersistTcpConnectionLoop()
+    {
+        var initialWait = new WaitForSecondsRealtime(initialConnectDelaySeconds);
+        var retryWait = new WaitForSecondsRealtime(reconnectIntervalSeconds);
+
+        yield return initialWait;
+
+        while (true)
+        {
+            var nm = NetManager.Instance;
+            if (nm != null && !nm.IsConnected && !nm.HasPendingConnect)
+                nm.Connect(centralServerIp, centralServerPort);
+
+            yield return retryWait;
+        }
     }
 
     /// <summary>
@@ -63,11 +99,11 @@ public class ConnectManager : MonoBehaviour
         if (!NetManager.Instance.IsConnected)
             NetManager.Instance.Connect(centralServerIp, centralServerPort);
 
-        const float timeoutSeconds = 5f;
+        const float timeoutSeconds = 20f;
         float elapsed = 0f;
         while (!NetManager.Instance.IsConnected && elapsed < timeoutSeconds)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
 

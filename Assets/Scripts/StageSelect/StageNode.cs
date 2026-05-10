@@ -112,6 +112,8 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         
         _isHovered = true; 
         _targetScale = _originalScale * hoverScaleMultiplier;
+
+        SoundManager.Instance.PlaySFX("Hover");
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -135,6 +137,8 @@ public class StageNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         if (StageManager.Instance != null && StageManager.Instance.IsStagePauseMenuOpen) return;
         if (StageManager.Instance != null && !StageManager.Instance.CanInteractWithStagePlanets()) return;
         if (StageManager.Instance != null && StageManager.Instance.isMovementPaused) return;
+
+        SoundManager.Instance.PlaySFX("Click2");
         
         _isHovered = false; 
         _targetScale = _originalScale;

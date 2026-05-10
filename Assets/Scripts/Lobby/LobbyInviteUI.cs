@@ -69,6 +69,8 @@ public class LobbyInviteUI : MonoBehaviour
 
     private void OnClickOpenPanel()
     {
+        SoundManager.Instance.PlaySFX("Click2");
+
         if (panelRoot != null)
         {
             panelRoot.SetActive(true);
@@ -106,6 +108,8 @@ public class LobbyInviteUI : MonoBehaviour
     // 초대 버튼 클릭 시 호출. 입력 검증 후 NetManager.SendInvitePlayer로 C_INVITE_PLAYER 패킷 전송.
     private void OnClickInvite()
     {
+        SoundManager.Instance.PlaySFX("Click2");
+
         // if (!_inRoom)
         // {
         //     Debug.LogWarning("[LobbyInviteUI] 아직 방 입장이 완료되지 않았습니다. 잠시 후 다시 시도하세요.");
