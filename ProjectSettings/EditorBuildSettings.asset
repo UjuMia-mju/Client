@@ -26,8 +26,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameStages/Stage01Level01.unity
     guid: 002c9d64a9a79ae4099485a459d388b8
-  - enabled: 1
-    path: Assets/Scenes/GameStages/Stage01Level02.unity
+  - enabled: 0
+    path: Assets/Scenes/GameStages/Stage01Level02_Origin.unity
     guid: efa1344b6f0136440b48184bac63539c
   - enabled: 1
     path: Assets/Scenes/GameStages/Stage01Level03.unity
@@ -38,5 +38,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameStages/Stage01Level05.unity
     guid: ba7f300c00f5ca14f8f521fcb5b194d6
+  - enabled: 1
+    path: Assets/Scenes/GameStages/Stage01Level02_Temp.unity
+    guid: 8f5ee666a0ca416488c7d14b4e4cc504
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
