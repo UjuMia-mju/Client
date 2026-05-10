@@ -10,29 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f5ce126871e5bad4f9285719b61d801e, type: 3}
-  m_Name: IngredientDictionaryData_Sample
+  m_Name: IngredientDictionaryData
   m_EditorClassIdentifier: Assembly-CSharp::IngredientDictionaryData
   entries:
-  - key: stone_ore
-    displayName: "\uB3CC \uC6D0\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
   - key: stone
     displayName: "\uB3CC"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-  - key: glow_ore
-    displayName: "\uBC1C\uAD11 \uC6D0\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    icon: {fileID: 1284405727, guid: 759400cf564f0724ca506d71cb3075f8, type: 3}
   - key: glow
     displayName: "\uBC1C\uAD11\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-  - key: iron_ore
-    displayName: "\uCCA0 \uC6D0\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    icon: {fileID: -832857840, guid: 62a0440bcb8954740ab0e5d9917e87e2, type: 3}
+  - key: wood
+    displayName: "\uB098\uBB34"
+    icon: {fileID: 235622859, guid: 9041821ab0205ff48b37249f69e48965, type: 3}
   - key: iron
     displayName: "\uCCA0 \uAD11\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-  - key: wood
-    displayName: "\uB098\uBB34"
+  - key: iron_bar
+    displayName: "\uCCA0\uAD34"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
   - key: SmeltedTestCube
     displayName: "\uB179\uC778\uD14C\uC2A4\uD2B8\uD050\uBE0C"

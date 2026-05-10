@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7013151031138945480}
   - component: {fileID: 2981278035017433657}
   m_Layer: 0
-  m_Name: TestCube3
+  m_Name: glow
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube3
+  itemStringKey: glow
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!114 &2981278035017433657

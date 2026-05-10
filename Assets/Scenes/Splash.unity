@@ -414,6 +414,10 @@ MonoBehaviour:
   canvasSortOrder: 32000
   visibleSecondsBeforeFade: 2
   fadeOutDuration: 0.4
+  resizePanelToFitText: 1
+  messageTextMaxWidth: 900
+  messageTextMinWidth: 120
+  messagePanelExtraSize: {x: 56, y: 40}
 --- !u!4 &1047199737
 Transform:
   m_ObjectHideFlags: 0

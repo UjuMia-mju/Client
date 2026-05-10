@@ -13,32 +13,24 @@ MonoBehaviour:
   m_Name: GameItemCatalog
   m_EditorClassIdentifier: Assembly-CSharp::ItemCatalog
   entries:
-  - key: stone_ore
-    displayName: "\uB3CC \uC6D0\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 0}
   - key: stone
     displayName: "\uB3CC"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 0}
-  - key: glow_ore
-    displayName: "\uBC1C\uAD11 \uC6D0\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 0}
+    icon: {fileID: 1284405727, guid: 759400cf564f0724ca506d71cb3075f8, type: 3}
+    prefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   - key: glow
     displayName: "\uBC1C\uAD11\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    icon: {fileID: -832857840, guid: 62a0440bcb8954740ab0e5d9917e87e2, type: 3}
+    prefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+  - key: wood
+    displayName: "\uB098\uBB34"
+    icon: {fileID: 235622859, guid: 9041821ab0205ff48b37249f69e48965, type: 3}
     prefab: {fileID: 0}
-  - key: iron_ore
+  - key: iron_bar
     displayName: "\uCCA0 \uC6D0\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
     prefab: {fileID: 0}
   - key: iron
     displayName: "\uCCA0 \uAD11\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 0}
-  - key: wood
-    displayName: "\uB098\uBB34"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
     prefab: {fileID: 0}
   - key: TestCube
