@@ -9,6 +9,15 @@ public class LoginManager : SceneSingleton<LoginManager>
     [SerializeField] private TMP_InputField pwInputField;
     [SerializeField] private Button loginButton;
 
+    private void Awake()
+    {
+        if (pwInputField != null)
+        {
+            pwInputField.contentType = TMP_InputField.ContentType.Password;
+            pwInputField.asteriskChar = '*';
+        }
+    }
+
     private void Start()
     {
         SoundManager.Instance.PlayBGM("Intro");
@@ -32,9 +41,6 @@ public class LoginManager : SceneSingleton<LoginManager>
             return;
         }
 
-        Debug.Log($"저장됨 - ID: {inputId}, PW: {inputPw}");
-
-        //TODO: 서버로 로그인 요청 보내기
         ConnectManager.Instance.SendLogin(inputId, inputPw);
     }
 }
