@@ -74,7 +74,7 @@ public class MenuPanelController : MonoBehaviour
     {
         btn.onClick.AddListener(() => {
             SoundManager.Instance.PlaySFX("Click2");
-            SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_1);
+            SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_2);
         });
         AddHoverEvents(btn);
     }
