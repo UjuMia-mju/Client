@@ -34182,12 +34182,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -34212,7 +34212,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
+  m_UpdateRectTransformForStandalone: 1
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -34225,7 +34225,7 @@ RectTransform:
   m_GameObject: {fileID: 297164728}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2054886929}
@@ -34237,10 +34237,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &297164733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50161,6 +50161,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -641490041308435627, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
+      propertyPath: resourceStringKey
+      value: wood
+      objectReference: {fileID: 0}
     - target: {fileID: 1634768329775829378, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
       propertyPath: m_Name
       value: Tree.004 (1)
@@ -106130,6 +106134,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -641490041308435627, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
+      propertyPath: resourceStringKey
+      value: wood
+      objectReference: {fileID: 0}
     - target: {fileID: 1634768329775829378, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
       propertyPath: m_Name
       value: Tree.004
@@ -107339,11 +107347,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
   resourcePrefabList:
-  - resourceStringKey: Ore
-    prefab: {fileID: 3267865454812374866, guid: 67f230bf686510b458f0345e77fd93b5, type: 3}
+  - resourceStringKey: iron_ore
+    prefab: {fileID: 3267865454812374866, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
   - resourceStringKey: Tree
     prefab: {fileID: 7810944560959238178, guid: 035e9ec05ef1e4248a27ec3d9dfe9fed, type: 3}
-  - resourceStringKey: LuminousStone
+  - resourceStringKey: glow_ore
     prefab: {fileID: 4401383933971749879, guid: dc9e7627365da27478c9ccaab6c0a64d, type: 3}
 --- !u!114 &936394858
 MonoBehaviour:
@@ -107913,6 +107921,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3051276145399313687, guid: 1dfbe455d1a22c947b309a13a4d35e9a, type: 3}
+      propertyPath: resourceStringKey
+      value: wood
+      objectReference: {fileID: 0}
     - target: {fileID: 2543580424488624242, guid: 1dfbe455d1a22c947b309a13a4d35e9a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -47.01884
@@ -119991,6 +120003,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9158624140659020900, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
+      propertyPath: resourceStringKey
+      value: wood
+      objectReference: {fileID: 0}
     - target: {fileID: 1874630840073146240, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
       propertyPath: m_LocalPosition.x
       value: -51.492737
@@ -169208,10 +169224,10 @@ MonoBehaviour:
   targetMission:
   - currentCount: 0
     targetCount: 25
-    targetItem: {fileID: 7013151031138945480, guid: 1d400eb317220e347bbe754976188690, type: 3}
+    targetItem: {fileID: 7013151031138945480, guid: f7c4b2e8910a4cf6a8d3e2b1c0f9e8d7, type: 3}
   - currentCount: 0
     targetCount: 10
-    targetItem: {fileID: 7013151031138945480, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+    targetItem: {fileID: 6141275627799525843, guid: a451540ed6f827146ba66ebc0ab4e944, type: 3}
 --- !u!65 &1476212697
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -171998,7 +172014,7 @@ GameObject:
   - component: {fileID: 1501175923}
   - component: {fileID: 1501175922}
   m_Layer: 0
-  m_Name: Pickaxe (1)
+  m_Name: Pickaxe
   m_TagString: Tool
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -195967,6 +195983,8 @@ MonoBehaviour:
   centralServerPort: 7777
   hostIpFromServer: 127.0.0.1
   hostPortFromServer: 7788
+  initialConnectDelaySeconds: 2
+  reconnectIntervalSeconds: 2.5
 --- !u!4 &1686717108
 Transform:
   m_ObjectHideFlags: 0
@@ -230300,12 +230318,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -230330,7 +230348,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
+  m_UpdateRectTransformForStandalone: 1
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -230343,17 +230361,17 @@ RectTransform:
   m_GameObject: {fileID: 1997255342}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1779398801}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1997403575
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,15 +24,15 @@ MonoBehaviour:
   - key: wood
     displayName: "\uB098\uBB34"
     icon: {fileID: 235622859, guid: 9041821ab0205ff48b37249f69e48965, type: 3}
-    prefab: {fileID: 0}
+    prefab: {fileID: 3807523109976039400, guid: a451540ed6f827146ba66ebc0ab4e944, type: 3}
   - key: iron_bar
-    displayName: "\uCCA0 \uC6D0\uC11D"
+    displayName: "\uCCA0\uAD34"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
     prefab: {fileID: 0}
   - key: iron
-    displayName: "\uCCA0 \uAD11\uC11D"
+    displayName: "\uCCA0\uAD11\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 0}
+    prefab: {fileID: 5248076910442429696, guid: f7c4b2e8910a4cf6a8d3e2b1c0f9e8d7, type: 3}
   - key: TestCube
     displayName: "\uD14C\uC2A4\uD2B8\uD050\uBE0C"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}

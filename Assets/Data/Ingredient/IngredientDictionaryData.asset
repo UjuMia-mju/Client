@@ -23,7 +23,7 @@ MonoBehaviour:
     displayName: "\uB098\uBB34"
     icon: {fileID: 235622859, guid: 9041821ab0205ff48b37249f69e48965, type: 3}
   - key: iron
-    displayName: "\uCCA0 \uAD11\uC11D"
+    displayName: "\uCCA0\uAD11\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
   - key: iron_bar
     displayName: "\uCCA0\uAD34"

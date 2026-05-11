@@ -2,6 +2,9 @@ using UnityEngine;
 using Protocol;
 using System.Collections;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>
 /// PausePanel의 버튼 기능
@@ -75,8 +78,11 @@ public class PausePanelController : MonoBehaviour
             PacketDispatcher.Instance.SendLeaveRoom();
         }
 
-        // 1. 실제 빌드된 게임 종료
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
     }
 
     static bool IsStageSelectMultiplayerHost()

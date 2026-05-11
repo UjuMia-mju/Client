@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7810944560959238178
+--- !u!1 &3267865454812374866
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,48 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1123542225081745502}
-  - component: {fileID: 3240842889560834930}
-  - component: {fileID: 5063928781079592003}
-  - component: {fileID: 7417480374692832486}
-  - component: {fileID: 2218344580859740442}
+  - component: {fileID: 4018623585612291914}
+  - component: {fileID: 7603508921553247041}
+  - component: {fileID: 2615987817196177347}
+  - component: {fileID: 380208884022275533}
+  - component: {fileID: 8811113944146348454}
   m_Layer: 7
-  m_Name: Tree
-  m_TagString: Tree
+  m_Name: iron_ore
+  m_TagString: Ore
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1123542225081745502
+--- !u!4 &4018623585612291914
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7810944560959238178}
+  m_GameObject: {fileID: 3267865454812374866}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12098737, y: 0.5462751, z: 0.75321895, w: 0.34584242}
-  m_LocalPosition: {x: -0.0075400476, y: -0.0034100802, z: 0.0068102065}
-  m_LocalScale: {x: 0.0011117363, y: 0.0020799, z: 0.000809477}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 245.04199, y: -152.385, z: -67.13599}
---- !u!33 &3240842889560834930
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7603508921553247041
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7810944560959238178}
+  m_GameObject: {fileID: 3267865454812374866}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &5063928781079592003
+--- !u!23 &2615987817196177347
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7810944560959238178}
+  m_GameObject: {fileID: 3267865454812374866}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4f47c14248d50ce4aa64df08404becd4, type: 2}
+  - {fileID: 2100000, guid: feb50f20df4017f449fd23a81e07a5a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -91,13 +91,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7417480374692832486
+--- !u!65 &380208884022275533
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7810944560959238178}
+  m_GameObject: {fileID: 3267865454812374866}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -112,19 +112,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2218344580859740442
+--- !u!114 &8811113944146348454
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7810944560959238178}
+  m_GameObject: {fileID: 3267865454812374866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83bf26b119ae29f408a7d29ace922991, type: 3}
+  m_Script: {fileID: 11500000, guid: 1fc1faccd5147f9479802a4fae08d4ba, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Tree
+  m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Tree
-  logPrefab: {fileID: 3807523109976039400, guid: a451540ed6f827146ba66ebc0ab4e944, type: 3}
+  resourceStringKey: iron_ore
+  orePrefab: {fileID: 5248076910442429696, guid: f7c4b2e8910a4cf6a8d3e2b1c0f9e8d7, type: 3}
   maxDrops: 1
