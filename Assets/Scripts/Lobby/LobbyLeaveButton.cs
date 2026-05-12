@@ -14,6 +14,7 @@ public class LobbyLeaveButton : MonoBehaviour
     {
         if (backButton != null)
         {
+            UiButtonHoverSfx.Register(backButton);
             backButton.onClick.AddListener(OnClickBack);
             backButton.interactable = true;
         }
@@ -33,6 +34,8 @@ public class LobbyLeaveButton : MonoBehaviour
 
     private void OnClickBack()
     {
+        SoundManager.Instance.PlaySFX("Click3");
+
         if (NetManager.Instance == null || !NetManager.Instance.IsConnected)
         {
             Debug.LogWarning("[LobbyLeaveButton] 서버에 연결되어 있지 않습니다.");

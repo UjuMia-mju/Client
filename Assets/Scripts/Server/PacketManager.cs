@@ -36,7 +36,7 @@ public class PacketManager : Singleton<PacketManager>
     
     public event Action<S_START_STAGE> OnStartStageEvent;
     public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
-
+    public event Action<S_GAME_CLEAR> OnGameClearEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -103,6 +103,9 @@ public class PacketManager : Singleton<PacketManager>
             case PacketId.PKT_S_GET_CLEAR_INFO: 
                 HandleGetClearInfo(data);
                 break;
+            case PacketId.PKT_S_GAME_CLEAR:
+                HandleGameClear(data);
+                break;
             default:
                 Debug.LogWarning($"Unhandled packet ID: {packetId}");
                 break;
@@ -112,24 +115,41 @@ public class PacketManager : Singleton<PacketManager>
 
     private void HandleLoginResult(byte[] data)
     {
-        S_LOGIN result = S_LOGIN.Parser.ParseFrom(data); 
-
-        if (result.Success)
+        data ??= Array.Empty<byte>();
+        if (data.Length == 0)
         {
-            Debug.Log("✓ Login Success!");
-            if (result.Player != null)
-                Debug.Log($"  Player: id={result.Player.Id}, name={result.Player.Name}, tag={result.Player.Tag}");
-            else
-                Debug.LogWarning("[PacketManager] S_LOGIN에 Player 없음.");
-            if (result.PlayerInfo != null)
-                Debug.Log($"  PlayerInfo: playerId={result.PlayerInfo.PlayerId}, coin={result.PlayerInfo.Coin}, gem={result.PlayerInfo.Gem}");
-
-            OnLoginResultEvent?.Invoke(result);
+            Debug.LogWarning(
+                "[PacketManager] S_LOGIN 바디 0바이트 — 클라는 [총길이=4+proto][ID][proto] 규약입니다. 서버 응답 본문·size 필드 확인.");
         }
-        else
+
+        S_LOGIN result;
+        try
+        {
+            result = S_LOGIN.Parser.ParseFrom(data);
+        }
+        catch (InvalidProtocolBufferException e)
+        {
+            Debug.LogWarning($"[PacketManager] S_LOGIN 파싱 실패: {e.Message}");
+            MessageManager.Instance?.ShowLoginResponseUnreadable();
+            return;
+        }
+
+        OnLoginResultEvent?.Invoke(result);
+
+        if (!result.Success)
         {
             Debug.LogError("✗ Login Failed!");
+            MessageManager.Instance.ShowLoginFailureAfterServerResponse();
+            return;
         }
+
+        Debug.Log("✓ Login Success!");
+        if (result.Player != null)
+            Debug.Log($"  Player: id={result.Player.Id}, name={result.Player.Name}, tag={result.Player.Tag}");
+        else
+            Debug.LogWarning("[PacketManager] S_LOGIN에 Player 없음.");
+        if (result.PlayerInfo != null)
+            Debug.Log($"  PlayerInfo: playerId={result.PlayerInfo.PlayerId}, coin={result.PlayerInfo.Coin}, gem={result.PlayerInfo.Gem}");
     }
 
     private void HandleEnterGameResult(byte[] data)
@@ -190,6 +210,14 @@ public class PacketManager : Singleton<PacketManager>
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
         Debug.Log($"[PacketManager] S_GET_CLEAR_INFO 수신! Success: {packet.Success}, 클리어 데이터 개수: {packet.StageClears.Count}");
         OnGetClearInfoEvent?.Invoke(packet);
+    }
+
+    private void HandleGameClear(byte[] payloadData)
+    {
+        S_GAME_CLEAR packet = S_GAME_CLEAR.Parser.ParseFrom(payloadData);
+        Debug.Log(
+            $"[PacketManager] S_GAME_CLEAR Success={packet.Success} map={packet.MapId} star={packet.Star} sec={packet.ClearTimeSeconds}");
+        OnGameClearEvent?.Invoke(packet);
     }
 
     #region Room Management

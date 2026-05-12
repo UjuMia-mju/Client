@@ -92,14 +92,22 @@ public class ClearPanelController : MonoBehaviour
         {
             exitButton.onClick.RemoveAllListeners();
             if (onExitToStageSelect != null)
-                exitButton.onClick.AddListener(() => onExitToStageSelect());
+                exitButton.onClick.AddListener(() =>
+                {
+                    SoundManager.Instance.PlaySFX("Click2");
+                    onExitToStageSelect();
+                });
         }
 
         if (replayButton != null)
         {
             replayButton.onClick.RemoveAllListeners();
             if (onReplayCurrentStage != null)
-                replayButton.onClick.AddListener(() => onReplayCurrentStage());
+                replayButton.onClick.AddListener(() =>
+                {
+                    SoundManager.Instance.PlaySFX("Click2");
+                    onReplayCurrentStage();
+                });
         }
     }
 

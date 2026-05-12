@@ -178,7 +178,9 @@ public class OtherPlayers : MovingObject
     public void SetNicknameDisplay(string name)
     {
         if (nicknameText == null) return;
-        nicknameText.text = string.IsNullOrEmpty(name) ? "" : name;
+        nicknameText.text = string.IsNullOrEmpty(name)
+            ? ""
+            : RoomMemberDisplayCache.WithoutDiscriminatorTag(name);
     }
 
 

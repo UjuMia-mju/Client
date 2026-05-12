@@ -53,6 +53,7 @@ public class GachaResultPopupUI : MonoBehaviour
     // UI 버튼 OnClick에 연결해서 결과 팝업을 닫을 때 사용
     public void OnClickConfirm()
     {
+        SoundManager.Instance.PlaySFX("Click2");
         Hide();
     }
 

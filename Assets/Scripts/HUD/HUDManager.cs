@@ -29,14 +29,26 @@ public class HUDManager : MonoBehaviour
 
     public bool IsPanelOpen => currentActivePanel != null; 
     
+    void EnsureAnimator()
+    {
+        if (animator != null) return;
+        animator = GetComponent<UIPanelAnimator>();
+        if (animator != null) return;
+        animator = UIPanelAnimator.Instance;
+        if (animator != null) return;
+        var go = new GameObject("UIPanelAnimator");
+        animator = go.AddComponent<UIPanelAnimator>();
+    }
+
     private void Update()
     {
         // 일시정지 중에는 ESC로 닫아야 하므로, Ready/코디네이터 게이트만 여기서 차단합니다.
         if (InputManager.IsEscBlockedForHud)
             return;
 
-        if (Keyboard.current[closeKey].wasPressedThisFrame && !isTransitioning)
-            HandleTogglePanel();
+        if (Keyboard.current == null || !Keyboard.current[closeKey].wasPressedThisFrame || isTransitioning)
+            return;
+        HandleTogglePanel();
     }
 
     private void HandleTogglePanel()
@@ -95,6 +107,16 @@ public class HUDManager : MonoBehaviour
     {
         isTransitioning = true;
 
+        EnsureAnimator();
+        if (animator == null)
+        {
+            isTransitioning = false;
+            if (panel != null)
+                Destroy(panel);
+            currentActivePanel = null;
+            yield break;
+        }
+
         InputManager.PushPauseMenuHold();
         _pauseMenuHoldApplied = true;
         
@@ -107,10 +129,14 @@ public class HUDManager : MonoBehaviour
     private IEnumerator CloseSequence()
     {
         isTransitioning = true;
-        
-        // UIPanelAnimator의 FadeOut 코루틴이 끝날 때까지 대기
-        yield return StartCoroutine(animator.FadeOut(currentActivePanel));
-        
+
+        EnsureAnimator();
+
+        if (animator != null)
+            yield return StartCoroutine(animator.FadeOut(currentActivePanel));
+        else if (currentActivePanel != null)
+            Destroy(currentActivePanel);
+
         ReleasePauseMenuHoldIfApplied();
         currentActivePanel = null;
         isTransitioning = false;

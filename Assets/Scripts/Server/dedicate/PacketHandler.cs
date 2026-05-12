@@ -36,6 +36,7 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_STAGE_INFO> OnStageInfoEvent;
     public event Action<S_START_STAGE> OnStartStageEvent;
     public event Action<S_GET_CLEAR_INFO> OnGetClearInfoEvent;
+    public event Action<S_GAME_CLEAR> OnGameClearEvent;
     public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
     public event Action<S_HOST_SHOW_STAGE> OnHostShowStageEvent;
 
@@ -119,6 +120,9 @@ public class PacketHandler : Singleton<PacketHandler>
             case PacketId.PKT_S_GET_CLEAR_INFO:
                 HandleGetClearInfo(data);
                 break;
+            case PacketId.PKT_S_GAME_CLEAR:
+                HandleGameClear(data);
+                break;
             case PacketId.PKT_S_GAME_READY_TO_START:
                 HandleGameReadyToStart(data);
                 break;
@@ -147,37 +151,54 @@ public class PacketHandler : Singleton<PacketHandler>
 
     private void HandleLoginResult(byte[] data)
     {
-        S_LOGIN result = S_LOGIN.Parser.ParseFrom(data);
-        
-        if (result.Success)
+        data ??= Array.Empty<byte>();
+        if (data.Length == 0)
         {
-            Debug.Log("  Login Success!");
-            if (result.Player != null)
-            {
-                Debug.Log($"  Player(필드2) Id={result.Player.Id}, Name={result.Player.Name}, Tag={result.Player.Tag}");
-            }
-            else
-                Debug.LogWarning(
-                    "[PacketHandler] S_LOGIN에 Player(필드2)가 없습니다. 서버가 id/name/tag를 안 보내거나 proto 불일치일 수 있습니다. Json=" +
-                    JsonFormatter.Default.Format(result));
-
-            if (result.PlayerInfo != null)
-                Debug.Log($"  PlayerInfo PlayerId={result.PlayerInfo.PlayerId}, coin={result.PlayerInfo.Coin}, gem={result.PlayerInfo.Gem}");
-
-            // 1) GameManager 등에서 _playerId·DB요청·UI 갱신
-            OnLoginResultEvent?.Invoke(result);
-
-            // 2) 씬 전환은 항상 여기서 한 번만 (구독 누락/GameManager 파괴/코루틴 끊김 방지; SceneLoader는 DDOL)
-            string active = SceneManager.GetActiveScene().name;
-            if (active != Define.Scene.MAIN && active != Define.Scene.GAME_1_1)
-            {
-                Debug.Log($"[PacketHandler] 로그인 성공 → 씬 전환: {active} → {Define.Scene.MAIN}");
-                SceneLoader.Instance.LoadScene(Define.Scene.MAIN);
-            }
+            Debug.LogWarning(
+                "[PacketHandler] S_LOGIN 바디가 0바이트입니다. " +
+                "클라 프레임은 [ushort 총길이(4+protobuf)][ushort packetId][protobuf] 이며 총길이에 헤더 4바이트가 포함됩니다. " +
+                "서버가 본문 없이 ID만 보내거나 size 필드 규약이 다르면 로그인 데이터가 비어 있습니다. 서버 송신·엔디안을 확인하세요.");
         }
-        else
+
+        S_LOGIN result;
+        try
+        {
+            result = S_LOGIN.Parser.ParseFrom(data);
+        }
+        catch (InvalidProtocolBufferException e)
+        {
+            Debug.LogWarning($"[PacketHandler] S_LOGIN 파싱 실패: {e.Message}");
+            MessageManager.Instance?.ShowLoginResponseUnreadable();
+            return;
+        }
+
+        OnLoginResultEvent?.Invoke(result);
+
+        if (!result.Success)
         {
             Debug.LogError("Login Failed!");
+            return;
+        }
+
+        Debug.Log("  Login Success!");
+        if (result.Player != null)
+        {
+            Debug.Log($"  Player(필드2) Id={result.Player.Id}, Name={result.Player.Name}, Tag={result.Player.Tag}");
+        }
+        else
+            Debug.LogWarning(
+                "[PacketHandler] S_LOGIN에 Player(필드2)가 없습니다. 서버가 id/name/tag를 안 보내거나 proto 불일치일 수 있습니다. Json=" +
+                JsonFormatter.Default.Format(result));
+
+        if (result.PlayerInfo != null)
+            Debug.Log($"  PlayerInfo PlayerId={result.PlayerInfo.PlayerId}, coin={result.PlayerInfo.Coin}, gem={result.PlayerInfo.Gem}");
+
+        // 씬 전환은 항상 여기서 한 번만 (구독 누락/GameManager 파괴/코루틴 끊김 방지; SceneLoader는 DDOL)
+        string active = SceneManager.GetActiveScene().name;
+        if (active != Define.Scene.MAIN && active != Define.Scene.GAME_1_1)
+        {
+            Debug.Log($"[PacketHandler] 로그인 성공 → 씬 전환: {active} → {Define.Scene.MAIN}");
+            SceneLoader.Instance.LoadScene(Define.Scene.MAIN);
         }
     }
 
@@ -437,6 +458,14 @@ public class PacketHandler : Singleton<PacketHandler>
         S_GET_CLEAR_INFO packet = S_GET_CLEAR_INFO.Parser.ParseFrom(payloadData);
         Debug.Log($"[PacketHandler] S_GET_CLEAR_INFO 수신! Success: {packet.Success}, 클리어 데이터 개수: {packet.StageClears.Count}");
         OnGetClearInfoEvent?.Invoke(packet);
+    }
+
+    private void HandleGameClear(byte[] payloadData)
+    {
+        S_GAME_CLEAR packet = S_GAME_CLEAR.Parser.ParseFrom(payloadData);
+        Debug.Log(
+            $"[PacketHandler] S_GAME_CLEAR Success={packet.Success} map={packet.MapId} star={packet.Star} sec={packet.ClearTimeSeconds}");
+        OnGameClearEvent?.Invoke(packet);
     }
     
     private void HandleGameReadyToStart(byte[] payloadData)

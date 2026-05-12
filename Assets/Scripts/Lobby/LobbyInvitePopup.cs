@@ -47,9 +47,15 @@ public class LobbyInvitePopup : MonoBehaviour
             popupRoot.SetActive(false);
 
         if (acceptButton != null)
+        {
+            UiButtonHoverSfx.Register(acceptButton);
             acceptButton.onClick.AddListener(OnClickAccept);
+        }
         if (declineButton != null)
+        {
+            UiButtonHoverSfx.Register(declineButton);
             declineButton.onClick.AddListener(OnClickDecline);
+        }
     }
 
     // S_INVITE_NOTIFICATION 패킷 수신 시 호출. invite_id 저장 후 팝업에 메시지 표시하고 팝업 활성화.
@@ -69,6 +75,7 @@ public class LobbyInvitePopup : MonoBehaviour
     // 수락 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: true) 전송 (서버가 방 입장 처리), 메인에 있으면 로비 씬으로 이동
     private void OnClickAccept()
     {
+        SoundManager.Instance.PlaySFX("Click2");
         PacketDispatcher.Instance.SendInviteResponse(_inviteId, true);
 
         if (popupRoot != null)
@@ -82,6 +89,7 @@ public class LobbyInvitePopup : MonoBehaviour
     // 거절 버튼 클릭 시 C_INVITE_RESPONSE(inviteId, accept: false) 전송 후 팝업 숨김
     private void OnClickDecline()
     {
+        SoundManager.Instance.PlaySFX("Click2");
         PacketDispatcher.Instance.SendInviteResponse(_inviteId, false);
         if (popupRoot != null)
             popupRoot.SetActive(false);
