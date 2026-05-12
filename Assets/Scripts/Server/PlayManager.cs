@@ -15,7 +15,7 @@ public class PlayManager : SceneSingleton<PlayManager>
     [SerializeField] private Transform[] spawnPoints;
 
     [Tooltip("스폰 포인트가 부족할 때 fallback 위치")]
-    [SerializeField] private Vector3 fallbackSpawnPos = new Vector3(0, 23, 2);
+    [SerializeField] private Vector3 fallbackSpawnPos = new Vector3(0, 100, 2);
 
     private GameObject _localPlayer;
     public Dictionary<ulong, GameObject> _remotePlayers = new();

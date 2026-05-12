@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 583856714525590063}
   - component: {fileID: 963899512743410283}
   m_Layer: 7
-  m_Name: LuminousStone
+  m_Name: glow_ore
   m_TagString: Ore
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,6 +125,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: LuminousStone
+  resourceStringKey: glow_ore
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
   maxDrops: 1

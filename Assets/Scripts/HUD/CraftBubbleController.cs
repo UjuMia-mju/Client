@@ -19,7 +19,7 @@ public class CraftBubbleController : MonoBehaviour
 
     [Header("표시 이름·아이콘 소스")]
     [SerializeField] private ItemCatalog itemCatalog;
-    [Tooltip("카탈로그가 비어 있을 때만 사용됩니다.")]
+    [Tooltip("같은 key에 대해 카탈로그보다 우선합니다. displayName·icon이 비어 있지 않은 항목만 덮어씁니다. 카탈로그에 없는 key는 사전만으로 슬롯에 쓰입니다.")]
     [SerializeField] private IngredientDictionaryData ingredientDictionaryData;
 
     [SerializeField] private bool hideUnusedSlots = true;
@@ -34,7 +34,7 @@ public class CraftBubbleController : MonoBehaviour
 
     private readonly Dictionary<string, UIRow> _displayByKey = new Dictionary<string, UIRow>();
 
-    /// <summary>아이콘·표시 문자열 캐시 (카탈로그 또는 레거시 사전에서 채움)</summary>
+    /// <summary>아이콘·표시 문자열 캐시 (카탈로그 + 재료 사전 오버레이)</summary>
     private sealed class UIRow
     {
         public Sprite Icon;
@@ -188,7 +188,6 @@ public class CraftBubbleController : MonoBehaviour
 
                 _displayByKey[e.key] = new UIRow { Icon = e.icon, DisplayName = e.displayName };
             }
-            return;
         }
 
         if (ingredientDictionaryData == null)
@@ -201,7 +200,17 @@ public class CraftBubbleController : MonoBehaviour
             if (entry == null || string.IsNullOrWhiteSpace(entry.key))
                 continue;
 
-            _displayByKey[entry.key] = new UIRow { Icon = entry.icon, DisplayName = entry.displayName };
+            if (_displayByKey.TryGetValue(entry.key, out UIRow row))
+            {
+                if (!string.IsNullOrWhiteSpace(entry.displayName))
+                    row.DisplayName = entry.displayName;
+                if (entry.icon != null)
+                    row.Icon = entry.icon;
+            }
+            else
+            {
+                _displayByKey[entry.key] = new UIRow { Icon = entry.icon, DisplayName = entry.displayName };
+            }
         }
     }
 

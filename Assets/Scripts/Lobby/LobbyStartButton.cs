@@ -16,6 +16,7 @@ public class LobbyStartButton : MonoBehaviour
     {
         if (startButton != null)
         {
+            UiButtonHoverSfx.Register(startButton);
             startButton.onClick.AddListener(OnClickStart);
             startButton.interactable = true;
         }
@@ -35,6 +36,8 @@ public class LobbyStartButton : MonoBehaviour
 
     private void OnClickStart()
     {
+        SoundManager.Instance.PlaySFX("Click2");
+
         if (startButton != null)
             startButton.interactable = false;
 

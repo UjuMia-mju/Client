@@ -242,7 +242,7 @@ public class Player : MovingObject
         {
             if ((ulong)p.PlayerId != myId) continue;
             if (!string.IsNullOrWhiteSpace(p.Name))
-                NicknameText.text = p.Name.Trim();
+                NicknameText.text = RoomMemberDisplayCache.WithoutDiscriminatorTag(p.Name.Trim());
             else
                 RefreshLocalNicknameFromRoomCache();
             return;
@@ -262,7 +262,7 @@ public class Player : MovingObject
         if (RoomMemberDisplayCache.Instance != null &&
             RoomMemberDisplayCache.Instance.TryGet(id, out var entry) &&
             !string.IsNullOrWhiteSpace(entry.DisplayName))
-            NicknameText.text = entry.DisplayName.Trim();
+            NicknameText.text = RoomMemberDisplayCache.WithoutDiscriminatorTag(entry.DisplayName.Trim());
     }
 
 
@@ -822,6 +822,14 @@ public class Player : MovingObject
     public void FreezeFor(float seconds)
     {
         externalFreezeUntil = Mathf.Max(externalFreezeUntil, Time.time + seconds);
+    }
+
+    /// <summary>
+    /// 일정 시간 동안 이동 입력을 랜덤 패턴으로 섞습니다.
+    /// </summary>
+    public void ApplyMoveInputScramble(float seconds)
+    {
+        playerInput?.ApplyRandomMoveScramble(seconds);
     }
 
     private void OnPlayerHitReceived(S_PLAYER_HIT packet)

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 // 아이템의 곡괭이로써의 기능을 담당하는 클래스입니다.
 public class Pickaxe : Items

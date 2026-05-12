@@ -71,10 +71,24 @@ public class SpaceshipAssembly : MonoBehaviour
 
         // 호스트만 피어들에게 완료 브로드캐스트 (씬 단독 실행 시 ConnectManager 없을 수 있으므로 null 체크)
         if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+        {
             PacketSender.Instance.BroadcastSpaceshipComplete(true);
 
-        var stars = GetFilledStarCountForStageClear();
-        GameRuleManager.Instance.ReturnToStageSelectScene(true, stars);
+            int mapId = StageManager.LastLoadedMapId;
+            var grm = GameRuleManager.Instance;
+            int elapsed = grm != null ? grm.GetMissionElapsedSecondsRounded() : 0;
+            var stars = GetFilledStarCountForStageClear();
+            if (mapId != 0 && PacketDispatcher.Instance != null)
+                PacketDispatcher.Instance.SendGameClear(mapId, stars, elapsed);
+            else if (mapId == 0)
+                Debug.LogWarning("[SpaceshipAssembly] LastLoadedMapId가 0 — C_GAME_CLEAR 미전송");
+
+            GameRuleManager.Instance.ReturnToStageSelectScene(true, stars);
+            return;
+        }
+
+        var starsLocal = GetFilledStarCountForStageClear();
+        GameRuleManager.Instance.ReturnToStageSelectScene(true, starsLocal);
     }
 
     /// <summary>

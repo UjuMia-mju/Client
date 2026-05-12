@@ -18,6 +18,20 @@ public class PlayerInput : MonoBehaviour
     private PlayerInputSystem inputActions;
 
     private bool inputEnabled = true;
+    private float scrambleMoveInputUntil;
+    private int scramblePatternIndex;
+
+    // x/y를 섞는 변환 행렬 패턴(a,b,c,d): (x', y') = (a*x + b*y, c*x + d*y)
+    private static readonly Vector4[] MoveScramblePatterns =
+    {
+        new Vector4(-1f, 0f, 0f, 1f),  // A<->D 반전
+        new Vector4(1f, 0f, 0f, -1f),  // W<->S 반전
+        new Vector4(0f, 1f, 1f, 0f),   // x/y 스왑
+        new Vector4(0f, -1f, -1f, 0f), // x/y 스왑 + 반전
+        new Vector4(0f, -1f, 1f, 0f),  // 90도 회전
+        new Vector4(0f, 1f, -1f, 0f),  // -90도 회전
+        new Vector4(-1f, 0f, 0f, -1f)  // x/y 모두 반전
+    };
 
     private void Start()
     {
@@ -86,6 +100,14 @@ public class PlayerInput : MonoBehaviour
 
         Vector2 move = inputActions.Player.Move.ReadValue<Vector2>();
 
+        if (Time.time < scrambleMoveInputUntil)
+        {
+            Vector4 m = MoveScramblePatterns[scramblePatternIndex];
+            move = new Vector2(
+                m.x * move.x + m.y * move.y,
+                m.z * move.x + m.w * move.y);
+        }
+
         axisX = move.x;
         axisY = move.y;
 
@@ -149,8 +171,31 @@ public class PlayerInput : MonoBehaviour
             axisX = 0f;
             axisY = 0f;
             axisResultDir = Vector3.zero;
+            scrambleMoveInputUntil = 0f;
         }
 
         Debug.Log($"[PlayerInput] SetInputEnabled -> {inputEnabled}");
+    }
+
+    /// <summary>
+    /// 일정 시간 동안 이동 입력(WASD/스틱)을 랜덤 패턴으로 섞습니다.
+    /// </summary>
+    public void ApplyRandomMoveScramble(float durationSeconds)
+    {
+        if (durationSeconds <= 0f) return;
+
+        // 이미 디버프가 걸린 상태에서 다시 닿으면 패턴은 유지하고 시간만 갱신합니다.
+        if (Time.time < scrambleMoveInputUntil)
+        {
+            scrambleMoveInputUntil = Time.time + durationSeconds;
+            return;
+        }
+
+        int newPattern = Random.Range(0, MoveScramblePatterns.Length);
+        if (MoveScramblePatterns.Length > 1 && newPattern == scramblePatternIndex)
+            newPattern = (newPattern + 1) % MoveScramblePatterns.Length;
+
+        scramblePatternIndex = newPattern;
+        scrambleMoveInputUntil = Time.time + durationSeconds;
     }
 }

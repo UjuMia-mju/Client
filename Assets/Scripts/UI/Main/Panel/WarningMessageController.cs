@@ -43,12 +43,14 @@ public class WarningMessageController : MonoBehaviour
 
     public void OnLeftButtonClicked()
     {
+        SoundManager.Instance.PlaySFX("Click2");
         _onKeepExisting?.Invoke(); // 기존 키 유지 콜백 실행
         Destroy(gameObject);       // 선택 완료 후 팝업 파괴
     }
 
     public void OnRightButtonClicked()
     {
+        SoundManager.Instance.PlaySFX("Click2");
         _onApplyNew?.Invoke();     // 새 키 적용 콜백 실행
         Destroy(gameObject);       // 선택 완료 후 팝업 파괴
     }

@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
 {
     void OnEnable()
     {
+        _ = MessageManager.Instance;
         PacketHandler.Instance.OnLoginResultEvent += OnLoginResult;
         PacketHandler.Instance.OnStageInfoEvent += OnStageInfo;
     }
@@ -44,6 +45,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         else
         {
             Debug.LogError("✗ Login Failed!");
+            MessageManager.Instance.ShowLoginFailureAfterServerResponse();
         }
     }
 

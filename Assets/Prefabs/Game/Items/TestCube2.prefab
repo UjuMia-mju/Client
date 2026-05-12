@@ -156,8 +156,9 @@ MonoBehaviour:
   walkSpeed: 0
   jumpForce: 0
   rotationSpeed: 0
+  drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: TestCube2
+  itemStringKey: cube
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!114 &2981278035017433657

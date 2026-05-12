@@ -80,11 +80,19 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
         NotifyChanged();
     }
 
-    static string FormatPlayerLabel(string name, int tag, int idForFallback)
+    static string StripTagSuffix(string s)
     {
-        bool hasTag = tag != 0;
-        if (hasTag && !string.IsNullOrEmpty(name))
-            return $"{name}#{tag}";
+        if (string.IsNullOrEmpty(s)) return s;
+        int h = s.IndexOf('#');
+        return h >= 0 ? s.Substring(0, h).TrimEnd() : s.TrimEnd();
+    }
+
+    /// <summary>인게임 등 표시용: <c>이름#태그</c> 형태가 오면 태그 접미사를 뗍니다.</summary>
+    public static string WithoutDiscriminatorTag(string raw) => StripTagSuffix(raw?.Trim() ?? "");
+
+    static string FormatPlayerLabel(string name, int idForFallback)
+    {
+        name = StripTagSuffix(name?.Trim() ?? "");
         if (!string.IsNullOrEmpty(name))
             return name;
         if (idForFallback != 0)
@@ -119,23 +127,17 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
 
         ulong id = (ulong)member.Player.Id;
         string name = member.Player.Name ?? "";
-        int tag = member.Player.Tag;
 
-        // 로컬 플레이어(방장 포함): 서버가 S_ENTER_ROOM에서 Tag를 0으로 주는 경우가 있어 S_LOGIN 값으로 보강
         var nm = NetManager.Instance;
-        if (nm != null && id == nm._playerId)
-        {
-            if (tag == 0 && nm.PlayerTag != 0)
-                tag = nm.PlayerTag;
-            if (string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(nm.PlayerName))
-                name = nm.PlayerName;
-        }
+        if (nm != null && id == nm._playerId &&
+            string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(nm.PlayerName))
+            name = nm.PlayerName;
 
-        string label = FormatPlayerLabel(name, tag, member.Player.Id);
+        string label = FormatPlayerLabel(name, member.Player.Id);
         _byId[id] = new Entry(label, member.IsReady);
     }
 
-    /// <summary>로그인 직후 등, 이미 캐시된 로컬 멤버 행에 Tag/이름을 다시 반영합니다.</summary>
+    /// <summary>로그인 직후 등, 이미 캐시된 로컬 멤버 행에 이름을 다시 반영합니다.</summary>
     public void RefreshLocalMemberFromNetManager()
     {
         TryWire();
@@ -149,12 +151,9 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
 
         string name = nm.PlayerName ?? "";
         if (string.IsNullOrEmpty(name))
-        {
-            int h = prev.DisplayName.IndexOf('#');
-            name = h >= 0 ? prev.DisplayName.Substring(0, h) : prev.DisplayName;
-        }
+            name = StripTagSuffix(prev.DisplayName);
 
-        string label = FormatPlayerLabel(name, nm.PlayerTag, (int)id);
+        string label = FormatPlayerLabel(name, (int)id);
         _byId[id] = new Entry(label, prev.IsReady);
         NotifyChanged();
     }

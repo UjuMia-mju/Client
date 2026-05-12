@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 380208884022275533}
   - component: {fileID: 8811113944146348454}
   m_Layer: 7
-  m_Name: Ore
+  m_Name: stone_ore
   m_TagString: Ore
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,6 +125,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceStringKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 1
