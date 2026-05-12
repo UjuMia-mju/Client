@@ -38,7 +38,7 @@ public class Axe : Items
         // 휘두르는 중일 때만 사람 hit 인정 (들고만 있거나 던지는 중에는 무시)
         bool swinging = holderLocal != null
             ? holderLocal.isUsingTool
-            : IsRemoteSwinging(holderRemote);
+            : (holderRemote != null && holderRemote.GetAnimStateRaw() == (int)AnimState.Mining);
         if (!swinging) return;
 
         // victim 식별 (콜라이더가 자식에 있을 수 있어 InParent 사용)
@@ -65,17 +65,33 @@ public class Axe : Items
         hasUsed = true;
     }
 
-    /// <summary>OtherPlayers가 도구를 휘두르는 중인지 애니메이션 state로 판정.</summary>
-    private static bool IsRemoteSwinging(OtherPlayers remote)
-    {
-        if (remote == null) return false;
-        Animator anim = remote.GetComponentInChildren<Animator>();
-        if (anim == null) return false;
-        return anim.GetInteger("AnimationPar") == (int)AnimState.Mining;
-    }
-
     public void ResetHasChopped()
     {
+        hasUsed = false;
+    }
+
+    private void Update()
+    {
+        // holder가 더 이상 swing 중이 아니면 hasUsed 자동 해제.
+        // 로컬 Player의 EndMining은 호스트 머신의 OtherPlayers 손 도끼까지 못 닿으므로 여기서 보강.
+        if (!hasUsed) return;
+
+        Player holderLocal = GetComponentInParent<Player>();
+        if (holderLocal != null)
+        {
+            if (!holderLocal.isUsingTool) hasUsed = false;
+            return;
+        }
+
+        OtherPlayers holderRemote = GetComponentInParent<OtherPlayers>();
+        if (holderRemote != null)
+        {
+            if (holderRemote.GetAnimStateRaw() != (int)AnimState.Mining)
+                hasUsed = false;
+            return;
+        }
+
+        // 누구의 손에도 안 들려있으면 reset.
         hasUsed = false;
     }
 }

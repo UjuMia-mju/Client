@@ -282,7 +282,7 @@ public class Player : MovingObject
 
         if (!inputFreeze)
         {
-            GroundDetectingWithRaycast(groundMask | walkable);
+            GroundDetectingWithRaycast(groundMask | walkable | hillMask);
 
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
@@ -448,7 +448,7 @@ public class Player : MovingObject
             {
                 Vector3 v = rb.linearVelocity;
                 float upDot = Vector3.Dot(v, transform.up);
-                if (upDot > 0f) upDot = 0f; // 위로 가는 성분 제거, 낙하는 유지
+                if (upDot > 0f) upDot = 0f; // 위로 가는 성분 제거, 낙사는 유지
                 rb.linearVelocity = transform.up * upDot;
             }
         }
@@ -516,18 +516,18 @@ public class Player : MovingObject
         // 1) sweep으로 진행 경로에 충돌이 있는지 확인.
         if (rb.SweepTest(movDir, out RaycastHit hit, dist + 0.05f, QueryTriggerInteraction.Ignore))
         {
-            // [하드코드] 부모 이름이 "Crater"인 콜라이더는 sweep 무시 → 그냥 정상 이동.
-            if (hit.collider != null && hit.collider.transform.parent != null
-                && hit.collider.transform.parent.name.Contains("Crater"))
-            {
-                rb.MovePosition(rb.position + movDir * dist);
-                return;
-            }
+            // [변경] Hill 레이어인지 판별 → 위 성분 제거를 건너뛸지 결정.
+            bool isHill = hit.collider != null
+                && (hillMask.value & (1 << hit.collider.gameObject.layer)) != 0;
 
             Vector3 slideDir = Vector3.ProjectOnPlane(movDir, hit.normal);
 
-            float upDot = Vector3.Dot(slideDir, transform.up);
-            if (upDot > 0f) slideDir -= transform.up * upDot;
+            // Hill이 아니면(=벽) 위 방향 성분 제거. Hill이면 그대로 둬서 경사 등반 허용.
+            if (!isHill)
+            {
+                float upDot = Vector3.Dot(slideDir, transform.up);
+                if (upDot > 0f) slideDir -= transform.up * upDot;
+            }
 
             if (slideDir.sqrMagnitude < 1e-4f) return;
             slideDir.Normalize();

@@ -16,7 +16,7 @@ public static class Define
         public const string STAGE_SELECT = "StageSelect";
         public const string LOGIN = "Login";
         public const string GAME_1_1   = "Stage01Level01";
-        public const string GAME_1_2   = "Stage01Level02_Temp";
+        public const string GAME_1_2   = "Stage01Level02";
         public const string GAME_1_3   = "Stage01Level03";
         public const string GAME_1_4   = "Stage01Level04";
         public const string GAME_1_5   = "Stage01Level05";
@@ -77,6 +77,7 @@ public static class Define
         public const string GROUND = "Ground";
         public const string WALL = "Wall";
         public const string WALKABLE_COLLIDER = "WalkableCollider";
+        public const string HILL = "Hill";
     }
 
     public static readonly List<Vector2Int> Resolution = new List<Vector2Int>()

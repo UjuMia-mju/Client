@@ -17,6 +17,7 @@ public class MovingObject : MonoBehaviour
     protected LayerMask groundMask;
     protected LayerMask wallMask;
     protected LayerMask walkable;
+    protected LayerMask hillMask;   // [추가] 울퉁불퉁한 자연 지형 — sweep 충돌 무시용
 
     public Vector3 groundDir { get; protected set; }
 
@@ -49,6 +50,7 @@ public class MovingObject : MonoBehaviour
         groundMask = LayerMask.GetMask(Define.Layer.GROUND);
         wallMask = LayerMask.GetMask(Define.Layer.WALL);
         walkable = LayerMask.GetMask(Define.Layer.WALKABLE_COLLIDER);
+        hillMask = LayerMask.GetMask(Define.Layer.HILL);   // [추가]
     }
 
     // 이동 처리
