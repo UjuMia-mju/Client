@@ -16172,7 +16172,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2a5bd0b084cfb814abf8cf2e8d7bf6a7, type: 2}
+  - {fileID: 2100000, guid: 6ac67295146a54143bacebe15c1ed3d9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17046,6 +17046,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8353594977460677069, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8353594977460677069, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8353594977460677069, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8353594977460677069, guid: d64b16c0ce5065341b3a1270a809d253, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -17174,7 +17186,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5751184151587243747}
-  m_Mesh: {fileID: 4711208715938537054, guid: 7405a4c8202880b4bac66174998a8008, type: 3}
+  m_Mesh: {fileID: 3152079930398685277, guid: b736372fa41fc8f468d1de3b54c54c6f, type: 3}
 --- !u!135 &8301335579166610429
 SphereCollider:
   m_ObjectHideFlags: 0
