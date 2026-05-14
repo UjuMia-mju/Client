@@ -1,6 +1,15 @@
-using UnityEngine;
-using UnityEngine.Animations;
-using static UnityEngine.Rendering.ReloadAttribute;
+﻿using UnityEngine;
+
+// Note : itemStringKey를 해당 enum으로 매핑합니다. 씬 배치가 수월해집니다. 대신 새 아이템을 추가할때 수정해야 합니다.
+enum ItemKey
+{
+    stone,
+    glow,
+    iron,
+    iron_bar,
+    Pickaxe,
+    Axe
+}
 
 public class Items : MovingObject
 {
@@ -12,7 +21,9 @@ public class Items : MovingObject
     protected Quaternion _lastSendRot;
 
     [HideInInspector] public int itemId;
-    public string itemStringKey;
+    [SerializeField] private ItemKey itemKey;
+
+    [HideInInspector] public string itemStringKey;
 
     [SerializeField] private float lerpSpeed = 25f; // [수정] 10 → 25: 패킷 간격(0.05s) 내 ~95% 도달
 
@@ -28,6 +39,7 @@ public class Items : MovingObject
 
     private void Start()
     {
+        itemStringKey = itemKey.ToString();
         ItemManager.Instance.RegisterItem(this);
         _planet = FindFirstObjectByType<PlanetGravity>();
         _targetPos = transform.position;

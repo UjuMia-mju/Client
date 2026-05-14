@@ -3,18 +3,34 @@
 /// <summary>
 /// 씬에 배치된 채집 가능한 자원(광석/나무 등)의 공통 베이스.
 /// </summary>
+/// 
+
+// 씬 배치 편의성을 위해 추가합니다. 사용방법은 item에 있는 Key들과 동일합니다.
+
+public enum ResourceKey
+{
+    stone_ore,
+    glow_ore,
+    iron_ore
+}
+
+
 public abstract class ResourceObject : MonoBehaviour
 {
     [HideInInspector] public int resourceId;
 
     [Tooltip("프리팹/타입 식별 키. (예: \"ore_iron\", \"tree_oak\")")]
-    public string resourceStringKey;
+
+    public ResourceKey key;
+    [HideInInspector] public string resourceStringKey;
 
     /// <summary>이 자원에서 총 몇 번 아이템이 떨어진 뒤 사라질지. 서브클래스가 오버라이드하여 인스펙터로 조정.</summary>
     public virtual int MaxDrops => 1;
 
     protected virtual void Start()
     {
+        resourceStringKey = key.ToString();
+
         ResourceManager.Instance.RegisterResource(this);
 
         if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
