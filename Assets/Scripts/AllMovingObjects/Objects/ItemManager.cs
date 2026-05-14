@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+using System.Linq;
+#endif
 
 public class ItemManager : MonoBehaviour
 {
@@ -11,6 +15,8 @@ public class ItemManager : MonoBehaviour
 
     [Header("아이템 카탈로그 (키·표시명·아이콘·프리팹 단일 관리)")]
     [SerializeField] private ItemCatalog itemCatalog;
+
+    public ItemCatalog Catalog => itemCatalog;
 
     private static int _nextItemId = 1;
 
@@ -27,11 +33,21 @@ public class ItemManager : MonoBehaviour
 
     public void RegisterItem(Items item)
     {
+        // 카탈로그에 등록된 키인지 검증만 수행 (키 자체는 Items가 인스펙터에서 직접 가짐)
+        if (itemCatalog != null && !string.IsNullOrEmpty(item.itemStringKey))
+        {
+            if (!itemCatalog.TryGet(item.itemStringKey, out _))
+            {
+                Debug.LogError($"[ItemManager] '{item.name}' 의 키 '{item.itemStringKey}' 가 ItemCatalog에 등록되지 않았습니다.", item);
+                return;
+            }
+        }
+
         item.itemId = _nextItemId++;
         if (!itemDic.ContainsKey(item.itemId))
         {
             itemDic.Add(item.itemId, item);
-            Debug.Log($"✓ Registered item: {item.name} (id={item.itemId})");
+            Debug.Log($"✓ Registered item: {item.name} (id={item.itemId}, key={item.itemStringKey})");
         }
     }
 
@@ -76,10 +92,6 @@ public class ItemManager : MonoBehaviour
         Debug.Log($"✓ OverrideItemId: {item.name} → id={newId}");
     }
 
-    /// <summary>
-    /// 네트워크 패킷으로 아이템 처리.
-    /// pos = 호스트가 SendObjectSpawn 시점에 측정한 실제 아이템 위치(자원 드롭/용광로 배출 공통).
-    /// </summary>
     public void SpawnItemFromNetwork(int itemId, string itemStringKey, Vector3 pos, Quaternion rot)
     {
         Debug.Log($"[ItemManager] SpawnItemFromNetwork: key={itemStringKey}, id={itemId}, pos={pos}");
@@ -107,27 +119,15 @@ public class ItemManager : MonoBehaviour
             StartCoroutine(PostSpawnSetup(itemComp, itemId, pos, rot));
     }
 
-    /// <summary>
-    /// Items.Start()에서 RegisterItem() 및 isKinematic 설정 완료 후 실행.
-    /// 1) ID 교체  2) 용광로 UI 초기화
-    ///
-    /// [수정] 피어 측 독자 물리 throw(ApplyPeerThrowImpulse) 제거.
-    ///       호스트가 보내는 S_OBJECT_MOVE를 Items.cs의 dead-reckoning + lerp가
-    ///       그대로 추종하므로 피어에서 별도 AddForce를 가하면 호스트와
-    ///       force(150 vs 200)/방향/타이밍이 달라져 0.4초 후 isKinematic 복귀
-    ///       시점에 가시적인 텔레포트가 발생함.
-    /// </summary>
     private IEnumerator PostSpawnSetup(Items itemComp, int newId, Vector3 spawnOrigin, Quaternion spawnRot)
     {
-        yield return null; // Items.Start() 완료 대기
+        yield return null;
 
         if (itemComp == null) yield break;
 
-        // 1. 아이템 ID를 호스트 기준으로 교체
         if (newId > 0)
             OverrideItemId(itemComp, newId);
 
-        // 2. 스폰 원점 기반 근처 용광로 UI 초기화 (S_FURNACE_RETRIEVE 누락/지연 안전장치)
         FurnaceClientManager.Instance?.TryResetNearestFurnaceBySpawnPosition(spawnOrigin);
 
         Debug.Log($"[ItemManager] PostSpawnSetup 완료: id={newId}");
@@ -151,9 +151,6 @@ public class ItemManager : MonoBehaviour
         return itemCatalog.GetPrefab(key);
     }
 
-    /// <summary>
-    /// 피어 요청으로 호스트가 아이템을 스폰하고 실제 ID로 전체 브로드캐스트
-    /// </summary>
     public void SpawnItemAndBroadcast(string itemStringKey, Vector3 pos, Quaternion rot)
     {
         GameObject prefab = GetPrefabByKey(itemStringKey);
@@ -185,3 +182,68 @@ public class ItemManager : MonoBehaviour
         Debug.Log($"[ItemManager] SpawnItemAndBroadcast 완료: id={itemComp.itemId}, key={itemComp.itemStringKey}");
     }
 }
+
+// ====================================================================
+// [에디터 통합] string 필드를 ItemCatalog 기반 드롭다운으로 그리는 어트리뷰트
+// 사용법: [SerializeField, ItemKey] private string itemKey;
+// ====================================================================
+
+/// <summary>string 필드 위에 붙이면 ItemCatalog 엔트리 드롭다운으로 인스펙터 표시.</summary>
+public class ItemKeyAttribute : PropertyAttribute { }
+
+#if UNITY_EDITOR
+[CustomPropertyDrawer(typeof(ItemKeyAttribute))]
+internal class ItemKeyDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        if (property.propertyType != SerializedPropertyType.String)
+        {
+            EditorGUI.LabelField(position, label.text, "[ItemKey]는 string 필드에만 사용 가능");
+            return;
+        }
+
+        // 프로젝트 내 ItemCatalog 에셋 검색 (첫 번째 사용)
+        string[] guids = AssetDatabase.FindAssets("t:ItemCatalog");
+        if (guids.Length == 0)
+        {
+            EditorGUI.PropertyField(position, property, label);
+            EditorGUI.HelpBox(position, "ItemCatalog 에셋을 찾을 수 없습니다.", MessageType.Warning);
+            return;
+        }
+
+        ItemCatalog catalog = AssetDatabase.LoadAssetAtPath<ItemCatalog>(
+            AssetDatabase.GUIDToAssetPath(guids[0]));
+
+        if (catalog == null || catalog.Entries == null || catalog.Entries.Count == 0)
+        {
+            EditorGUI.PropertyField(position, property, label);
+            return;
+        }
+
+        // 카탈로그 키 목록 추출
+        string[] keys = catalog.Entries
+            .Where(e => e != null && !string.IsNullOrWhiteSpace(e.key))
+            .Select(e => e.key)
+            .ToArray();
+
+        // 현재 값의 인덱스 찾기 (없으면 -1 → 미선택 표시)
+        int currentIndex = System.Array.IndexOf(keys, property.stringValue);
+
+        // 카탈로그에서 사라진 값이면 "(Missing)" 항목 임시 추가
+        string[] displayOptions = keys;
+        if (currentIndex < 0 && !string.IsNullOrEmpty(property.stringValue))
+        {
+            displayOptions = keys.Concat(new[] { $"(Missing) {property.stringValue}" }).ToArray();
+            currentIndex = displayOptions.Length - 1;
+        }
+
+        EditorGUI.BeginChangeCheck();
+        int selected = EditorGUI.Popup(position, label.text, currentIndex, displayOptions);
+        if (EditorGUI.EndChangeCheck() && selected >= 0 && selected < keys.Length)
+        {
+            property.stringValue = keys[selected];
+        }
+    }
+}
+#endif
