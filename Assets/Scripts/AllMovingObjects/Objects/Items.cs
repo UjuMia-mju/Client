@@ -1,15 +1,6 @@
 ﻿using UnityEngine;
+using System.Text.RegularExpressions;
 
-// Note : itemStringKey를 해당 enum으로 매핑합니다. 씬 배치가 수월해집니다. 대신 새 아이템을 추가할때 수정해야 합니다.
-enum ItemKey
-{
-    stone,
-    glow,
-    iron,
-    iron_bar,
-    Pickaxe,
-    Axe
-}
 
 public class Items : MovingObject
 {
@@ -21,7 +12,6 @@ public class Items : MovingObject
     protected Quaternion _lastSendRot;
 
     [HideInInspector] public int itemId;
-    [SerializeField] private ItemKey itemKey;
 
     [HideInInspector] public string itemStringKey;
 
@@ -39,7 +29,12 @@ public class Items : MovingObject
 
     private void Start()
     {
-        itemStringKey = itemKey.ToString();
+        this.itemStringKey = gameObject.name;
+
+        this.itemStringKey = this.itemStringKey.Replace("(Clone)", "");
+        this.itemStringKey = Regex.Replace(this.itemStringKey, @"\(\d+\)", "");
+        this.itemStringKey = Regex.Replace(this.itemStringKey, @"[^a-zA-Z0-9_]", "");
+
         ItemManager.Instance.RegisterItem(this);
         _planet = FindFirstObjectByType<PlanetGravity>();
         _targetPos = transform.position;
