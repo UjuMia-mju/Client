@@ -1,8 +1,24 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
+/// <summary>
+/// 표시 진행이 특정 퍼센트에 닿았을 때 잠깐 멈추는 연출 비트.
+/// </summary>
+[Serializable]
+public struct LoadingPercentHoldBeat
+{
+    [Tooltip("이 표시 퍼센트(1~99)까지 올라온 직후 멈춥니다.")]
+    [Range(1, 99)]
+    public int pauseAtPercent;
+
+    [Tooltip("멈춤 시간(Realtime 초). 0이면 이 비트는 적용하지 않습니다.")]
+    [Min(0f)]
+    public float holdRealtimeSeconds;
+}
 
 /// <summary>
 /// 비동기 로딩 진행도를 퍼센트 텍스트·진행바에 반영합니다.
@@ -29,24 +45,32 @@ public class LoadingUIController : MonoBehaviour
     [SerializeField, Range(0.5f, 0.99f)]
     float preCompleteDisplayClamp01 = 0.9f;
 
-    [Tooltip(
-        "시간 진행이 이 비율(0~1)에 닿았을 때, 지정 시간만큼 퍼센트·바를 그대로 멈춥니다. 0초면 비활성.")]
-    [SerializeField] float midHoldDurationRealtimeSeconds = 0.6f;
+    [Tooltip("중간 멈춤: Pause At %, Hold 초. 비우면 기본 30·70% / 0.5초. Size를 0으로 두면 멈춤 없음.")]
+    [SerializeField]
+    LoadingPercentHoldBeat[] percentHoldBeats;
 
-    [Tooltip("중간 멈춤 구간 근처(이 값 이상이 되면 시작). 표시 진행보다 높진 않도록 자동 보정.")]
-    [SerializeField, Range(0.08f, 0.92f)]
-    float midHoldKickInNormalized = 0.48f;
+    static readonly LoadingPercentHoldBeat[] DefaultPercentHoldBeats =
+    {
+        new LoadingPercentHoldBeat { pauseAtPercent = 30, holdRealtimeSeconds = 0.5f },
+        new LoadingPercentHoldBeat { pauseAtPercent = 70, holdRealtimeSeconds = 0.5f }
+    };
 
     float _panelShownRealtime;
     float _displayShownNormalized;
 
-    float _midHoldEndRealtime;
-    float _midHoldFrozenNormalized;
-    bool _midHoldPlayed;
+    LoadingPercentHoldBeat[] _sortedPercentHoldBeats;
+    int _nextPercentHoldBeatIndex;
+    float _percentHoldEndRealtime;
+    float _percentHoldFrozenNormalized;
 
     Coroutine _activeLoad;
 
     public bool IsLoading => _activeLoad != null;
+
+    void Awake()
+    {
+        RebuildSortedPercentHoldBeats();
+    }
 
     /// <summary>SceneLoader 등 외부에서 AsyncOperation 진행만 반영할 때 사용합니다.</summary>
     public void ShowAndResetProgress()
@@ -54,7 +78,7 @@ public class LoadingUIController : MonoBehaviour
         gameObject.SetActive(true);
         _panelShownRealtime = Time.realtimeSinceStartup;
         _displayShownNormalized = 0f;
-        ResetMidHoldState();
+        ResetPercentHoldState();
         ApplyLoadingPercent(0f);
     }
 
@@ -75,62 +99,104 @@ public class LoadingUIController : MonoBehaviour
             : Mathf.Min(timeFloor01, Mathf.Clamp01(preCompleteDisplayClamp01));
         float blendedCap01 = Mathf.Max(realCeil01, cappedTime01);
 
-        TryStartMidHold(blendedCap01);
-        if (IsMidHoldActive())
+        EndPercentHoldTimerIfPassed();
+
+        if (IsPercentHoldActive())
         {
-            _displayShownNormalized = Mathf.Clamp(_midHoldFrozenNormalized, 0f, blendedCap01);
+            _displayShownNormalized = Mathf.Clamp(_percentHoldFrozenNormalized, 0f, blendedCap01);
             ApplyLoadingPercent(_displayShownNormalized);
             return;
         }
 
-        EndMidHoldTimerIfPassed();
-
         float boosted01 = Mathf.Max(_displayShownNormalized, timeFloor01);
-        _displayShownNormalized = Mathf.Min(boosted01, blendedCap01);
+        float desired01 = Mathf.Min(boosted01, blendedCap01);
+
+        if (TryStartPercentHoldBeat(desired01, blendedCap01))
+            return;
+
+        _displayShownNormalized = desired01;
         ApplyLoadingPercent(_displayShownNormalized);
     }
 
-    void ResetMidHoldState()
+    void RebuildSortedPercentHoldBeats()
     {
-        _midHoldEndRealtime = 0f;
-        _midHoldFrozenNormalized = 0f;
-        _midHoldPlayed = false;
+        if (percentHoldBeats != null && percentHoldBeats.Length == 0)
+        {
+            _sortedPercentHoldBeats = Array.Empty<LoadingPercentHoldBeat>();
+            return;
+        }
+
+        LoadingPercentHoldBeat[] source = percentHoldBeats;
+        if (source == null || source.Length == 0)
+            source = DefaultPercentHoldBeats;
+
+        var copy = new LoadingPercentHoldBeat[source.Length];
+        Array.Copy(source, copy, source.Length);
+        Array.Sort(copy, (a, b) => a.pauseAtPercent.CompareTo(b.pauseAtPercent));
+        _sortedPercentHoldBeats = copy;
     }
 
-    /// <param name="displayCap01">표시 허용 상한(blended 실제·시간).</param>
-    void TryStartMidHold(float displayCap01)
+#if UNITY_EDITOR
+    void OnValidate()
     {
-        if (_midHoldPlayed || midHoldDurationRealtimeSeconds < 1e-3f || midHoldKickInNormalized <= 0f)
-            return;
+        RebuildSortedPercentHoldBeats();
+    }
+#endif
 
-        float elapsed = Mathf.Max(0f, Time.realtimeSinceStartup - _panelShownRealtime);
-        float ramp01 = Mathf.Max(0.05f, visualProgressRampRealtimeSeconds);
-        float timeFloor01 = Mathf.Clamp01(elapsed / ramp01);
-        float boosted01 = Mathf.Max(_displayShownNormalized, timeFloor01);
-
-        float kick = Mathf.Clamp(midHoldKickInNormalized, 0.05f, 0.95f);
-        // displayCap도 같이 따라와야 같은 구간에서 멈춤이 걸림 (옛 순수 real ceil=0 조건 때문에 스킵되던 현상 수정)
-        if (boosted01 < kick || displayCap01 + 1e-4f < Mathf.Min(boosted01, kick))
-            return;
-
-        _midHoldPlayed = true;
-        _midHoldFrozenNormalized =
-            Mathf.Clamp(Mathf.Max(_displayShownNormalized, Mathf.Min(kick, boosted01)), 0f,
-                displayCap01);
-        _midHoldEndRealtime = Time.realtimeSinceStartup + midHoldDurationRealtimeSeconds;
+    void ResetPercentHoldState()
+    {
+        _nextPercentHoldBeatIndex = 0;
+        _percentHoldEndRealtime = 0f;
+        _percentHoldFrozenNormalized = 0f;
     }
 
-    bool IsMidHoldActive()
+    void EndPercentHoldTimerIfPassed()
     {
-        return _midHoldPlayed && _midHoldEndRealtime > 0f
-               && Time.realtimeSinceStartup < _midHoldEndRealtime;
+        if (_percentHoldEndRealtime <= 0f || Time.realtimeSinceStartup < _percentHoldEndRealtime)
+            return;
+        _percentHoldEndRealtime = 0f;
+        _nextPercentHoldBeatIndex++;
     }
 
-    void EndMidHoldTimerIfPassed()
+    bool IsPercentHoldActive()
     {
-        if (_midHoldEndRealtime <= 0f || Time.realtimeSinceStartup < _midHoldEndRealtime)
-            return;
-        _midHoldEndRealtime = 0f;
+        return _percentHoldEndRealtime > 0f && Time.realtimeSinceStartup < _percentHoldEndRealtime;
+    }
+
+    /// <summary>
+    /// <paramref name="desired01"/>까지 이번에 채울 수 있을 때, 다음 비트 퍼센트를 지나가면 그 지점에서 멈춤.
+    /// </summary>
+    /// <returns>이번 프레임에서 멈춤을 시작해 더 이상 진행하지 않으면 true.</returns>
+    bool TryStartPercentHoldBeat(float desired01, float blendedCap01)
+    {
+        if (_sortedPercentHoldBeats == null || _sortedPercentHoldBeats.Length == 0)
+            return false;
+
+        const float eps = 1e-3f;
+
+        while (_nextPercentHoldBeatIndex < _sortedPercentHoldBeats.Length)
+        {
+            var beat = _sortedPercentHoldBeats[_nextPercentHoldBeatIndex];
+            if (beat.holdRealtimeSeconds < 1e-3f)
+            {
+                _nextPercentHoldBeatIndex++;
+                continue;
+            }
+
+            float t = Mathf.Clamp(beat.pauseAtPercent * 0.01f, 0.02f, 0.98f);
+
+            if (desired01 < t - eps)
+                return false;
+
+            // desired가 이 비트를 통과할 수 있을 때만 멈춤. 멈춤이 끝나면 EndPercentHoldTimerIfPassed에서 인덱스만 증가.
+            _percentHoldFrozenNormalized = Mathf.Clamp(t, 0f, blendedCap01);
+            _percentHoldEndRealtime = Time.realtimeSinceStartup + beat.holdRealtimeSeconds;
+            _displayShownNormalized = _percentHoldFrozenNormalized;
+            ApplyLoadingPercent(_displayShownNormalized);
+            return true;
+        }
+
+        return false;
     }
 
     static float ComputeRealProgressNormalized(AsyncOperation op)
@@ -142,7 +208,7 @@ public class LoadingUIController : MonoBehaviour
 
     public void SnapToCompletedDisplay()
     {
-        ResetMidHoldState();
+        ResetPercentHoldState();
         _displayShownNormalized = 1f;
         ApplyLoadingPercent(1f);
     }
