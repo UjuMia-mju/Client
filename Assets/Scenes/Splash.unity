@@ -119,103 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &247619549
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3912731301068505983, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_Name
-      value: LoadingPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_Pivot.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_Pivot.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7930104288142136482, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
 --- !u!1 &281208097
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,7 +168,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SplashController
   logoObject: {fileID: 1201466389}
-  animator: {fileID: 1252586139}
   stayTime: 2
 --- !u!1 &472791190
 GameObject:
@@ -791,51 +693,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!1 &1252586138
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1252586140}
-  - component: {fileID: 1252586139}
-  m_Layer: 0
-  m_Name: UIPanelAnimator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1252586139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252586138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b85abfb5e36c0449925202830961510, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIPanelAnimator
-  duration: 0.5
---- !u!4 &1252586140
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252586138}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.9726, y: 10.57227, z: -33.43152}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1293349557
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,7 +975,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
   fadePrefab: {fileID: 8091633504527073339, guid: 9e0286a86c8b5bb4a9aef7e2a338d91d, type: 3}
-  animator: {fileID: 1252586139}
+  loadingPanelPrefab: {fileID: 3912731301068505983, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
+  minLoadingPanelRealtimeSeconds: 1.5
 --- !u!4 &1832206123
 Transform:
   m_ObjectHideFlags: 0
@@ -1462,8 +1320,6 @@ SceneRoots:
   - {fileID: 484627356}
   - {fileID: 1173920340}
   - {fileID: 1832206123}
-  - {fileID: 1252586140}
   - {fileID: 1702779612}
   - {fileID: 978391581}
   - {fileID: 1047199737}
-  - {fileID: 247619549}

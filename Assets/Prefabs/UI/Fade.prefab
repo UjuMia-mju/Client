@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 305554798858359919}
   - component: {fileID: 6151902810178649327}
   - component: {fileID: 8507747210793492289}
+  - component: {fileID: 9012345678901234567}
   m_Layer: 5
   m_Name: Fade
   m_TagString: Untagged
@@ -190,3 +191,16 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &9012345678901234567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8091633504527073339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b85abfb5e36c0449925202830961510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIPanelAnimator
+  duration: 0.5
