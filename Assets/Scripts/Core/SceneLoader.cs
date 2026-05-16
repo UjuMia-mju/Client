@@ -50,6 +50,8 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
     {
         if (fadeInstance == null && fadePrefab != null)
         {
+            UIPanelAnimator.ClearStandaloneSingletonHostBeforeFadeInstall();
+
             fadeInstance = Instantiate(fadePrefab);
             fadeInstance.transform.SetParent(null);
             DontDestroyOnLoad(fadeInstance);
