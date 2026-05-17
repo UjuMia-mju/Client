@@ -187,5 +187,11 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     // 추가 : 호스트 → 모든 피어: "플레이어가 피격당했다" 신호.
     public void BroadcastPlayerHit(ulong victimPlayerId, float freezeSeconds)
         => TryHostBroadcast(() => hostSender.BroadcastPlayerHit(victimPlayerId, freezeSeconds));
+
+    public void BroadcastMonsterSpawn(S_MONSTER_SPAWN packet)
+        => TryHostBroadcast(() => hostSender.BroadcastToPeers(PacketId.PKT_S_MONSTER_SPAWN, packet));
+
+    public void BroadcastMonsterDead(S_MONSTER_DEAD packet)
+        => TryHostBroadcast(() => hostSender.BroadcastToPeers(PacketId.PKT_S_MONSTER_DEAD, packet));
     #endregion
 }

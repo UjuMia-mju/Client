@@ -1,0 +1,36 @@
+﻿using UnityEngine;
+using Protocol;
+
+public class MonsterServerManager : MonoBehaviour
+{
+    private void Start()
+    {
+        if (!ConnectManager.Instance.isHost && HostPacketHandler.Instance != null)
+        {
+            HostPacketHandler.Instance.OnMonsterSpawnEvent += OnSpawnReceived;
+            HostPacketHandler.Instance.OnMonsterDeadEvent += OnDeadReceived;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (HostPacketHandler.Instance != null)
+        {
+            HostPacketHandler.Instance.OnMonsterSpawnEvent -= OnSpawnReceived;
+            HostPacketHandler.Instance.OnMonsterDeadEvent -= OnDeadReceived;
+        }
+    }
+
+    private void OnSpawnReceived(S_MONSTER_SPAWN packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+
+        MonsterManager.Instance.SpawnFromNetwork((Monsters)packet.MonsterKey, packet.MonsterId, pos, rot);
+    }
+
+    private void OnDeadReceived(S_MONSTER_DEAD packet)
+    {
+        MonsterManager.Instance.DestroyFromNetwork(packet.MonsterId);
+    }
+}
