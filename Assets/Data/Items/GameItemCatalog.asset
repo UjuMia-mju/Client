@@ -41,11 +41,15 @@ MonoBehaviour:
     displayName: "\uD14C\uC2A4\uD2B8\uD050\uBE0C2"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
     prefab: {fileID: 5248076910442429696, guid: 28d3c555b89de824dac8f647c007d843, type: 3}
+  - key: SmeltedTestCube
+    displayName: "\uACE1\uAD2D\uC774"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
   - key: TestCube3
     displayName: "\uD14C\uC2A4\uD2B8\uD050\uBE0C3"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
     prefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
-  - key: SmeltedTestCube
-    displayName: "\uC6A9\uAD11\uB85C\uD6C4\uD050\uBE0C"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
+  - key: CustomTool
+    displayName: "\uB3C4\uAD6C\uB4E4"
+    icon: {fileID: 0}
+    prefab: {fileID: 0}
