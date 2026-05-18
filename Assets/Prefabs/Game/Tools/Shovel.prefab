@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2855892931889358113
+--- !u!1 &2302749754394511664
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2552306935327199715}
-  - component: {fileID: 4305083778760255960}
-  - component: {fileID: 5635169573126523506}
+  - component: {fileID: 1380928611365699797}
+  - component: {fileID: 6590797500744085823}
+  - component: {fileID: 671400495018476582}
   m_Layer: 0
-  m_Name: ShovelMesh
-  m_TagString: Tool
+  m_Name: SpadeV1
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2552306935327199715
+--- !u!4 &1380928611365699797
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2855892931889358113}
+  m_GameObject: {fileID: 2302749754394511664}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.192, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 161277950590312741}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4305083778760255960
+--- !u!33 &6590797500744085823
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2855892931889358113}
+  m_GameObject: {fileID: 2302749754394511664}
   m_Mesh: {fileID: -4065161742878867400, guid: 3d62c66f6a1ecc24ba244e9e15f554cc, type: 3}
---- !u!23 &5635169573126523506
+--- !u!23 &671400495018476582
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2855892931889358113}
+  m_GameObject: {fileID: 2302749754394511664}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -66,9 +66,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 14fc762959e22d74facb028517dec513, type: 2}
-  - {fileID: 2100000, guid: feb50f20df4017f449fd23a81e07a5a8, type: 2}
   - {fileID: 2100000, guid: eedac1d07ca1e614982d9cc73bc93b94, type: 2}
+  - {fileID: 2100000, guid: 14fc762959e22d74facb028517dec513, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,7 +124,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2552306935327199715}
+  - {fileID: 1380928611365699797}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2392054801162747358
