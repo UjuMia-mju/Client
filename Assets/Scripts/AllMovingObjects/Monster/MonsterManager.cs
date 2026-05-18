@@ -89,6 +89,23 @@ public class MonsterManager : MonoBehaviour
         if (spawned != null) Destroy(spawned);
     }
 
+    // [추가] 피어 진입점: 호스트로부터 받은 애니메이션 상태(int)를 해당 몬스터에 적용
+    public void UpdateAnimStateFromNetwork(int id, int stateInt)
+    {
+        if (!monsterDic.TryGetValue(id, out GameObject spawned) || spawned == null)
+            return;
+
+        // DesertWorm 처리
+        DesertWormAnimator wormAnim = spawned.GetComponent<DesertWormAnimator>();
+        if (wormAnim != null)
+        {
+            wormAnim.SetState((WormAnimState)stateInt);
+            return;
+        }
+
+        // 다른 몬스터 종류 애니메이터도 여기서 분기 추가
+    }
+
     private GameObject FindPrefabByKey(Monsters targetKey)
     {
         if (targetKey == Monsters.None) return null;

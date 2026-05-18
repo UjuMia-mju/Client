@@ -1,44 +1,35 @@
 ﻿using UnityEngine;
+
 public enum WormAnimState
 {
-    Idle,
-    BiteAttack,
-    TakeDamage,
-    Die
+    Idle = 0,
+    BiteAttack = 1,
+    TakeDamage = 2,
+    Die = 3,
+    Spawn = 4
 }
 
 public class DesertWormAnimator : MonoBehaviour
 {
     private const string ANIM_PAR = "AnimPar";
 
-    private WormAnimState state = new WormAnimState();
+    private WormAnimState state = WormAnimState.Idle;
     private Animator anim;
 
     public void Initialize()
     {
         anim = gameObject.GetComponent<Animator>();
+        // 초기 파라미터 동기화
+        if (anim != null)
+            anim.SetInteger(ANIM_PAR, (int)state);
     }
 
-    public void WormAnimation(bool isBiting, bool isTakeDamage, bool isDie)
+    // 외부에서 상태 설정 및 즉시 애니메이터에 반영
+    public void SetState(WormAnimState newState)
     {
-        if (isBiting)
-        {
-            state = WormAnimState.BiteAttack;
-        }
-        else if (isTakeDamage)
-        {
-            state = WormAnimState.TakeDamage;
-        }
-        else if (isDie)
-        {
-            state = WormAnimState.Die;
-        }
-        else
-        {
-            state = WormAnimState.Idle;
-        }
-
-        anim.SetInteger(ANIM_PAR, (int)state);
+        state = newState;
+        if (anim != null)
+            anim.SetInteger(ANIM_PAR, (int)state);
     }
 
     public WormAnimState GetAnimState()

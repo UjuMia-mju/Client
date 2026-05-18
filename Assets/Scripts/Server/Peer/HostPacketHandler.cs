@@ -32,6 +32,8 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_PLAYER_HIT> OnPlayerHitEvent;
     public event Action<S_MONSTER_SPAWN> OnMonsterSpawnEvent;
     public event Action<S_MONSTER_DEAD> OnMonsterDeadEvent;
+    // [추가]
+    public event Action<S_MONSTER_ANIMATION> OnMonsterAnimationEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -111,6 +113,10 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_MONSTER_DEAD:
                 HandleMonsterDead(data);
+                break;
+            // [추가]
+            case PacketId.PKT_S_MONSTER_ANIMATION:
+                HandleMonsterAnimation(data);
                 break;
             default:
                 Debug.LogWarning($"[HostPacketHandler] Unhandled packet ID: {packetId}");
@@ -279,5 +285,11 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         S_MONSTER_DEAD packet = S_MONSTER_DEAD.Parser.ParseFrom(data);
         OnMonsterDeadEvent?.Invoke(packet);
+    }
+
+    private void HandleMonsterAnimation(byte[] data)
+    {
+        S_MONSTER_ANIMATION packet = S_MONSTER_ANIMATION.Parser.ParseFrom(data);
+        OnMonsterAnimationEvent?.Invoke(packet);
     }
 }

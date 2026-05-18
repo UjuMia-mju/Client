@@ -284,13 +284,22 @@ public class Player : MovingObject
         {
             GroundDetectingWithRaycast(groundMask | walkable | hillMask);
 
+            // 들고 있는 도구가 Shovel이면 Mining 대신 Digging 애니메이션을 재생
+            bool isHoldingShovel = playerItemSystem != null
+                && playerItemSystem.currentEquipItem != null
+                && playerItemSystem.currentEquipItem.GetComponent<Shovel>() != null;
+
+            bool isDigging = isUsingTool && isHoldingShovel;
+            bool isMining = isUsingTool && !isHoldingShovel;
+
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
                 isGrounded,
                 inputFreeze,
-                 isUsingTool,
+                isMining,
                 IsHoldingThrowInput(),
-                WasThrowReleasedThisFrame());
+                WasThrowReleasedThisFrame(),
+                isDigging);
 
             KeyEInteract();
             KeyLeftClickInteract();
@@ -638,6 +647,11 @@ public class Player : MovingObject
             {
                 Axe tempA = playerItemSystem.currentEquipItem.GetComponent<Axe>();
                 tempA.ResetHasChopped();
+            }
+            else if (playerItemSystem.currentEquipItem.GetComponent<Shovel>() != null)
+            {
+                Shovel tempS = playerItemSystem.currentEquipItem.GetComponent<Shovel>();
+                tempS.ResetHasDug();
             }
         }
 

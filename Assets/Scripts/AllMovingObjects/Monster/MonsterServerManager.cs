@@ -9,6 +9,7 @@ public class MonsterServerManager : MonoBehaviour
         {
             HostPacketHandler.Instance.OnMonsterSpawnEvent += OnSpawnReceived;
             HostPacketHandler.Instance.OnMonsterDeadEvent += OnDeadReceived;
+            HostPacketHandler.Instance.OnMonsterAnimationEvent += OnAnimationReceived;
         }
     }
 
@@ -18,6 +19,7 @@ public class MonsterServerManager : MonoBehaviour
         {
             HostPacketHandler.Instance.OnMonsterSpawnEvent -= OnSpawnReceived;
             HostPacketHandler.Instance.OnMonsterDeadEvent -= OnDeadReceived;
+            HostPacketHandler.Instance.OnMonsterAnimationEvent -= OnAnimationReceived;
         }
     }
 
@@ -32,5 +34,12 @@ public class MonsterServerManager : MonoBehaviour
     private void OnDeadReceived(S_MONSTER_DEAD packet)
     {
         MonsterManager.Instance.DestroyFromNetwork(packet.MonsterId);
+    }
+
+    // [추가] 호스트가 보내준 몬스터 애니메이션 상태를 적용
+    private void OnAnimationReceived(S_MONSTER_ANIMATION packet)
+    {
+        // proto: monster_id, state  → C#: MonsterId, State
+        MonsterManager.Instance.UpdateAnimStateFromNetwork(packet.MonsterId, packet.State);
     }
 }
