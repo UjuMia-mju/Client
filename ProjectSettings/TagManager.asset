@@ -16,6 +16,9 @@ TagManager:
   - Tool
   - Tree
   - Axe
+  - TreasureTrove
+  - Monster
+  - Weapon
   layers:
   - Default
   - TransparentFX

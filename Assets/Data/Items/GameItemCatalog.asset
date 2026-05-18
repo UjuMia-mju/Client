@@ -53,3 +53,7 @@ MonoBehaviour:
     displayName: "\uB3C4\uAD6C\uB4E4"
     icon: {fileID: 0}
     prefab: {fileID: 0}
+  - key: Jewel
+    displayName: "\uBCF4\uC11D"
+    icon: {fileID: 0}
+    prefab: {fileID: 5248076910442429696, guid: f2123da969e261c4e9e1f22b6f2ef327, type: 3}

@@ -1,14 +1,11 @@
 ﻿using UnityEngine;
 
-public class DesertWorm : MovingObject
+public class DesertWorm : Monster
 {
-    public int monsterId;
-    private int hp = 3;
-    private int attack = 1;
 
     //public void OnHit()
     //{
-
+        
     //}
 
     private void Update()
