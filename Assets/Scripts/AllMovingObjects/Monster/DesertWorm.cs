@@ -82,13 +82,13 @@ public class DesertWorm : Monster
         }
 
         if (isSpawning) return;
-        if (isTakingDamage) return; // 피격 경직 중엔 AI 정지
 
         DetectPlayer();
         TryAttack();
     }
 
     // ===== 데미지 받음 =====
+    // 피격 모션/경직 없음: hp만 깎고, 죽으면 사망 진입. 공격 루프는 그대로 진행.
     public override void TakeDamage(int amount)
     {
         if (!IsHost) return;     // 데미지 판정은 호스트만
@@ -98,20 +98,7 @@ public class DesertWorm : Monster
         base.TakeDamage(amount); // hp 감소
 
         if (hp <= 0)
-        {
             EnterDying();
-            return;
-        }
-
-        // 진행 중 Bite는 중단하고 Hurt 재생
-        if (biteCo != null)
-        {
-            StopCoroutine(biteCo);
-            biteCo = null;
-            isBiting = false;
-        }
-        if (hurtCo != null) StopCoroutine(hurtCo);
-        hurtCo = StartCoroutine(TakeDamageRoutine());
     }
 
     private IEnumerator TakeDamageRoutine()
@@ -339,14 +326,24 @@ public class DesertWorm : Monster
     }
 
     // ===== 상태/네트워크 헬퍼 =====
+    private WormAnimState? lastAppliedState;
+
     private void SetStateHostAndBroadcast(WormAnimState newState)
     {
+        // 같은 상태 중복 적용 방지.
+        // (Animator 의 Any State → Die transition 이 매 프레임 재평가되며 Die 클립을
+        //  계속 0프레임으로 되감는 문제와 별도로, 패킷 송신 낭비도 함께 차단.)
+        if (lastAppliedState.HasValue && lastAppliedState.Value == newState)
+            return;
+
+        lastAppliedState = newState;
         PlayLocalState(newState);
         BroadcastAnimState(newState);
     }
 
     private void PlayLocalState(WormAnimState newState)
     {
+        lastAppliedState = newState;
         if (wormAnimator != null)
             wormAnimator.SetState(newState);
     }

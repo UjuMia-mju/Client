@@ -4,8 +4,12 @@
 public class Monster : MovingObject
 {
     [HideInInspector] public int monsterId;
-    protected int hp = 3;
-    protected int attack = 1;
+
+    [Header("Stats")]
+    [SerializeField] protected int maxHp = 3;
+    [SerializeField] protected int attack = 1;
+
+    protected int hp;
 
     [Header("Scene Placement")]
     [Tooltip("어떤 몬스터 종류인지. 씬 배치 동기화 시 프리팹 매칭용 키.")]
@@ -16,7 +20,11 @@ public class Monster : MovingObject
     [SerializeField] private bool isScenePlacedMonster = false;
     public bool IsScenePlacedMonster => isScenePlacedMonster;
 
-    void Start() { }
+    protected virtual void Awake()
+    {
+        hp = maxHp;
+    }
+
     void Update() { }
 
     // 호스트 전용: 외부(무기)에서 몬스터에 데미지 적용
