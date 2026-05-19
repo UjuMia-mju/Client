@@ -10,6 +10,7 @@ public class MonsterServerManager : MonoBehaviour
             HostPacketHandler.Instance.OnMonsterSpawnEvent += OnSpawnReceived;
             HostPacketHandler.Instance.OnMonsterDeadEvent += OnDeadReceived;
             HostPacketHandler.Instance.OnMonsterAnimationEvent += OnAnimationReceived;
+            HostPacketHandler.Instance.OnMonsterMoveEvent += OnMoveReceived;
         }
     }
 
@@ -20,6 +21,7 @@ public class MonsterServerManager : MonoBehaviour
             HostPacketHandler.Instance.OnMonsterSpawnEvent -= OnSpawnReceived;
             HostPacketHandler.Instance.OnMonsterDeadEvent -= OnDeadReceived;
             HostPacketHandler.Instance.OnMonsterAnimationEvent -= OnAnimationReceived;
+            HostPacketHandler.Instance.OnMonsterMoveEvent -= OnMoveReceived;
         }
     }
 
@@ -41,5 +43,12 @@ public class MonsterServerManager : MonoBehaviour
     {
         // proto: monster_id, state  → C#: MonsterId, State
         MonsterManager.Instance.UpdateAnimStateFromNetwork(packet.MonsterId, packet.State);
+    }
+
+    private void OnMoveReceived(S_MONSTER_MOVE packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        Quaternion rot = new Quaternion(packet.Rot.X, packet.Rot.Y, packet.Rot.Z, packet.Rot.W);
+        MonsterManager.Instance.UpdateTransformFromNetwork(packet.MonsterId, pos, rot);
     }
 }

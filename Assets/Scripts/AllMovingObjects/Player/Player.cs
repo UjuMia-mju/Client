@@ -91,7 +91,7 @@ public class Player : MovingObject
         }
 
         // ==== 임시 UI 초기화 ===
-        hpUIController.playerStat = playerStat;
+        hpUIController.SetPlayerStat(playerStat);
         oxygenUIController.playerStat = playerStat;
 
         hpUIController.gameObject.SetActive(true);

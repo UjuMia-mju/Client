@@ -110,7 +110,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &161277950590312741
 Transform:
   m_ObjectHideFlags: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemKey: CustomTool
+  itemKey: Baseballbat
   lerpSpeed: 25
   isScenePlacedItem: 0
   damage: 1

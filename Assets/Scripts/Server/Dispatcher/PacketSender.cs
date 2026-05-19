@@ -197,5 +197,9 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     // [추가] 몬스터 애니메이션 상태 브로드캐스트 (호스트 전용)
     public void BroadcastMonsterAnimation(S_MONSTER_ANIMATION packet)
         => TryHostBroadcast(() => hostSender.BroadcastToPeers(PacketId.PKT_S_MONSTER_ANIMATION, packet));
+
+    // 몬스터 위치/회전 브로드캐스트 (호스트 전용)
+    public void BroadcastMonsterMove(S_MONSTER_MOVE packet)
+        => TryHostBroadcast(() => hostSender.BroadcastToPeers(PacketId.PKT_S_MONSTER_MOVE, packet));
     #endregion
 }

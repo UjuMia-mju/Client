@@ -106,6 +106,14 @@ public class MonsterManager : MonoBehaviour
         // 다른 몬스터 종류 애니메이터도 여기서 분기 추가
     }
 
+    // 피어 진입점: 호스트로부터 받은 위치/회전을 해당 몬스터에 적용
+    public void UpdateTransformFromNetwork(int id, Vector3 pos, Quaternion rot)
+    {
+        if (!monsterDic.TryGetValue(id, out GameObject spawned) || spawned == null)
+            return;
+        spawned.transform.SetPositionAndRotation(pos, rot);
+    }
+
     private GameObject FindPrefabByKey(Monsters targetKey)
     {
         if (targetKey == Monsters.None) return null;

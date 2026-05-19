@@ -216,7 +216,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 123032}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -238,7 +238,7 @@ Transform:
   - {fileID: 431814}
   - {fileID: 419946}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!95 &9548640
 Animator:
   serializedVersion: 7
@@ -278,7 +278,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   monsterId: 0
-  damageBox: {fileID: 0}
+  damageBox: {fileID: 5586521096546025729, guid: 76a20f9e70afb4a4fbe99b1636f24dac, type: 3}
   detectRadius: 5
   attackInterval: 1
   damageBoxLifetime: 0.3

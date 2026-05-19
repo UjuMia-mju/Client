@@ -47,9 +47,14 @@ public class ObjectsGravityController : MonoBehaviour
     {
         Vector3 gravityDir = (planet.transform.position - objects.transform.position).normalized;
         LayerMask groundMask = LayerMask.GetMask(Define.Layer.GROUND, Define.Layer.WALKABLE_COLLIDER);
-        
-        bool hit = Physics.Raycast(objects.transform.position, gravityDir, 2.0f, groundMask);
-        Debug.DrawLine(objects.transform.position, objects.transform.position + gravityDir * 2.0f, hit ? Color.green : Color.red);
+
+        // 아이템 콜라이더 크기를 고려한 거리 (너무 크면 공중에서도 grounded 판정)
+        Collider col = objects.GetComponent<Collider>();
+        float itemRadius = col != null ? col.bounds.extents.magnitude : 0.5f;
+        float rayDistance = itemRadius + 0.3f;
+
+        bool hit = Physics.Raycast(objects.transform.position, gravityDir, rayDistance, groundMask);
+        Debug.DrawLine(objects.transform.position, objects.transform.position + gravityDir * rayDistance, hit ? Color.green : Color.red);
         return hit;
     }
 }

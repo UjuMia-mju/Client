@@ -227,6 +227,6 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemKey: CustomTool
+  itemKey: Pickaxe
   lerpSpeed: 10
   isScenePlacedItem: 0

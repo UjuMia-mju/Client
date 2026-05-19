@@ -17,8 +17,8 @@ public class TreasureResource : ResourceObject
     [Tooltip("isTrap=true일 때 DesertWorm을 보물 위치에서 얼마나 위로 띄워 스폰할지")]
     [SerializeField] private float wormSpawnUpOffset = 0f;
 
-    private const float GEM_THROW_HEIGHT = 3.5f;
-    private const float GEM_THROW_FORCE = 150f;
+    private const float GEM_THROW_HEIGHT = 0f;
+    private const float GEM_THROW_FORCE = 0f;
 
     /// <summary>도구가 1회 타격했을 때 호출. 카운트/드롭/파괴는 모두 호스트가 결정.</summary>
     public override void OnHit()
@@ -89,8 +89,13 @@ public class TreasureResource : ResourceObject
         }
 
         Vector3 spawnPos = transform.position + transform.up * wormSpawnUpOffset;
-        // MonsterManager.SpawnMonster: isHost 가드 + S_MONSTER_SPAWN 브로드캐스트까지 내부 처리
-        MonsterManager.Instance.SpawnMonster(Monsters.DesertWorm, spawnPos, transform.rotation);
+
+        PlanetGravity planet = FindFirstObjectByType<PlanetGravity>();
+        Quaternion spawnRot = planet != null
+            ? Quaternion.FromToRotation(Vector3.up, (spawnPos - planet.transform.position).normalized)
+            : transform.rotation;
+
+        MonsterManager.Instance.SpawnMonster(Monsters.DesertWorm, spawnPos, spawnRot);
         Debug.Log($"[Treasure] 트랩 발동! DesertWorm 스폰. id={resourceId}");
     }
 }

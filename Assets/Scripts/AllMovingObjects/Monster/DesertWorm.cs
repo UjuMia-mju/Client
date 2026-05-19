@@ -6,9 +6,16 @@ public class DesertWorm : Monster
 {
     [Header("Attack Settings")]
     public GameObject damageBox;
+    [Tooltip("공격 예고 표시용 프리팹 (시각적 경고 마커). 비워두면 표시 안 함.")]
+    [SerializeField] private GameObject telegraphPrefab;
+    [Tooltip("예고 표시 후 실제 데미지박스가 생성되기까지의 시간(초). 회피 가능 시간.")]
+    [SerializeField] private float telegraphDelay = 1f;
     [SerializeField] private float detectRadius = 5f;
     [SerializeField] private float attackInterval = 1f;
     [SerializeField] private float damageBoxLifetime = 0.3f;
+    
+    [Tooltip("플레이어 방향으로 회전할 때 1초당 회전 각도(도). 클수록 빠르게 돈다.")]
+    [SerializeField] private float turnSpeedDegPerSec = 540f;
 
     [Header("Animation Durations")]
     [SerializeField] private float spawnAnimDuration = 1.5f;
@@ -18,7 +25,7 @@ public class DesertWorm : Monster
 
     [Header("Gizmo")]
     [SerializeField] private bool alwaysDrawGizmo = false;
-    [SerializeField] private Color detectGizmoColor = new Color(1f, 0.2f, 0.2f, 0.25f);
+    [SerializeField] private Color detectGizmoColor = new Color(1f, 0.2f, 0.25f, 0.25f);
     [SerializeField] private Color detectGizmoWireColor = new Color(1f, 0f, 0f, 0.9f);
 
     private DesertWormAnimator wormAnimator;
@@ -129,6 +136,26 @@ public class DesertWorm : Monster
         {
             if (!hit.CompareTag(Define.Tag.PLAYER)) continue;
 
+            // 죽은 플레이어 제외 (로컬/원격 모두)
+            Player localPlayer = hit.GetComponentInParent<Player>();
+            if (localPlayer != null)
+            {
+                PlayerStat stat = localPlayer.GetComponent<PlayerStat>();
+                if (stat != null && stat.GetHp() <= 0) continue;
+            }
+            else
+            {
+                OtherPlayers remotePlayer = hit.GetComponentInParent<OtherPlayers>();
+                if (remotePlayer != null
+                    && HostStatManager.Instance != null
+                    && HostStatManager.Instance.TryGetPlayerStat(remotePlayer.PlayerId, out var remoteStat)
+                    && remoteStat != null
+                    && remoteStat.GetHp() <= 0)
+                {
+                    continue;
+                }
+            }
+
             float dist = Vector3.Distance(transform.position, hit.transform.position);
             if (dist < closestDist)
             {
@@ -161,10 +188,28 @@ public class DesertWorm : Monster
         if (isBiting) yield break;
         isBiting = true;
 
-        SetStateHostAndBroadcast(WormAnimState.BiteAttack);
+        // 1) 공격 지점 미리 결정 + 예고 마커
+        Vector3 attackPos = targetPlayer != null ? targetPlayer.position : transform.position;
 
+        GameObject telegraph = null;
+        if (telegraphPrefab != null)
+        {
+            telegraph = Instantiate(telegraphPrefab, attackPos, Quaternion.identity);
+            Destroy(telegraph, telegraphDelay + damageBoxLifetime);
+        }
+
+        // 2) 회피 시간 동안 플레이어 방향으로 부드럽게 회전 + 대기
         if (targetPlayer != null)
-            SpawnDamageBox(targetPlayer.position);
+            yield return StartCoroutine(FaceTargetHorizontally(targetPlayer.position));
+
+        // 회전 완료 후 남은 시간 (회전이 telegraphDelay보다 빨리 끝났을 때 보정)
+        // 단순화: telegraphDelay 통째로 더 기다리지 않고, 회전 + 추가 대기로 분리
+        // 더 자연스럽게 하려면 아래 한 줄을 별도 wait으로 조정 가능
+        yield return new WaitForSeconds(telegraphDelay);
+
+        // 3) BiteAttack 애니 + 데미지박스
+        SetStateHostAndBroadcast(WormAnimState.BiteAttack);
+        SpawnDamageBox(attackPos);
 
         yield return new WaitForSeconds(biteAnimDuration);
 
@@ -173,6 +218,44 @@ public class DesertWorm : Monster
 
         isBiting = false;
         biteCo = null;
+    }
+
+    /// <summary>
+    /// 행성 표면 위에서 수평(transform.up 축 기준) 방향만 타겟을 향하도록 보간 회전.
+    /// 회전이 끝나면 코루틴 종료.
+    /// </summary>
+    private IEnumerator FaceTargetHorizontally(Vector3 targetPos)
+    {
+        const float epsilonDeg = 0.5f;
+
+        while (true)
+        {
+            Vector3 up = transform.up;
+            Vector3 toTarget = targetPos - transform.position;
+            Vector3 flatDir = Vector3.ProjectOnPlane(toTarget, up);
+            if (flatDir.sqrMagnitude < 1e-6f) yield break;
+
+            Quaternion targetRot = Quaternion.LookRotation(flatDir.normalized, up);
+            float angle = Quaternion.Angle(transform.rotation, targetRot);
+            if (angle < epsilonDeg) yield break;
+
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation, targetRot, turnSpeedDegPerSec * Time.deltaTime);
+
+            // 매 프레임 피어에게 회전 동기화
+            if (PacketSender.Instance != null)
+            {
+                S_MONSTER_MOVE movePacket = new S_MONSTER_MOVE
+                {
+                    MonsterId = monsterId,
+                    Pos = new PosInfo { X = transform.position.x, Y = transform.position.y, Z = transform.position.z },
+                    Rot = new RotInfo { X = transform.rotation.x, Y = transform.rotation.y, Z = transform.rotation.z, W = transform.rotation.w }
+                };
+                PacketSender.Instance.BroadcastMonsterMove(movePacket);
+            }
+
+            yield return null;
+        }
     }
 
     private IEnumerator DieRoutine()
