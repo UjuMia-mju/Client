@@ -3025,7 +3025,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 161277950590312741, guid: 2772b18d9a8118646a897b4465e4a784, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.6
+      value: -6.52
       objectReference: {fileID: 0}
     - target: {fileID: 161277950590312741, guid: 2772b18d9a8118646a897b4465e4a784, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3033,7 +3033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161277950590312741, guid: 2772b18d9a8118646a897b4465e4a784, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.9
+      value: -1.76
       objectReference: {fileID: 0}
     - target: {fileID: 161277950590312741, guid: 2772b18d9a8118646a897b4465e4a784, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3256,15 +3256,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 161277950590312741, guid: 9d1ce95ac2b6ff44082c776a3acaa06f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.041
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 161277950590312741, guid: 9d1ce95ac2b6ff44082c776a3acaa06f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 24.303
+      value: 24.15
       objectReference: {fileID: 0}
     - target: {fileID: 161277950590312741, guid: 9d1ce95ac2b6ff44082c776a3acaa06f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.836
+      value: -4.77
       objectReference: {fileID: 0}
     - target: {fileID: 161277950590312741, guid: 9d1ce95ac2b6ff44082c776a3acaa06f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3339,7 +3339,7 @@ Transform:
   m_GameObject: {fileID: 1059108851}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
+  m_LocalPosition: {x: 0.315, y: 0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4016,7 +4016,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemKey: CustomTool
+  itemKey: Pickaxe
   lerpSpeed: 10
   isScenePlacedItem: 1
 --- !u!114 &1270936914

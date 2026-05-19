@@ -56,16 +56,16 @@ MonoBehaviour:
   - key: Pickaxe
     displayName: "\uACE1\uAD2D\uC774"
     icon: {fileID: 0}
-    prefab: {fileID: 3932628012655862576, guid: 7424815406544ec419ac695d1d1e5eec, type: 3}
+    prefab: {fileID: 0}
   - key: Axe
     displayName: "\uB3C4\uB07C"
     icon: {fileID: 0}
-    prefab: {fileID: 3932628012655862576, guid: ee89216f6f5a93e40a7bdb9498ac0ff5, type: 3}
+    prefab: {fileID: 0}
   - key: Shovel
     displayName: "\uC0BD"
     icon: {fileID: 0}
-    prefab: {fileID: 3932628012655862576, guid: 2772b18d9a8118646a897b4465e4a784, type: 3}
+    prefab: {fileID: 0}
   - key: Baseballbat
     displayName: "\uC57C\uAD6C\uBC30\uD2B8"
     icon: {fileID: 0}
-    prefab: {fileID: 3932628012655862576, guid: 9d1ce95ac2b6ff44082c776a3acaa06f, type: 3}
+    prefab: {fileID: 0}

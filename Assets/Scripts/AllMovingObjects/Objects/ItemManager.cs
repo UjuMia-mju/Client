@@ -135,13 +135,31 @@ public class ItemManager : MonoBehaviour
 
     private Items FindScenePlacedItem(string key, Vector3 pos)
     {
+        // 같은 키의 씬 배치 아이템 중 가장 가까운 것을 매칭 (거리 임계 없음)
+        // 도구 등 키별로 1개씩 배치되는 아이템은 거리 제한 없이 매칭해야 좌표 오차에도 안전.
+        Items best = null;
+        float bestDist = float.MaxValue;
         foreach (var item in itemDic.Values)
         {
-            if (item.itemStringKey == key && item.IsScenePlacedItem &&
-                Vector3.Distance(item.transform.position, pos) < 1f)
-                return item;
+            if (item == null) continue;
+            if (!item.IsScenePlacedItem) continue;
+            if (item.itemStringKey != key) continue;
+
+            float d = Vector3.Distance(item.transform.position, pos);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = item;
+            }
         }
-        return null;
+        return best;
+        //foreach (var item in itemDic.Values)
+        //{
+        //    if (item.itemStringKey == key && item.IsScenePlacedItem &&
+        //        Vector3.Distance(item.transform.position, pos) < 1f)
+        //        return item;
+        //}
+        //return null;
     }
 
     public GameObject GetPrefabByKey(string key)
