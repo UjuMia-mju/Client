@@ -60,7 +60,16 @@ public class Items : MovingObject
         }
 
         if (isScenePlacedItem && ConnectManager.Instance != null && ConnectManager.Instance.isHost)
-            StartCoroutine(BroadcastSpawnNextFrame());
+        {
+            // Player/OtherPlayers 자식(=도구 등)은 액터와 함께 모든 머신에서 이미 생성되므로
+            // 네트워크 스폰을 송신하면 피어 측에서 복제 인스턴스가 생긴다. (catalog prefab 비움 정책과 이중 가드)
+            bool isAttachedToActor =
+                GetComponentInParent<Player>() != null ||
+                GetComponentInParent<OtherPlayers>() != null;
+
+            if (!isAttachedToActor)
+                StartCoroutine(BroadcastSpawnNextFrame());
+        }
     }
 
     private System.Collections.IEnumerator BroadcastSpawnNextFrame()

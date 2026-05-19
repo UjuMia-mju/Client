@@ -88,6 +88,9 @@ public class Player : MovingObject
         else
         {
             playerStat = gameObject.AddComponent<PeerPlayerStat>();
+            // 피어는 _playerId가 S_PLAYER_ENTER 수신 후에 확정되므로 확정된 시점에 등록한다.
+            // 등록되어야 PeerStatManager.UpdateStat → PlayerStat.OnHpChanged 까지 전파되어 HP UI가 갱신된다.
+            StartCoroutine(RegisterPeerStatWhenIdReady());
         }
 
         // ==== 임시 UI 초기화 ===
@@ -863,6 +866,15 @@ public class Player : MovingObject
 
         if (footstepEmitter != null)
             footstepEmitter.OnFootstep();
+    }
+
+    private IEnumerator RegisterPeerStatWhenIdReady()
+    {
+        while (NetManager.Instance == null || NetManager.Instance._playerId == 0)
+            yield return null;
+
+        if (PeerStatManager.Instance != null && playerStat != null)
+            PeerStatManager.Instance.RegisterPlayer((ulong)NetManager.Instance._playerId, playerStat);
     }
 
 }

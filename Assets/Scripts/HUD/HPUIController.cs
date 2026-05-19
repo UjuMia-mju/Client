@@ -56,15 +56,13 @@ public class HPUIController : MonoBehaviour
         StopAllCoroutines();
         fadeCoroutines.Clear();
 
-        // 1. 체력 개수만큼 활성화 및 투명도 복구
         for (int i = 0; i < hpImageList.Count; i++)
         {
             hpImageList[i].gameObject.SetActive(i < currentHp);
             SetAlpha(hpImageList[i], 1f);
         }
 
-        // 2. 일정 시간 뒤 페이드 아웃 시작
-        StartCoroutine(WaitAndFadeOut());
+        StartCoroutine(WaitAndFadeOut()); // ← 페이드 트리거 살아있음
     }
 
     private IEnumerator WaitAndFadeOut()
