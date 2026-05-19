@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1104703898746425500}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: -0.115, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -228,5 +228,5 @@ MonoBehaviour:
   itemId: 0
   itemKey: Baseballbat
   lerpSpeed: 25
-  isScenePlacedItem: 0
+  isScenePlacedItem: 1
   damage: 1

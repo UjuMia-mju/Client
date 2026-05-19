@@ -77,7 +77,7 @@ public class DesertWorm : Monster
 
         if (hp <= 0)
         {
-            StartCoroutine(DieRoutine());
+            EnterDying();
             return;
         }
 
@@ -97,8 +97,11 @@ public class DesertWorm : Monster
 
         base.TakeDamage(amount); // hp 감소
 
-        // hp가 0 이하면 굳이 hurt 재생 없이 Update에서 DieRoutine으로 진입
-        if (hp <= 0) return;
+        if (hp <= 0)
+        {
+            EnterDying();
+            return;
+        }
 
         // 진행 중 Bite는 중단하고 Hurt 재생
         if (biteCo != null)
@@ -258,8 +261,11 @@ public class DesertWorm : Monster
         }
     }
 
-    private IEnumerator DieRoutine()
+    // ===== Death =====
+    // 호스트에서 사망 진입: 시간 지연 없이 Die 애니로만 전환. 실제 파괴는 Animation Event(OnDieAnimationEnd) 가 결정.
+    private void EnterDying()
     {
+        if (isDying) return;
         isDying = true;
 
         // 진행 중 모든 부수 코루틴 중단
@@ -267,10 +273,61 @@ public class DesertWorm : Monster
         if (hurtCo != null) { StopCoroutine(hurtCo); hurtCo = null; isTakingDamage = false; }
 
         SetStateHostAndBroadcast(WormAnimState.Die);
+    }
 
-        yield return new WaitForSeconds(dieAnimDuration);
+    /// <summary>
+    /// Die 애니메이션 클립 마지막 프레임에 Animation Event 로 호출되어야 한다.
+    /// (애니메이터 Die 클립 → Events 에 함수 이름 'OnDieAnimationEnd' 등록)
+    /// 호스트: 사망 패킷 송신 + 자기 자신 파괴.
+    /// 피어  : 자기 자신 파괴만 (사망 패킷은 어차피 호스트에서 도착).
+    /// </summary>
+    public void OnDieAnimationEnd()
+    {
+        if (IsHost)
+        {
+            // MonsterManager.MonsterDead 가 패킷 송신 + Destroy 위임 처리.
+            // MonsterManager 가 PlayDeathAndDestroy() 를 다시 호출해도 isDying==true 이므로 즉시 Destroy 됨.
+            if (MonsterManager.Instance != null)
+                MonsterManager.Instance.MonsterDead(monsterId);
+            else
+                Destroy(gameObject);
+        }
+        else
+        {
+            // 피어는 그냥 파괴만. DestroyFromNetwork 가 이미 호출돼 dic 에서 제거된 상태.
+            Destroy(gameObject);
+        }
+    }
 
-        MonsterManager.Instance.MonsterDead(monsterId);
+    /// <summary>
+    /// 피어 측에서 S_MONSTER_DEAD 수신 시 MonsterManager 가 호출.
+    /// 시간 기반 대기 대신, Die 애니 진입만 시키고 클립 끝의 Animation Event 가 Destroy 를 담당.
+    /// </summary>
+    public override void PlayDeathAndDestroy()
+    {
+        // 호스트: 이미 EnterDying 으로 Die 재생 중이고, 이 호출 자체가 OnDieAnimationEnd 에서 트리거된 것이므로 즉시 파괴.
+        if (IsHost)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // 피어: 중복 진입 차단
+        if (isDying) return;
+        isDying = true;
+
+        // 패킷 순서/누락 보호용: 명시적으로 Die 클립 강제. 끝나면 OnDieAnimationEnd 가 Destroy.
+        PlayLocalState(WormAnimState.Die);
+
+        // 안전 가드: Animation Event 가 어떤 이유로든 호출되지 않을 경우를 대비한 백업 타임아웃.
+        StartCoroutine(DieSafetyDestroy(dieAnimDuration + 2f));
+    }
+
+    private IEnumerator DieSafetyDestroy(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        if (this != null && gameObject != null)
+            Destroy(gameObject);
     }
 
     private void SpawnDamageBox(Vector3 position)
@@ -306,6 +363,10 @@ public class DesertWorm : Monster
         };
         PacketSender.Instance.BroadcastMonsterAnimation(packet);
     }
+
+    /// <summary>
+    /// 피어 측에서 사망 패킷 수신 시 호출. Die 애니메이션을 재생할 시간을 확보한 뒤 파괴.
+    /// </summary>
 
     // ===== Gizmo =====
     private void OnDrawGizmos()

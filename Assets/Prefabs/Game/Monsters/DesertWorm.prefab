@@ -278,10 +278,15 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   monsterId: 0
+  monsterKey: 1
+  isScenePlacedMonster: 0
   damageBox: {fileID: 5586521096546025729, guid: 76a20f9e70afb4a4fbe99b1636f24dac, type: 3}
+  telegraphPrefab: {fileID: 0}
+  telegraphDelay: 1
   detectRadius: 5
   attackInterval: 1
   damageBoxLifetime: 0.3
+  turnSpeedDegPerSec: 540
   spawnAnimDuration: 1.5
   biteAnimDuration: 0.6
   takeDamageAnimDuration: 0.4
