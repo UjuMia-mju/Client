@@ -28,7 +28,7 @@ MonoBehaviour:
   - key: iron_bar
     displayName: "\uCCA0\uAD34"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 0}
+    prefab: {fileID: 5248076910442429696, guid: cb49ccd24e24f9246a90a9bf2f3fcc68, type: 3}
   - key: iron
     displayName: "\uCCA0\uAD11\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
