@@ -158,7 +158,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: glow
+  itemKey: glow
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!114 &2981278035017433657

@@ -1,6 +1,5 @@
-using UnityEngine;
-using UnityEngine.Animations;
-using static UnityEngine.Rendering.ReloadAttribute;
+﻿using UnityEngine;
+
 
 public class Items : MovingObject
 {
@@ -12,13 +11,15 @@ public class Items : MovingObject
     protected Quaternion _lastSendRot;
 
     [HideInInspector] public int itemId;
-    public string itemStringKey;
 
-    [SerializeField] private float lerpSpeed = 25f; // [수정] 10 → 25: 패킷 간격(0.05s) 내 ~95% 도달
+    [SerializeField, ItemKey] private string itemKey;
+    public string itemStringKey => itemKey;
+
+    [SerializeField] private float lerpSpeed = 25f;
 
     private Vector3 _targetPos;
     private Quaternion _targetRot = Quaternion.identity;
-    private Vector3 _targetVelocity = Vector3.zero; // [추가] Dead-reckoning용 속도
+    private Vector3 _targetVelocity = Vector3.zero;
 
     private PlanetGravity _planet;
 
@@ -28,6 +29,8 @@ public class Items : MovingObject
 
     private void Start()
     {
+        // [삭제] gameObject.name 정규식 파싱 — 키는 ItemManager.RegisterItem이 카탈로그에서 채움
+
         ItemManager.Instance.RegisterItem(this);
         _planet = FindFirstObjectByType<PlanetGravity>();
         _targetPos = transform.position;
@@ -36,8 +39,6 @@ public class Items : MovingObject
         _lastSendRot = transform.rotation;
         _lastSendTime = Time.time;
 
-        // 피어 클라이언트에서는 물리 시뮬레이션 비활성화
-        // 호스트 위치를 받아서 따라가기만 하면 되므로 물리가 필요 없음
         if (ConnectManager.Instance != null && !ConnectManager.Instance.isHost)
         {
             rb.isKinematic = true;
@@ -47,7 +48,6 @@ public class Items : MovingObject
                 gravController.enabled = false;
         }
 
-        // OtherPlayers와 물리 충돌 무시 (밀림 방지)
         Collider myCol = GetComponent<Collider>();
         if (myCol != null)
         {
@@ -73,18 +73,8 @@ public class Items : MovingObject
     private void FixedUpdate()
     {
         bool isPeer = ConnectManager.Instance != null && !ConnectManager.Instance.isHost;
-
-        // [수정] 호스트는 Rigidbody 물리가 단일 진실의 원천이므로
-        //       _targetPos 기반 보정을 일절 수행하지 않는다.
-        //       기존 코드는 raycast miss(콜라이더가 두껍거나 경사면 등)로
-        //       _targetPos가 stale 상태에서 velocity가 순간적으로 0에 근접할 때
-        //       MovePosition(Lerp(pos, stale, 0.5))이 발사되어 지면 침투 →
-        //       물리 솔버가 위로 튕김(팝콘 현상)을 유발했다.
         if (!isPeer) return;
 
-        // ↓ 이하 피어 전용 로직 ↓
-
-        // Dead-reckoning: 패킷 사이 구간을 마지막 수신 속도로 예측
         if (rb.isKinematic)
         {
             _targetPos += _targetVelocity * Time.fixedDeltaTime;
@@ -124,18 +114,15 @@ public class Items : MovingObject
 
     private void SendPositionToServer()
     {
-        // 아이템 위치 송신 권한은 호스트에게만 있음
         if (ConnectManager.Instance != null && !ConnectManager.Instance.isHost) return;
 
         Vector3 gravityDir = (transform.position - _planet.transform.position).normalized;
         Vector3 horizontalVelocity = rb.linearVelocity - Vector3.Project(rb.linearVelocity, gravityDir);
 
-        // [수정] sqrMagnitude 0.1f(=속도 0.316m/s) → 0.01f(=속도 0.1m/s)로 정지 판정 엄격화
         float interval = horizontalVelocity.sqrMagnitude > 0.01f ? 0.05f : 0.2f;
 
         if (Time.time - _lastSendTime < interval) return;
 
-        // [수정] 임계값 완화: 위치 0.1f→0.03f, 회전 5f→2f
         bool posChanged = Vector3.Distance(transform.position, _lastSendPos) > 0.03f;
         bool rotChanged = Quaternion.Angle(transform.rotation, _lastSendRot) > 2f;
 
@@ -148,7 +135,6 @@ public class Items : MovingObject
         }
     }
 
-    // [수정] velocity 파라미터 추가하여 Dead-reckoning 지원
     public void SetPos(Vector3 pos, Quaternion rot, Vector3 velocity = default)
     {
         if (!IsOwnedByMe)

@@ -7,14 +7,23 @@ public abstract class ResourceObject : MonoBehaviour
 {
     [HideInInspector] public int resourceId;
 
-    [Tooltip("프리팹/타입 식별 키. (예: \"ore_iron\", \"tree_oak\")")]
-    public string resourceStringKey;
+    [Tooltip("프리팹/타입 식별 키. ResourceManager의 Resource Prefab Table 드롭다운에서 선택.")]
+    [SerializeField, ResourceKey] private string resourceKey;
+
+    /// <summary>식별 키 (string).</summary>
+    public string resourceStringKey => resourceKey;
 
     /// <summary>이 자원에서 총 몇 번 아이템이 떨어진 뒤 사라질지. 서브클래스가 오버라이드하여 인스펙터로 조정.</summary>
     public virtual int MaxDrops => 1;
 
     protected virtual void Start()
     {
+        if (string.IsNullOrEmpty(resourceKey))
+        {
+            Debug.LogError($"[ResourceObject] '{name}'에 ResourceKey가 지정되지 않았습니다. 프리팹 인스펙터에서 설정하세요.", this);
+            return;
+        }
+
         ResourceManager.Instance.RegisterResource(this);
 
         if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
