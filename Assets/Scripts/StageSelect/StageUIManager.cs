@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using Protocol;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -104,6 +104,11 @@ public class StageUIManager : MonoBehaviour
         }
 
         StageInfo display = ResolveDisplayStage(packet.Stage);
+
+        // (게스트) 호스트가 미리보기로 띄운 스테이지를 펜딩으로 저장 → S_GAME_READY_TO_START 시 사용
+        if (display != null && StageManager.Instance != null)
+            StageManager.Instance.RememberGuestPendingStage(display.MapId, display.Chapter, display.Stage);
+
         RestartGuestSelectFlow(display);
     }
 

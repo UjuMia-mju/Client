@@ -225,7 +225,8 @@ MonoBehaviour:
   walkSpeed: 0
   jumpForce: 0
   rotationSpeed: 0
+  drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: Pickaxe
+  itemKey: Pickaxe
   lerpSpeed: 10
   isScenePlacedItem: 0

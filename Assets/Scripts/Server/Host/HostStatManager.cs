@@ -16,8 +16,13 @@ public class HostStatManager : BaseStatManager<HostStatManager>
 
         stat.statData.DecreaseHp(amount);
         stat.CallOnHpChanged();
+        stat.boundPlayer?.CallOnHpChanged();
+
         if (stat.statData.hp <= 0)
+        {
             stat.CallOnPlayerDead();
+            PlayerLifeServerManager.Instance?.OnReceivePlayerDead(playerId);
+        }
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
         PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
@@ -29,6 +34,7 @@ public class HostStatManager : BaseStatManager<HostStatManager>
 
         stat.statData.IncreaseHp(amount);
         stat.CallOnHpChanged();
+        stat.boundPlayer?.CallOnHpChanged();
 
         PacketSender.Instance?.BroadcastStatResult(playerId, stat.GetHp(), stat.GetOxygen());
         PlayManager.Instance?.UpdateRemotePlayerStat(playerId, stat.GetHp(), stat.GetOxygen());
