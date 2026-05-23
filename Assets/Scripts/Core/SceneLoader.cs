@@ -200,7 +200,7 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 
         yield return new WaitForSecondsRealtime(0.2f);
 
-        yield return StartCoroutine(panelAnimator.FadeOut(fadeInstance));
+        yield return StartCoroutine(panelAnimator.FadeOut(fadeInstance, destroyOnEnd: false));
 
         fadeCanvasGroup.blocksRaycasts = false;
         fadeInstance.SetActive(false);
