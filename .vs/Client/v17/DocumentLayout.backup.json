@@ -3,24 +3,44 @@
   "WorkspaceRootPath": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\allmovingobjects\\monster\\monstercatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monstercatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\iclientsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\iclientsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\items\\itemcatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\items\\itemcatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\ore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\ore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\planet\\resourcemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourcemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monstermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monstermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourcemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourcemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourcecatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourcecatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monstercatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monstercatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\items\\itemcatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\items\\itemcatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -29,10 +49,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourceobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourceobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\ore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\ore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\baseballbat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -45,10 +61,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\desertwormanimator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -93,10 +105,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monsterservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monsterservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\stageselect\\stageuimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -177,10 +185,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\peersender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\peersender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\iclientsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\iclientsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\ihostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -354,36 +358,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MonsterCatalog.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterCatalog.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterCatalog.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterCatalog.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterCatalog.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "ItemManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
+              "ViewState": "AgIAAAEBAAAAAAAAAAAswBABAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-23T16:58:03.752Z",
+              "WhenOpened": "2026-04-01T08:10:44.832Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "Player.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "ViewState": "AgIAAFUDAAAAAAAAAAAswGIDAAAkAAAAAAAAAA==",
+              "Title": "ResourceManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceManager.cs",
+              "ViewState": "AgIAAOwAAAAAAAAAAAAnwM0AAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T09:57:36.814Z"
+              "WhenOpened": "2026-04-27T13:34:19.162Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "BaseballBat.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\BaseballBat.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\BaseballBat.cs",
@@ -395,67 +400,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Items.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAAAjwAwAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T11:41:43.891Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ItemManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-01T08:10:44.832Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MonsterManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAQwAEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T20:32:46.64Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 10,
-              "Title": "Monster.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAUwC8AAAAAAAAAAAAAAA==",
+              "Title": "Player.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
+              "ViewState": "AgIAAFUDAAAAAAAAAAAswGIDAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T16:16:07.597Z"
+              "WhenOpened": "2026-03-05T09:57:36.814Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "MonsterServerManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAvwAMAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T19:41:03.834Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "TreasureResource.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\TreasureResource.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\TreasureResource.cs",
@@ -467,7 +424,119 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Ore.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Ore.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\Ore.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Ore.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\Ore.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T10:29:25.39Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Items.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAmwCwAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-09T11:41:43.891Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "PacketId.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\PacketId.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\PacketId.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAAD0AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T19:07:17.389Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "IClientSender.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAewBgAAABWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-09T15:16:49.725Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "MonsterServerManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAvwAMAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T19:41:03.834Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Monster.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAUwC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T16:16:07.597Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MonsterManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
+              "ViewState": "AgIAAOYAAAAAAAAAAAAUwAEBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T20:32:46.64Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MonsterCatalog.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterCatalog.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterCatalog.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterCatalog.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterCatalog.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-23T16:58:03.752Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ResourceCatalog.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceCatalog.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceCatalog.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceCatalog.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceCatalog.cs",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAC4AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-23T17:01:14.443Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "ItemCatalog.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\ItemCatalog.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\ItemCatalog.cs",
@@ -475,12 +544,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Items\\ItemCatalog.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-14T07:34:21.149Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-14T07:34:21.149Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "DesertWorm.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
@@ -492,19 +560,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ResourceManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceManager.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAAwCcAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-27T13:34:19.162Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "DesertWormAnimator.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
@@ -516,7 +572,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "ResourceObject.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceObject.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceObject.cs",
@@ -528,19 +584,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Ore.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Ore.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\Ore.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Ore.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Planet\\Ore.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T10:29:25.39Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "BaseNetSession.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\BaseNetSession.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\BaseNetSession.cs",
@@ -552,7 +596,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "HPUIController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\HPUIController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\HPUIController.cs",
@@ -564,7 +608,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "SoundManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\SoundManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\SoundManager.cs",
@@ -576,7 +620,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 20,
               "Title": "PeerStatManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\PeerStatManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\PeerStatManager.cs",
@@ -588,7 +632,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "DamageTrigger.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\DamageTrigger.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\DamageTrigger.cs",
@@ -600,19 +644,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "PacketId.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\PacketId.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\PacketId.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAAAGAAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T19:07:17.389Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
               "Title": "ResourceServerManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceServerManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceServerManager.cs",
@@ -624,7 +656,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 23,
               "Title": "HostPacketHandler.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
@@ -636,7 +668,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 24,
               "Title": "PacketSender.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
@@ -648,7 +680,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "StageUIManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\StageSelect\\StageUIManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\StageSelect\\StageUIManager.cs",
@@ -660,7 +692,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "HostStatManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\HostStatManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\HostStatManager.cs",
@@ -672,7 +704,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "WormTrap.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\WormTrap.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\WormTrap.cs",
@@ -684,7 +716,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "StageManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\StageSelect\\StageManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\StageSelect\\StageManager.cs",
@@ -696,7 +728,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "ObjectsGravityController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ObjectsGravityController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\ObjectsGravityController.cs",
@@ -708,7 +740,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "PlayerAnimator.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerAnimator.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerAnimator.cs",
@@ -720,7 +752,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 32,
               "Title": "PlanetGravity.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\PlanetGravity.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\PlanetGravity.cs",
@@ -732,7 +764,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 33,
               "Title": "Shovel.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Shovel.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Shovel.cs",
@@ -744,7 +776,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "Define.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Define.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\Define.cs",
@@ -756,7 +788,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "TreeResource.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\TreeResource.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\TreeResource.cs",
@@ -768,7 +800,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 36,
               "Title": "MonsterEnum.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
@@ -780,7 +812,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 41,
               "Title": "SpaceshipAssembly.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
@@ -792,7 +824,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 40,
               "Title": "Furnace.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\Furnace.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\Furnace.cs",
@@ -804,7 +836,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 37,
               "Title": "Pickaxe.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Pickaxe.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Pickaxe.cs",
@@ -816,7 +848,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 39,
               "Title": "CraftBubbleController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\CraftBubbleController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\CraftBubbleController.cs",
@@ -828,7 +860,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 43,
               "Title": "FurnaceServerManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceServerManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\FurnaceServerManager.cs",
@@ -840,7 +872,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 42,
               "Title": "HostSender.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
@@ -852,7 +884,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 38,
               "Title": "FurnaceObject.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceObject.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\FurnaceObject.cs",
@@ -864,7 +896,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 44,
               "Title": "PlayManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PlayManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\PlayManager.cs",
@@ -876,7 +908,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 45,
               "Title": "PeerSender.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
@@ -888,19 +920,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
-              "Title": "IClientSender.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAMwB4AAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T15:16:49.725Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 46,
               "Title": "IHostSender.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
@@ -912,7 +932,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 47,
               "Title": "Axe.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
@@ -924,7 +944,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 51,
               "Title": "FootstepEmitter.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\FootstepEmitter.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\FootstepEmitter.cs",
@@ -936,7 +956,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 52,
               "Title": "GachaManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Gacha\\GachaManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gacha\\GachaManager.cs",
@@ -948,7 +968,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 50,
               "Title": "PlayerLifeServerManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerLifeServerManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerLifeServerManager.cs",
@@ -960,7 +980,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 48,
               "Title": "OtherPlayers.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
@@ -972,7 +992,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 53,
               "Title": "GameRuleManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\GameRule\\GameRuleManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameRule\\GameRuleManager.cs",
@@ -984,7 +1004,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 49,
               "Title": "MovingObject.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
@@ -996,7 +1016,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 54,
               "Title": "PeerPacketHandler.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
@@ -1008,7 +1028,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 55,
               "Title": "PlayerItemSystem.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
@@ -1020,7 +1040,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 57,
               "Title": "PeerPlayerStat.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\PeerPlayerStat.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\PeerPlayerStat.cs",
@@ -1032,7 +1052,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 56,
               "Title": "PlayerStat.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
@@ -1044,7 +1064,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 58,
               "Title": "HostPlayerStat.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\HostPlayerStat.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\HostPlayerStat.cs",
@@ -1056,7 +1076,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 59,
               "Title": "PlayerTPCamera.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerTPCamera.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerTPCamera.cs",
@@ -1068,7 +1088,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 60,
               "Title": "ConnectManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
@@ -1080,7 +1100,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 61,
               "Title": "PacketHandler.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
@@ -1092,7 +1112,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 63,
               "Title": "FurnaceClientManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceClientManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\FurnaceClientManager.cs",
@@ -1104,7 +1124,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 62,
               "Title": "RoomMembershipTracker.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\RoomMembershipTracker.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\RoomMembershipTracker.cs",
@@ -1116,7 +1136,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 64,
               "Title": "BaseStatManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\BaseStatManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\BaseStatManager.cs",
@@ -1128,7 +1148,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 65,
               "Title": "MonoBehaviorSingleton.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Generic\\MonoBehaviorSingleton.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\Generic\\MonoBehaviorSingleton.cs",
@@ -1140,7 +1160,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 66,
               "Title": "GameManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\GameManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\GameManager.cs",
@@ -1152,7 +1172,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 82,
+              "DocumentIndex": 83,
               "Title": "Tree.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Tree.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\Tree.cs",
@@ -1164,7 +1184,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 67,
               "Title": "MainMultiPlayHandler.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\UI\\Main\\MainMultiPlayHandler.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\Main\\MainMultiPlayHandler.cs",
@@ -1176,7 +1196,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 68,
               "Title": "LoginManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\LoginManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\LoginManager.cs",
@@ -1188,7 +1208,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 69,
+              "DocumentIndex": 70,
               "Title": "SmeltingRecipe.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\SmeltingRecipe.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\SmeltingRecipe.cs",
@@ -1200,7 +1220,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 69,
               "Title": "SmeltingRecipeManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
@@ -1212,7 +1232,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 70,
+              "DocumentIndex": 71,
               "Title": "OxygenUIController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\OxygenUIController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\OxygenUIController.cs",
@@ -1224,7 +1244,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 85,
+              "DocumentIndex": 86,
               "Title": "OtherPlayerStats.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayerStats.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayerStats.cs",
@@ -1236,7 +1256,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 71,
+              "DocumentIndex": 72,
               "Title": "PacketDispatcher.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
@@ -1248,7 +1268,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 72,
+              "DocumentIndex": 73,
               "Title": "OtherPlayersGravityController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayersGravityController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayersGravityController.cs",
@@ -1260,7 +1280,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 83,
+              "DocumentIndex": 84,
               "Title": "PeerNetManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\PeerNetManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\PeerNetManager.cs",
@@ -1272,7 +1292,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 84,
+              "DocumentIndex": 85,
               "Title": "HostNetManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\HostNetManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\HostNetManager.cs",
@@ -1284,7 +1304,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 73,
+              "DocumentIndex": 74,
               "Title": "PacketManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PacketManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\PacketManager.cs",
@@ -1296,7 +1316,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 76,
+              "DocumentIndex": 77,
               "Title": "TimerController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\TimerController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\TimerController.cs",
@@ -1308,7 +1328,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 75,
+              "DocumentIndex": 76,
               "Title": "PlayerInput.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerInput.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerInput.cs",
@@ -1320,7 +1340,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 74,
+              "DocumentIndex": 75,
               "Title": "SceneLoader.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\SceneLoader.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\SceneLoader.cs",
@@ -1332,7 +1352,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 80,
+              "DocumentIndex": 81,
               "Title": "Crafting.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\Crafting.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\Crafting.cs",
@@ -1344,7 +1364,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 79,
+              "DocumentIndex": 80,
               "Title": "UILookCamera.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\UILookCamera.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\UILookCamera.cs",
@@ -1356,7 +1376,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 77,
+              "DocumentIndex": 78,
               "Title": "OxygenRecoverTrigger.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\OxygenRecoverTrigger.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\OxygenRecoverTrigger.cs",
@@ -1368,7 +1388,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 81,
+              "DocumentIndex": 82,
               "Title": "NetManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\NetManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\NetManager.cs",
@@ -1380,7 +1400,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 78,
+              "DocumentIndex": 79,
               "Title": "HUDManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\HUDManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\HUDManager.cs",
