@@ -173251,6 +173251,10 @@ PrefabInstance:
       propertyPath: resourceKey
       value: Tree
       objectReference: {fileID: 0}
+    - target: {fileID: -9158624140659020900, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
+      propertyPath: resourceKey
+      value: Tree
+      objectReference: {fileID: 0}
     - target: {fileID: 1874630840073146240, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.049999997
