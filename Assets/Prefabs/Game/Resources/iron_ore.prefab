@@ -110,8 +110,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.53, y: 1.39, z: 1}
+  m_Center: {x: -0.15, y: 0.77, z: 0.26}
 --- !u!114 &8811113944146348454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +125,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: iron_ore
+  resourceKey: iron_ore
   orePrefab: {fileID: 5248076910442429696, guid: f7c4b2e8910a4cf6a8d3e2b1c0f9e8d7, type: 3}
   maxDrops: 1

@@ -70,6 +70,9 @@ public static class Define
         public const string RESPAWN_SPOT = "RespawnSpot";    
         public const string PLANET = "Planet";
         public const string TREE = "Tree";
+        public const string TREASURE_TROVE = "TreasureTrove";
+        public const string MONSTER = "Monster";
+        public const string WEAPON = "Weapon";
     }
 
     public static class Layer
