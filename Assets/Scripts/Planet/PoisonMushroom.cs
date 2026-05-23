@@ -12,6 +12,12 @@ public class PoisonMushroom : MonoBehaviour
     [SerializeField] private Vector3 cloudSpawnEulerOffset = Vector3.zero;
     [SerializeField] private GameObject explodeEffectPrefab;
     [SerializeField] private bool destroyOnExplode = true;
+    
+    [Header("Explosion SFX")]
+    [SerializeField] private AudioClip explodeSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolume = 0.9f;
+    [SerializeField, Range(0.5f, 1.5f)] private float minPitch = 0.95f;
+    [SerializeField, Range(0.5f, 1.5f)] private float maxPitch = 1.05f;
 
     private SphereCollider _trigger;
     private bool _exploded;
@@ -41,6 +47,7 @@ public class PoisonMushroom : MonoBehaviour
 
         Vector3 spawnPos = transform.position + cloudSpawnOffset;
         Quaternion spawnRot = transform.rotation * Quaternion.Euler(cloudSpawnEulerOffset);
+        PlayExplodeSfx(spawnPos);
 
         if (explodeEffectPrefab != null)
             Instantiate(explodeEffectPrefab, spawnPos, spawnRot);
@@ -58,5 +65,27 @@ public class PoisonMushroom : MonoBehaviour
         _trigger.enabled = false;
         foreach (var r in GetComponentsInChildren<Renderer>(true))
             r.enabled = false;
+    }
+
+    private void PlayExplodeSfx(Vector3 position)
+    {
+        if (explodeSfx == null)
+            return;
+
+        var sfxObj = new GameObject("PoisonMushroomSfx");
+        sfxObj.transform.position = position;
+
+        AudioSource source = sfxObj.AddComponent<AudioSource>();
+        source.clip = explodeSfx;
+        source.volume = sfxVolume;
+        source.pitch = Random.Range(minPitch, maxPitch);
+        source.spatialBlend = 1f;
+        source.rolloffMode = AudioRolloffMode.Linear;
+        source.minDistance = 2f;
+        source.maxDistance = 18f;
+        source.Play();
+
+        float lifeTime = explodeSfx.length / Mathf.Max(0.01f, source.pitch) + 0.05f;
+        Destroy(sfxObj, lifeTime);
     }
 }
