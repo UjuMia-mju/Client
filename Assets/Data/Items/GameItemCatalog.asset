@@ -28,7 +28,7 @@ MonoBehaviour:
   - key: iron_bar
     displayName: "\uCCA0\uAD34"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 5248076910442429696, guid: cb49ccd24e24f9246a90a9bf2f3fcc68, type: 3}
+    prefab: {fileID: 0}
   - key: iron
     displayName: "\uCCA0\uAD11\uC11D"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
@@ -49,23 +49,7 @@ MonoBehaviour:
     displayName: "\uD14C\uC2A4\uD2B8\uD050\uBE0C3"
     icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
     prefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
-  - key: Jewel
-    displayName: "\uBCF4\uC11D"
-    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
-    prefab: {fileID: 5248076910442429696, guid: f2123da969e261c4e9e1f22b6f2ef327, type: 3}
-  - key: Pickaxe
-    displayName: "\uACE1\uAD2D\uC774"
-    icon: {fileID: 0}
-    prefab: {fileID: 0}
-  - key: Axe
-    displayName: "\uB3C4\uB07C"
-    icon: {fileID: 0}
-    prefab: {fileID: 0}
-  - key: Shovel
-    displayName: "\uC0BD"
-    icon: {fileID: 0}
-    prefab: {fileID: 0}
-  - key: Baseballbat
-    displayName: "\uC57C\uAD6C\uBC30\uD2B8"
+  - key: CustomTool
+    displayName: "\uB3C4\uAD6C\uB4E4"
     icon: {fileID: 0}
     prefab: {fileID: 0}

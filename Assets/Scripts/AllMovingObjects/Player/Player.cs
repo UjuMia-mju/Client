@@ -88,13 +88,10 @@ public class Player : MovingObject
         else
         {
             playerStat = gameObject.AddComponent<PeerPlayerStat>();
-            // 피어는 _playerId가 S_PLAYER_ENTER 수신 후에 확정되므로 확정된 시점에 등록한다.
-            // 등록되어야 PeerStatManager.UpdateStat → PlayerStat.OnHpChanged 까지 전파되어 HP UI가 갱신된다.
-            StartCoroutine(RegisterPeerStatWhenIdReady());
         }
 
         // ==== 임시 UI 초기화 ===
-        hpUIController.SetPlayerStat(playerStat);
+        hpUIController.playerStat = playerStat;
         oxygenUIController.playerStat = playerStat;
 
         hpUIController.gameObject.SetActive(true);
@@ -287,22 +284,13 @@ public class Player : MovingObject
         {
             GroundDetectingWithRaycast(groundMask | walkable | hillMask);
 
-            // 들고 있는 도구가 Shovel이면 Mining 대신 Digging 애니메이션을 재생
-            bool isHoldingShovel = playerItemSystem != null
-                && playerItemSystem.currentEquipItem != null
-                && playerItemSystem.currentEquipItem.GetComponent<Shovel>() != null;
-
-            bool isDigging = isUsingTool && isHoldingShovel;
-            bool isMining = isUsingTool && !isHoldingShovel;
-
             playerAnimator.PlayerAnimation(playerInput.axisResultDir,
                 playerInput.GetIsJumping(),
                 isGrounded,
                 inputFreeze,
-                isMining,
+                 isUsingTool,
                 IsHoldingThrowInput(),
-                WasThrowReleasedThisFrame(),
-                isDigging);
+                WasThrowReleasedThisFrame());
 
             KeyEInteract();
             KeyLeftClickInteract();
@@ -651,11 +639,6 @@ public class Player : MovingObject
                 Axe tempA = playerItemSystem.currentEquipItem.GetComponent<Axe>();
                 tempA.ResetHasChopped();
             }
-            else if (playerItemSystem.currentEquipItem.GetComponent<Shovel>() != null)
-            {
-                Shovel tempS = playerItemSystem.currentEquipItem.GetComponent<Shovel>();
-                tempS.ResetHasDug();
-            }
         }
 
         isUsingTool = false;
@@ -866,15 +849,6 @@ public class Player : MovingObject
 
         if (footstepEmitter != null)
             footstepEmitter.OnFootstep();
-    }
-
-    private IEnumerator RegisterPeerStatWhenIdReady()
-    {
-        while (NetManager.Instance == null || NetManager.Instance._playerId == 0)
-            yield return null;
-
-        if (PeerStatManager.Instance != null && playerStat != null)
-            PeerStatManager.Instance.RegisterPlayer((ulong)NetManager.Instance._playerId, playerStat);
     }
 
 }

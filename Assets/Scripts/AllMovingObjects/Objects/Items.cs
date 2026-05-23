@@ -29,14 +29,9 @@ public class Items : MovingObject
 
     private void Start()
     {
-        // [수정] 씬 배치 아이템은 ItemManager.Awake/Start 에서 일괄 사전 등록한다.
-        //       여기서 RegisterItem 을 호출하면 피어 측에서 itemId 가 호스트와 다르게 부여되어
-        //       PICKUP/DROP/MOVE 패킷 ID 매칭이 어긋남(야구배트 2개, 삽이 따라다님 등 증상).
-        if (!isScenePlacedItem)
-        {
-            ItemManager.Instance.RegisterItem(this);
-        }
+        // [삭제] gameObject.name 정규식 파싱 — 키는 ItemManager.RegisterItem이 카탈로그에서 채움
 
+        ItemManager.Instance.RegisterItem(this);
         _planet = FindFirstObjectByType<PlanetGravity>();
         _targetPos = transform.position;
         _targetRot = transform.rotation;
@@ -64,8 +59,15 @@ public class Items : MovingObject
             }
         }
 
-        // [삭제] 씬 배치 아이템 BroadcastSpawn 도 ItemManager 가 담당하도록 이동.
-        //       (런타임 스폰은 SpawnItemAndBroadcast 경로로 처리)
+        if (isScenePlacedItem && ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+            StartCoroutine(BroadcastSpawnNextFrame());
+    }
+
+    private System.Collections.IEnumerator BroadcastSpawnNextFrame()
+    {
+        yield return null;
+        PacketSender.Instance.SendObjectSpawn(this, transform.position, transform.rotation);
+        Debug.Log($"[Items] 씬 배치 아이템 동기화: itemId={itemId}, key={itemStringKey}");
     }
 
     private void FixedUpdate()

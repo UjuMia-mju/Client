@@ -31,14 +31,13 @@ public class HUDManager : MonoBehaviour
     
     void EnsureAnimator()
     {
-        if (animator != null)
-            return;
+        if (animator != null) return;
         animator = GetComponent<UIPanelAnimator>();
-        if (animator != null)
-            return;
+        if (animator != null) return;
         animator = UIPanelAnimator.Instance;
-        if (animator == null)
-            Debug.LogWarning($"{nameof(HUDManager)}: {nameof(UIPanelAnimator)} 싱글톤이 없습니다. SceneLoader Fade가 먼저 로드되어야 합니다.", this);
+        if (animator != null) return;
+        var go = new GameObject("UIPanelAnimator");
+        animator = go.AddComponent<UIPanelAnimator>();
     }
 
     private void Update()

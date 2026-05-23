@@ -562,36 +562,3 @@ message S_PLAYER_HIT{
 	uint64 victim_player_id = 1;
 	float freeze_seconds = 2;
 }
-
-// 몬스터 생성
-message S_MONSTER_SPAWN{
-	int32 monster_id = 1;
-	int32 monster_key = 2;
-	PosInfo pos = 3;
-	RotInfo rot = 4;
-}
-
-// 몬스터 애니메이션
-message S_MONSTER_ANIMATION{
-	int32 monster_id = 1;
-	int32 state = 2;
-}
-
-// 몬스터 움직임 (필요 시 사용. 아직은 땅에서 나오는 지렁이라 어떻게 사용할지 모릅니다.)
-message S_MONSTER_MOVE{
-	int32 monster_id = 1;
-	PosInfo pos = 2;
-	RotInfo rot = 3;
-}
-
-// 몬스터 피격
-message S_MONSTER_HIT{
-	int32 monster_id = 1;
-	int32 current_hp = 2;
-	int32 damage = 3;
-}
-
-// 몬스터 제거
-message S_MONSTER_DEAD{
-	int32 monster_id = 1;
-}

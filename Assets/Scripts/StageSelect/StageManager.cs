@@ -657,17 +657,4 @@ public class StageManager : MonoBehaviour
         _guestPreviewNode = null;
         yield break;
     }
-
-    /// <summary>
-    /// 게스트 전용: 호스트가 보낸 S_HOST_SHOW_STAGE의 (MapId, Chapter, Stage)를
-    /// 미리 저장해 두었다가, S_GAME_READY_TO_START 수신 시 같은 씬으로 이동하도록 한다.
-    /// </summary>
-    public void RememberGuestPendingStage(int mapId, int chapter, int stageNum)
-    {
-        if (mapId == 0) return;
-        _pendingMapId = mapId;
-        _pendingChapter = chapter;
-        _pendingStageNum = stageNum;
-        Debug.Log($"[StageManager] (Guest) 호스트가 본 스테이지 펜딩 저장: MapId={mapId}, Chapter={chapter}, Stage={stageNum}");
-    }
 }
