@@ -89,11 +89,5 @@
     PKT_S_PLAYER_DEAD = 2017,
     PKT_S_PLAYER_REVIVE = 2018,
     PKT_S_RETURN_TO_STAGE_SELECT = 2019,
-    PKT_S_PLAYER_HIT = 2020,
-
-    // 다른분들이랑 겹칠거 같아서 4스테이지라는 의미의 4천번대부터 시작합니다. 추가 패킷입니다.
-    PKT_S_MONSTER_SPAWN = 4001,
-    PKT_S_MONSTER_DEAD = 4002,
-    PKT_S_MONSTER_ANIMATION = 4003,
-    PKT_S_MONSTER_MOVE = 4004
+    PKT_S_PLAYER_HIT = 2020
 }

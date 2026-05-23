@@ -8,9 +8,6 @@ public class FurnaceObject : MonoBehaviour
 
     [Header("Visuals & Effects")]
     [SerializeField] private ParticleSystem fireEffect;
-    [SerializeField] private Light fireLight;
-    [SerializeField] private float fireLightIdleIntensity = 80f;
-    [SerializeField] private float fireLightWorkingIntensity = 200f;
     [SerializeField] private AudioSource workingSound;
     [SerializeField] private Image progressBar; // 시각적 타이머용 UI (인스펙터에서 연결)
     [SerializeField] private Image finishImage; // 제련 완료 시 표시할 이미지 (인스펙터에서 연결)
@@ -23,11 +20,6 @@ public class FurnaceObject : MonoBehaviour
     private float item_throw_force = 200f;
     private void Start()
     {
-        if (fireLight == null)
-            fireLight = transform.Find("FireLight")?.GetComponent<Light>();
-
-        SetFireLightWorking(false);
-
         // 진행 이미지 초기 상태 설정 (투명하게 숨김)
         if (progressBar != null)
         {
@@ -90,7 +82,6 @@ public class FurnaceObject : MonoBehaviour
 
         // 1. 이펙트 및 사운드 재생
         if (fireEffect != null) fireEffect.Play();
-        SetFireLightWorking(true);
         if (workingSound != null) workingSound.Play();
 
         // 2. 프로그레스 바 UI 등 시각적 타이머 설정 (클라이언트는 시각적 처리만)
@@ -130,7 +121,6 @@ public class FurnaceObject : MonoBehaviour
         hasResult = true;
 
         if (fireEffect != null) fireEffect.Stop();
-        SetFireLightWorking(false);
         if (workingSound != null) workingSound.Stop();
 
         if (visualTimerCoroutine != null)
@@ -207,14 +197,5 @@ public class FurnaceObject : MonoBehaviour
             finishImage.gameObject.SetActive(false);
 
         Debug.Log($"[FurnaceObject] ({furnaceId}) 피어 - 수거 상태 초기화 완료.");
-    }
-
-    private void SetFireLightWorking(bool working)
-    {
-        if (fireLight == null)
-            return;
-
-        fireLight.enabled = true;
-        fireLight.intensity = working ? fireLightWorkingIntensity : fireLightIdleIntensity;
     }
 }

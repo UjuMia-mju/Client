@@ -22,9 +22,12 @@ MonoBehaviour:
   - key: wood
     displayName: "\uB098\uBB34"
     icon: {fileID: 235622859, guid: 9041821ab0205ff48b37249f69e48965, type: 3}
+  - key: iron
+    displayName: "\uCCA0\uAD11\uC11D"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
   - key: iron_bar
     displayName: "\uCCA0\uAD34"
-    icon: {fileID: 1884436279, guid: 017532ddcc907934c92e6fc148ab61af, type: 3}
-  - key: Jewel
-    displayName: "\uBCF4\uC11D"
-    icon: {fileID: -936211341, guid: ae4afa62542c7f349a954f9176a2478d, type: 3}
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+  - key: SmeltedTestCube
+    displayName: "\uB179\uC778\uD14C\uC2A4\uD2B8\uD050\uBE0C"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Protocol;
 
@@ -62,36 +61,6 @@ public class PeerStatManager : BaseStatManager<PeerStatManager>
             _playerStats.Add(remoteId, new PlayerStatState(5));
             Debug.Log($"[PeerStatManager] 원격 플레이어 등록: playerId={remoteId}");
         }
-    }
-
-    /// <summary>
-    /// 로컬 피어 본인의 PlayerStat을 stat 슬롯에 바인딩한다.
-    /// - boundPlayer 연결: PlayerStatState.CallOnHpChanged() → PlayerStat.OnHpChanged 까지 전파.
-    /// - statData 공유: 호스트가 S_PLAYER_STAT으로 내려준 hp/oxygen이 PlayerStat.statData에 즉시 반영.
-    /// 호스트의 HostStatManager.RegisterPlayer와 동일한 역할.
-    /// </summary>
-    public void RegisterPlayer(ulong playerId, PlayerStat stat)
-    {
-        if (stat == null) return;
-
-        // 동일 stat이 다른 키로 남아 있으면 정리 (id가 늦게 확정되는 경우 대비)
-        var staleKeys = _playerStats
-            .Where(kv => kv.Value != null && kv.Value.boundPlayer == stat && kv.Key != playerId)
-            .Select(kv => kv.Key)
-            .ToList();
-        foreach (var k in staleKeys)
-            _playerStats.Remove(k);
-
-        if (_playerStats.TryGetValue(playerId, out var existing) && existing != null)
-        {
-            existing.statData = stat.statData;
-            existing.boundPlayer = stat;
-        }
-        else
-        {
-            _playerStats[playerId] = new PlayerStatState(5) { statData = stat.statData, boundPlayer = stat };
-        }
-        Debug.Log($"[PeerStatManager] RegisterPlayer: {playerId}");
     }
 
     public IReadOnlyDictionary<ulong, PlayerStatState> GetAllRemoteStats() => _playerStats;

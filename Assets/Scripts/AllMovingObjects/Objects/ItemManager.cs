@@ -7,7 +7,6 @@ using UnityEditor;
 using System.Linq;
 #endif
 
-[DefaultExecutionOrder(-100)]
 public class ItemManager : MonoBehaviour
 {
     public static ItemManager Instance { get; private set; }
@@ -21,19 +20,6 @@ public class ItemManager : MonoBehaviour
 
     private static int _nextItemId = 1;
 
-    // 씬 배치 아이템: 호스트는 ID 부여 후 일괄 브로드캐스트, 피어는 매칭 큐로 대기.
-    private readonly List<Items> _pendingScenePlacedItems = new List<Items>();
-    // 피어가 매칭 큐 구성 전에 도착한 S_OBJECT_SPAWN 보류 버퍼.
-    private struct PendingSpawn
-    {
-        public int itemId;
-        public string key;
-        public Vector3 pos;
-        public Quaternion rot;
-    }
-    private readonly List<PendingSpawn> _pendingNetworkSpawns = new List<PendingSpawn>();
-    private bool _scenePlacedRegistered;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -43,71 +29,11 @@ public class ItemManager : MonoBehaviour
         }
         Instance = this;
         _nextItemId = 1;
-
-        // 씬에 배치된 아이템 사전 수집. ID 부여는 Start 에서(호스트/피어 역할 확정 후) 수행.
-        Items[] placed = FindObjectsByType<Items>(FindObjectsSortMode.None);
-        foreach (Items it in placed)
-        {
-            if (it == null) continue;
-            if (!it.IsScenePlacedItem) continue;
-
-            // 액터에 붙은 도구(Player/OtherPlayers 자식)는 액터와 함께 모든 머신에 존재.
-            // 네트워크 동기화 대상에서 제외 (DesertWorm/플레이어 도구 등).
-            if (it.GetComponentInParent<Player>() != null) continue;
-            if (it.GetComponentInParent<OtherPlayers>() != null) continue;
-
-            _pendingScenePlacedItems.Add(it);
-        }
-    }
-
-    private IEnumerator Start()
-    {
-        // ConnectManager.SetHostRole / PacketSender.Init 완료 보장.
-        yield return null;
-
-        bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
-
-        if (isHost)
-        {
-            foreach (Items it in _pendingScenePlacedItems)
-            {
-                if (it == null) continue;
-                if (string.IsNullOrEmpty(it.itemStringKey))
-                {
-                    Debug.LogError($"[ItemManager] 씬 배치 아이템 '{it.name}' 의 itemKey 가 비어 있습니다.", it);
-                    continue;
-                }
-
-                int newId = _nextItemId++;
-                it.itemId = newId;
-                itemDic[newId] = it;
-
-                if (PacketSender.Instance != null)
-                {
-                    PacketSender.Instance.SendObjectSpawn(it, it.transform.position, it.transform.rotation);
-                    Debug.Log($"[ItemManager] 씬 배치 아이템 동기화: id={newId}, key={it.itemStringKey}");
-                }
-            }
-        }
-        // 피어는 itemId 를 부여하지 않고 매칭 큐로만 둔다 (_pendingScenePlacedItems 유지).
-
-        _scenePlacedRegistered = true;
-
-        // 피어: 등록 전에 먼저 도착한 스폰 패킷 일괄 처리
-        if (!isHost && _pendingNetworkSpawns.Count > 0)
-        {
-            PendingSpawn[] buffered = _pendingNetworkSpawns.ToArray();
-            _pendingNetworkSpawns.Clear();
-            foreach (PendingSpawn s in buffered)
-                SpawnItemFromNetwork(s.itemId, s.key, s.pos, s.rot);
-        }
     }
 
     public void RegisterItem(Items item)
     {
-        if (item == null) return;
-
-        // 카탈로그에 등록된 키인지 검증만 수행
+        // 카탈로그에 등록된 키인지 검증만 수행 (키 자체는 Items가 인스펙터에서 직접 가짐)
         if (itemCatalog != null && !string.IsNullOrEmpty(item.itemStringKey))
         {
             if (!itemCatalog.TryGet(item.itemStringKey, out _))
@@ -127,9 +53,7 @@ public class ItemManager : MonoBehaviour
 
     public void UnregisterItem(Items item)
     {
-        if (item == null) return;
-        // ★ dic[item.itemId] 가 다른 아이템일 수 있으므로 값 체크 후 제거.
-        if (itemDic.TryGetValue(item.itemId, out Items mapped) && ReferenceEquals(mapped, item))
+        if (itemDic.ContainsKey(item.itemId))
         {
             itemDic.Remove(item.itemId);
             Debug.Log($"✓ Unregistered item: {item.name} (id={item.itemId})");
@@ -153,28 +77,18 @@ public class ItemManager : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// ★ 안전 버전: dic 값을 확인하여 다른 아이템의 매핑을 실수로 삭제하지 않는다.
-    /// </summary>
     public void OverrideItemId(Items item, int newId)
     {
-        if (item == null) return;
-
-        // 1) item 의 기존 dic 매핑이 본인을 가리킬 때에만 제거
-        if (itemDic.TryGetValue(item.itemId, out Items mappedOld) && ReferenceEquals(mappedOld, item))
+        if (itemDic.ContainsKey(item.itemId))
             itemDic.Remove(item.itemId);
 
-        // 2) newId 슬롯에 이미 다른 아이템이 있으면 그 아이템의 itemId 를 0(미할당)으로 되돌리고 로그
-        if (itemDic.TryGetValue(newId, out Items mappedNew) && !ReferenceEquals(mappedNew, item))
-        {
-            Debug.LogWarning(
-                $"[ItemManager] OverrideItemId 충돌: id={newId} 슬롯이 '{mappedNew.name}' 에 잡혀 있어 해제됩니다.");
-            mappedNew.itemId = 0;
-            itemDic.Remove(newId);
-        }
-
         item.itemId = newId;
-        itemDic[newId] = item;
+
+        if (!itemDic.ContainsKey(newId))
+            itemDic.Add(newId, item);
+        else
+            itemDic[newId] = item;
+
         Debug.Log($"✓ OverrideItemId: {item.name} → id={newId}");
     }
 
@@ -182,28 +96,6 @@ public class ItemManager : MonoBehaviour
     {
         Debug.Log($"[ItemManager] SpawnItemFromNetwork: key={itemStringKey}, id={itemId}, pos={pos}");
 
-        bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
-
-        // 피어 측: 사전 등록이 끝나기 전에 도착한 스폰은 버퍼링.
-        if (!isHost && !_scenePlacedRegistered)
-        {
-            _pendingNetworkSpawns.Add(new PendingSpawn { itemId = itemId, key = itemStringKey, pos = pos, rot = rot });
-            return;
-        }
-
-        // 1) 씬 배치 매칭 큐 우선 검색 (피어 전용)
-        Items existingFromPending = FindPendingScenePlacedItem(itemStringKey, pos);
-        if (existingFromPending != null)
-        {
-            existingFromPending.itemId = itemId;
-            itemDic[itemId] = existingFromPending;
-            _pendingScenePlacedItems.Remove(existingFromPending);
-            existingFromPending.transform.SetPositionAndRotation(pos, rot);
-            Debug.Log($"[ItemManager] 씬 배치 아이템 ID 동기화 (피어): key={itemStringKey}, id={itemId}");
-            return;
-        }
-
-        // 2) 기존 등록 아이템 중 동일 키 매칭 (이전 동작 호환)
         Items existingItem = FindScenePlacedItem(itemStringKey, pos);
         if (existingItem != null)
         {
@@ -213,7 +105,6 @@ public class ItemManager : MonoBehaviour
             return;
         }
 
-        // 3) 일반 네트워크 스폰
         GameObject prefab = GetPrefabByKey(itemStringKey);
         if (prefab == null)
         {
@@ -226,25 +117,6 @@ public class ItemManager : MonoBehaviour
         Items itemComp = spawnedObj.GetComponent<Items>();
         if (itemComp != null)
             StartCoroutine(PostSpawnSetup(itemComp, itemId, pos, rot));
-    }
-
-    private Items FindPendingScenePlacedItem(string key, Vector3 pos)
-    {
-        Items best = null;
-        float bestDist = float.MaxValue;
-        foreach (Items it in _pendingScenePlacedItems)
-        {
-            if (it == null) continue;
-            if (it.itemStringKey != key) continue;
-
-            float d = Vector3.Distance(it.transform.position, pos);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = it;
-            }
-        }
-        return best;
     }
 
     private IEnumerator PostSpawnSetup(Items itemComp, int newId, Vector3 spawnOrigin, Quaternion spawnRot)
@@ -263,22 +135,13 @@ public class ItemManager : MonoBehaviour
 
     private Items FindScenePlacedItem(string key, Vector3 pos)
     {
-        Items best = null;
-        float bestDist = float.MaxValue;
         foreach (var item in itemDic.Values)
         {
-            if (item == null) continue;
-            if (!item.IsScenePlacedItem) continue;
-            if (item.itemStringKey != key) continue;
-
-            float d = Vector3.Distance(item.transform.position, pos);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = item;
-            }
+            if (item.itemStringKey == key && item.IsScenePlacedItem &&
+                Vector3.Distance(item.transform.position, pos) < 1f)
+                return item;
         }
-        return best;
+        return null;
     }
 
     public GameObject GetPrefabByKey(string key)
@@ -322,8 +185,10 @@ public class ItemManager : MonoBehaviour
 
 // ====================================================================
 // [에디터 통합] string 필드를 ItemCatalog 기반 드롭다운으로 그리는 어트리뷰트
+// 사용법: [SerializeField, ItemKey] private string itemKey;
 // ====================================================================
 
+/// <summary>string 필드 위에 붙이면 ItemCatalog 엔트리 드롭다운으로 인스펙터 표시.</summary>
 public class ItemKeyAttribute : PropertyAttribute { }
 
 #if UNITY_EDITOR
@@ -338,6 +203,7 @@ internal class ItemKeyDrawer : PropertyDrawer
             return;
         }
 
+        // 프로젝트 내 ItemCatalog 에셋 검색 (첫 번째 사용)
         string[] guids = AssetDatabase.FindAssets("t:ItemCatalog");
         if (guids.Length == 0)
         {
@@ -355,13 +221,16 @@ internal class ItemKeyDrawer : PropertyDrawer
             return;
         }
 
+        // 카탈로그 키 목록 추출
         string[] keys = catalog.Entries
             .Where(e => e != null && !string.IsNullOrWhiteSpace(e.key))
             .Select(e => e.key)
             .ToArray();
 
+        // 현재 값의 인덱스 찾기 (없으면 -1 → 미선택 표시)
         int currentIndex = System.Array.IndexOf(keys, property.stringValue);
 
+        // 카탈로그에서 사라진 값이면 "(Missing)" 항목 임시 추가
         string[] displayOptions = keys;
         if (currentIndex < 0 && !string.IsNullOrEmpty(property.stringValue))
         {
