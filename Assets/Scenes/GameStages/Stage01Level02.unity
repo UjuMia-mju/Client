@@ -19620,6 +19620,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1111271085}
     m_Modifications:
+    - target: {fileID: -9158624140659020900, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
+      propertyPath: resourceKey
+      value: Tree
+      objectReference: {fileID: 0}
     - target: {fileID: 1874630840073146240, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.049999997
@@ -22457,7 +22461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: LuminousStone
+  resourceKey: LuminousStone
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
   maxDrops: 2
 --- !u!65 &203470385
@@ -25741,7 +25745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: LuminousStone
+  resourceKey: LuminousStone
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
   maxDrops: 2
 --- !u!65 &226674629
@@ -45116,7 +45120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!65 &380060818
@@ -58738,7 +58742,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!1 &507249164
@@ -60048,6 +60052,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1111271085}
     m_Modifications:
+    - target: {fileID: -641490041308435627, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
+      propertyPath: resourceKey
+      value: Tree
+      objectReference: {fileID: 0}
     - target: {fileID: 1634768329775829378, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
       propertyPath: m_Name
       value: Tree.004 (1)
@@ -61453,7 +61461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!65 &533869308
@@ -97000,6 +97008,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1111271085}
     m_Modifications:
+    - target: {fileID: -3051276145399313687, guid: 1dfbe455d1a22c947b309a13a4d35e9a, type: 3}
+      propertyPath: resourceKey
+      value: Tree
+      objectReference: {fileID: 0}
     - target: {fileID: 2543580424488624242, guid: 1dfbe455d1a22c947b309a13a4d35e9a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.057656284
@@ -110540,7 +110552,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!65 &996931807
@@ -130653,7 +130665,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!65 &1183404949
@@ -138299,7 +138311,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: LuminousStone
+  resourceKey: LuminousStone
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
   maxDrops: 2
 --- !u!65 &1252156940
@@ -160635,7 +160647,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: LuminousStone
+  resourceKey: LuminousStone
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
   maxDrops: 2
 --- !u!65 &1448849318
@@ -173235,6 +173247,10 @@ PrefabInstance:
       propertyPath: maxDrops
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -9158624140659020900, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
+      propertyPath: resourceKey
+      value: Tree
+      objectReference: {fileID: 0}
     - target: {fileID: 1874630840073146240, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.049999997
@@ -176353,6 +176369,10 @@ PrefabInstance:
     - target: {fileID: 1506832764636065919, guid: c2224c0763d63dd46ab126ba55e03e68, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 48.196
+      objectReference: {fileID: 0}
+    - target: {fileID: 4239070991923920182, guid: c2224c0763d63dd46ab126ba55e03e68, type: 3}
+      propertyPath: resourceKey
+      value: Tree
       objectReference: {fileID: 0}
     - target: {fileID: 6116145625146412070, guid: c2224c0763d63dd46ab126ba55e03e68, type: 3}
       propertyPath: m_Name
@@ -180672,7 +180692,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!65 &1633647773
@@ -186108,7 +186128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!65 &1682075966
@@ -187140,7 +187160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!65 &1687786317
@@ -200953,6 +200973,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1111271085}
     m_Modifications:
+    - target: {fileID: -9158624140659020900, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
+      propertyPath: resourceKey
+      value: Tree
+      objectReference: {fileID: 0}
     - target: {fileID: 1874630840073146240, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.05
@@ -224480,7 +224504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: Ore
+  resourceKey: Ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
 --- !u!65 &2025604398
@@ -230315,6 +230339,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1111271085}
     m_Modifications:
+    - target: {fileID: -641490041308435627, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
+      propertyPath: resourceKey
+      value: Tree
+      objectReference: {fileID: 0}
     - target: {fileID: 1634768329775829378, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
       propertyPath: m_Name
       value: Tree.004
@@ -230618,7 +230646,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 2
-  itemStringKey: 
+  itemKey: 
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!54 &2079630442
@@ -239062,7 +239090,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ore
   resourceId: 0
-  resourceStringKey: LuminousStone
+  resourceKey: LuminousStone
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
   maxDrops: 2
 --- !u!65 &1391870731395625639
@@ -239326,7 +239354,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 1
-  itemStringKey: 
+  itemKey: 
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!33 &2999277202759928752
@@ -240025,7 +240053,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemStringKey: Pickaxe
+  itemKey: 
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!4 &7361710356795330066
@@ -240300,6 +240328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33bf5aa2265b18c4497101fee5c9f9c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlanetGravity
+  gravityMag: -10
 --- !u!4 &8569270318639906066
 Transform:
   m_ObjectHideFlags: 0
