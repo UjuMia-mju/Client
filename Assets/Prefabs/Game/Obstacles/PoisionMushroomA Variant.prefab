@@ -123,3 +123,7 @@ MonoBehaviour:
   cloudSpawnEulerOffset: {x: 90, y: 0, z: 0}
   explodeEffectPrefab: {fileID: 3020402201060267719, guid: 2147e1339a026d94fbe05cfec27e797b, type: 3}
   destroyOnExplode: 1
+  explodeSfx: {fileID: 8300000, guid: 7288cfaa26d4ba94a8c564d90a3fbe13, type: 3}
+  sfxVolume: 0.9
+  minPitch: 0.95
+  maxPitch: 1.05
