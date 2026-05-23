@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum AnimState
 {
@@ -10,7 +9,8 @@ public enum AnimState
     Mining,
     Throw_Ready,
     Throw_Release,
-    Suprise
+    Suprise,
+    Digging
 }
 
 public class PlayerAnimator : MonoBehaviour
@@ -30,24 +30,25 @@ public class PlayerAnimator : MonoBehaviour
         bool inputFreeze,
         bool isMining,
         bool isHoldingThrow,
-        bool isReleaseThrow)
+        bool isReleaseThrow,
+        bool isDigging)
     {
         // 기존 AnimationPar 구조를 유지하면서 던지기 상태만 우선 적용합니다.
-        if (isReleaseThrow && !isMining)
+        if (isReleaseThrow && !isMining && !isDigging)
         {
             state = AnimState.Throw_Release;
             anim.SetInteger("AnimationPar", (int)state);
             return;
         }
 
-        if (isHoldingThrow && !isMining)
+        if (isHoldingThrow && !isMining && !isDigging)
         {
             state = AnimState.Throw_Ready;
             anim.SetInteger("AnimationPar", (int)state);
             return;
         }
 
-        if (inputFreeze || isGrounded && moveDir == Vector3.zero && !isMining)
+        if (inputFreeze || isGrounded && moveDir == Vector3.zero && !isMining && !isDigging)
         {
             state = AnimState.Idle;
         }
@@ -55,6 +56,12 @@ public class PlayerAnimator : MonoBehaviour
         else if (isJumping && isGrounded)
         {
             state = AnimState.Jump;
+        }
+
+        // Shovel(Digging) 우선 — Mining과 동시에 켜질 일은 없도록 Player.cs에서 보장
+        else if (isDigging && isGrounded)
+        {
+            state = AnimState.Digging;
         }
 
         else if (isMining && isGrounded)

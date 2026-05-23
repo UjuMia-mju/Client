@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +29,7 @@ public class ItemCatalog : ScriptableObject
     public IReadOnlyList<Entry> Entries => entries;
 
     private Dictionary<string, Entry> _byKey;
+    private Dictionary<string, Entry> _byPrefabName; // [추가] 역방향 조회용
 
     private void EnsureCache()
     {
@@ -36,12 +37,16 @@ public class ItemCatalog : ScriptableObject
             return;
 
         _byKey = new Dictionary<string, Entry>(StringComparer.Ordinal);
+        _byPrefabName = new Dictionary<string, Entry>(StringComparer.Ordinal);
         foreach (Entry e in entries)
         {
             if (e == null || string.IsNullOrWhiteSpace(e.key))
                 continue;
 
             _byKey[e.key] = e;
+
+            if (e.prefab != null)
+                _byPrefabName[e.prefab.name] = e;
         }
     }
 
@@ -55,6 +60,7 @@ public class ItemCatalog : ScriptableObject
     public void InvalidateCache()
     {
         _byKey = null;
+        _byPrefabName = null;
     }
 
     public bool TryGet(string key, out Entry entry)
@@ -73,5 +79,31 @@ public class ItemCatalog : ScriptableObject
     public GameObject GetPrefab(string key)
     {
         return TryGet(key, out Entry e) ? e.prefab : null;
+    }
+
+    /// <summary>
+    /// [추가] 인스턴스 GameObject로부터 카탈로그 키를 역으로 찾는다.
+    /// "Iron_Ore(Clone)", "Iron_Ore (1)" 등의 접미사를 제거 후 프리팹 이름과 매칭.
+    /// 매칭 실패 시 null. (호출 측에서 에러 처리)
+    /// </summary>
+    public string ResolveKey(GameObject instance)
+    {
+        if (instance == null) return null;
+
+        string raw = instance.name;
+
+        // (Clone) 제거
+        int cloneIdx = raw.IndexOf("(Clone)", StringComparison.Ordinal);
+        if (cloneIdx >= 0) raw = raw.Substring(0, cloneIdx);
+
+        // " (1)" 같은 중복 인스턴스 접미사 제거
+        int parenIdx = raw.LastIndexOf(" (", StringComparison.Ordinal);
+        if (parenIdx > 0 && raw.EndsWith(")", StringComparison.Ordinal))
+            raw = raw.Substring(0, parenIdx);
+
+        raw = raw.Trim();
+
+        EnsureCache();
+        return _byPrefabName.TryGetValue(raw, out Entry e) ? e.key : null;
     }
 }

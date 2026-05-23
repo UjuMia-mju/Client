@@ -30,6 +30,10 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_PLAYER_REVIVE> OnPlayerReviveEvent;
     public event Action<S_RETURN_TO_STAGE_SELECT> OnReturnToStageSelectEvent;
     public event Action<S_PLAYER_HIT> OnPlayerHitEvent;
+    public event Action<S_MONSTER_SPAWN> OnMonsterSpawnEvent;
+    public event Action<S_MONSTER_DEAD> OnMonsterDeadEvent;
+    public event Action<S_MONSTER_ANIMATION> OnMonsterAnimationEvent;
+    public event System.Action<Protocol.S_MONSTER_MOVE> OnMonsterMoveEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -103,6 +107,18 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_PLAYER_HIT:
                 HandlePlayerHit(data);
+                break;
+            case PacketId.PKT_S_MONSTER_SPAWN:
+                HandleMonsterSpawn(data);
+                break;
+            case PacketId.PKT_S_MONSTER_DEAD:
+                HandleMonsterDead(data);
+                break;
+            case PacketId.PKT_S_MONSTER_ANIMATION:
+                HandleMonsterAnimation(data);
+                break;
+            case PacketId.PKT_S_MONSTER_MOVE:
+                HandleMonsterMove(data);
                 break;
             default:
                 Debug.LogWarning($"[HostPacketHandler] Unhandled packet ID: {packetId}");
@@ -259,5 +275,29 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         S_PLAYER_HIT packet = S_PLAYER_HIT.Parser.ParseFrom(data);
         OnPlayerHitEvent?.Invoke(packet);
+    }
+
+    private void HandleMonsterSpawn(byte[] data)
+    {
+        S_MONSTER_SPAWN packet = S_MONSTER_SPAWN.Parser.ParseFrom(data);
+        OnMonsterSpawnEvent?.Invoke(packet);
+    }
+
+    private void HandleMonsterDead(byte[] data)
+    {
+        S_MONSTER_DEAD packet = S_MONSTER_DEAD.Parser.ParseFrom(data);
+        OnMonsterDeadEvent?.Invoke(packet);
+    }
+
+    private void HandleMonsterAnimation(byte[] data)
+    {
+        S_MONSTER_ANIMATION packet = S_MONSTER_ANIMATION.Parser.ParseFrom(data);
+        OnMonsterAnimationEvent?.Invoke(packet);
+    }
+
+    private void HandleMonsterMove(byte[] data)
+    {
+        S_MONSTER_MOVE packet = S_MONSTER_MOVE.Parser.ParseFrom(data);
+        OnMonsterMoveEvent?.Invoke(packet);
     }
 }

@@ -3,7 +3,7 @@
 // 행성의 만유인력을 처리하는 클래스
 public class PlanetGravity : MonoBehaviour
 {
-    private float gravityMag = -10f;
+    public float gravityMag = -10f;
 
     // 플레이어의 만유인력 로직
     public void Attract(MovingObject body)

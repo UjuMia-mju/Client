@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+using System.Linq;
+#endif
 
 /// <summary>
 /// 씬에 배치된 채집 가능한 자원(광석/나무 등)을 ID로 관리합니다.
@@ -26,6 +30,9 @@ public class ResourceManager : MonoBehaviour
     [Header("Resource Prefab Table")]
     [SerializeField] private List<ResourcePrefabData> resourcePrefabList = new List<ResourcePrefabData>();
 
+    /// <summary>드로워에서 드롭다운 키 목록을 읽기 위한 공개 접근자.</summary>
+    public IReadOnlyList<ResourcePrefabData> PrefabList => resourcePrefabList;
+
     private static int _nextResourceId = 1;
 
     private void Awake()
@@ -44,11 +51,30 @@ public class ResourceManager : MonoBehaviour
     // ======================================================================
     public void RegisterResource(ResourceObject resource)
     {
+        // 프리팹 테이블에 등록된 키인지 검증만 수행
+        if (!string.IsNullOrEmpty(resource.resourceStringKey))
+        {
+            bool found = false;
+            foreach (var d in resourcePrefabList)
+            {
+                if (d != null && d.resourceStringKey == resource.resourceStringKey)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                Debug.LogError($"[ResourceManager] '{resource.name}' 의 키 '{resource.resourceStringKey}' 가 Resource Prefab Table에 등록되지 않았습니다.", resource);
+                return;
+            }
+        }
+
         resource.resourceId = _nextResourceId++;
         if (!_resourceDic.ContainsKey(resource.resourceId))
         {
             _resourceDic.Add(resource.resourceId, resource);
-            Debug.Log($"[ResourceManager] ✓ Registered resource: {resource.name} (id={resource.resourceId})");
+            Debug.Log($"[ResourceManager] ✓ Registered resource: {resource.name} (id={resource.resourceId}, key={resource.resourceStringKey})");
         }
     }
 
@@ -170,3 +196,64 @@ public class ResourceManager : MonoBehaviour
         return data?.prefab;
     }
 }
+
+// ====================================================================
+// [에디터 통합] string 필드를 ResourceManager.PrefabList 기반 드롭다운으로 그리는 어트리뷰트
+// 사용법: [SerializeField, ResourceKey] private string resourceKey;
+// ====================================================================
+
+/// <summary>string 필드 위에 붙이면 ResourceManager의 Resource Prefab Table 드롭다운으로 인스펙터 표시.</summary>
+public class ResourceKeyAttribute : PropertyAttribute { }
+
+#if UNITY_EDITOR
+[CustomPropertyDrawer(typeof(ResourceKeyAttribute))]
+internal class ResourceKeyDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        if (property.propertyType != SerializedPropertyType.String)
+        {
+            EditorGUI.LabelField(position, label.text, "[ResourceKey]는 string 필드에만 사용 가능");
+            return;
+        }
+
+        // 씬에서 ResourceManager 컴포넌트 찾기
+        // (씬이 열려있지 않거나 컴포넌트가 없으면 일반 텍스트 입력으로 폴백)
+        ResourceManager manager = Object.FindFirstObjectByType<ResourceManager>(FindObjectsInactive.Include);
+        if (manager == null || manager.PrefabList == null || manager.PrefabList.Count == 0)
+        {
+            EditorGUI.PropertyField(position, property, label);
+            return;
+        }
+
+        // 키 목록 추출
+        string[] keys = manager.PrefabList
+            .Where(d => d != null && !string.IsNullOrWhiteSpace(d.resourceStringKey))
+            .Select(d => d.resourceStringKey)
+            .ToArray();
+
+        if (keys.Length == 0)
+        {
+            EditorGUI.PropertyField(position, property, label);
+            return;
+        }
+
+        int currentIndex = System.Array.IndexOf(keys, property.stringValue);
+
+        // 테이블에서 사라진 값이면 "(Missing)" 표시 항목 임시 추가
+        string[] displayOptions = keys;
+        if (currentIndex < 0 && !string.IsNullOrEmpty(property.stringValue))
+        {
+            displayOptions = keys.Concat(new[] { $"(Missing) {property.stringValue}" }).ToArray();
+            currentIndex = displayOptions.Length - 1;
+        }
+
+        EditorGUI.BeginChangeCheck();
+        int selected = EditorGUI.Popup(position, label.text, currentIndex, displayOptions);
+        if (EditorGUI.EndChangeCheck() && selected >= 0 && selected < keys.Length)
+        {
+            property.stringValue = keys[selected];
+        }
+    }
+}
+#endif
