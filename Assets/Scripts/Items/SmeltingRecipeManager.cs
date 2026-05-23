@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using Protocol;
-using System.Collections.Generic;
 
 public class SmeltingRecipeManager : MonoBehaviour
 {
     public static SmeltingRecipeManager Instance { get; private set; }
 
-    [SerializeField]
-    private List<SmeltingRecipe> recipes; // 인스펙터에서 설정하거나 데이터 테이블에서 로드
+    [Header("제련 카탈로그 (레시피·결과 프리팹 단일 관리)")]
+    [SerializeField] private SmeltingCatalog smeltingCatalog;
+
+    public SmeltingCatalog Catalog => smeltingCatalog;
 
     private void Awake()
     {
@@ -18,13 +19,16 @@ public class SmeltingRecipeManager : MonoBehaviour
     // itemStringKey를 기반으로 레시피를 조회
     public bool TryGetRecipe(string inputItemStringKey, out SmeltingRecipe recipe)
     {
-        foreach (var r in recipes)
+        if (smeltingCatalog != null &&
+            smeltingCatalog.TryGetByInputKey(inputItemStringKey, out SmeltingCatalog.Entry e))
         {
-            if (r.inputItemStringKey == inputItemStringKey)
+            recipe = new SmeltingRecipe
             {
-                recipe = r;
-                return true;
-            }
+                inputItemStringKey = e.inputItemStringKey,
+                outputItemID = e.outputItemID,
+                smeltingTime = e.smeltingTime
+            };
+            return true;
         }
 
         recipe = default;

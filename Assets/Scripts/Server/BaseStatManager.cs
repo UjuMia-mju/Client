@@ -43,4 +43,22 @@ public abstract class BaseStatManager<T> : MonoBehaviorSingleton<T> where T : Ba
     }
 
     public void RemovePlayer(ulong playerId) => _playerStats.Remove(playerId);
+
+    // 20260524 - 
+    // 플레이어의 모든 스탯을 초기화합니다.
+    public virtual void ResetAllStats()
+    {
+        foreach(var kv in _playerStats)
+        {
+            if(kv.Value == null)
+            {
+                return;
+            }
+
+            kv.Value.statData.Reset();
+            kv.Value.CallOnHpChanged();
+            kv.Value.CallOnOxygenChanged();
+            Debug.Log("BaseStatManager에서 모든 스탯을 초기화합니다.");
+        }
+    }
 }

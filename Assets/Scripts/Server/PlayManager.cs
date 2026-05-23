@@ -567,7 +567,7 @@ public class PlayManager : SceneSingleton<PlayManager>
             }
 
             if (idx >= 0 && idx < spawnPoints.Length && spawnPoints[idx] != null)
-                return (spawnPoints[idx].position, spawnPoints[idx].rotation);
+                return AlignPoseToGravity(spawnPoints[idx].position, spawnPoints[idx].rotation, spawnPoints[idx]);
         }
 
         // 2) 패킷이 (0,0,0)이 아니면 그 값을 사용
@@ -583,6 +583,27 @@ public class PlayManager : SceneSingleton<PlayManager>
 
         // 3) fallback
         return (fallbackSpawnPos, Quaternion.identity);
+    }
+
+    private (Vector3 pos, Quaternion rot) AlignPoseToGravity(Vector3 pos, Quaternion rot, Transform referenceTransform)
+    {
+        PlanetGravity planet = FindFirstObjectByType<PlanetGravity>();
+        if (planet == null || referenceTransform == null)
+            return (pos, rot);
+
+        Vector3 up = planet.GetGravityUp(referenceTransform);
+        if (up.sqrMagnitude < 1e-6f)
+            return (pos, rot);
+        up.Normalize();
+
+        Vector3 fwd = Vector3.ProjectOnPlane(rot * Vector3.forward, up);
+        if (fwd.sqrMagnitude < 1e-4f)
+            fwd = Vector3.ProjectOnPlane(rot * Vector3.right, up);
+        if (fwd.sqrMagnitude < 1e-4f)
+            return (pos, rot);
+        fwd.Normalize();
+
+        return (pos, Quaternion.LookRotation(fwd, up));
     }
 
     private void RemoveRemotePlayer(ulong playerId)

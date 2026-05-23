@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Security;
 using UnityEngine.InputSystem;
 using Protocol;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(50)]
 public class Player : MovingObject
@@ -60,6 +60,8 @@ public class Player : MovingObject
 
     private float externalFreezeUntil = 0f;
     private bool isExternallyFrozen => Time.time < externalFreezeUntil;
+
+    private static bool s_stageStatResetDone = false;
 
     // 초기화
     protected override void Awake()
@@ -145,6 +147,25 @@ public class Player : MovingObject
             playerInput.SetInputEnabled(true);
     }
 
+    // ===== 스테이지 stat 리셋 가드 =====
+    // false → true : OnNetworkReadyAfterReadyGate 에서 호스트일 때 1회 (이 스테이지에서 적용 완료)
+    // true  → false: 씬이 새로 로드될 때 OnSceneLoaded_ResetStageGuard 에서 명시적으로 되돌림
+    // static + SceneManager.sceneLoaded 구독으로 양쪽 전이 지점이 코드에 명확히 드러나게 한다.
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void InstallSceneLoadHook()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded_ResetStageGuard; // 도메인 리로드 후 중복 구독 방지
+        SceneManager.sceneLoaded += OnSceneLoaded_ResetStageGuard;
+        s_stageStatResetDone = false;
+    }
+
+    private static void OnSceneLoaded_ResetStageGuard(Scene scene, LoadSceneMode mode)
+    {
+        s_stageStatResetDone = false;
+        Debug.Log($"[Player] s_stageStatResetDone = false (scene loaded: {scene.name})");
+    }
+
     void OnNetworkReadyAfterReadyGate()
     {
         if (this == null) return;
@@ -152,6 +173,15 @@ public class Player : MovingObject
         if (HostPacketHandler.Instance != null)
         {
             HostPacketHandler.Instance.OnPlayerHitEvent += OnPlayerHitReceived;
+        }
+
+        // 새 스테이지 시작 시점에 호스트가 모든 플레이어 stat 을 풀 회복으로 초기화.
+        // 매니저가 DontDestroyOnLoad 라 이전 스테이지의 hp/oxygen 이 새는 문제를 차단한다.
+        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost && !s_stageStatResetDone)
+        {
+            s_stageStatResetDone = true;
+            HostStatManager.Instance?.ResetAndBroadcastAll();
+            Debug.Log("[Player] s_stageStatResetDone = true (host reset broadcasted)");
         }
 
         OnNetworkReady();
@@ -184,6 +214,35 @@ public class Player : MovingObject
 
         if (playerInput != null)
             playerInput.SetInputEnabled(false);
+
+        // [추가] 사망 시 들고 있던 아이템 강제 드롭.
+        //   미처리 시 currentEquipItem 이 소켓 자식으로 남아 부활 후에도 손에 매달려 따라다니는 문제 발생.
+        DropHeldItemForDeath();
+    }
+
+    /// <summary>
+    /// 사망 시 들고 있던 아이템을 떨군다.
+    /// 호스트: 권위 측이므로 detach 브로드캐스트 + 물리 throw.
+    /// 피어:   호스트 OtherPlayers 대역이 권위 처리하므로 시각적 detach 만 수행.
+    /// </summary>
+    private void DropHeldItemForDeath()
+    {
+        if (playerItemSystem == null || playerItemSystem.currentEquipItem == null) return;
+
+        Items heldItem = playerItemSystem.GetCurrentEquipItemClass();
+
+        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+        {
+            if (heldItem != null)
+                SendItemDetatchedToServer(heldItem, false);
+            playerItemSystem.ThrowItem(0f); // runningAmount=0 → 제자리 약한 낙하
+        }
+        else
+        {
+            playerItemSystem.DetachForRemoteSync();
+        }
+
+        isPlayerGetSomething = false;
     }
 
     private void HandlePlayerRevive()

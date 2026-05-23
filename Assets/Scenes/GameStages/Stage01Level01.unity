@@ -1140,9 +1140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5c658c4b28e32f4da8c24bc872ccc1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnaceClientManager
-  resultPrefabList:
-  - resultItemType: 2
-    resultPrefab: {fileID: 5324012318622392531, guid: 8d57b988ec70e304aae30daec08e74e5, type: 3}
+  smeltingCatalog: {fileID: 11400000, guid: df66d3cd1c8d10747961312d2a6df64f, type: 2}
 --- !u!114 &239167528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5098,15 +5096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8735d24b871c5a643ae688c76934b07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
-  resourcePrefabList:
-  - resourceStringKey: stone_ore
-    prefab: {fileID: 3267865454812374866, guid: 67f230bf686510b458f0345e77fd93b5, type: 3}
-  - resourceStringKey: Tree
-    prefab: {fileID: 7810944560959238178, guid: 035e9ec05ef1e4248a27ec3d9dfe9fed, type: 3}
-  - resourceStringKey: glow_ore
-    prefab: {fileID: 4401383933971749879, guid: dc9e7627365da27478c9ccaab6c0a64d, type: 3}
-  - resourceStringKey: iron_ore
-    prefab: {fileID: 3267865454812374866, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
+  resourceCatalog: {fileID: 11400000, guid: 451f65a18b800334a9ebef344f2beaef, type: 2}
 --- !u!114 &936394858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8340,7 +8330,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemKey: CustomTool
+  itemKey: Pickaxe
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!114 &1501175923
@@ -9601,10 +9591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad5afd2c68724fe4b940111c7c575114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmeltingRecipeManager
-  recipes:
-  - inputItemStringKey: TestCube
-    outputItemID: 2
-    smeltingTime: 5
+  smeltingCatalog: {fileID: 11400000, guid: df66d3cd1c8d10747961312d2a6df64f, type: 2}
 --- !u!4 &1747493077
 Transform:
   m_ObjectHideFlags: 0
@@ -16679,7 +16666,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemKey: CustomTool
+  itemKey: Pickaxe
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!33 &7556980367934553029
