@@ -10595,7 +10595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0ed162b0230c043b9de84fac61b4e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameRuleManager
-  timerDuration: 20
+  timerDuration: 270
   clearPanel: {fileID: 23840436}
   missionTimerUiRoot: {fileID: 144807123}
 --- !u!1 &1681381276
