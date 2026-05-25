@@ -199,6 +199,7 @@ public class ItemManager : MonoBehaviour
             itemDic[itemId] = existingFromPending;
             _pendingScenePlacedItems.Remove(existingFromPending);
             existingFromPending.transform.SetPositionAndRotation(pos, rot);
+            existingFromPending.HasBeenSyncedFromNetwork = true; // [추가] 재매칭 방지
             Debug.Log($"[ItemManager] 씬 배치 아이템 ID 동기화 (피어): key={itemStringKey}, id={itemId}");
             return;
         }
@@ -209,6 +210,7 @@ public class ItemManager : MonoBehaviour
         {
             if (itemId > 0)
                 OverrideItemId(existingItem, itemId);
+            existingItem.HasBeenSyncedFromNetwork = true; // [추가] 재매칭 방지
             Debug.Log($"[ItemManager] 씬 배치 아이템 ID 동기화: key={itemStringKey}, id={itemId}");
             return;
         }
@@ -263,12 +265,19 @@ public class ItemManager : MonoBehaviour
 
     private Items FindScenePlacedItem(string key, Vector3 pos)
     {
+        // 호스트가 떨군 새 드롭(=런타임 스폰)이 주변의 같은 키 씬 배치 아이템과
+        // 잘못 매칭되는 사고를 막기 위해 거리 임계값을 둔다.
+        // 씬 배치 아이템 ID 동기화 시점에는 호스트/피어가 같은 위치이므로
+        // 1m 정도면 충분히 식별 가능.
+        const float SCENE_MATCH_MAX_DIST = 1.0f;
+
         Items best = null;
         float bestDist = float.MaxValue;
         foreach (var item in itemDic.Values)
         {
             if (item == null) continue;
             if (!item.IsScenePlacedItem) continue;
+            if (item.HasBeenSyncedFromNetwork) continue; // 이미 동기화 끝난 씬 배치 아이템은 후보 제외
             if (item.itemStringKey != key) continue;
 
             float d = Vector3.Distance(item.transform.position, pos);
@@ -278,7 +287,7 @@ public class ItemManager : MonoBehaviour
                 best = item;
             }
         }
-        return best;
+        return best != null && bestDist <= SCENE_MATCH_MAX_DIST ? best : null;
     }
 
     public GameObject GetPrefabByKey(string key)

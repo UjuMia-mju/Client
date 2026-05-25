@@ -6,14 +6,10 @@ using Protocol;
 [DefaultExecutionOrder(-100)]
 public class MonsterManager : MonoBehaviour
 {
-    [System.Serializable]
-    public class MonsterPrefabEntry
-    {
-        public Monsters monsterKey;
-        public GameObject prefab;
-    }
+    [Header("몬스터 카탈로그 (키·프리팹 단일 관리)")]
+    [SerializeField] private MonsterCatalog monsterCatalog;
 
-    [SerializeField] private List<MonsterPrefabEntry> monsterPrefabs = new List<MonsterPrefabEntry>();
+    public MonsterCatalog Catalog => monsterCatalog;
 
     private Dictionary<int, GameObject> monsterDic = new Dictionary<int, GameObject>();
 
@@ -246,15 +242,12 @@ public class MonsterManager : MonoBehaviour
 
     private GameObject FindPrefabByKey(Monsters targetKey)
     {
-        if (targetKey == Monsters.None) return null;
-
-        foreach (MonsterPrefabEntry entry in monsterPrefabs)
+        if (monsterCatalog == null)
         {
-            if (entry == null) continue;
-            if (entry.monsterKey == targetKey)
-                return entry.prefab;
+            Debug.LogError("[MonsterManager] MonsterCatalog 가 할당되지 않았습니다.");
+            return null;
         }
-        return null;
+        return monsterCatalog.GetPrefab(targetKey);
     }
 
     private Monster FindPendingScenePlacedMonster(Monsters key, Vector3 pos)

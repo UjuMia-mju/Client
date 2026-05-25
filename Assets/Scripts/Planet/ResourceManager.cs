@@ -20,18 +20,10 @@ public class ResourceManager : MonoBehaviour
 
     private readonly Dictionary<int, ResourceObject> _resourceDic = new Dictionary<int, ResourceObject>();
 
-    [System.Serializable]
-    public class ResourcePrefabData
-    {
-        public string resourceStringKey;
-        public GameObject prefab;
-    }
+    [Header("자원 카탈로그 (키·프리팹 단일 관리)")]
+    [SerializeField] private ResourceCatalog resourceCatalog;
 
-    [Header("Resource Prefab Table")]
-    [SerializeField] private List<ResourcePrefabData> resourcePrefabList = new List<ResourcePrefabData>();
-
-    /// <summary>드로워에서 드롭다운 키 목록을 읽기 위한 공개 접근자.</summary>
-    public IReadOnlyList<ResourcePrefabData> PrefabList => resourcePrefabList;
+    public ResourceCatalog Catalog => resourceCatalog;
 
     private static int _nextResourceId = 1;
 
@@ -51,21 +43,12 @@ public class ResourceManager : MonoBehaviour
     // ======================================================================
     public void RegisterResource(ResourceObject resource)
     {
-        // 프리팹 테이블에 등록된 키인지 검증만 수행
-        if (!string.IsNullOrEmpty(resource.resourceStringKey))
+        // 카탈로그에 등록된 키인지 검증만 수행
+        if (resourceCatalog != null && !string.IsNullOrEmpty(resource.resourceStringKey))
         {
-            bool found = false;
-            foreach (var d in resourcePrefabList)
+            if (!resourceCatalog.TryGet(resource.resourceStringKey, out _))
             {
-                if (d != null && d.resourceStringKey == resource.resourceStringKey)
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
-                Debug.LogError($"[ResourceManager] '{resource.name}' 의 키 '{resource.resourceStringKey}' 가 Resource Prefab Table에 등록되지 않았습니다.", resource);
+                Debug.LogError($"[ResourceManager] '{resource.name}' 의 키 '{resource.resourceStringKey}' 가 ResourceCatalog에 등록되지 않았습니다.", resource);
                 return;
             }
         }
@@ -192,17 +175,17 @@ public class ResourceManager : MonoBehaviour
     // ======================================================================
     public GameObject GetPrefabByKey(string key)
     {
-        ResourcePrefabData data = resourcePrefabList.Find(x => x.resourceStringKey == key);
-        return data?.prefab;
+        if (resourceCatalog == null) return null;
+        return resourceCatalog.GetPrefab(key);
     }
 }
 
 // ====================================================================
-// [에디터 통합] string 필드를 ResourceManager.PrefabList 기반 드롭다운으로 그리는 어트리뷰트
+// [에디터 통합] string 필드를 ResourceCatalog 기반 드롭다운으로 그리는 어트리뷰트
 // 사용법: [SerializeField, ResourceKey] private string resourceKey;
 // ====================================================================
 
-/// <summary>string 필드 위에 붙이면 ResourceManager의 Resource Prefab Table 드롭다운으로 인스펙터 표시.</summary>
+/// <summary>string 필드 위에 붙이면 ResourceCatalog 의 키 드롭다운으로 인스펙터 표시.</summary>
 public class ResourceKeyAttribute : PropertyAttribute { }
 
 #if UNITY_EDITOR
@@ -217,30 +200,30 @@ internal class ResourceKeyDrawer : PropertyDrawer
             return;
         }
 
-        // 씬에서 ResourceManager 컴포넌트 찾기
-        // (씬이 열려있지 않거나 컴포넌트가 없으면 일반 텍스트 입력으로 폴백)
-        ResourceManager manager = Object.FindFirstObjectByType<ResourceManager>(FindObjectsInactive.Include);
-        if (manager == null || manager.PrefabList == null || manager.PrefabList.Count == 0)
+        string[] guids = AssetDatabase.FindAssets("t:ResourceCatalog");
+        if (guids.Length == 0)
+        {
+            EditorGUI.PropertyField(position, property, label);
+            EditorGUI.HelpBox(position, "ResourceCatalog 에셋을 찾을 수 없습니다.", MessageType.Warning);
+            return;
+        }
+
+        ResourceCatalog catalog = AssetDatabase.LoadAssetAtPath<ResourceCatalog>(
+            AssetDatabase.GUIDToAssetPath(guids[0]));
+
+        if (catalog == null || catalog.Entries == null || catalog.Entries.Count == 0)
         {
             EditorGUI.PropertyField(position, property, label);
             return;
         }
 
-        // 키 목록 추출
-        string[] keys = manager.PrefabList
-            .Where(d => d != null && !string.IsNullOrWhiteSpace(d.resourceStringKey))
-            .Select(d => d.resourceStringKey)
+        string[] keys = catalog.Entries
+            .Where(e => e != null && !string.IsNullOrWhiteSpace(e.key))
+            .Select(e => e.key)
             .ToArray();
-
-        if (keys.Length == 0)
-        {
-            EditorGUI.PropertyField(position, property, label);
-            return;
-        }
 
         int currentIndex = System.Array.IndexOf(keys, property.stringValue);
 
-        // 테이블에서 사라진 값이면 "(Missing)" 표시 항목 임시 추가
         string[] displayOptions = keys;
         if (currentIndex < 0 && !string.IsNullOrEmpty(property.stringValue))
         {

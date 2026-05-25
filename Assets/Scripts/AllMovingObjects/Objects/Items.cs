@@ -27,6 +27,11 @@ public class Items : MovingObject
     [SerializeField] private bool isScenePlacedItem = false;
     public bool IsScenePlacedItem => isScenePlacedItem;
 
+    /// <summary>씬 배치 아이템 ID가 호스트로부터 한 번이라도 동기화됐는지.
+    /// true 가 되면 ItemManager.FindScenePlacedItem 의 후보에서 제외되어
+    /// 이후 도착하는 런타임 드롭 스폰 패킷과 잘못 매칭되지 않는다.</summary>
+    [System.NonSerialized] public bool HasBeenSyncedFromNetwork = false;
+
     private void Start()
     {
         // [수정] 씬 배치 아이템은 ItemManager.Awake/Start 에서 일괄 사전 등록한다.

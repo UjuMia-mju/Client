@@ -3,14 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 
-
-[System.Serializable]
-public class ResultPrefabData
-{
-    public int resultItemType;
-    public GameObject resultPrefab;
-}
-
 public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
 {
     private Dictionary<int, FurnaceObject> furnaceControllers = new();
@@ -20,8 +12,8 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
     // 스폰 위치 기반 용광로 탐색 거리 (throw_height보다 넉넉하게)
     private const float FURNACE_SPAWN_RESET_DISTANCE = 8f;
 
-    [Header("Result Prefab Settings")]
-    [SerializeField] private List<ResultPrefabData> resultPrefabList = new();
+    [Header("제련 카탈로그 (레시피·결과 프리팹 단일 관리)")]
+    [SerializeField] private SmeltingCatalog smeltingCatalog;
 
     private void Start()
     {
@@ -170,10 +162,11 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
             return;
         }
 
-        ResultPrefabData foundData = resultPrefabList.Find(x => x.resultItemType == resultItemType);
-        if (foundData == null || foundData.resultPrefab == null)
+        if (smeltingCatalog == null ||
+            !smeltingCatalog.TryGetByOutputId(resultItemType, out SmeltingCatalog.Entry entry) ||
+            entry.resultPrefab == null)
         {
-            Debug.LogError($"[FurnaceClientManager] ResultPrefabList에 타입({resultItemType}) 프리팹 누락!");
+            Debug.LogError($"[FurnaceClientManager] SmeltingCatalog에 outputItemID={resultItemType} 결과 프리팹 누락!");
             return;
         }
 
@@ -182,7 +175,7 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         Vector3 spawnOrigin = furnaceObj.transform.position + furnaceObj.transform.up * ITEM_THROW_HEIGHT;
         Quaternion spawnRot = Quaternion.LookRotation(furnaceObj.transform.forward, furnaceObj.transform.up);
 
-        Items spawnedItem = furnaceObj.ThrowSmeltedItem(foundData.resultPrefab);
+        Items spawnedItem = furnaceObj.ThrowSmeltedItem(entry.resultPrefab);
 
         if (spawnedItem != null)
             StartCoroutine(BroadcastSpawnNextFrame(spawnedItem, spawnOrigin, spawnRot));

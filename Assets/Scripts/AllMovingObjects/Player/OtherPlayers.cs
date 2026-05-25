@@ -207,6 +207,12 @@ public class OtherPlayers : MovingObject
 
         Debug.Log($"[OtherPlayers] ApplyDeath 호출됨. playerId={PlayerId}, toggleOnDeath count={(toggleOnDeath != null ? toggleOnDeath.Length : 0)}");
 
+        // [추가] 사망 시 들고 있던 아이템 강제 드롭.
+        //   DetachEquipItem 내부에서 호스트/피어 분기를 자동 처리한다.
+        //   (호스트: 권위 물리 throw + 브로드캐스트 / 피어: 시각적 detach)
+        if (otherPlayerItemSystem != null && otherPlayerItemSystem.currentEquipItem != null)
+            DetachEquipItem(false);
+
         SetVisible(false);
     }
 
