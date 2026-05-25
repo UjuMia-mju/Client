@@ -366,8 +366,9 @@ public class DesertWorm : Monster
     /// </summary>
 
     // ===== Gizmo =====
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
+        base.OnDrawGizmos();
         if (!alwaysDrawGizmo) return;
         DrawDetectGizmo();
     }

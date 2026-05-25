@@ -119,7 +119,7 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
         var panelRt = tmp.transform.parent as RectTransform;
         if (panelRt == null) return;
 
-        tmp.enableWordWrapping = true;
+        tmp.textWrappingMode = TextWrappingModes.Normal;
         string text = tmp.text;
         tmp.ForceMeshUpdate();
 
