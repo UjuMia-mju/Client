@@ -239320,7 +239320,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 0
-  itemKey: 
+  itemKey: Pickaxe
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!33 &7556980367934553029
