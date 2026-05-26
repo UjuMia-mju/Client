@@ -9215,7 +9215,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -9382,7 +9382,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -29537,7 +29537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -42961,7 +42961,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -48385,7 +48385,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -80434,7 +80434,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -82409,7 +82409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -98500,7 +98500,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.2
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -103308,7 +103308,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -112568,7 +112568,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -146222,7 +146222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -155472,7 +155472,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -165488,7 +165488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -168196,7 +168196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -170509,7 +170509,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -176045,7 +176045,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -190976,7 +190976,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -191353,7 +191353,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -226664,7 +226664,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7635141649709496669, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: triggerRadius
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 7977421175238667924, guid: c6e13f36e79ba074bb03d57344b618ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -238332,9 +238332,21 @@ PrefabInstance:
       propertyPath: planet
       value: 
       objectReference: {fileID: 8301335579166610431}
+    - target: {fileID: 5222814171223164869, guid: 87f00bca0e3c38741aa4dde26b0b4a02, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8442715974616043407, guid: 87f00bca0e3c38741aa4dde26b0b4a02, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8442715974616043407, guid: 87f00bca0e3c38741aa4dde26b0b4a02, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951996221286495216, guid: 87f00bca0e3c38741aa4dde26b0b4a02, type: 3}
+      propertyPath: drawDebugGizmos
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -239611,14 +239623,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4774748908214025991}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4642641, y: -0.45679677, z: 0.41129553, w: 0.63767666}
-  m_LocalPosition: {x: -3.75, y: 23.67, z: 1.01}
+  m_LocalRotation: {x: 0.6223739, y: -0.325381, z: 0.5214926, w: 0.48458582}
+  m_LocalPosition: {x: -4.249, y: 23.379, z: -0.048}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6321731303526632916}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 75.434, y: -52.933, z: 23.528}
+  m_LocalEulerAnglesHint: {x: 70.485, y: 87.674, z: 162.509}
 --- !u!33 &8817709119587778216
 MeshFilter:
   m_ObjectHideFlags: 0
