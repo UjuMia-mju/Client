@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class TreeResource : ResourceObject
 {
@@ -33,18 +33,28 @@ public class TreeResource : ResourceObject
     /// <summary>호스트 권위 측에서 아이템을 실제로 떨어뜨리고 피어에게 브로드캐스트.</summary>
     public override void SpawnDropAndBroadcast()
     {
-        GetPlanetDropSpawn(ORE_THROW_HEIGHT, 0.35f, out Vector3 spawnPos, out Vector3 impulseDir);
+        Vector3 up = GetPlanetOutwardUp();
+        Vector3 spawnPos = transform.position + up * ORE_THROW_HEIGHT;
         GameObject wood = Instantiate(logPrefab, spawnPos, Quaternion.identity);
 
         Rigidbody rb = wood.GetComponent<Rigidbody>();
         if (rb != null)
-            rb.AddForce(impulseDir * ORE_THROW_FORCE);
+            rb.AddForce((up + transform.forward) * ORE_THROW_FORCE);
 
         Items itemComp = wood.GetComponent<Items>();
         if (itemComp != null)
         {
             // ⚠️ Tree가 같은 프레임에 파괴될 수 있으므로 ItemManager 코루틴으로 위임.
-            ItemManager.Instance.StartCoroutine(BroadcastDropSpawnNextFrame(itemComp, "Tree"));
+            ItemManager.Instance.StartCoroutine(BroadcastSpawnNextFrame(itemComp, spawnPos, wood.transform.rotation));
         }
+    }
+
+    private static System.Collections.IEnumerator BroadcastSpawnNextFrame(Items itemComp, Vector3 pos, Quaternion rot)
+    {
+        yield return null;
+        if (itemComp == null) yield break;
+
+        PacketSender.Instance.SendObjectSpawn(itemComp, pos, rot);
+        Debug.Log($"[Tree] SendObjectSpawn: itemId={itemComp.itemId}, key={itemComp.itemStringKey}");
     }
 }

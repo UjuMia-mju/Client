@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class Ore : ResourceObject
 {
@@ -35,19 +35,34 @@ public class Ore : ResourceObject
     /// <summary>호스트 권위 측에서 아이템을 실제로 떨어뜨리고 피어에게 브로드캐스트.</summary>
     public override void SpawnDropAndBroadcast()
     {
-        GetPlanetDropSpawn(ORE_THROW_HEIGHT, 0.35f, out Vector3 spawnPos, out Vector3 impulseDir);
+        Vector3 up = GetPlanetOutwardUp();
+        Vector3 spawnPos = transform.position + up * ORE_THROW_HEIGHT;
         GameObject ore = Instantiate(orePrefab, spawnPos, Quaternion.identity);
 
         Rigidbody rb = ore.GetComponent<Rigidbody>();
         if (rb != null)
-            rb.AddForce(impulseDir * ORE_THROW_FORCE);
+            rb.AddForce((up + transform.forward) * ORE_THROW_FORCE);
 
         Items itemComp = ore.GetComponent<Items>();
         if (itemComp != null)
         {
             // ⚠️ Ore가 같은 프레임에 파괴될 수 있으므로 코루틴 소유자를
             //     영속 객체(ItemManager)로 위임. 그렇지 않으면 yield 이후가 실행 안 됨.
-            ItemManager.Instance.StartCoroutine(BroadcastDropSpawnNextFrame(itemComp, "Ore"));
+            ItemManager.Instance.StartCoroutine(BroadcastSpawnNextFrame(itemComp, spawnPos, ore.transform.rotation));
         }
+    }
+
+    private static System.Collections.IEnumerator BroadcastSpawnNextFrame(Items itemComp, Vector3 pos, Quaternion rot)
+    {
+        yield return null; // Items.Start()의 RegisterItem() 완료 대기
+        if (itemComp == null) yield break;
+
+        // [수정] 원점이 아닌 1프레임 물리 적용 후의 현재 위치/회전을 전송.
+        //       그래야 피어가 호스트와 어긋나지 않은 좌표에서 스폰됨.
+        Vector3 currentPos = itemComp.transform.position;
+        Quaternion currentRot = itemComp.transform.rotation;
+
+        PacketSender.Instance.SendObjectSpawn(itemComp, currentPos, currentRot);
+        Debug.Log($"[Ore] SendObjectSpawn: itemId={itemComp.itemId}, key={itemComp.itemStringKey}, pos={currentPos}");
     }
 }
