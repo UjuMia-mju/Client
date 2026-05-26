@@ -46,7 +46,8 @@ public class ObjectsGravityController : MonoBehaviour
     private bool IsGrounded()
     {
         Vector3 gravityDir = (planet.transform.position - objects.transform.position).normalized;
-        LayerMask groundMask = LayerMask.GetMask(Define.Layer.GROUND, Define.Layer.WALKABLE_COLLIDER);
+        LayerMask groundMask = LayerMask.GetMask(
+            Define.Layer.GROUND, Define.Layer.WALKABLE_COLLIDER, Define.Layer.HILL);
 
         // 아이템 콜라이더 크기를 고려한 거리 (너무 크면 공중에서도 grounded 판정)
         Collider col = objects.GetComponent<Collider>();
