@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a89dfe2045ebb3746a88b8e62216aba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoisonMushroom
-  triggerRadius: 2.2
+  triggerRadius: 0.4
   sporeCloudPrefab: {fileID: 6589886992032877736, guid: 1b27201344199454093b52e29d2fcf3d, type: 3}
   cloudSpawnOffset: {x: 0, y: 0.2, z: 0}
   cloudSpawnEulerOffset: {x: 90, y: 0, z: 0}

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6141275627799525843}
   - component: {fileID: 4217531412112967333}
   m_Layer: 0
-  m_Name: wood
+  m_Name: Wood
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   itemId: 15
-  itemStringKey: wood
+  itemKey: wood
   lerpSpeed: 10
   isScenePlacedItem: 0
 --- !u!114 &4217531412112967333

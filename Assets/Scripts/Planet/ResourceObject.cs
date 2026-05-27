@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 /// <summary>
 /// 씬에 배치된 채집 가능한 자원(광석/나무 등)의 공통 베이스.
@@ -6,6 +6,11 @@
 public abstract class ResourceObject : MonoBehaviour
 {
     [HideInInspector] public int resourceId;
+    /// <summary>
+    /// 피어에서 씬 배치 자원 ID가 호스트 값으로 1회 이상 동기화되었는지.
+    /// true면 재매칭 후보에서 제외된다.
+    /// </summary>
+    [System.NonSerialized] public bool HasBeenSyncedFromNetwork = false;
 
     [Tooltip("프리팹/타입 식별 키. ResourceManager의 Resource Prefab Table 드롭다운에서 선택.")]
     [SerializeField, ResourceKey] private string resourceKey;
@@ -41,4 +46,11 @@ public abstract class ResourceObject : MonoBehaviour
 
     /// <summary>호스트 권위 측에서 N회 누적 시 아이템을 떨어뜨리는 실제 로직.</summary>
     public abstract void SpawnDropAndBroadcast();
+
+    /// <summary>행성 중심 → 자원 위치 방향(표면 바깥). PlanetGravity가 없으면 transform.up.</summary>
+    protected Vector3 GetPlanetOutwardUp()
+    {
+        PlanetGravity planet = FindFirstObjectByType<PlanetGravity>();
+        return planet != null ? planet.GetGravityUp(transform) : transform.up;
+    }
 }

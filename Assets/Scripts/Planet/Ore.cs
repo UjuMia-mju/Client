@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class Ore : ResourceObject
 {
@@ -35,12 +35,13 @@ public class Ore : ResourceObject
     /// <summary>호스트 권위 측에서 아이템을 실제로 떨어뜨리고 피어에게 브로드캐스트.</summary>
     public override void SpawnDropAndBroadcast()
     {
-        Vector3 spawnPos = transform.position + transform.up * ORE_THROW_HEIGHT;
+        Vector3 up = GetPlanetOutwardUp();
+        Vector3 spawnPos = transform.position + up * ORE_THROW_HEIGHT;
         GameObject ore = Instantiate(orePrefab, spawnPos, Quaternion.identity);
 
         Rigidbody rb = ore.GetComponent<Rigidbody>();
         if (rb != null)
-            rb.AddForce((transform.up + transform.forward) * ORE_THROW_FORCE);
+            rb.AddForce((up + transform.forward) * ORE_THROW_FORCE);
 
         Items itemComp = ore.GetComponent<Items>();
         if (itemComp != null)
