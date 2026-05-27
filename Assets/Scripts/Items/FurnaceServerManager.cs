@@ -4,23 +4,31 @@ using Protocol;
 using UnityEngine;
 
 // 서버에서 존재하는 모든 용광로의 작업을 총괄하는 매니저
-public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
+public class FurnaceServerManager : MonoBehaviour
 {
+    public static FurnaceServerManager Instance { get; private set; }
+
     // 용광로 ID(furnaceId)를 키로 하여 현재 진행 중인 제련 코루틴을 추적
     private Dictionary<int, Coroutine> activeFurnaces = new ();
     // 제련이 완료되어 수거를 기다리는 용광로의 결과물(ItemID)을 저장하는 딕셔너리
     private Dictionary<int, int> completedFurnaces = new();
     private void Start()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
         PeerPacketHandler.Instance.OnPeerSmeltRequestEvent += OnReceiveSmeltRequest;
         PeerPacketHandler.Instance.OnPeerFurnaceRetrieveEvent += OnReceiveFurnaceRetrieve;
     }
 
-    protected override void OnDestroy()
+    protected void OnDestroy()
     {
         PeerPacketHandler.Instance.OnPeerSmeltRequestEvent -= OnReceiveSmeltRequest;
         PeerPacketHandler.Instance.OnPeerFurnaceRetrieveEvent -= OnReceiveFurnaceRetrieve;
-        base.OnDestroy();
     }
 
     // 클라이언트로부터 C_OBJECT_SMELT 패킷을 받았을 때 호출 (어떤 용광로인지 정보가 필요함)
@@ -114,21 +122,27 @@ public class FurnaceServerManager : MonoBehaviorSingleton<FurnaceServerManager>
             return;
         }
 
-        if (completedFurnaces.TryGetValue(furnaceId, out int resultItemId))
-        {
-            completedFurnaces.Remove(furnaceId);
-            ItemType itemResult = (ItemType)resultItemId;
-            PacketSender.Instance.BroadcastFurnaceRetrieve(furnaceId, itemResult);
-
-            if (ConnectManager.Instance.isHost && FurnaceClientManager.Instance != null)
-            {
-                Debug.Log($"[FurnaceServerManager] 호스트 로컬 아이템 생성: furnaceId={furnaceId}, resultItemId={resultItemId}");
-                FurnaceClientManager.Instance.SpawnResultItemLocal(furnaceId, resultItemId);
-            }
-        }
-        else
+        if (!completedFurnaces.TryGetValue(furnaceId, out int resultItemId))
         {
             Debug.LogWarning($"[Server] 용광로({furnaceId})에는 수거할 완성품이 없습니다.");
+            return;
         }
+
+        // 호스트 로컬 스폰을 먼저 시도. 실패하면 completedFurnaces 를 유지해 다음 시도에 다시 수거할 수 있게 한다.
+        // (SmeltingCatalog 누락 등으로 스폰이 실패할 때 서버 상태만 비워져 hasResult 와 영구 불일치되는 문제 방지)
+        if (ConnectManager.Instance.isHost && FurnaceClientManager.Instance != null)
+        {
+            Debug.Log($"[FurnaceServerManager] 호스트 로컬 아이템 생성: furnaceId={furnaceId}, resultItemId={resultItemId}");
+            bool spawned = FurnaceClientManager.Instance.SpawnResultItemLocal(furnaceId, resultItemId);
+            if (!spawned)
+            {
+                Debug.LogError($"[FurnaceServerManager] 호스트 로컬 스폰 실패. completedFurnaces 유지: furnaceId={furnaceId}, resultItemId={resultItemId}");
+                return;
+            }
+        }
+
+        completedFurnaces.Remove(furnaceId);
+        ItemType itemResult = (ItemType)resultItemId;
+        PacketSender.Instance.BroadcastFurnaceRetrieve(furnaceId, itemResult);
     }
 }

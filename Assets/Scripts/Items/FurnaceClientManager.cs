@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Protocol;
 
-public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
+public class FurnaceClientManager : MonoBehaviour
 {
+    public static FurnaceClientManager Instance { get; private set; }
+
     private Dictionary<int, FurnaceObject> furnaceControllers = new();
     private HashSet<int> retrievedFurnaces = new();
 
@@ -17,6 +19,14 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
 
     private void Start()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         if (HostPacketHandler.Instance != null)
         {
             HostPacketHandler.Instance.OnSmeltEvent += HandleSmeltStarted;
@@ -25,7 +35,7 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         }
     }
 
-    protected override void OnDestroy()
+    protected void OnDestroy()
     {
         if (HostPacketHandler.Instance != null)
         {
@@ -33,7 +43,6 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
             HostPacketHandler.Instance.OnSmeltCompleteEvent -= HandleSmeltCompleted;
             HostPacketHandler.Instance.OnFurnaceRetrieveEvent -= HandleFurnaceRetrieve;
         }
-        base.OnDestroy();
     }
 
     public FurnaceObject GetFurnaceObject(int furnaceId)
@@ -153,13 +162,15 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
 
     // ==========================================
     // 호스트 전용: 로컬 아이템 생성 + 피어 스폰 브로드캐스트
+    // 반환값: 실제 아이템이 스폰되었으면 true.
+    //         카탈로그 누락 등으로 스폰이 무산되면 false (서버 상태 롤백 근거).
     // ==========================================
-    public void SpawnResultItemLocal(int furnaceId, int resultItemType)
+    public bool SpawnResultItemLocal(int furnaceId, int resultItemType)
     {
         if (!furnaceControllers.TryGetValue(furnaceId, out FurnaceObject furnaceObj))
         {
             Debug.LogWarning($"[FurnaceClientManager] SpawnResultItemLocal: furnaceId={furnaceId} 없음");
-            return;
+            return false;
         }
 
         if (smeltingCatalog == null ||
@@ -167,7 +178,7 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
             entry.resultPrefab == null)
         {
             Debug.LogError($"[FurnaceClientManager] SmeltingCatalog에 outputItemID={resultItemType} 결과 프리팹 누락!");
-            return;
+            return false;
         }
 
         // 피어에게 전달할 원점 스폰 위치/회전 미리 기록
@@ -176,9 +187,11 @@ public class FurnaceClientManager : MonoBehaviorSingleton<FurnaceClientManager>
         Quaternion spawnRot = Quaternion.LookRotation(furnaceObj.transform.forward, furnaceObj.transform.up);
 
         Items spawnedItem = furnaceObj.ThrowSmeltedItem(entry.resultPrefab);
+        if (spawnedItem == null)
+            return false;
 
-        if (spawnedItem != null)
-            StartCoroutine(BroadcastSpawnNextFrame(spawnedItem, spawnOrigin, spawnRot));
+        StartCoroutine(BroadcastSpawnNextFrame(spawnedItem, spawnOrigin, spawnRot));
+        return true;
     }
 
     /// <summary>
