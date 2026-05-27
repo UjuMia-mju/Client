@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TreeResource
   resourceId: 0
-  resourceStringKey: Wood
+  resourceKey: tree
   logPrefab: {fileID: 3807523109976039400, guid: a451540ed6f827146ba66ebc0ab4e944, type: 3}
   maxDrops: 1
 --- !u!64 &-6982990201615973974

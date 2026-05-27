@@ -26,6 +26,22 @@ public class ResourceManager : MonoBehaviour
     public ResourceCatalog Catalog => resourceCatalog;
 
     private static int _nextResourceId = 1;
+    private bool _scenePlacedRegistered;
+
+    // 피어에서 씬 배치 자원과 호스트 자원 ID를 1:1 매칭하기 위한 대기 목록.
+    private readonly List<ResourceObject> _pendingScenePlacedResources = new List<ResourceObject>();
+
+    // 피어가 자원 등록을 마치기 전에 도착한 S_RESOURCE_SPAWN 보류 버퍼.
+    private struct PendingResourceSpawn
+    {
+        public int resourceId;
+        public string key;
+        public Vector3 pos;
+        public int attempts;
+    }
+    private readonly List<PendingResourceSpawn> _pendingNetworkResourceSpawns = new List<PendingResourceSpawn>();
+    private readonly HashSet<int> _pendingNetworkResourceDestroys = new HashSet<int>();
+    private const int MAX_SYNC_RETRY_ATTEMPTS = 60; // 약 1초(@60fps) 재시도
 
     private void Awake()
     {
@@ -36,6 +52,42 @@ public class ResourceManager : MonoBehaviour
         }
         Instance = this;
         _nextResourceId = 1;
+
+        ResourceObject[] placed = FindObjectsByType<ResourceObject>(FindObjectsSortMode.None);
+        foreach (ResourceObject r in placed)
+        {
+            if (r == null) continue;
+            _pendingScenePlacedResources.Add(r);
+        }
+    }
+
+    private IEnumerator Start()
+    {
+        // ResourceObject.Start 등록 완료 대기
+        yield return null;
+        _scenePlacedRegistered = true;
+
+        bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
+        if (!isHost && _pendingNetworkResourceSpawns.Count > 0)
+        {
+            PendingResourceSpawn[] buffered = _pendingNetworkResourceSpawns.ToArray();
+            _pendingNetworkResourceSpawns.Clear();
+            foreach (PendingResourceSpawn s in buffered)
+                ApplyResourceIdFromNetwork(s.resourceId, s.key, s.pos);
+        }
+    }
+
+    private void Update()
+    {
+        bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
+        if (isHost || !_scenePlacedRegistered)
+            return;
+
+        if (_pendingNetworkResourceSpawns.Count > 0)
+            RetryPendingResourceSpawns();
+
+        if (_pendingNetworkResourceDestroys.Count > 0)
+            RetryPendingResourceDestroys();
     }
 
     // ======================================================================
@@ -69,6 +121,7 @@ public class ResourceManager : MonoBehaviour
             _resourceDic.Remove(resource.resourceId);
             Debug.Log($"[ResourceManager] ✓ Unregistered resource: {resource.name} (id={resource.resourceId})");
         }
+        _pendingScenePlacedResources.Remove(resource);
     }
 
     public ResourceObject GetResource(int id)
@@ -128,25 +181,94 @@ public class ResourceManager : MonoBehaviour
     /// </summary>
     public void ApplyResourceIdFromNetwork(int resourceId, string resourceStringKey, Vector3 pos)
     {
-        ResourceObject existing = FindScenePlacedResource(resourceStringKey, pos);
+        bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
+        if (!isHost && !_scenePlacedRegistered)
+        {
+            _pendingNetworkResourceSpawns.Add(new PendingResourceSpawn
+            {
+                resourceId = resourceId,
+                key = resourceStringKey,
+                pos = pos,
+                attempts = 0
+            });
+            return;
+        }
+
+        ResourceObject existing = FindPendingScenePlacedResource(resourceStringKey, pos);
+        if (existing != null)
+        {
+            OverrideResourceId(existing, resourceId);
+            existing.HasBeenSyncedFromNetwork = true;
+            _pendingScenePlacedResources.Remove(existing);
+            return;
+        }
+
+        existing = FindScenePlacedResource(resourceStringKey, pos);
         if (existing == null)
         {
-            Debug.LogWarning($"[ResourceManager] ApplyResourceIdFromNetwork: 매칭 자원 없음. key={resourceStringKey}, pos={pos}");
+            if (!isHost)
+            {
+                _pendingNetworkResourceSpawns.Add(new PendingResourceSpawn
+                {
+                    resourceId = resourceId,
+                    key = resourceStringKey,
+                    pos = pos,
+                    attempts = 1
+                });
+            }
+            Debug.LogWarning($"[ResourceManager] ApplyResourceIdFromNetwork: 매칭 자원 없음(재시도 예정). key={resourceStringKey}, id={resourceId}, pos={pos}");
             return;
         }
 
         OverrideResourceId(existing, resourceId);
+        existing.HasBeenSyncedFromNetwork = true;
+        TryApplyPendingDestroy(resourceId);
+    }
+
+    private ResourceObject FindPendingScenePlacedResource(string key, Vector3 pos)
+    {
+        const float SCENE_MATCH_MAX_DIST = 1.0f;
+
+        ResourceObject best = null;
+        float bestDist = float.MaxValue;
+
+        foreach (ResourceObject r in _pendingScenePlacedResources)
+        {
+            if (r == null) continue;
+            if (r.HasBeenSyncedFromNetwork) continue;
+            if (r.resourceStringKey != key) continue;
+
+            float d = Vector3.Distance(r.transform.position, pos);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = r;
+            }
+        }
+
+        return best != null && bestDist <= SCENE_MATCH_MAX_DIST ? best : null;
     }
 
     private ResourceObject FindScenePlacedResource(string key, Vector3 pos)
     {
+        const float SCENE_MATCH_MAX_DIST = 1.0f;
+
+        ResourceObject best = null;
+        float bestDist = float.MaxValue;
         foreach (var r in _resourceDic.Values)
         {
             if (r == null) continue;
-            if (r.resourceStringKey == key && Vector3.Distance(r.transform.position, pos) < 1f)
-                return r;
+            if (r.HasBeenSyncedFromNetwork) continue;
+            if (r.resourceStringKey != key) continue;
+
+            float d = Vector3.Distance(r.transform.position, pos);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = r;
+            }
         }
-        return null;
+        return best != null && bestDist <= SCENE_MATCH_MAX_DIST ? best : null;
     }
 
     // ======================================================================
@@ -161,6 +283,14 @@ public class ResourceManager : MonoBehaviour
         ResourceObject resource = GetResource(resourceId);
         if (resource == null)
         {
+            bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
+            if (!isHost)
+            {
+                _pendingNetworkResourceDestroys.Add(resourceId);
+                Debug.LogWarning($"[ResourceManager] DestroyResourceFromNetwork: id={resourceId} 없음(동기화 대기 보류)");
+                return;
+            }
+
             Debug.LogWarning($"[ResourceManager] DestroyResourceFromNetwork: id={resourceId} 없음");
             return;
         }
@@ -168,6 +298,74 @@ public class ResourceManager : MonoBehaviour
         UnregisterResource(resource);
         Destroy(resource.gameObject);
         Debug.Log($"[ResourceManager] 자원 파괴: id={resourceId}");
+    }
+
+    private void RetryPendingResourceSpawns()
+    {
+        List<PendingResourceSpawn> survivors = new List<PendingResourceSpawn>();
+
+        for (int i = 0; i < _pendingNetworkResourceSpawns.Count; i++)
+        {
+            PendingResourceSpawn p = _pendingNetworkResourceSpawns[i];
+            ResourceObject matched = FindPendingScenePlacedResource(p.key, p.pos);
+            if (matched == null)
+                matched = FindScenePlacedResource(p.key, p.pos);
+
+            if (matched != null)
+            {
+                OverrideResourceId(matched, p.resourceId);
+                matched.HasBeenSyncedFromNetwork = true;
+                _pendingScenePlacedResources.Remove(matched);
+                TryApplyPendingDestroy(p.resourceId);
+                continue;
+            }
+
+            p.attempts++;
+            if (p.attempts < MAX_SYNC_RETRY_ATTEMPTS)
+            {
+                survivors.Add(p);
+            }
+            else
+            {
+                Debug.LogWarning($"[ResourceManager] Resource ID 동기화 최종 실패: key={p.key}, id={p.resourceId}, pos={p.pos}");
+            }
+        }
+
+        _pendingNetworkResourceSpawns.Clear();
+        _pendingNetworkResourceSpawns.AddRange(survivors);
+    }
+
+    private void RetryPendingResourceDestroys()
+    {
+        List<int> resolved = new List<int>();
+        foreach (int resourceId in _pendingNetworkResourceDestroys)
+        {
+            ResourceObject resource = GetResource(resourceId);
+            if (resource == null) continue;
+
+            UnregisterResource(resource);
+            Destroy(resource.gameObject);
+            Debug.Log($"[ResourceManager] 보류된 자원 파괴 적용: id={resourceId}");
+            resolved.Add(resourceId);
+        }
+
+        for (int i = 0; i < resolved.Count; i++)
+            _pendingNetworkResourceDestroys.Remove(resolved[i]);
+    }
+
+    private void TryApplyPendingDestroy(int resourceId)
+    {
+        if (!_pendingNetworkResourceDestroys.Contains(resourceId))
+            return;
+
+        ResourceObject resource = GetResource(resourceId);
+        if (resource == null)
+            return;
+
+        UnregisterResource(resource);
+        Destroy(resource.gameObject);
+        _pendingNetworkResourceDestroys.Remove(resourceId);
+        Debug.Log($"[ResourceManager] 동기화 직후 보류 파괴 적용: id={resourceId}");
     }
 
     // ======================================================================

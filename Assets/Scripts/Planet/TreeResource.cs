@@ -54,7 +54,10 @@ public class TreeResource : ResourceObject
         yield return null;
         if (itemComp == null) yield break;
 
-        PacketSender.Instance.SendObjectSpawn(itemComp, pos, rot);
-        Debug.Log($"[Tree] SendObjectSpawn: itemId={itemComp.itemId}, key={itemComp.itemStringKey}");
+        Vector3 currentPos = itemComp.transform.position;
+        Quaternion currentRot = itemComp.transform.rotation;
+
+        PacketSender.Instance.SendObjectSpawn(itemComp, currentPos, currentRot);
+        Debug.Log($"[Tree] SendObjectSpawn: itemId={itemComp.itemId}, key={itemComp.itemStringKey}, pos={currentPos}");
     }
 }

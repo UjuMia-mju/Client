@@ -6,6 +6,11 @@ using UnityEngine;
 public abstract class ResourceObject : MonoBehaviour
 {
     [HideInInspector] public int resourceId;
+    /// <summary>
+    /// 피어에서 씬 배치 자원 ID가 호스트 값으로 1회 이상 동기화되었는지.
+    /// true면 재매칭 후보에서 제외된다.
+    /// </summary>
+    [System.NonSerialized] public bool HasBeenSyncedFromNetwork = false;
 
     [Tooltip("프리팹/타입 식별 키. ResourceManager의 Resource Prefab Table 드롭다운에서 선택.")]
     [SerializeField, ResourceKey] private string resourceKey;
