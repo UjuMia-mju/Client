@@ -15,12 +15,16 @@ public class FurnaceObject : MonoBehaviour
     [SerializeField] private Image progressBar; // 시각적 타이머용 UI (인스펙터에서 연결)
     [SerializeField] private Image finishImage; // 제련 완료 시 표시할 이미지 (인스펙터에서 연결)
     private Coroutine visualTimerCoroutine; // 시각적 타이머를 관리할 코루틴
-    
+
     public bool isWorking {get; private set;} = false; // 현재 용광로가 작동 중인지 여부
     public bool hasResult {get; private set;} = false; // 제련이 완료되어 결과 아이템이 생성되었는지 여부 (완성된 아이템이 아직 수거되지 않은 상태)
 
     private float item_throw_height = 3.5f;
     private float item_throw_force = 200f;
+
+    private bool _registeredToClientManager = false;
+    private Coroutine _pendingRegisterCoroutine;
+
     private void Start()
     {
         if (fireLight == null)
@@ -37,12 +41,55 @@ public class FurnaceObject : MonoBehaviour
         if (finishImage != null)
             finishImage.gameObject.SetActive(false);
 
-        FurnaceClientManager.Instance?.RegisterFurnace(furnaceId, this);
+        TryRegisterToClientManager();
+    }
+
+    private void OnEnable()
+    {
+        // Instance가 늦게 잡힌 경우(스크립트 실행 순서 문제)에 대비해 한 번 더 시도.
+        TryRegisterToClientManager();
     }
 
     private void OnDestroy()
     {
-        FurnaceClientManager.Instance?.UnregisterFurnace(furnaceId);
+        if (_pendingRegisterCoroutine != null)
+        {
+            StopCoroutine(_pendingRegisterCoroutine);
+            _pendingRegisterCoroutine = null;
+        }
+
+        if (_registeredToClientManager)
+            FurnaceClientManager.Instance?.UnregisterFurnace(furnaceId);
+    }
+
+    private void TryRegisterToClientManager()
+    {
+        if (_registeredToClientManager) return;
+
+        if (FurnaceClientManager.Instance != null)
+        {
+            FurnaceClientManager.Instance.RegisterFurnace(furnaceId, this);
+            _registeredToClientManager = true;
+            Debug.Log($"[FurnaceObject] RegisterFurnace 성공: furnaceId={furnaceId}");
+        }
+        else if (_pendingRegisterCoroutine == null)
+        {
+            _pendingRegisterCoroutine = StartCoroutine(RegisterWhenManagerReady());
+        }
+    }
+
+    private IEnumerator RegisterWhenManagerReady()
+    {
+        while (FurnaceClientManager.Instance == null)
+            yield return null;
+
+        if (!_registeredToClientManager)
+        {
+            FurnaceClientManager.Instance.RegisterFurnace(furnaceId, this);
+            _registeredToClientManager = true;
+            Debug.Log($"[FurnaceObject] RegisterFurnace(지연) 성공: furnaceId={furnaceId}");
+        }
+        _pendingRegisterCoroutine = null;
     }
 
     // 유저가 용광로에 아이템을 넣으려 할 때 호출 (상호작용 키 등)
@@ -163,13 +210,19 @@ public class FurnaceObject : MonoBehaviour
 
         if (ConnectManager.Instance.isHost)
         {
+            Debug.Log("용광로, 지금 아이템을 뽑겠습니다! 나는호스트");
             // 최종 수거 가능 여부는 FurnaceServerManager.completedFurnaces 기준으로 판단
             FurnaceServerManager.Instance.OnReceiveFurnaceRetrieve(furnaceId);
         }
-        else
+        else if(!ConnectManager.Instance.isHost)
         {
+            Debug.Log("용광로, 지금 아이템을 뽑겠습니다! 나는피어");
             // 피어도 로컬 hasResult에 의존하지 않고 호스트에게 요청
             PacketSender.Instance.SendFurnaceRetrieveRequest(furnaceId);
+        }
+        else
+        {
+            Debug.Log("호스트도 아니고 피어도 아니라는데요? 뭐지");
         }
     }
 
