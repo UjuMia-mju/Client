@@ -7,7 +7,7 @@ public class ConnectManager : MonoBehaviour
     public static ConnectManager Instance { get; private set; }
     public bool isHost = false;
 
-    public string centralServerIp = "127.0.0.1";
+    public string centralServerIp = "54.116.132.68";
     public int centralServerPort = 7777;
     public string hostIpFromServer = "127.0.0.1";
     public int hostPortFromServer = 7788;

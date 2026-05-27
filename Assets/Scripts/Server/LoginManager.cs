@@ -9,8 +9,9 @@ public class LoginManager : SceneSingleton<LoginManager>
     [SerializeField] private TMP_InputField pwInputField;
     [SerializeField] private Button loginButton;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         if (pwInputField != null)
         {
             pwInputField.contentType = TMP_InputField.ContentType.Password;

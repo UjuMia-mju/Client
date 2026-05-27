@@ -72,9 +72,7 @@ public class LobbyReadyButton : MonoBehaviour
     private void UpdateLabel(bool ready)
     {
         if (labelText != null)
-            // 한글이 네모로 보여서 임시로 Ready로 변경
-            // labelText.text = ready ? "준비 해제" : "준비";
-            labelText.text = "Ready";
+            labelText.text = ready ? "준비 해제" : "준비";
     }
 }
 

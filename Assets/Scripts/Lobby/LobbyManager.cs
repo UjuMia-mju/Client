@@ -61,9 +61,11 @@ public class LobbyManager : MonoBehaviour
         // 1. 씬에 있는 모든 플레이어 찾기 (Player태그)
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        // 2. 빨려 들어가기 전 물리 효과 끄기
+        // 2. 빨려 들어가기 전 물리 효과 끄기 + 플레이어 UI 숨기기
         foreach (GameObject player in players)
         {
+            HideLobbyAstronutCanvas(player);
+
             Rigidbody rb = player.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -196,5 +198,21 @@ public class LobbyManager : MonoBehaviour
         
         // 10번 다 실패했으면 그냥 중심에 스폰 (가장자리에 다 몰려있을 경우를 대비)
         return spawnCenter; 
+    }
+
+    void HideLobbyAstronutCanvas(GameObject playerRoot)
+    {
+        foreach (Canvas canvas in playerRoot.GetComponentsInChildren<Canvas>(true))
+            canvas.gameObject.SetActive(false);
+
+        // UIContainer는 Start()에서 부모에서 분리되므로 DetachAndFollowUI 쪽 Canvas도 끔
+        foreach (DetachAndFollowUI follower in FindObjectsByType<DetachAndFollowUI>(FindObjectsSortMode.None))
+        {
+            if (follower.target == null || !follower.target.IsChildOf(playerRoot.transform))
+                continue;
+
+            foreach (Canvas canvas in follower.GetComponentsInChildren<Canvas>(true))
+                canvas.gameObject.SetActive(false);
+        }
     }
 }

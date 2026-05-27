@@ -20,8 +20,9 @@ public class Monster : MovingObject
     [SerializeField] private bool isScenePlacedMonster = false;
     public bool IsScenePlacedMonster => isScenePlacedMonster;
 
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         hp = maxHp;
     }
 
