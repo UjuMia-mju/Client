@@ -30,3 +30,5 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 4405c5c095c87bd49a1bb426fc72b94c, type: 3}
   - name: Click4
     clip: {fileID: 8300000, guid: fdc1ecc5874ba9d449e85cf00451ceed, type: 3}
+  - name: PoisonMushroomExplode
+    clip: {fileID: 8300000, guid: 7288cfaa26d4ba94a8c564d90a3fbe13, type: 3}

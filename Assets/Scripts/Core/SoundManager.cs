@@ -49,6 +49,40 @@ public class SoundManager : MonoBehaviorSingleton<SoundManager>
         }
     }
 
+    /// <summary>
+    /// 월드 위치 기준 3D SFX 재생.
+    /// SoundData에 등록된 sfxName을 찾아 임시 AudioSource로 재생한다.
+    /// </summary>
+    public void PlaySFXAt(
+        string sfxName,
+        Vector3 position,
+        float volumeScale = 1f,
+        float minPitch = 1f,
+        float maxPitch = 1f,
+        float minDistance = 2f,
+        float maxDistance = 18f)
+    {
+        if (soundData == null) return;
+        AudioClip clip = soundData.GetSFX(sfxName);
+        if (clip == null) return;
+
+        var sfxObj = new GameObject($"SFX_{sfxName}");
+        sfxObj.transform.position = position;
+
+        AudioSource source = sfxObj.AddComponent<AudioSource>();
+        source.clip = clip;
+        source.volume = Mathf.Clamp01(sfxVolume * volumeScale);
+        source.pitch = Random.Range(minPitch, maxPitch);
+        source.spatialBlend = 1f;
+        source.rolloffMode = AudioRolloffMode.Linear;
+        source.minDistance = minDistance;
+        source.maxDistance = maxDistance;
+        source.Play();
+
+        float lifeTime = clip.length / Mathf.Max(0.01f, source.pitch) + 0.05f;
+        Destroy(sfxObj, lifeTime);
+    }
+
     // 볼륨 조절 및 Getter
     public void SetBGMVolume(float volume) 
     { 

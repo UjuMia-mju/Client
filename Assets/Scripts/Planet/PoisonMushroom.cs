@@ -20,7 +20,7 @@ public class PoisonMushroom : MonoBehaviour
     [SerializeField] private bool destroyOnExplode = true;
     
     [Header("Explosion SFX")]
-    [SerializeField] private AudioClip explodeSfx;
+    [SerializeField] private string explodeSfxName = "PoisonMushroomExplode";
     [SerializeField, Range(0f, 1f)] private float sfxVolume = 0.9f;
     [SerializeField, Range(0.5f, 1.5f)] private float minPitch = 0.95f;
     [SerializeField, Range(0.5f, 1.5f)] private float maxPitch = 1.05f;
@@ -114,24 +114,17 @@ public class PoisonMushroom : MonoBehaviour
 
     private void PlayExplodeSfx(Vector3 position)
     {
-        if (explodeSfx == null)
+        if (string.IsNullOrEmpty(explodeSfxName))
             return;
 
-        var sfxObj = new GameObject("PoisonMushroomSfx");
-        sfxObj.transform.position = position;
-
-        AudioSource source = sfxObj.AddComponent<AudioSource>();
-        source.clip = explodeSfx;
-        source.volume = sfxVolume;
-        source.pitch = Random.Range(minPitch, maxPitch);
-        source.spatialBlend = 1f;
-        source.rolloffMode = AudioRolloffMode.Linear;
-        source.minDistance = 2f;
-        source.maxDistance = 18f;
-        source.Play();
-
-        float lifeTime = explodeSfx.length / Mathf.Max(0.01f, source.pitch) + 0.05f;
-        Destroy(sfxObj, lifeTime);
+        SoundManager.Instance?.PlaySFXAt(
+            explodeSfxName,
+            position,
+            volumeScale: sfxVolume,
+            minPitch: minPitch,
+            maxPitch: maxPitch,
+            minDistance: 2f,
+            maxDistance: 18f);
     }
 
     public static bool TryApplyNetworkExplodeCommand(string message)
