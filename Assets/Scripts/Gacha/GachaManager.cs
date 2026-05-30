@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Protocol;
 
 public class GachaManager : MonoBehaviour
@@ -18,6 +20,12 @@ public class GachaManager : MonoBehaviour
     public GachaSpinnerUI spinnerUI; // 인스펙터에서 연결
     public GachaResultPopupUI resultPopupUI; // 스핀 종료 후 결과 표시
 
+    [Header("Navigation")]
+    [SerializeField] private Button backButton;
+    [SerializeField] private string backSceneName = Define.Scene.MAIN;
+
+    private Coroutine _initialDataRoutine;
+
     void Start()
     {
         // dedicate 서버 수신 이벤트 구독
@@ -27,13 +35,21 @@ public class GachaManager : MonoBehaviour
         if (spinnerUI != null)
             spinnerUI.OnSpinFinished += OnSpinFinished;
 
-        // 테스트 편의를 위해 진입 즉시 기본 데이터 요청
-        PacketDispatcher.Instance.SendGachaPoolList();
-        PacketDispatcher.Instance.SendMySkins();
+        BindBackButton();
+        _initialDataRoutine = StartCoroutine(WaitAndRequestInitialData());
     }
 
     void OnDestroy()
     {
+        if (backButton != null)
+            backButton.onClick.RemoveListener(OnClickBack);
+
+        if (_initialDataRoutine != null)
+        {
+            StopCoroutine(_initialDataRoutine);
+            _initialDataRoutine = null;
+        }
+
         if (PacketHandler.Instance == null)
             return;
 
@@ -43,6 +59,50 @@ public class GachaManager : MonoBehaviour
         PacketHandler.Instance.OnMySkinsEvent -= OnMySkins;
         if (spinnerUI != null)
             spinnerUI.OnSpinFinished -= OnSpinFinished;
+    }
+
+    IEnumerator WaitAndRequestInitialData()
+    {
+        const float timeoutSeconds = 20f;
+        float elapsed = 0f;
+
+        while (elapsed < timeoutSeconds)
+        {
+            var nm = NetManager.Instance;
+            if (nm != null && nm.IsConnected && nm._playerId != 0)
+            {
+                RequestInitialData();
+                yield break;
+            }
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (NetManager.Instance != null && NetManager.Instance.IsConnected)
+            RequestInitialData();
+        else
+            Debug.LogWarning("[GachaManager] 서버 연결 전이라 가챠 데이터 자동 요청을 건너뜁니다.");
+    }
+
+    void RequestInitialData()
+    {
+        PacketDispatcher.Instance.SendGachaPoolList();
+        PacketDispatcher.Instance.SendMySkins();
+    }
+
+    private void BindBackButton()
+    {
+        if (backButton == null)
+            return;
+
+        backButton.onClick.AddListener(OnClickBack);
+    }
+
+    private void OnClickBack()
+    {
+        SoundManager.Instance.PlaySFX("Click2");
+        SceneLoader.Instance.LoadScene(backSceneName);
     }
 
     // 뽑기 요청은 로컬 RNG가 아니라 서버에 위임
@@ -73,16 +133,6 @@ public class GachaManager : MonoBehaviour
         PacketDispatcher.Instance.SendGacha(selectedPoolId, defaultPullCount);
     }
 
-    public void RequestPoolList()
-    {
-        PacketDispatcher.Instance.SendGachaPoolList();
-    }
-
-    public void RequestMySkins()
-    {
-        PacketDispatcher.Instance.SendMySkins();
-    }
-
     private void OnGachaPoolList(S_GACHA_POOL_LIST packet)
     {
         // 서버가 내려준 활성 풀 스냅샷으로 교체
@@ -95,6 +145,8 @@ public class GachaManager : MonoBehaviour
 
         Debug.Log($"가챠 풀 {serverPools.Count}개 수신. 현재 poolId={selectedPoolId}");
     }
+
+    private SkinInfo _pendingResultSkin;
 
     private void OnGachaResult(S_GACHA packet)
     {
@@ -119,6 +171,7 @@ public class GachaManager : MonoBehaviour
 
         // 현재 스피너 UI가 단일 결과 연출이라 첫 번째 스킨 기준으로 표시
         var firstSkin = packet.Result.ObtainedSkins[0];
+        _pendingResultSkin = firstSkin;
         var selectedItem = FindItemBySkin(firstSkin);
         if (selectedItem == null)
         {
@@ -140,6 +193,7 @@ public class GachaManager : MonoBehaviour
         }
 
         Debug.Log($"가챠 성공: {packet.Result.ObtainedSkins.Count}개, gems={packet.Result.RemainingGems}, coins={packet.Result.RemainingCoins}");
+        PacketDispatcher.Instance.SendMySkins();
     }
 
     private void OnMySkins(S_MY_SKINS packet)
@@ -150,7 +204,7 @@ public class GachaManager : MonoBehaviour
     private void OnSpinFinished(GachaItem item)
     {
         if (resultPopupUI != null)
-            resultPopupUI.Show(item);
+            resultPopupUI.Show(item, _pendingResultSkin);
     }
 
     private GachaItem FindItemBySkin(SkinInfo skin)
