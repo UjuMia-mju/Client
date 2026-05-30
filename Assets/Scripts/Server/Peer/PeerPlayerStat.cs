@@ -30,7 +30,7 @@ public class PeerPlayerStat : PlayerStat
         while (statData.oxygen > 0)
         {
             statData.DecreaseOxygen(OxygenDecreasePerTick);
-            CallOnOxygenChanged();
+            // UI는 서버 S_PLAYER_STAT 동기화(BaseStatManager.UpdateStat)에서만 갱신한다.
 
             PeerStatManager.Instance.DecreaseOxygen(GetMyPlayerId());
 
@@ -49,7 +49,7 @@ public class PeerPlayerStat : PlayerStat
         while (statData.oxygen < 1f)
         {
             statData.IncreaseOxygen(OxygenIncreasePerTick);
-            CallOnOxygenChanged();
+            // UI는 서버 S_PLAYER_STAT 동기화(BaseStatManager.UpdateStat)에서만 갱신한다.
 
             PeerStatManager.Instance.IncreaseOxygen(GetMyPlayerId());
             yield return new WaitForSeconds(OxygenTickInterval);

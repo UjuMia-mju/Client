@@ -63,6 +63,8 @@ public class OtherPlayers : MovingObject
             oxygenUIController?.SetPlayerStat(remotePlayerStat);
         }
 
+        oxygenUIController?.gameObject.SetActive(true);
+
         // 물리 충돌로 밀려 떨리는 현상 방지
         rb.isKinematic = true;
 
