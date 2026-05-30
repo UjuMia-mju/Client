@@ -184,6 +184,7 @@ public class StageManager : MonoBehaviour
     {
         if (!packet.Success)
         {
+            MessageManager.TryShowKey(MessageKeys.ClearInfoFailed);
             Debug.LogWarning("[StageManager] S_GET_CLEAR_INFO 실패 — 기존 클리어 표시 유지");
             return;
         }
@@ -204,6 +205,7 @@ public class StageManager : MonoBehaviour
     {
         if (!packet.Success)
         {
+            MessageManager.TryShowKey(MessageKeys.GameClearFailed);
             Debug.LogWarning("[StageManager] S_GAME_CLEAR 실패 — 클리어 표시 유지");
             return;
         }
@@ -365,6 +367,7 @@ public class StageManager : MonoBehaviour
     {
         if (!packet.Success)
         {
+            MessageManager.TryShowKey(MessageKeys.StartStageRejected);
             Debug.LogWarning("[StageManager] 서버가 스테이지 시작을 거절했습니다.");
             return;
         }

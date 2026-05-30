@@ -51,6 +51,10 @@ public class LobbyStartButton : MonoBehaviour
 
         if (!packet.Success)
         {
+            MessageManager.TryShowServerError(
+                MessageKeys.StartRoomFailed,
+                MessageKeys.StartRoomFailedWithReason,
+                packet.ErrorMsg);
             Debug.LogWarning($"[LobbyStartButton] 시작 실패: {packet.ErrorMsg}");
             return;
         }

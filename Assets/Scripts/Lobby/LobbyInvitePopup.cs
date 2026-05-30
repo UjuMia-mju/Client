@@ -65,8 +65,7 @@ public class LobbyInvitePopup : MonoBehaviour
         _roomId = packet.RoomId;
 
         if (messageText != null)
-            // 한글로 하면 네모로 보여서 임시로 영어로 변경
-            messageText.text = $"{packet.InviterName} invited you room: {packet.RoomId}";
+            messageText.text = MessageTexts.Format(MessageKeys.InviteNotification, packet.InviterName);
 
         if (popupRoot != null)
             popupRoot.SetActive(true);
@@ -98,6 +97,12 @@ public class LobbyInvitePopup : MonoBehaviour
     private void OnInviteResponseResult(S_INVITE_RESPONSE packet)
     {
         if (!packet.Success)
+        {
+            MessageManager.TryShowServerError(
+                MessageKeys.InviteResponseFailed,
+                MessageKeys.InviteResponseFailedWithReason,
+                packet.ErrorMsg);
             Debug.LogWarning($"[LobbyInvitePopup] 초대 응답 처리 실패: {packet.ErrorMsg}");
+        }
     }
 }

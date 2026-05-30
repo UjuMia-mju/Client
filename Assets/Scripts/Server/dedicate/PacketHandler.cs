@@ -213,6 +213,7 @@ public class PacketHandler : Singleton<PacketHandler>
         }
         else
         {
+            MessageManager.TryShowKey(MessageKeys.EnterGameFailed);
             Debug.LogError(" Failed to Enter Game!");
         }
     }
@@ -227,6 +228,7 @@ public class PacketHandler : Singleton<PacketHandler>
         catch (Exception e)
         {
             Debug.LogWarning($"[PacketHandler] PKT_C_ENTER_GAME(1045) S_ENTER_GAME 파싱 실패: {e.Message}");
+            MessageManager.Instance?.ShowKey(MessageKeys.ProtocolUnreadable);
             return;
         }
 
@@ -252,6 +254,7 @@ public class PacketHandler : Singleton<PacketHandler>
             return;
         }
 
+        MessageManager.TryShowKey(MessageKeys.EnterGameFailed);
         Debug.LogError(" Failed to Enter Game!");
     }
 

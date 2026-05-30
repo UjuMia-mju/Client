@@ -45,12 +45,14 @@ public class Furnace : MonoBehaviour
     {
         if (!data.CompareTag(Define.Tag.ITEM))
         {
+            MessageManager.TryShowKey(MessageKeys.FurnaceLegacyNotItem);
             Debug.Log("해당 객체가 아이템이 아닙니다.");
             return false;
         }
 
         else if (smeltingCoroutine != null)
         {
+            MessageManager.TryShowKey(MessageKeys.FurnaceLegacyBusy);
             Debug.Log("용광로가 작동 중입니다.");
             return false;
         }
@@ -66,6 +68,7 @@ public class Furnace : MonoBehaviour
                     item.smeltedPrefab != null &&
                     item.smeltedPrefab.GetComponent<Items>().itemStringKey == itemComponent.itemStringKey))
             {
+                MessageManager.TryShowKey(MessageKeys.FurnaceAlreadySmeltedItem);
                 Debug.Log("이미 제련된 아이템은 넣을 수 없습니다.");
                 return false;
             }
@@ -90,6 +93,7 @@ public class Furnace : MonoBehaviour
 
             else
             {
+                MessageManager.TryShowKey(MessageKeys.FurnaceLegacyNoRecipe);
                 Debug.Log("해당 아이템에 대한 SmeltedItemData가 없습니다: ");
                 return false;
             }

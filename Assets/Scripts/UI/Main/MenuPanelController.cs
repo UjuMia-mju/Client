@@ -89,7 +89,7 @@ public class MenuPanelController : MonoBehaviour
             if (NetManager.Instance != null && NetManager.Instance.IsConnected)
                 PacketDispatcher.Instance.SendCreateRoom();
             else
-                Debug.LogWarning("[MenuPanelController] 서버에 연결되지 않았습니다. 로그인 후 멀티플레이를 이용하세요.");
+                MessageManager.Instance?.ShowKey(MessageKeys.MultiplayLoginRequired);
         });
         AddHoverEvents(btn);
     }

@@ -365,6 +365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b107d90546f203409cc0f40eab4d7c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MessageManager
+  catalog: {fileID: 11400000, guid: 27ad2d0155634a35b376e67d22ac2401, type: 2}
   messagePrefab: {fileID: 3689992257160808122, guid: e2ad4502088c4e34ea01a25dfc0ffbe5, type: 3}
   canvasSortOrder: 1000
   visibleSecondsBeforeFade: 2

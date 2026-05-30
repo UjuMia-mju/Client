@@ -50,13 +50,13 @@ public class GachaManager : MonoBehaviour
     {
         if (isGachaRequestPending)
         {
-            Debug.LogWarning("이미 가챠 요청을 보냈습니다. 서버 응답을 기다려주세요.");
+            MessageManager.TryShowKey(MessageKeys.GachaRequestPending);
             return;
         }
 
         if (spinnerUI != null && spinnerUI.IsSpinning)
         {
-            Debug.LogWarning("스핀 애니메이션 진행 중입니다.");
+            MessageManager.TryShowKey(MessageKeys.GachaSpinInProgress);
             return;
         }
 
@@ -65,7 +65,7 @@ public class GachaManager : MonoBehaviour
 
         if (selectedPoolId <= 0)
         {
-            Debug.LogWarning("유효한 가챠 풀 ID가 없습니다. 풀 목록을 먼저 받아오세요.");
+            MessageManager.TryShowKey(MessageKeys.GachaInvalidPool);
             return;
         }
 
@@ -102,12 +102,17 @@ public class GachaManager : MonoBehaviour
 
         if (!packet.Success)
         {
+            MessageManager.TryShowServerError(
+                MessageKeys.GachaFailed,
+                MessageKeys.GachaFailedWithReason,
+                packet.ErrorMsg);
             Debug.LogError($"가챠 실패: {packet.ErrorMsg}");
             return;
         }
 
         if (packet.Result == null || packet.Result.ObtainedSkins.Count == 0)
         {
+            MessageManager.TryShowKey(MessageKeys.GachaNoResult);
             Debug.LogWarning("가챠 결과에 획득 스킨이 없습니다.");
             return;
         }
@@ -129,6 +134,7 @@ public class GachaManager : MonoBehaviour
 
         if (!spinnerUI.StartSpinAnimation(selectedItem))
         {
+            MessageManager.TryShowKey(MessageKeys.GachaSpinStartFailed);
             Debug.LogWarning("스핀 시작에 실패했습니다. 진행 중인 연출이 끝난 뒤 다시 시도하세요.");
             return;
         }
