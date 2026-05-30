@@ -51,3 +51,7 @@ Config.cs
 
 # vs 파일
 .vs/
+
+# 폰트 관련 파일 (TextMesh Pro 생성 에셋)
+Assets/TextMesh Pro/Fonts/*.asset
+Assets/TextMesh Pro/Fonts/*.asset.meta
