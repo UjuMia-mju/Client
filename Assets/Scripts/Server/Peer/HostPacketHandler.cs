@@ -34,6 +34,7 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_MONSTER_DEAD> OnMonsterDeadEvent;
     public event Action<S_MONSTER_ANIMATION> OnMonsterAnimationEvent;
     public event System.Action<Protocol.S_MONSTER_MOVE> OnMonsterMoveEvent;
+    public event Action<byte[]> OnMushroomExplodeEvent;
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -44,6 +45,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_CHAT:
                 HandleChat(data);
+                break;
+            case PacketId.PKT_S_MUSHROOM_EXPLODE:
+                HandleMushroomExplode(data);
                 break;
             case PacketId.PKT_S_MOVE:
                 HandleMove(data);
@@ -153,6 +157,16 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     {
         S_CHAT packet = S_CHAT.Parser.ParseFrom(payloadData);
         OnChatEvent?.Invoke(packet);
+    }
+
+    private void HandleMushroomExplode(byte[] payloadData)
+    {
+        if (payloadData == null || payloadData.Length == 0)
+        {
+            Debug.LogWarning("[HostPacketHandler] Invalid mushroom explode payload.");
+            return;
+        }
+        OnMushroomExplodeEvent?.Invoke(payloadData);
     }
 
     private void HandleAnimation(byte[] payloadData)

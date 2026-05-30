@@ -1,4 +1,4 @@
-﻿public enum PacketId : ushort
+public enum PacketId : ushort
 {
     PKT_C_GET_DB_DATA = 1000,
     PKT_C_TEST_ENTER_ROOM = 1001,
@@ -95,5 +95,8 @@
     PKT_S_MONSTER_SPAWN = 4001,
     PKT_S_MONSTER_DEAD = 4002,
     PKT_S_MONSTER_ANIMATION = 4003,
-    PKT_S_MONSTER_MOVE = 4004
+    PKT_S_MONSTER_MOVE = 4004,
+    // 4스테이지라 4천번대라는 주석 확인 했는데 2천번대는 이미 사용중이라 사용할수가 없어서 이어서 추가했습니다
+    PKT_C_MUSHROOM_EXPLODE = 4005,
+    PKT_S_MUSHROOM_EXPLODE = 4006
 }
