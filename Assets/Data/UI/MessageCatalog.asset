@@ -126,3 +126,5 @@ MonoBehaviour:
     text: "\uC81C\uB828\uD560 \uC218 \uC5C6\uB294 \uC544\uC774\uD15C\uC785\uB2C8\uB2E4."
   - key: keybinding.conflict_choice
     text: '{0} ({1})'
+  - key: main.custom_coming_soon
+    text: "\uC5C5\uB370\uC774\uD2B8 \uC608\uC815\uC785\uB2C8\uB2E4."

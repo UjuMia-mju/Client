@@ -65,6 +65,9 @@ public static class MessageKeys
     public const string FurnaceLegacyNotItem = "craft.furnace_legacy_not_item";
     public const string FurnaceLegacyNoRecipe = "craft.furnace_legacy_no_recipe";
 
+    // Main menu
+    public const string MainCustomComingSoon = "main.custom_coming_soon";
+
     // Key binding
     public const string KeyBindingConflictChoice = "keybinding.conflict_choice";
 }
