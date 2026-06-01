@@ -662,7 +662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   targetNode: {fileID: 1909872489}
   orbitCenter: {fileID: 1922309642}
-  segments: 30
+  segments: 60
   lineWidth: 0.15
   hoverColor: {r: 0.6839622, g: 0.88793886, b: 1, a: 1}
   hitBoxMultiplier: 5
@@ -1180,7 +1180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   targetNode: {fileID: 287076789}
   orbitCenter: {fileID: 1922309642}
-  segments: 30
+  segments: 60
   lineWidth: 0.15
   hoverColor: {r: 0.6839622, g: 0.88793886, b: 1, a: 1}
   hitBoxMultiplier: 5
@@ -1960,7 +1960,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   targetNode: {fileID: 219891158}
   orbitCenter: {fileID: 1922309642}
-  segments: 30
+  segments: 60
   lineWidth: 0.15
   hoverColor: {r: 0.6839622, g: 0.88793886, b: 1, a: 1}
   hitBoxMultiplier: 5
@@ -2121,7 +2121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OrbitLineRenderer
   targetNode: {fileID: 416781202}
   orbitCenter: {fileID: 1922309642}
-  segments: 30
+  segments: 60
   lineWidth: 0.15
   hoverColor: {r: 0.6839622, g: 0.88793886, b: 1, a: 1}
   hitBoxMultiplier: 5
