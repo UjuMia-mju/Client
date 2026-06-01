@@ -1228,6 +1228,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: glow (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 7013151031138945480, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+      propertyPath: isScenePlacedItem
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4596,6 +4600,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: glow (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 7013151031138945480, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+      propertyPath: isScenePlacedItem
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6799,6 +6807,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: glow (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 7013151031138945480, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+      propertyPath: isScenePlacedItem
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8036,7 +8048,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6810136954796013761, guid: d784762cedc844e40a2e022a7de7c6d5, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8249,6 +8261,10 @@ PrefabInstance:
     - target: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
       propertyPath: m_Name
       value: glow (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7013151031138945480, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+      propertyPath: isScenePlacedItem
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -13666,6 +13682,10 @@ PrefabInstance:
     - target: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
       propertyPath: m_Name
       value: glow (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7013151031138945480, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+      propertyPath: isScenePlacedItem
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
