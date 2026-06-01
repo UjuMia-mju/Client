@@ -373,6 +373,8 @@ MonoBehaviour:
   resizePanelToFitText: 1
   messageTextMaxWidth: 900
   messageTextMinWidth: 120
+  messageTextMaxHeight: 0
+  messageMaxScreenWidthRatio: 0.85
   messagePanelExtraSize: {x: 56, y: 40}
 --- !u!4 &508851147
 Transform:
@@ -1038,6 +1040,62 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1888000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1888000003}
+  - component: {fileID: 1888000002}
+  m_Layer: 0
+  m_Name: CustomCursorController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1888000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1888000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7e4a1b92f8d4e6490ab3c5d7e2f816a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CustomCursorController
+  defaultCursor: {fileID: -1734805033, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
+  invalidCursor: {fileID: 2077216964, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
+  pickaxeCursor: {fileID: 1380082168, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
+  baseballBatCursor: {fileID: 1345967101, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
+  axeCursor: {fileID: 1258705020, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
+  shovelCursor: {fileID: 2128213037, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
+  hotspot: {x: 0, y: 0}
+  cursorMode: 0
+  worldRaycastDistance: 100
+  worldRaycastMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!4 &1888000003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1888000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1940233377
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,62 +1411,6 @@ MonoBehaviour:
   sfxPlayer: {fileID: 1152832447}
   bgmVolume: 1
   sfxVolume: 1
---- !u!1 &1888000001
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1888000003}
-  - component: {fileID: 1888000002}
-  m_Layer: 0
-  m_Name: CustomCursorController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1888000002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1888000001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7e4a1b92f8d4e6490ab3c5d7e2f816a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CustomCursorController
-  defaultCursor: {fileID: -1734805033, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
-  invalidCursor: {fileID: 2077216964, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
-  pickaxeCursor: {fileID: 1380082168, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
-  baseballBatCursor: {fileID: 1345967101, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
-  axeCursor: {fileID: 1258705020, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
-  shovelCursor: {fileID: 2128213037, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
-  hotspot: {x: 0, y: 0}
-  cursorMode: 0
-  worldRaycastDistance: 100
-  worldRaycastMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
---- !u!4 &1888000003
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1888000001}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

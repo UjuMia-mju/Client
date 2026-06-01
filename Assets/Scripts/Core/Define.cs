@@ -54,6 +54,23 @@ public static class Define
 
             return false;
         }
+
+        /// <summary>
+        /// 인게임 씬 이름 → chapter/stage. StageManager 컨텍스트가 없을 때 폴백.
+        /// </summary>
+        public static bool TryGetChapterStageFromScene(string sceneName, out int chapter, out int stage)
+        {
+            chapter = 0;
+            stage = 0;
+
+            if (sceneName == GAME_1_1) { chapter = 1; stage = 1; return true; }
+            if (sceneName == GAME_1_2) { chapter = 1; stage = 2; return true; }
+            if (sceneName == GAME_1_3) { chapter = 1; stage = 3; return true; }
+            if (sceneName == GAME_1_4) { chapter = 1; stage = 4; return true; }
+            if (sceneName == GAME_1_5) { chapter = 1; stage = 5; return true; }
+
+            return false;
+        }
     }
 
     public static class Tag
