@@ -129,8 +129,34 @@ public class GachaManager : MonoBehaviour
             return;
         }
 
+        var nm = NetManager.Instance;
+        if (nm == null || !nm.IsConnected)
+        {
+            MessageManager.TryShowKey(MessageKeys.NotConnected);
+            return;
+        }
+
+        if (nm._playerId == 0)
+        {
+            MessageManager.TryShowKey(MessageKeys.MultiplayLoginRequired);
+            Debug.LogWarning("[GachaManager] playerId=0 상태입니다. 로그인 후 가챠를 시도하세요.");
+            return;
+        }
+
+        if (serverPools.Count == 0)
+        {
+            Debug.LogWarning("[GachaManager] 가챠 풀 목록이 없어 재요청합니다.");
+            PacketDispatcher.Instance.SendGachaPoolList();
+            MessageManager.TryShowKey(MessageKeys.GachaInvalidPool);
+            return;
+        }
+
         isGachaRequestPending = true;
-        PacketDispatcher.Instance.SendGacha(selectedPoolId, defaultPullCount);
+        if (!PacketDispatcher.Instance.SendGacha(selectedPoolId, defaultPullCount))
+        {
+            isGachaRequestPending = false;
+            MessageManager.TryShowKey(MessageKeys.NotConnected);
+        }
     }
 
     private void OnGachaPoolList(S_GACHA_POOL_LIST packet)
@@ -158,7 +184,9 @@ public class GachaManager : MonoBehaviour
                 MessageKeys.GachaFailed,
                 MessageKeys.GachaFailedWithReason,
                 packet.ErrorMsg);
-            Debug.LogError($"가챠 실패: {packet.ErrorMsg}");
+            Debug.LogError(
+                $"가챠 실패(서버 응답): {packet.ErrorMsg} | poolId={selectedPoolId}, pullCount={defaultPullCount}, " +
+                $"playerId={NetManager.Instance?._playerId ?? 0}, connected={NetManager.Instance?.IsConnected ?? false}");
             return;
         }
 

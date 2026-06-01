@@ -73,6 +73,8 @@ public static class Define
         public const string TREASURE_TROVE = "TreasureTrove";
         public const string MONSTER = "Monster";
         public const string WEAPON = "Weapon";
+        /// <summary>QuickOutline 대상에서 제외 (파티클·볼륨형 VFX 등).</summary>
+        public const string NO_OUTLINE = "NoOutline";
     }
 
     public static class Layer

@@ -109,6 +109,8 @@ public class StageManager : MonoBehaviour
             node.Init();
         }
 
+        RedrawAllOrbitLines();
+
         _cameraController.ResetToOrigin();
         _clickOffObjects = GameObject.FindGameObjectsWithTag(Define.Tag.CLICKOFF);
 
@@ -540,7 +542,7 @@ public class StageManager : MonoBehaviour
 
         ToggleFocusMode(targetNode, true);
 
-        yield return StartCoroutine(_cameraController.ZoomIn(targetNode.transform));
+        yield return StartCoroutine(_cameraController.ZoomIn(targetNode));
 
         if (selectPanel != null)
         {
@@ -578,6 +580,16 @@ public class StageManager : MonoBehaviour
         isMovementPaused = false; 
         _currentSelectedNode = null;
         _isTransitioning = false;
+    }
+
+    static void RedrawAllOrbitLines()
+    {
+        var orbitLines = Object.FindObjectsByType<OrbitLineRenderer>(FindObjectsSortMode.None);
+        foreach (var orbitLine in orbitLines)
+        {
+            if (orbitLine != null)
+                orbitLine.RedrawOrbit();
+        }
     }
 
     private void ToggleFocusMode(StageNode targetNode, bool isFocusing)
@@ -645,7 +657,7 @@ public class StageManager : MonoBehaviour
         _guestPreviewNode = node;
         isMovementPaused = true;
         ToggleFocusMode(_guestPreviewNode, true);
-        yield return StartCoroutine(_cameraController.ZoomIn(_guestPreviewNode.transform));
+        yield return StartCoroutine(_cameraController.ZoomIn(_guestPreviewNode));
     }
 
     /// <summary>게스트 미리보기 해제. 호스트와 달리 ZoomOut 연출 없이 원점으로 스냅.</summary>

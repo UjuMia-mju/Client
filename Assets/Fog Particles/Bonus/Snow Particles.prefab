@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8004617657265296745}
   m_Layer: 0
   m_Name: Snow Particles
-  m_TagString: Untagged
+  m_TagString: NoOutline
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
