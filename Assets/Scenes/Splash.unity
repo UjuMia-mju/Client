@@ -1076,7 +1076,7 @@ MonoBehaviour:
   axeCursor: {fileID: 1258705020, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
   shovelCursor: {fileID: 2128213037, guid: 55311f0b871c1ea42b4353e31ecff12b, type: 3}
   hotspot: {x: 0, y: 0}
-  cursorMode: 0
+  cursorMode: 1
   worldRaycastDistance: 100
   worldRaycastMask:
     serializedVersion: 2
