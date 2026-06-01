@@ -47,6 +47,11 @@ public class Player : MovingObject
     [SerializeField] private OxygenUIController oxygenUIController;
     [SerializeField] private TextMeshProUGUI NicknameText;
     [SerializeField] private ThrowTrajectoryPreview trajectoryPreview;
+    [Header("Hit SFX")]
+    [SerializeField] private string hitStunSfxName = "PlayerHitStun";
+    [SerializeField, Range(0f, 1f)] private float hitStunSfxVolumeScale = 1f;
+    [SerializeField, Tooltip("경직음 연속 재생 방지용 최소 간격(초)")]
+    private float hitStunSfxCooldown = 0.1f;
 
     [Header("Oxygen Tuning")]
     [Tooltip("1초당 자연 감소량 (0~1 정규화)")]
@@ -60,6 +65,7 @@ public class Player : MovingObject
 
     private float externalFreezeUntil = 0f;
     private bool isExternallyFrozen => Time.time < externalFreezeUntil;
+    private float nextHitStunSfxTime = 0f;
 
     private static bool s_stageStatResetDone = false;
 
@@ -898,6 +904,18 @@ public class Player : MovingObject
     public void FreezeFor(float seconds)
     {
         externalFreezeUntil = Mathf.Max(externalFreezeUntil, Time.time + seconds);
+        if (!string.IsNullOrEmpty(hitStunSfxName) && Time.time >= nextHitStunSfxTime)
+        {
+            nextHitStunSfxTime = Time.time + Mathf.Max(0f, hitStunSfxCooldown);
+            SoundManager.Instance?.PlaySFXAt(
+                hitStunSfxName,
+                transform.position,
+                volumeScale: hitStunSfxVolumeScale,
+                minPitch: 0.98f,
+                maxPitch: 1.02f,
+                minDistance: 2f,
+                maxDistance: 14f);
+        }
     }
 
     /// <summary>

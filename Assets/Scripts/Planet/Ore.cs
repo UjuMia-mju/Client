@@ -4,6 +4,9 @@ public class Ore : ResourceObject
 {
     // Inspector에서 프리팹 등록
     [SerializeField] private GameObject orePrefab;
+    [Header("SFX")]
+    [SerializeField] private string hitSfxName = "OreHit";
+    [SerializeField, Range(0f, 1f)] private float hitSfxVolumeScale = 0.9f;
 
     [Tooltip("이 광석에서 총 몇 번 아이템이 떨어진 뒤 사라질지")]
     [SerializeField] private int maxDrops = 1;
@@ -16,6 +19,14 @@ public class Ore : ResourceObject
     public override void OnHit()
     {
         Debug.Log($"[Ore] OnHit. id={resourceId}");
+        SoundManager.Instance?.PlaySFXAt(
+            hitSfxName,
+            transform.position,
+            volumeScale: hitSfxVolumeScale,
+            minPitch: 0.95f,
+            maxPitch: 1.05f,
+            minDistance: 2f,
+            maxDistance: 16f);
 
         if (ConnectManager.Instance == null || ConnectManager.Instance.isHost)
         {

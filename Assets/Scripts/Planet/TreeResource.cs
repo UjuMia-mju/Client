@@ -4,6 +4,9 @@ public class TreeResource : ResourceObject
 {
     // Inspector에서 프리팹 등록
     [SerializeField] private GameObject logPrefab;
+    [Header("SFX")]
+    [SerializeField] private string hitSfxName = "TreeHit";
+    [SerializeField, Range(0f, 1f)] private float hitSfxVolumeScale = 0.9f;
 
     [Tooltip("이 나무에서 총 몇 번 아이템이 떨어진 뒤 사라질지")]
     [SerializeField] private int maxDrops = 1;
@@ -16,6 +19,14 @@ public class TreeResource : ResourceObject
     public override void OnHit()
     {
         Debug.Log($"[Tree] OnHit. id={resourceId}");
+        SoundManager.Instance?.PlaySFXAt(
+            hitSfxName,
+            transform.position,
+            volumeScale: hitSfxVolumeScale,
+            minPitch: 0.95f,
+            maxPitch: 1.05f,
+            minDistance: 2f,
+            maxDistance: 16f);
 
         if (ConnectManager.Instance == null || ConnectManager.Instance.isHost)
         {
