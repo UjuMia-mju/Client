@@ -1724,8 +1724,8 @@ GameObject:
   - component: {fileID: 270964661}
   - component: {fileID: 270964665}
   - component: {fileID: 270964664}
-  - component: {fileID: 270964663}
   - component: {fileID: 270964662}
+  - component: {fileID: 270964666}
   m_Layer: 7
   m_Name: stone_ore (3)
   m_TagString: Ore
@@ -1764,27 +1764,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &270964663
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 270964660}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &270964664
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1840,6 +1819,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 270964660}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &270964666
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270964660}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!1 &271319643
 GameObject:
@@ -2448,8 +2449,8 @@ GameObject:
   - component: {fileID: 390335397}
   - component: {fileID: 390335401}
   - component: {fileID: 390335400}
-  - component: {fileID: 390335399}
   - component: {fileID: 390335398}
+  - component: {fileID: 390335402}
   m_Layer: 7
   m_Name: stone_ore (8)
   m_TagString: Ore
@@ -2488,27 +2489,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &390335399
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 390335396}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &390335400
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2564,6 +2544,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 390335396}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &390335402
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 390335396}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!1 &407343194
 GameObject:
@@ -3150,8 +3152,8 @@ GameObject:
   - component: {fileID: 509975836}
   - component: {fileID: 509975840}
   - component: {fileID: 509975839}
-  - component: {fileID: 509975838}
   - component: {fileID: 509975837}
+  - component: {fileID: 509975841}
   m_Layer: 7
   m_Name: stone_ore (2)
   m_TagString: Ore
@@ -3190,27 +3192,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &509975838
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 509975835}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &509975839
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3266,6 +3247,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509975835}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &509975841
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509975835}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!1 &534275055
 GameObject:
@@ -4761,16 +4764,47 @@ PrefabInstance:
       propertyPath: maxDrops
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 380208884022275533, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3267865454812374866, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 633264990}
   m_SourcePrefab: {fileID: 100100000, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
 --- !u!4 &633264988 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4018623585612291914, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
   m_PrefabInstance: {fileID: 633264987}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &633264989 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3267865454812374866, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
+  m_PrefabInstance: {fileID: 633264987}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &633264990
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633264989}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5597002278806442958, guid: fa4c8c397455d6943b5f5d458fc50f36, type: 3}
 --- !u!1 &647004308
 GameObject:
   m_ObjectHideFlags: 0
@@ -5459,8 +5493,8 @@ GameObject:
   - component: {fileID: 815957751}
   - component: {fileID: 815957755}
   - component: {fileID: 815957754}
-  - component: {fileID: 815957753}
   - component: {fileID: 815957752}
+  - component: {fileID: 815957756}
   m_Layer: 7
   m_Name: stone_ore
   m_TagString: Ore
@@ -5499,27 +5533,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &815957753
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 815957750}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &815957754
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5575,6 +5588,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 815957750}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &815957756
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815957750}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!1 &817283409
 GameObject:
@@ -6847,8 +6882,8 @@ GameObject:
   - component: {fileID: 1021907336}
   - component: {fileID: 1021907340}
   - component: {fileID: 1021907339}
-  - component: {fileID: 1021907338}
   - component: {fileID: 1021907337}
+  - component: {fileID: 1021907341}
   m_Layer: 7
   m_Name: stone_ore (4)
   m_TagString: Ore
@@ -6887,27 +6922,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &1021907338
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1021907335}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1021907339
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6963,6 +6977,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021907335}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &1021907341
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021907335}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!1 &1059108851
 GameObject:
@@ -9217,16 +9253,47 @@ PrefabInstance:
       propertyPath: maxDrops
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 380208884022275533, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3267865454812374866, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1382407971}
   m_SourcePrefab: {fileID: 100100000, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
 --- !u!4 &1382407969 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4018623585612291914, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
   m_PrefabInstance: {fileID: 1382407968}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1382407970 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3267865454812374866, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
+  m_PrefabInstance: {fileID: 1382407968}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1382407971
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382407970}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5597002278806442958, guid: fa4c8c397455d6943b5f5d458fc50f36, type: 3}
 --- !u!1 &1386027014
 GameObject:
   m_ObjectHideFlags: 0
@@ -9927,8 +9994,8 @@ GameObject:
   - component: {fileID: 1465519119}
   - component: {fileID: 1465519123}
   - component: {fileID: 1465519122}
-  - component: {fileID: 1465519121}
   - component: {fileID: 1465519120}
+  - component: {fileID: 1465519124}
   m_Layer: 7
   m_Name: glow_ore
   m_TagString: Ore
@@ -9967,27 +10034,6 @@ MonoBehaviour:
   resourceKey: glow_ore
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
   maxDrops: 2
---- !u!65 &1465519121
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1465519118}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3.88, y: 2.65, z: 3.46}
-  m_Center: {x: 0.88, y: -0.48, z: 0}
 --- !u!23 &1465519122
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10043,6 +10089,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1465519118}
+  m_Mesh: {fileID: 6158980166006219026, guid: b851d3e85988fbb4c82c61c8ad525971, type: 3}
+--- !u!64 &1465519124
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465519118}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 6158980166006219026, guid: b851d3e85988fbb4c82c61c8ad525971, type: 3}
 --- !u!1001 &1503534600
 PrefabInstance:
@@ -10564,8 +10632,8 @@ GameObject:
   - component: {fileID: 1681381277}
   - component: {fileID: 1681381281}
   - component: {fileID: 1681381280}
-  - component: {fileID: 1681381279}
   - component: {fileID: 1681381278}
+  - component: {fileID: 1681381282}
   m_Layer: 7
   m_Name: stone_ore (6)
   m_TagString: Ore
@@ -10604,27 +10672,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &1681381279
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1681381276}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1681381280
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10680,6 +10727,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1681381276}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &1681381282
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1681381276}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!1001 &1716288818
 PrefabInstance:
@@ -12330,8 +12399,8 @@ GameObject:
   - component: {fileID: 2001769685}
   - component: {fileID: 2001769689}
   - component: {fileID: 2001769688}
-  - component: {fileID: 2001769687}
   - component: {fileID: 2001769686}
+  - component: {fileID: 2001769690}
   m_Layer: 7
   m_Name: stone_ore (1)
   m_TagString: Ore
@@ -12370,27 +12439,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &2001769687
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2001769684}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2001769688
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -12446,6 +12494,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2001769684}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &2001769690
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001769684}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!1001 &2026011735
 PrefabInstance:
@@ -13010,8 +13080,8 @@ GameObject:
   - component: {fileID: 2062297961}
   - component: {fileID: 2062297965}
   - component: {fileID: 2062297964}
-  - component: {fileID: 2062297963}
   - component: {fileID: 2062297962}
+  - component: {fileID: 2062297966}
   m_Layer: 7
   m_Name: stone_ore (5)
   m_TagString: Ore
@@ -13050,27 +13120,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &2062297963
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2062297960}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2062297964
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13126,6 +13175,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062297960}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &2062297966
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062297960}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!1001 &2067127938
 PrefabInstance:
@@ -13617,8 +13688,8 @@ GameObject:
   - component: {fileID: 2132481149}
   - component: {fileID: 2132481153}
   - component: {fileID: 2132481152}
-  - component: {fileID: 2132481151}
   - component: {fileID: 2132481150}
+  - component: {fileID: 2132481154}
   m_Layer: 7
   m_Name: stone_ore (7)
   m_TagString: Ore
@@ -13657,27 +13728,6 @@ MonoBehaviour:
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
   maxDrops: 2
---- !u!65 &2132481151
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2132481148}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.44, y: 1.6, z: 1.12}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2132481152
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13733,6 +13783,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2132481148}
+  m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
+--- !u!64 &2132481154
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132481148}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 1916067474030397331, guid: 8e0ec30f548d6bf4fbde5d632ef3acd8, type: 3}
 --- !u!23 &1474962902690486
 MeshRenderer:

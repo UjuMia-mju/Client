@@ -31,6 +31,14 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_LOGIN, loginPacket);
     }
 
+    public void SendGetCurrency()
+    {
+        if (!TryGetConnectedNet(out NetManager session))
+            return;
+
+        session.SendPacket(PacketId.PKT_C_GET_CURRENCY, new C_GET_CURRENCY());
+    }
+
     public void SendGachaPoolList()
     {
         C_GACHA_POOL_LIST packet = new C_GACHA_POOL_LIST();

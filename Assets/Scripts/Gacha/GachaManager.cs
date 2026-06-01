@@ -11,6 +11,9 @@ public class GachaManager : MonoBehaviour
 
     private readonly List<GachaPoolInfo> serverPools = new List<GachaPoolInfo>();
     private bool isGachaRequestPending;
+    private bool _currencyReceived;
+    private int _coin;
+    private int _gem;
 
     [Header("Server Gacha Settings")]
     public int selectedPoolId = 1;
@@ -32,6 +35,7 @@ public class GachaManager : MonoBehaviour
         PacketHandler.Instance.OnGachaPoolListEvent += OnGachaPoolList;
         PacketHandler.Instance.OnGachaResultEvent += OnGachaResult;
         PacketHandler.Instance.OnMySkinsEvent += OnMySkins;
+        PacketHandler.Instance.OnGetCurrencyEvent += OnGetCurrency;
         if (spinnerUI != null)
             spinnerUI.OnSpinFinished += OnSpinFinished;
 
@@ -57,6 +61,7 @@ public class GachaManager : MonoBehaviour
         PacketHandler.Instance.OnGachaPoolListEvent -= OnGachaPoolList;
         PacketHandler.Instance.OnGachaResultEvent -= OnGachaResult;
         PacketHandler.Instance.OnMySkinsEvent -= OnMySkins;
+        PacketHandler.Instance.OnGetCurrencyEvent -= OnGetCurrency;
         if (spinnerUI != null)
             spinnerUI.OnSpinFinished -= OnSpinFinished;
     }
@@ -87,6 +92,7 @@ public class GachaManager : MonoBehaviour
 
     void RequestInitialData()
     {
+        PacketDispatcher.Instance.SendGetCurrency();
         PacketDispatcher.Instance.SendGachaPoolList();
         PacketDispatcher.Instance.SendMySkins();
     }
@@ -151,6 +157,64 @@ public class GachaManager : MonoBehaviour
             return;
         }
 
+        if (!TryGetSelectedPool(out GachaPoolInfo pool))
+        {
+            Debug.LogError(
+                $"[GachaManager] poolId={selectedPoolId} 가 서버 풀 목록에 없습니다. " +
+                $"수신된 풀 ID: {FormatPoolIds()}");
+            MessageManager.TryShowKey(MessageKeys.GachaInvalidPool);
+            return;
+        }
+
+        if (!pool.IsActive)
+        {
+            Debug.LogWarning($"[GachaManager] poolId={pool.PoolId} 비활성 풀입니다.");
+            MessageManager.TryShowKey(MessageKeys.GachaInvalidPool);
+            return;
+        }
+
+        if (pool.Skins == null || pool.Skins.Count == 0)
+        {
+            Debug.LogError(
+                $"[GachaManager] poolId={pool.PoolId}({pool.PoolName})에 뽑을 스킨이 0개입니다. 서버 DB/풀 설정을 확인하세요.");
+            MessageManager.TryShowKey(MessageKeys.GachaInvalidPool);
+            return;
+        }
+
+        int pullCount = defaultPullCount <= 0 ? 1 : defaultPullCount;
+        if (pool.MaxPull > 0 && pullCount > pool.MaxPull)
+        {
+            Debug.LogWarning($"[GachaManager] pullCount={pullCount} > maxPull={pool.MaxPull}, maxPull로 제한합니다.");
+            pullCount = pool.MaxPull;
+            defaultPullCount = pullCount;
+        }
+
+        if (_currencyReceived)
+        {
+            int gemCost = pool.CostGem * pullCount;
+            int coinCost = pool.CostCoin * pullCount;
+            if (gemCost > 0 && _gem < gemCost)
+            {
+                Debug.LogWarning(
+                    $"[GachaManager] 젬 부족: 보유={_gem}, 필요={gemCost} (poolId={pool.PoolId}, pull={pullCount})");
+            }
+
+            if (coinCost > 0 && _coin < coinCost)
+            {
+                Debug.LogWarning(
+                    $"[GachaManager] 코인 부족: 보유={_coin}, 필요={coinCost} (poolId={pool.PoolId}, pull={pullCount})");
+            }
+        }
+        else
+        {
+            PacketDispatcher.Instance.SendGetCurrency();
+        }
+
+        Debug.Log(
+            $"[GachaManager] C_GACHA 전송 poolId={selectedPoolId}, pullCount={pullCount}, " +
+            $"poolSkins={pool.Skins.Count}, costGem={pool.CostGem}, costCoin={pool.CostCoin}, " +
+            $"currency=({(_currencyReceived ? $"{_coin} coin, {_gem} gem" : "미수신")})");
+
         isGachaRequestPending = true;
         if (!PacketDispatcher.Instance.SendGacha(selectedPoolId, defaultPullCount))
         {
@@ -166,10 +230,62 @@ public class GachaManager : MonoBehaviour
         foreach (var pool in packet.Pools)
             serverPools.Add(pool);
 
-        if (serverPools.Count > 0 && selectedPoolId <= 0)
+        if (serverPools.Count > 0 && (selectedPoolId <= 0 || !TryGetSelectedPool(out _)))
             selectedPoolId = serverPools[0].PoolId;
 
         Debug.Log($"가챠 풀 {serverPools.Count}개 수신. 현재 poolId={selectedPoolId}");
+        LogPoolSnapshot();
+    }
+
+    private void OnGetCurrency(S_GET_CURRENCY packet)
+    {
+        _currencyReceived = packet.Success;
+        if (!packet.Success)
+        {
+            Debug.LogWarning("[GachaManager] 재화 조회 실패(S_GET_CURRENCY success=false)");
+            return;
+        }
+
+        _coin = packet.Coin;
+        _gem = packet.Gem;
+        Debug.Log($"[GachaManager] 재화 수신 coin={_coin}, gem={_gem}");
+    }
+
+    bool TryGetSelectedPool(out GachaPoolInfo pool)
+    {
+        pool = null;
+        foreach (var p in serverPools)
+        {
+            if (p.PoolId == selectedPoolId)
+            {
+                pool = p;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    string FormatPoolIds()
+    {
+        if (serverPools.Count == 0)
+            return "(없음)";
+
+        var ids = new List<int>(serverPools.Count);
+        foreach (var p in serverPools)
+            ids.Add(p.PoolId);
+        return string.Join(", ", ids);
+    }
+
+    void LogPoolSnapshot()
+    {
+        foreach (var pool in serverPools)
+        {
+            int skinCount = pool.Skins?.Count ?? 0;
+            Debug.Log(
+                $"[GachaManager] 풀 id={pool.PoolId}, name={pool.PoolName}, active={pool.IsActive}, " +
+                $"costGem={pool.CostGem}, costCoin={pool.CostCoin}, maxPull={pool.MaxPull}, skins={skinCount}");
+        }
     }
 
     private SkinInfo _pendingResultSkin;

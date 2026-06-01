@@ -16,6 +16,7 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_LOGIN> OnLoginResultEvent;
     public event Action<S_GACHA> OnGachaResultEvent;
     public event Action<S_GACHA_POOL_LIST> OnGachaPoolListEvent;
+    public event Action<S_GET_CURRENCY> OnGetCurrencyEvent;
     public event Action<S_SKIN_LIST> OnSkinListEvent;
     public event Action<S_MY_SKINS> OnMySkinsEvent;
     public event Action<S_ENTER_GAME> OnEnterGameResultEvent;
@@ -55,6 +56,9 @@ public class PacketHandler : Singleton<PacketHandler>
                 break;
             case PacketId.PKT_S_GACHA_POOL_LIST:
                 HandleGachaPoolList(data);
+                break;
+            case PacketId.PKT_S_GET_CURRENCY:
+                HandleGetCurrency(data);
                 break;
             case PacketId.PKT_S_SKIN_LIST:
                 HandleSkinList(data);
@@ -268,6 +272,12 @@ public class PacketHandler : Singleton<PacketHandler>
     {
         S_GACHA_POOL_LIST result = S_GACHA_POOL_LIST.Parser.ParseFrom(data);
         OnGachaPoolListEvent?.Invoke(result);
+    }
+
+    private void HandleGetCurrency(byte[] data)
+    {
+        S_GET_CURRENCY result = S_GET_CURRENCY.Parser.ParseFrom(data);
+        OnGetCurrencyEvent?.Invoke(result);
     }
 
     private void HandleSkinList(byte[] data)
