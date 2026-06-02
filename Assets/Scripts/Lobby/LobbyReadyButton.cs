@@ -48,7 +48,7 @@ public class LobbyReadyButton : MonoBehaviour
 
         if (NetManager.Instance == null || !NetManager.Instance.IsConnected)
         {
-            Debug.LogWarning("[LobbyReadyButton] 서버에 연결되지 않았습니다.");
+            MessageManager.Instance?.ShowKey(MessageKeys.NotConnected);
             return;
         }
 

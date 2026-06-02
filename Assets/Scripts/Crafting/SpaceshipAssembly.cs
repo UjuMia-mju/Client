@@ -23,6 +23,7 @@ public class SpaceshipAssembly : MonoBehaviour
     {
         if (!data.CompareTag(Define.Tag.ITEM))
         {
+            MessageManager.TryShowKey(MessageKeys.SpaceshipNotItem);
             Debug.Log("해당 객체가 아이템이 아니라서 우주선에 넣을 수 없습니다.");
             return false;
         }
@@ -31,6 +32,7 @@ public class SpaceshipAssembly : MonoBehaviour
 
         if (item == null)
         {
+            MessageManager.TryShowKey(MessageKeys.SpaceshipNoItemComponent);
             Debug.Log("Items 컴포넌트가 없습니다.");
             return false;
         }
@@ -41,6 +43,7 @@ public class SpaceshipAssembly : MonoBehaviour
 
         if (mission == null)
         {
+            MessageManager.TryShowKey(MessageKeys.SpaceshipWrongItem);
             Debug.Log("대상 아이템이 아닙니다.");
             return false;
         }

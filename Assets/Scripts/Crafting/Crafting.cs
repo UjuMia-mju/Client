@@ -65,6 +65,7 @@ public class Crafting : MonoBehaviour
     {
         if (craftItems.Count == 0)
         {
+            MessageManager.TryShowKey(MessageKeys.CraftTableEmpty);
             Debug.Log("조합대에 아이템이 없습니다.");
             return;
         }
@@ -93,6 +94,7 @@ public class Crafting : MonoBehaviour
             return prefab;
         }
         Debug.LogWarning($"프리팹 {itemName}을 찾을 수 없습니다.");
+        MessageManager.TryShowKey(MessageKeys.CraftPrefabNotFound);
         return null;
     }
 
