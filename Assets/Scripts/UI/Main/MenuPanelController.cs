@@ -78,15 +78,34 @@ public class MenuPanelController : MonoBehaviour
     }
     
     /// <summary>
-    /// 싱글플레이: 게임 씬으로 이동
+    /// 싱글플레이: 멀티와 동일하게 방 생성·시작 후 스테이지 선택(MainMultiPlayHandler).
     /// </summary>
     private void InitSinglePlayButton(Button btn)
     {
         btn.onClick.AddListener(() => {
             SoundManager.Instance.PlaySFX("Click2");
-            SceneLoader.Instance.LoadScene(Define.Scene.GAME_1_2);
+            EnsureSinglePlayBootstrapper();
+            if (!SinglePlaySilentBootstrap.Instance.TryBegin(this))
+                return;
         });
         AddHoverEvents(btn);
+    }
+
+    void EnsureSinglePlayBootstrapper()
+    {
+        if (SinglePlaySilentBootstrap.Instance != null)
+            return;
+        var go = new GameObject(nameof(SinglePlaySilentBootstrap));
+        go.AddComponent<SinglePlaySilentBootstrap>();
+    }
+
+    /// <summary>싱글 부트스트랩·로딩 중 메인 버튼 입력 차단.</summary>
+    public void SetMainMenuInputBlocked(bool blocked)
+    {
+        if (blocked)
+            DisableAllHovers();
+        else
+            ResetAllButtons();
     }
 
     /// <summary>
@@ -96,6 +115,7 @@ public class MenuPanelController : MonoBehaviour
     {
         btn.onClick.AddListener(() => {
             SoundManager.Instance.PlaySFX("Click2");
+            SinglePlaySession.End();
             if (NetManager.Instance != null && NetManager.Instance.IsConnected)
                 PacketDispatcher.Instance.SendCreateRoom();
             else

@@ -9,6 +9,7 @@ public class OtherPlayers : MovingObject
     [SerializeField] private float lerpSpeed = 10f;
     [SerializeField] private HPUIController hpUIController;
     [SerializeField] private OxygenUIController oxygenUIController;
+    [SerializeField] private PlayerDamageOverlayController damageTintController;
     [SerializeField] private TextMeshProUGUI nicknameText;
     [SerializeField] private GameObject nicknameTextPrefab;
 
@@ -57,11 +58,20 @@ public class OtherPlayers : MovingObject
             }
         }
 
+        if (damageTintController == null)
+            damageTintController = GetComponent<PlayerDamageOverlayController>();
+        if (damageTintController == null)
+            damageTintController = gameObject.AddComponent<PlayerDamageOverlayController>();
+
         if (remotePlayerStat != null)
         {
             hpUIController?.SetPlayerStat(remotePlayerStat);
             oxygenUIController?.SetPlayerStat(remotePlayerStat);
+            damageTintController.SetPlayerStat(remotePlayerStat);
         }
+
+        if (playerMesh != null)
+            damageTintController.SetMeshRoot(playerMesh.transform);
 
         oxygenUIController?.gameObject.SetActive(true);
 

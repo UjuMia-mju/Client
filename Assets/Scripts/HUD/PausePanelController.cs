@@ -124,6 +124,7 @@ public class PausePanelController : MonoBehaviour
 
     private void LoadMainScene()
     {
+        SinglePlaySession.End();
         SceneLoader.Instance.LoadScene(targetSceneName);
     }
 }

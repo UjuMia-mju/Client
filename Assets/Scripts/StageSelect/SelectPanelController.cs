@@ -166,7 +166,7 @@ public class SelectPanelController : MonoBehaviour
     {
         SoundManager.Instance.PlaySFX("Click2");
 
-        // ReadyToStart 패널 켜짐은 스테이지 정보 검증이 끝난 직후 EnterSelectedStage 안에서 처리됩니다.
+        // 로딩 패널은 EnterSelectedStage 시작 직후 표시(서버 응답·씬 로드 대기).
         StageManager.Instance.EnterSelectedStage();
     }
 }

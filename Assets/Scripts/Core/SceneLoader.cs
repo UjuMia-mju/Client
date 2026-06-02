@@ -219,9 +219,7 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 
     void ShowLoadingPanel()
     {
-        if (loadingUi == null)
-            return;
-        loadingUi.ShowAndResetProgress();
+        ShowLoadingOverlay(resetProgress: !IsLoadingOverlayVisible);
     }
 
     void HideLoadingPanel()
@@ -230,4 +228,26 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
             return;
         loadingUi.Hide();
     }
+
+    /// <summary>씬 전환 없이 로딩 패널만 표시(스테이지 시작 대기·싱글 부트스트랩 등).</summary>
+    public void ShowLoadingOverlay(bool resetProgress = true)
+    {
+        if (loadingInstance == null)
+            InitLoadingPanel();
+        if (loadingUi == null)
+            return;
+        if (resetProgress || !IsLoadingOverlayVisible)
+            loadingUi.ShowAndResetProgress();
+        else
+            loadingInstance.SetActive(true);
+    }
+
+    /// <summary><see cref="ShowLoadingOverlay"/>로 켠 패널을 숨깁니다.</summary>
+    public void HideLoadingOverlay()
+    {
+        HideLoadingPanel();
+    }
+
+    public bool IsLoadingOverlayVisible =>
+        loadingInstance != null && loadingInstance.activeSelf;
 }

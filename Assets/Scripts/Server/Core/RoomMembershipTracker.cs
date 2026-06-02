@@ -41,6 +41,16 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
         Debug.Log("[RoomMembershipTracker] Reset");
     }
 
+    /// <summary>싱글플레이: 본인만 방에 있는 것처럼 입장 순서를 설정해 AmIFirst()·행성 선택이 동작하게 합니다.</summary>
+    public void SetSoloHost(ulong localPlayerId)
+    {
+        EnsureWired();
+        _orderedIds.Clear();
+        if (localPlayerId != 0)
+            _orderedIds.Add(localPlayerId);
+        Debug.Log($"[RoomMembershipTracker] SetSoloHost id={localPlayerId}");
+    }
+
     public void EnsureWired()
     {
         if (_wired) return;

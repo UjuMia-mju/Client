@@ -45,6 +45,7 @@ public class StageManager : MonoBehaviour
     private StageNode _guestPreviewNode;
     private bool _isTransitioning = false;
     private bool _gameplaySceneLoadStarted;
+    private bool _awaitingStageStartResponse;
     private GameObject[] _clickOffObjects;
 
     /// <summary>맵 ID별 클리어 별 개수(0~3). S_GET_CLEAR_INFO 기준.</summary>
@@ -124,7 +125,8 @@ public class StageManager : MonoBehaviour
             // TODO(Server): 퇴장 표시용 — S_ROOM_MEMBER_LEAVE 가 오면 아래에서 처리(player_name 등).
             PacketHandler.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeftWhileOnStageSelect;
         }
-        PacketDispatcher.Instance.SendGetClearInfo();
+        if (NetManager.Instance != null && NetManager.Instance.IsConnected)
+            PacketDispatcher.Instance.SendGetClearInfo();
 
         if (!DbCacheManager.HasStageInfo)
         {
@@ -161,6 +163,7 @@ public class StageManager : MonoBehaviour
         }
 
         CancelInvoke(nameof(ClearStageRoomMemberNotice));
+        CancelStageStartWaitingUi();
         CloseStagePausePanel(destroyInstance: true);
 
         if (_guestPreviewNode != null)
@@ -335,7 +338,8 @@ public class StageManager : MonoBehaviour
     
     public void EnterSelectedStage()
     {
-        if (_currentSelectedNode == null) return;
+        if (_currentSelectedNode == null || _awaitingStageStartResponse || _gameplaySceneLoadStarted)
+            return;
 
         int level = _currentSelectedNode.stageLevel;
         int index = _currentSelectedNode.stageIndex;
@@ -343,6 +347,14 @@ public class StageManager : MonoBehaviour
         // MapId·Chapter·Stage는 서버 DB와 한 세트. 캐시의 StageInfo 기준 (C_START_STAGE.StageIndex = StageInfo.Stage)
         if (!DbCacheManager.TryGetStageInfoByChapterStage(level, index, out StageInfo info))
             return;
+
+        if (NetManager.Instance == null || !NetManager.Instance.IsConnected)
+        {
+            MessageManager.Instance?.ShowKey(MessageKeys.MultiplayLoginRequired);
+            return;
+        }
+
+        BeginStageStartWaitingUi();
 
         if (info.Chapter != level || info.Stage != index)
         {
@@ -358,7 +370,24 @@ public class StageManager : MonoBehaviour
         _pendingStageNum = info.Stage;
 
         Debug.Log($"[StageManager] 스테이지 시작 요청 MapId={info.MapId}, Chapter={info.Chapter}, Stage={info.Stage}");
+
         PacketDispatcher.Instance.SendStartStage(info.MapId, info.Chapter, info.Stage);
+    }
+
+    void BeginStageStartWaitingUi()
+    {
+        _awaitingStageStartResponse = true;
+        SceneLoader.Instance?.ShowLoadingOverlay();
+    }
+
+    void CancelStageStartWaitingUi()
+    {
+        if (!_awaitingStageStartResponse)
+            return;
+
+        _awaitingStageStartResponse = false;
+        if (!_gameplaySceneLoadStarted)
+            SceneLoader.Instance?.HideLoadingOverlay();
     }
 
     /// <summary>
@@ -369,6 +398,7 @@ public class StageManager : MonoBehaviour
     {
         if (!packet.Success)
         {
+            CancelStageStartWaitingUi();
             MessageManager.TryShowKey(MessageKeys.StartStageRejected);
             Debug.LogWarning("[StageManager] 서버가 스테이지 시작을 거절했습니다.");
             return;
@@ -387,7 +417,9 @@ public class StageManager : MonoBehaviour
         if (_gameplaySceneLoadStarted) yield break;
 
         var tracker = RoomMembershipTracker.Instance;
-        ConnectManager.Instance.SetHostRole(tracker.AmIFirst());
+        bool isHost = (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+                        || tracker.AmIFirst();
+        ConnectManager.Instance.SetHostRole(isHost);
 
         GameplayReadyCoordinator.SetPendingFallback(tracker.OrderedIds, 3);
         DoLoadGameplayScene();
@@ -423,6 +455,7 @@ public class StageManager : MonoBehaviour
             return;
 
         _gameplaySceneLoadStarted = true;
+        _awaitingStageStartResponse = false;
 
         int mapId = 1;
         int chapter = 1;
