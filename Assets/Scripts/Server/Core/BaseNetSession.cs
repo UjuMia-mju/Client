@@ -16,6 +16,7 @@ public class BaseNetSession
     protected bool _isConnected = false;
     /// <summary>비동기 BeginConnect가 끝나기 전까지 true. 재연결 루프에서 중복 Connect 방지용.</summary>
     protected bool _connectAttemptInProgress;
+    bool _shutdownRequested;
     public bool IsConnected => _isConnected;
     public bool HasPendingConnect => _connectAttemptInProgress;
     protected const int BUFFER_SIZE = 65536; // 64KB
@@ -42,16 +43,58 @@ public class BaseNetSession
     #region Connect
     void CloseSocketSilently()
     {
+        var socket = _socket;
+        _socket = null;
+        if (socket == null)
+            return;
+
         try
         {
-            _socket?.Close();
+            if (socket.Connected)
+                socket.Shutdown(SocketShutdown.Both);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[BaseNetSession] Socket shutdown: {ex.Message}");
+        }
+
+        try
+        {
+            socket.Close();
         }
         catch (Exception ex)
         {
             Debug.LogWarning($"[BaseNetSession] Socket close: {ex.Message}");
         }
+    }
 
-        _socket = null;
+    /// <summary>연결 중·연결됨 여부와 관계없이 소켓과 송수신 상태를 정리합니다.</summary>
+    public void ForceShutdown(bool raiseDisconnected = false)
+    {
+        _shutdownRequested = true;
+        bool wasConnected = _isConnected;
+        _isConnected = false;
+        _connectAttemptInProgress = false;
+
+        lock (_sendLock)
+        {
+            _isSending = false;
+            _sendQueue.Clear();
+        }
+
+        CloseSocketSilently();
+
+        if (!raiseDisconnected || !wasConnected)
+            return;
+
+        try
+        {
+            MainThreadDispatcher.Enqueue(() => OnDisconnected?.Invoke());
+        }
+        catch
+        {
+            // 플레이 모드 종료 직후 디스패처가 없을 수 있음
+        }
     }
 
     public void Connect(string ip, int port)
@@ -66,6 +109,7 @@ public class BaseNetSession
             return;
 
         CloseSocketSilently();
+        _shutdownRequested = false;
 
         try
         {
@@ -91,6 +135,9 @@ public class BaseNetSession
     // 연결 성공하면 .NET에서 콜백 호출
     private void OnConnectCallback(IAsyncResult ar)
     {
+        if (_shutdownRequested)
+            return;
+
         try
         {
             _socket?.EndConnect(ar);
@@ -182,6 +229,9 @@ public class BaseNetSession
 
     protected virtual void OnSendCallback(IAsyncResult ar)
     {
+        if (_shutdownRequested)
+            return;
+
         bool needRegisterSend = false;
         try
         {
@@ -265,6 +315,9 @@ public class BaseNetSession
 
     protected virtual void OnRecvCallback(IAsyncResult ar)
     {
+        if (_shutdownRequested)
+            return;
+
         try
         {
             int bytesRead = _socket.EndReceive(ar);
@@ -355,21 +408,11 @@ public class BaseNetSession
     #region Disconnect Handler
     public virtual void Disconnect(string reason)
     {
-        if (!_isConnected)
-        {
+        if (!_isConnected && !_connectAttemptInProgress && _socket == null)
             return;
-        }
 
-        _isConnected = false;
-        _connectAttemptInProgress = false;
         Debug.Log($"Disconnected: {reason}");
-
-        CloseSocketSilently();
-
-        MainThreadDispatcher.Enqueue(() =>
-        {
-            OnDisconnected?.Invoke();
-        });
+        ForceShutdown(raiseDisconnected: _isConnected);
     }
     #endregion
 }

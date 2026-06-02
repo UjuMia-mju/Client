@@ -42,6 +42,13 @@ public class ControlPanelController : MonoBehaviour
     private Color _normalColor = Color.white; // 기본 색상
     private Color _blinkColor = new Color(0.8f, 0f, 0.3f); // 깜빡일 때 색상
     
+    private void OnDestroy()
+    {
+        _rebindOperation?.Dispose();
+        _rebindOperation = null;
+        StopBlink();
+    }
+
     private void Start()
     {
         float savedSensitivity = DataManager.Instance.data.mouseSensitivity;

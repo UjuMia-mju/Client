@@ -71,12 +71,19 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
         return fallback;
     }
 
+    /// <summary>로비·카운트다운 UI에 레디 표시가 의미 있는 세션(멀티, 로비 경유)인지.</summary>
+    public static bool IsLobbyReadyDisplayRelevant =>
+        !SinglePlaySession.IsActive && !SinglePlaySession.IsAwaitingRoomBootstrap;
+
+    static bool StoreReadyForDisplay(bool isReady) =>
+        isReady && IsLobbyReadyDisplayRelevant;
+
     public void SetReady(ulong playerId, bool isReady)
     {
         TryWire();
         if (!_byId.TryGetValue(playerId, out var e))
             return;
-        _byId[playerId] = new Entry(e.DisplayName, isReady);
+        _byId[playerId] = new Entry(e.DisplayName, StoreReadyForDisplay(isReady));
         NotifyChanged();
     }
 
@@ -134,7 +141,7 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
             name = nm.PlayerName;
 
         string label = FormatPlayerLabel(name, member.Player.Id);
-        _byId[id] = new Entry(label, member.IsReady);
+        _byId[id] = new Entry(label, StoreReadyForDisplay(member.IsReady));
     }
 
     /// <summary>로그인 직후 등, 이미 캐시된 로컬 멤버 행에 이름을 다시 반영합니다.</summary>
@@ -164,10 +171,11 @@ public sealed class RoomMemberDisplayCache : Singleton<RoomMemberDisplayCache>
             return;
 
         ulong id = packet.PlayerId;
+        bool ready = StoreReadyForDisplay(packet.IsReady);
         if (_byId.TryGetValue(id, out var prev))
-            _byId[id] = new Entry(prev.DisplayName, packet.IsReady);
+            _byId[id] = new Entry(prev.DisplayName, ready);
         else
-            _byId[id] = new Entry($"Player {id}", packet.IsReady);
+            _byId[id] = new Entry($"Player {id}", ready);
 
         NotifyChanged();
     }

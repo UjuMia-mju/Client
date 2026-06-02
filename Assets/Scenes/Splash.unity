@@ -1023,6 +1023,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
   fadePrefab: {fileID: 8091633504527073339, guid: 9e0286a86c8b5bb4a9aef7e2a338d91d, type: 3}
+  exitPopupPrefab: {fileID: 6007983625197364318, guid: 960bf96944e4e9949903eaa4af86889c, type: 3}
   loadingPanelPrefab: {fileID: 3912731301068505983, guid: 67d027d37fe04af46ae53fa9e0d9eefd, type: 3}
   minLoadingPanelRealtimeSeconds: 1.5
 --- !u!4 &1832206123

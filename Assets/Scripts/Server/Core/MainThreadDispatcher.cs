@@ -13,6 +13,12 @@ public class MainThreadDispatcher : MonoBehaviorSingleton<MainThreadDispatcher>
         }
     }
 
+    public static void ClearPending()
+    {
+        lock (_executionQueue)
+            _executionQueue.Clear();
+    }
+
     private void Update()
     {
         // Unity 메인 스레드에서 큐에 쌓인 작업 실행

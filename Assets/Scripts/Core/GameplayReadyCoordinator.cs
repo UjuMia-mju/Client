@@ -30,6 +30,22 @@ public static class GameplayReadyCoordinator
         _onReleased = null;
     }
 
+    /// <summary>세션 정리: 보류 데이터 제거, 게이트·입력 홀드 해제.</summary>
+    public static void ResetForLogout()
+    {
+        _serverPacket = null;
+        _useFallback = false;
+        _fallbackIds = null;
+
+        if (_gateBlocking)
+            NotifyGateReleased();
+        else
+        {
+            _gateBlocking = false;
+            _onReleased = null;
+        }
+    }
+
     public static void SetPendingFromServer(S_GAME_READY_TO_START packet)
     {
         _serverPacket = packet?.Clone();

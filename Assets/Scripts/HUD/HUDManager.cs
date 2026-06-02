@@ -15,7 +15,9 @@ public class HUDManager : MonoBehaviour
     
     // 상태 관리 변수
     private GameObject currentActivePanel;
-    private bool isTransitioning = false; 
+    private GameObject _settingsOverlay;
+    private bool isTransitioning = false;
+    private bool _overlayTransitioning;
     private Key closeKey = Key.Escape;
     /// <summary><see cref="InputManager.PushPauseMenuHold"/>를 이번 패널에 대해 걸었는지(교체·언로드 시 짝 맞춤).</summary>
     private bool _pauseMenuHoldApplied;
@@ -27,7 +29,26 @@ public class HUDManager : MonoBehaviour
         if (animator == null) animator = UIPanelAnimator.Instance;
     }
 
-    public bool IsPanelOpen => currentActivePanel != null; 
+    public bool IsPanelOpen => currentActivePanel != null;
+
+    /// <summary>설정이 열려 있거나 닫는 연출 중이면 true.</summary>
+    public bool IsSettingsOverlayActive => _settingsOverlay != null || _overlayTransitioning;
+
+    /// <summary>ExitPopup 거절 등 외부에서 HUD 일시정지 패널을 제거할 때.</summary>
+    public void DismissPausePanelCompletely()
+    {
+        if (currentActivePanel == null)
+            return;
+
+        if (!currentActivePanel.CompareTag(Define.Tag.PAUSE_PANEL))
+            return;
+
+        StopAllCoroutines();
+        isTransitioning = false;
+        ReleasePauseMenuHoldIfApplied();
+        Destroy(currentActivePanel);
+        currentActivePanel = null;
+    }
     
     void EnsureAnimator()
     {
@@ -47,8 +68,19 @@ public class HUDManager : MonoBehaviour
         if (InputManager.IsEscBlockedForHud)
             return;
 
-        if (Keyboard.current == null || !Keyboard.current[closeKey].wasPressedThisFrame || isTransitioning)
+        if (Keyboard.current == null || !Keyboard.current[closeKey].wasPressedThisFrame)
             return;
+
+        if (IsSettingsOverlayActive)
+        {
+            if (_settingsOverlay != null && !_overlayTransitioning)
+                CloseSettingsOverlay();
+            return;
+        }
+
+        if (isTransitioning || _overlayTransitioning)
+            return;
+
         HandleTogglePanel();
     }
 
@@ -71,13 +103,41 @@ public class HUDManager : MonoBehaviour
             Destroy(currentActivePanel);
         }
 
-        currentActivePanel = Instantiate(prefab, transform);
+        currentActivePanel = Instantiate(prefab);
         StartCoroutine(OpenSequence(currentActivePanel, customScale));
     }
 
     public void OpenPanel(GameObject prefab)
     {
         OpenPanel(prefab, Vector3.one);
+    }
+
+    /// <summary>설정 오버레이를 연다. PausePanel Canvas는 유지하고 메뉴(Panel)만 숨깁니다.</summary>
+    public void OpenSettingsOverlay(GameObject prefab, Vector3 customScale, PausePanelController pauseUi = null)
+    {
+        if (prefab == null || _overlayTransitioning)
+            return;
+
+        if (_settingsOverlay != null)
+            Destroy(_settingsOverlay);
+
+        pauseUi ??= currentActivePanel != null
+            ? currentActivePanel.GetComponentInChildren<PausePanelController>(true)
+            : null;
+
+        pauseUi?.HidePauseShellForSettings();
+
+        Transform spawnParent = currentActivePanel != null ? currentActivePanel.transform : null;
+        _settingsOverlay = Instantiate(prefab, spawnParent);
+        StartCoroutine(OpenSettingsOverlaySequence(_settingsOverlay, customScale));
+    }
+
+    public void CloseSettingsOverlay()
+    {
+        if (!IsSettingsOverlayActive || _overlayTransitioning)
+            return;
+
+        StartCoroutine(CloseSettingsOverlaySequence());
     }
 
     public void ClosePanel()
@@ -90,6 +150,9 @@ public class HUDManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (_settingsOverlay != null)
+            Destroy(_settingsOverlay);
+
         ReleasePauseMenuHoldIfApplied();
     }
 
@@ -141,6 +204,54 @@ public class HUDManager : MonoBehaviour
         ReleasePauseMenuHoldIfApplied();
         currentActivePanel = null;
         isTransitioning = false;
+    }
+
+    IEnumerator OpenSettingsOverlaySequence(GameObject panel, Vector3 target)
+    {
+        _overlayTransitioning = true;
+
+        EnsureAnimator();
+        if (animator == null)
+        {
+            _overlayTransitioning = false;
+            if (panel != null)
+            {
+                panel.SetActive(true);
+                panel.transform.localScale = target;
+            }
+            yield break;
+        }
+
+        yield return StartCoroutine(animator.FadeIn(panel, target));
+        _overlayTransitioning = false;
+    }
+
+    IEnumerator CloseSettingsOverlaySequence()
+    {
+        _overlayTransitioning = true;
+        GameObject panel = _settingsOverlay;
+        _settingsOverlay = null;
+
+        EnsureAnimator();
+        if (animator != null && panel != null)
+            yield return StartCoroutine(animator.FadeOut(panel));
+        else if (panel != null)
+            Destroy(panel);
+
+        // 설정이 완전히 사라진 뒤에만 Pause 메뉴(Panel)를 다시 켭니다.
+        yield return null;
+
+        if (currentActivePanel != null)
+        {
+            var pauseUi = currentActivePanel.GetComponentInChildren<PausePanelController>(true);
+            if (pauseUi != null)
+            {
+                pauseUi.ShowPauseShellAfterSettings();
+                pauseUi.NotifyHudSettingsOverlayClosed();
+            }
+        }
+
+        _overlayTransitioning = false;
     }
     #endregion
 }

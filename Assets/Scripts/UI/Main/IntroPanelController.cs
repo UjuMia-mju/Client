@@ -23,7 +23,7 @@ public class IntroPanelController : MonoBehaviour
     {
         // 모든 장치의 버튼 입력을 감지하기 위한 설정
         _anyKeyAction = new InputAction(binding: "/*/<button>");
-        _anyKeyAction.performed += ctx => OnAnyKeyPressed();
+        _anyKeyAction.performed += OnAnyKeyPerformed;
     }
 
     void Start()
@@ -36,8 +36,24 @@ public class IntroPanelController : MonoBehaviour
         StartCoroutine(PlayIntroSequence());
     }
 
-    private void OnEnable() => _anyKeyAction.Enable();
-    private void OnDisable() => _anyKeyAction.Disable();
+    private void OnEnable() => _anyKeyAction?.Enable();
+    private void OnDisable() => _anyKeyAction?.Disable();
+
+    private void OnDestroy()
+    {
+        if (_anyKeyAction == null)
+            return;
+
+        _anyKeyAction.performed -= OnAnyKeyPerformed;
+        _anyKeyAction.Disable();
+        _anyKeyAction.Dispose();
+        _anyKeyAction = null;
+    }
+
+    private void OnAnyKeyPerformed(InputAction.CallbackContext _)
+    {
+        OnAnyKeyPressed();
+    }
 
     /// <summary>
     /// 모든 장치의 버튼 입력을 감지하기 위한 설정

@@ -83,7 +83,7 @@ public class MainMultiPlayHandler : MonoBehaviour
             return;
         }
 
-        ApplySyntheticEnterRoom(packet.Room);
+        ApplySyntheticEnterRoom(packet.Room, lobbyReadyState: false);
         SceneLoader.Instance.LoadScene(Define.Scene.LOBBY);
     }
 
@@ -110,11 +110,11 @@ public class MainMultiPlayHandler : MonoBehaviour
             return;
         }
 
-        ApplySyntheticEnterRoom(packet.Room);
+        ApplySyntheticEnterRoom(packet.Room, lobbyReadyState: false);
         RoomMembershipTracker.Instance?.EnsureWired();
         ConnectManager.Instance?.SetHostRole(true);
 
-        // 로비 UI 없이 서버 조건만 맞춤: 레디 후 바로 방 시작.
+        // 로비 UI 없이 서버에만 레디 true (표시 캐시는 싱글 세션이라 false 유지).
         PacketDispatcher.Instance.SendReady(true);
         PacketDispatcher.Instance.SendStartRoom();
     }
@@ -140,7 +140,8 @@ public class MainMultiPlayHandler : MonoBehaviour
         SceneLoader.Instance.LoadScene(Define.Scene.STAGE_SELECT);
     }
 
-    static void ApplySyntheticEnterRoom(RoomInfo room)
+    /// <param name="lobbyReadyState">로비·스테이지 선택 UI용 레디. 멀티/싱글 모두 false — 로비 준비 버튼·S_READY만 반영.</param>
+    static void ApplySyntheticEnterRoom(RoomInfo room, bool lobbyReadyState)
     {
         var synthetic = new S_ENTER_ROOM
         {
@@ -155,7 +156,7 @@ public class MainMultiPlayHandler : MonoBehaviour
                 Name = NetManager.Instance.PlayerName ?? "",
                 Tag = NetManager.Instance.PlayerTag
             },
-            IsReady = true
+            IsReady = lobbyReadyState
         });
         PacketHandler.SetCachedEnterRoom(synthetic);
     }

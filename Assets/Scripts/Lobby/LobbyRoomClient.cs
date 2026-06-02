@@ -20,6 +20,7 @@ public class LobbyRoomClient : MonoBehaviour
     {
         PacketHandler.Instance.OnEnterRoomEvent += OnEnterRoom;
         PacketHandler.Instance.OnLeaveRoomEvent += OnLeaveRoom;
+        PacketHandler.Instance.OnRoomDestroyEvent += OnRoomDestroy;
         PacketHandler.Instance.OnRoomMemberEnterEvent += OnRoomMemberEnter;
         PacketHandler.Instance.OnRoomMemberLeaveEvent += OnRoomMemberLeave;
         PacketHandler.Instance.OnReadyEvent += OnReady;
@@ -40,6 +41,7 @@ public class LobbyRoomClient : MonoBehaviour
             return;
         PacketHandler.Instance.OnEnterRoomEvent -= OnEnterRoom;
         PacketHandler.Instance.OnLeaveRoomEvent -= OnLeaveRoom;
+        PacketHandler.Instance.OnRoomDestroyEvent -= OnRoomDestroy;
         PacketHandler.Instance.OnRoomMemberEnterEvent -= OnRoomMemberEnter;
         PacketHandler.Instance.OnRoomMemberLeaveEvent -= OnRoomMemberLeave;
         PacketHandler.Instance.OnReadyEvent -= OnReady;
@@ -106,6 +108,21 @@ public class LobbyRoomClient : MonoBehaviour
         if (!packet.Success)
             return;
 
+        ClearLobbyRoomState();
+    }
+
+    /// <summary>서버가 방을 해산했을 때 로컬 스폰·멤버 상태를 정리합니다.</summary>
+    private void OnRoomDestroy(S_ROOM_DESTROY packet)
+    {
+        if (!packet.Success)
+            return;
+
+        Debug.Log($"[LobbyRoomClient] S_ROOM_DESTROY: roomId={packet.RoomId}");
+        ClearLobbyRoomState();
+    }
+
+    void ClearLobbyRoomState()
+    {
         _members.Clear();
         lobbyManager?.ClearSpawnedPlayers();
     }

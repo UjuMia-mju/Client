@@ -2,9 +2,6 @@ using UnityEngine;
 using Protocol;
 using System.Collections;
 using UnityEngine.SceneManagement;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 /// <summary>
 /// PausePanel의 버튼 기능
@@ -17,6 +14,11 @@ public class PausePanelController : MonoBehaviour
 
     private bool _isLeavingToMain;
     private Coroutine _leaveRoomTimeoutCoroutine;
+    private GameObject _settingsOverlay;
+    private Coroutine _openSettingsRoutine;
+    private Coroutine _closeSettingsRoutine;
+    private GameObject _hiddenPauseContentForSettings;
+    private bool _settingsManagedByHud;
 
     private void OnEnable()
     {
@@ -28,18 +30,193 @@ public class PausePanelController : MonoBehaviour
     {
         if (PacketHandler.Instance != null)
             PacketHandler.Instance.OnLeaveRoomEvent -= OnLeaveRoomResult;
+
+        DestroySettingsOverlay();
+    }
+
+    void OnDestroy()
+    {
+        DestroySettingsOverlay();
+    }
+
+    /// <summary>설정이 열려 있거나 닫는 연출 중.</summary>
+    public bool IsSettingsFlowActive =>
+        _settingsOverlay != null || _closeSettingsRoutine != null || _settingsManagedByHud;
+
+    /// <summary>ESC 등: 설정 오버레이만 닫기. 닫았으면 true.</summary>
+    public bool TryCloseSettingsOverlay()
+    {
+        if (_closeSettingsRoutine != null)
+            return true;
+
+        if (_settingsOverlay != null)
+        {
+            _closeSettingsRoutine = StartCoroutine(CloseSettingsOverlayRoutine());
+            return true;
+        }
+
+        var hud = Object.FindFirstObjectByType<HUDManager>(FindObjectsInactive.Include);
+        if (hud != null && hud.IsSettingsOverlayActive)
+        {
+            _settingsManagedByHud = true;
+            hud.CloseSettingsOverlay();
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>HUDManager가 설정 닫기 연출을 끝낸 뒤 호출.</summary>
+    public void NotifyHudSettingsOverlayClosed()
+    {
+        _settingsManagedByHud = false;
+    }
+
+    void DestroySettingsOverlay(bool restorePauseShell = false)
+    {
+        if (_closeSettingsRoutine != null)
+        {
+            StopCoroutine(_closeSettingsRoutine);
+            _closeSettingsRoutine = null;
+        }
+
+        if (_openSettingsRoutine != null)
+        {
+            StopCoroutine(_openSettingsRoutine);
+            _openSettingsRoutine = null;
+        }
+
+        if (_settingsOverlay != null)
+        {
+            PanelTweenPresentation.Kill(_settingsOverlay);
+            Destroy(_settingsOverlay);
+            _settingsOverlay = null;
+        }
+
+        _settingsManagedByHud = false;
+
+        if (restorePauseShell)
+            ShowPauseContentAfterSettings();
     }
 
     public void OnSettingsButtonClicked()
     {
         SoundManager.Instance.PlaySFX("Click2");
 
-        var hud = Object.FindFirstObjectByType<HUDManager>();
+        if (SettingsPanel == null)
+        {
+            Debug.LogWarning("[PausePanelController] SettingsPanel 프리팹이 비어 있습니다.", this);
+            return;
+        }
+
+        HidePauseShellForSettings();
+
+        var hud = Object.FindFirstObjectByType<HUDManager>(FindObjectsInactive.Include);
         if (hud != null)
         {
-            // 생성과 동시에 목표 크기를 넘겨줍니다.
-            hud.OpenPanel(SettingsPanel, new Vector3(2f, 2f, 1f));
+            _settingsManagedByHud = true;
+            hud.OpenSettingsOverlay(SettingsPanel, new Vector3(2f, 2f, 1f), this);
+            return;
         }
+
+        OpenSettingsOverlayStandalone();
+    }
+
+    /// <summary>설정 표시 중 일시정지 메뉴(딤·버튼) 숨김. <see cref="ShowPauseShellAfterSettings"/>와 짝.</summary>
+    public void HidePauseShellForSettings() => HidePauseContentForSettings();
+
+    /// <summary>설정 닫은 뒤 일시정지 메뉴 복구.</summary>
+    public void ShowPauseShellAfterSettings() => ShowPauseContentAfterSettings();
+
+    void OpenSettingsOverlayStandalone()
+    {
+        if (_settingsOverlay != null)
+            return;
+
+        Transform parent = GetComponentInParent<Canvas>() != null
+            ? GetComponentInParent<Canvas>().transform
+            : transform;
+
+        _settingsOverlay = Instantiate(SettingsPanel, parent);
+        _openSettingsRoutine = StartCoroutine(OpenSettingsOverlayRoutine(_settingsOverlay));
+    }
+
+    /// <summary>설정 표시 전 일시정지 메뉴(딤·버튼)만 숨깁니다. Canvas 루트는 설정 오버레이용으로 유지합니다.</summary>
+    void HidePauseContentForSettings()
+    {
+        ShowPauseContentAfterSettings();
+
+        Transform pauseRoot = GetPausePanelRootTransform();
+        if (pauseRoot == null)
+            return;
+
+        Transform panel = pauseRoot.Find("Panel");
+        if (panel != null)
+        {
+            _hiddenPauseContentForSettings = panel.gameObject;
+            _hiddenPauseContentForSettings.SetActive(false);
+            return;
+        }
+
+        _hiddenPauseContentForSettings = pauseRoot.gameObject;
+        _hiddenPauseContentForSettings.SetActive(false);
+    }
+
+    void ShowPauseContentAfterSettings()
+    {
+        if (_hiddenPauseContentForSettings == null)
+            return;
+
+        _hiddenPauseContentForSettings.SetActive(true);
+        _hiddenPauseContentForSettings = null;
+    }
+
+    Transform GetPausePanelRootTransform()
+    {
+        Transform t = transform;
+        while (t != null)
+        {
+            if (t.CompareTag(Define.Tag.PAUSE_PANEL))
+                return t;
+            t = t.parent;
+        }
+
+        return transform.root;
+    }
+
+    IEnumerator OpenSettingsOverlayRoutine(GameObject panel)
+    {
+        var animator = UIPanelAnimator.Instance;
+        if (animator != null)
+            yield return animator.FadeIn(panel, new Vector3(2f, 2f, 1f));
+        else if (panel != null)
+        {
+            var cg = panel.GetComponent<CanvasGroup>() ?? panel.AddComponent<CanvasGroup>();
+            cg.alpha = 1f;
+            panel.transform.localScale = new Vector3(2f, 2f, 1f);
+        }
+
+        _openSettingsRoutine = null;
+    }
+
+    IEnumerator CloseSettingsOverlayRoutine()
+    {
+        GameObject panel = _settingsOverlay;
+        _settingsOverlay = null;
+
+        if (panel != null)
+        {
+            var animator = UIPanelAnimator.Instance;
+            if (animator != null)
+                yield return animator.FadeOut(panel);
+            else
+                Destroy(panel);
+        }
+
+        yield return null;
+
+        ShowPauseContentAfterSettings();
+        _closeSettingsRoutine = null;
     }
 
     public void OnMainMenuButtonClicked()
@@ -69,20 +246,7 @@ public class PausePanelController : MonoBehaviour
     public void OnExitButtonClicked()
     {
         SoundManager.Instance.PlaySFX("Click2");
-
-        if (NetManager.Instance != null && NetManager.Instance.IsConnected)
-        {
-            // TODO(Server): Quit 직후에는 C_LEAVE_ROOM 이 안 나갈 수 있음 — 끊김 시 퇴장 브로드캐스트는 서버 담당.
-            if (IsStageSelectMultiplayerHost())
-                StageManager.NotifyHostEndingStageSessionForAllPeers();
-            PacketDispatcher.Instance.SendLeaveRoom();
-        }
-
-#if UNITY_EDITOR
-        EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        ExitPopupManager.ShowQuitConfirm();
     }
 
     static bool IsStageSelectMultiplayerHost()

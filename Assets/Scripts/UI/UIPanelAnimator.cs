@@ -9,7 +9,11 @@ public class UIPanelAnimator : MonoBehaviour
 {
     public static UIPanelAnimator Instance { get; private set; }
 
-    [SerializeField] private float duration = 0.2f;
+    [SerializeField] private float showDuration = PanelTweenPresentation.DefaultShowDuration;
+    [SerializeField] private float hideDuration = PanelTweenPresentation.DefaultHideDuration;
+    [SerializeField] private float showScaleFrom = PanelTweenPresentation.DefaultShowScaleFrom;
+    [SerializeField] private float dimFadeDuration = PanelTweenPresentation.DefaultDimFadeDuration;
+    [SerializeField] private float bodyFadeDuration = PanelTweenPresentation.DefaultBodyFadeDuration;
 
     private void Awake()
     {
@@ -54,60 +58,17 @@ public class UIPanelAnimator : MonoBehaviour
 
     public IEnumerator FadeIn(GameObject panel, Vector3 targetScale)
     {
-        if (panel == null)
-            yield break;
-
-        CanvasGroup cg = panel.GetComponent<CanvasGroup>() ?? panel.AddComponent<CanvasGroup>();
-        if (cg == null)
-            yield break;
-
-        cg.alpha = 0f;
-        panel.transform.localScale = Vector3.zero;
-
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            if (panel == null || cg == null)
-                yield break;
-
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0, 1, elapsed / duration);
-            cg.alpha = Mathf.Lerp(0f, 1f, t);
-            panel.transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, t);
-            yield return null;
-        }
+        yield return PanelTweenPresentation.Show(
+            panel,
+            targetScale,
+            showDuration,
+            dimFadeDuration,
+            bodyFadeDuration,
+            showScaleFrom);
     }
 
     public IEnumerator FadeOut(GameObject panel, bool destroyOnEnd = true)
     {
-        if (panel == null)
-            yield break;
-
-        CanvasGroup cg = panel.GetComponent<CanvasGroup>();
-        if (cg == null) yield break;
-
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            if (panel == null || cg == null)
-                yield break;
-
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0, 1, elapsed / duration);
-            cg.alpha = Mathf.Lerp(1f, 0f, t);
-            yield return null;
-        }
-
-        if (panel == null)
-            yield break;
-
-        if (destroyOnEnd)
-        {
-            Destroy(panel);
-        }
-        else
-        {
-            panel.SetActive(false);
-        }
+        yield return PanelTweenPresentation.Hide(panel, destroyOnEnd, hideDuration, showScaleFrom);
     }
 }

@@ -92,6 +92,8 @@ public static class Define
         public const string WEAPON = "Weapon";
         /// <summary>QuickOutline 대상에서 제외 (파티클·볼륨형 VFX 등).</summary>
         public const string NO_OUTLINE = "NoOutline";
+        /// <summary>ESC 일시정지 UI 루트. ExitPopup 거절 시 일괄 Destroy 대상.</summary>
+        public const string PAUSE_PANEL = "PausePanel";
     }
 
     public static class Layer

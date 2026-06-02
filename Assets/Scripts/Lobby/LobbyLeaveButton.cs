@@ -64,6 +64,7 @@ public class LobbyLeaveButton : MonoBehaviour
             return;
         }
 
+        ScenePauseMenuController.Instance?.DismissPausePanelCompletely();
         SceneLoader.Instance.LoadScene(targetSceneName);
     }
 }

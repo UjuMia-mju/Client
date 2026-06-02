@@ -228,7 +228,15 @@ public class MonsterManager : MonoBehaviour
         DesertWormAnimator wormAnim = spawned.GetComponent<DesertWormAnimator>();
         if (wormAnim != null)
         {
-            wormAnim.SetState((WormAnimState)stateInt);
+            var state = (WormAnimState)stateInt;
+            wormAnim.SetState(state);
+
+            if (state == WormAnimState.TakeDamage)
+            {
+                var tint = spawned.GetComponent<DamageMeshTintController>();
+                tint?.PlayHitFlash(1);
+            }
+
             return;
         }
     }

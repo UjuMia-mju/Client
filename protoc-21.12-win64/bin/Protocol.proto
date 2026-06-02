@@ -140,6 +140,13 @@ message S_LEAVE_ROOM
 	uint64 player_id = 2;
 }
 
+// ==================== 방 해산(호스트 퇴장·서버 강제 종료 등) ====================
+message S_ROOM_DESTROY
+{
+	bool success = 1;
+	uint64 room_id = 2;
+}
+
 // ==================== 초대 보내기 ====================
 message C_INVITE_PLAYER
 {

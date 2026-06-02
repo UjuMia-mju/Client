@@ -102,12 +102,16 @@ public class OtherPlayers : MovingObject
     {
         if (playerMesh != null)
             playerMesh.SetActive(false);
+
+        PlayerOverheadUI.SetWorldCanvasActive(transform, false);
     }
 
     private void HandleRemoteRevive()
     {
         if (playerMesh != null)
             playerMesh.SetActive(true);
+
+        PlayerOverheadUI.SetWorldCanvasActive(transform, true);
     }
 
     private void FixedUpdate()
@@ -226,6 +230,7 @@ public class OtherPlayers : MovingObject
             DetachEquipItem(false);
 
         SetVisible(false);
+        PlayerOverheadUI.SetWorldCanvasActive(transform, false);
     }
 
     public void ApplyRevive(Vector3 pos, Quaternion rot)
@@ -239,6 +244,7 @@ public class OtherPlayers : MovingObject
         _hasTarget = true;
 
         SetVisible(true);
+        PlayerOverheadUI.SetWorldCanvasActive(transform, true);
         Debug.Log($"[OtherPlayers] ApplyRevive. playerId={PlayerId}, pos={pos}");
     }
 

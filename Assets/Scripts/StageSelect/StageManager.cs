@@ -37,6 +37,9 @@ public class StageManager : MonoBehaviour
 
     public bool IsStagePauseMenuOpen => _stagePauseInstance != null && _stagePauseInstance.activeInHierarchy;
 
+    /// <summary>ExitPopup 거절 등 외부에서 스테이지 일시정지 UI를 완전히 제거할 때.</summary>
+    public void DismissStagePausePanelCompletely() => CloseStagePausePanel(destroyInstance: true);
+
     private StageCameraController _cameraController;
     private StageUIManager _uiManager;
     
@@ -164,7 +167,7 @@ public class StageManager : MonoBehaviour
 
         CancelInvoke(nameof(ClearStageRoomMemberNotice));
         CancelStageStartWaitingUi();
-        CloseStagePausePanel(destroyInstance: true);
+        CloseStagePausePanelImmediate(destroyInstance: true);
 
         if (_guestPreviewNode != null)
         {
@@ -258,8 +261,19 @@ public class StageManager : MonoBehaviour
         if (Keyboard.current == null || !Keyboard.current[Key.Escape].wasPressedThisFrame)
             return;
 
+        if (_stagePauseTransitioning)
+            return;
+
         if (_stagePauseInstance != null && _stagePauseInstance.activeInHierarchy)
         {
+            var pauseUi = _stagePauseInstance.GetComponentInChildren<PausePanelController>(true);
+
+            if (pauseUi != null && pauseUi.IsSettingsFlowActive)
+            {
+                pauseUi.TryCloseSettingsOverlay();
+                return;
+            }
+
             CloseStagePausePanel(destroyInstance: false);
             return;
         }
@@ -298,28 +312,80 @@ public class StageManager : MonoBehaviour
         return SceneManager.GetActiveScene().name == Define.Scene.STAGE_SELECT;
     }
 
+    bool _stagePauseTransitioning;
+    Coroutine _stagePauseTransitionRoutine;
+
     void OpenStagePausePanel()
     {
         if (stagePausePanelPrefab == null)
             return;
 
+        if (_stagePauseTransitioning)
+            return;
+
         if (_stagePauseInstance == null)
             _stagePauseInstance = Instantiate(stagePausePanelPrefab);
-
-        _stagePauseInstance.SetActive(true);
 
         if (!_stagePauseMenuHoldActive)
         {
             InputManager.PushPauseMenuHold();
             _stagePauseMenuHoldActive = true;
         }
+
+        if (_stagePauseTransitionRoutine != null)
+            StopCoroutine(_stagePauseTransitionRoutine);
+
+        _stagePauseTransitionRoutine = StartCoroutine(OpenStagePausePanelRoutine());
+    }
+
+    IEnumerator OpenStagePausePanelRoutine()
+    {
+        _stagePauseTransitioning = true;
+
+        if (UIPanelAnimator.Instance != null)
+            yield return UIPanelAnimator.Instance.FadeIn(_stagePauseInstance, Vector3.one);
+        else
+            _stagePauseInstance.SetActive(true);
+
+        _stagePauseTransitioning = false;
+        _stagePauseTransitionRoutine = null;
     }
 
     /// <param name="destroyInstance">씬 종료 시 true</param>
     void CloseStagePausePanel(bool destroyInstance)
     {
+        if (_stagePauseInstance == null)
+        {
+            ReleaseStagePauseMenuHoldIfNeeded();
+            return;
+        }
+
+        if (!isActiveAndEnabled || !gameObject.activeInHierarchy)
+        {
+            CloseStagePausePanelImmediate(destroyInstance);
+            return;
+        }
+
+        if (_stagePauseTransitionRoutine != null)
+            StopCoroutine(_stagePauseTransitionRoutine);
+
+        _stagePauseTransitionRoutine = StartCoroutine(CloseStagePausePanelRoutine(destroyInstance));
+    }
+
+    void CloseStagePausePanelImmediate(bool destroyInstance)
+    {
+        if (_stagePauseTransitionRoutine != null)
+        {
+            StopCoroutine(_stagePauseTransitionRoutine);
+            _stagePauseTransitionRoutine = null;
+        }
+
+        _stagePauseTransitioning = false;
+
         if (_stagePauseInstance != null)
         {
+            PanelTweenPresentation.Kill(_stagePauseInstance);
+
             if (destroyInstance)
             {
                 Destroy(_stagePauseInstance);
@@ -329,11 +395,38 @@ public class StageManager : MonoBehaviour
                 _stagePauseInstance.SetActive(false);
         }
 
-        if (_stagePauseMenuHoldActive)
+        ReleaseStagePauseMenuHoldIfNeeded();
+    }
+
+    IEnumerator CloseStagePausePanelRoutine(bool destroyInstance)
+    {
+        _stagePauseTransitioning = true;
+
+        if (_stagePauseInstance != null && _stagePauseInstance.activeInHierarchy)
         {
-            InputManager.PopPauseMenuHold();
-            _stagePauseMenuHoldActive = false;
+            if (UIPanelAnimator.Instance != null)
+                yield return UIPanelAnimator.Instance.FadeOut(_stagePauseInstance, destroyOnEnd: destroyInstance);
+            else if (destroyInstance)
+                Destroy(_stagePauseInstance);
+            else
+                _stagePauseInstance.SetActive(false);
         }
+
+        if (destroyInstance)
+            _stagePauseInstance = null;
+
+        ReleaseStagePauseMenuHoldIfNeeded();
+        _stagePauseTransitioning = false;
+        _stagePauseTransitionRoutine = null;
+    }
+
+    void ReleaseStagePauseMenuHoldIfNeeded()
+    {
+        if (!_stagePauseMenuHoldActive)
+            return;
+
+        InputManager.PopPauseMenuHold();
+        _stagePauseMenuHoldActive = false;
     }
     
     public void EnterSelectedStage()

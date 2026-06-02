@@ -222,6 +222,8 @@ public class Player : MovingObject
         if (playerMesh != null)
             playerMesh.SetActive(false);
 
+        PlayerOverheadUI.SetWorldCanvasActive(transform, false);
+
         if (playerInput != null)
             playerInput.SetInputEnabled(false);
 
@@ -259,6 +261,8 @@ public class Player : MovingObject
     {
         if (playerMesh != null)
             playerMesh.SetActive(true);
+
+        PlayerOverheadUI.SetWorldCanvasActive(transform, true);
 
         if (playerInput != null)
             playerInput.SetInputEnabled(true);

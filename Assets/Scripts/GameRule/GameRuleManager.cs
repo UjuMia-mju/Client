@@ -7,7 +7,7 @@ public class GameRuleManager : MonoBehaviour
 {
     public static GameRuleManager Instance { get; private set; }
 
-    [SerializeField] private float timerDuration;
+    private float timerDuration = 0;
     [SerializeField] private ClearPanelController clearPanel;
 
     [Header("HUD")]
@@ -23,6 +23,7 @@ public class GameRuleManager : MonoBehaviour
         float elapsed = timerDuration - remainingTime;
         return Mathf.Max(0, Mathf.RoundToInt(elapsed));
     }
+
     private bool isVictory = false;
     private bool isGameDone = false;
 
@@ -41,13 +42,47 @@ public class GameRuleManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[GameRuleManager] Start. ConnectManager.isHost={ConnectManager.Instance?.isHost}");
+        // StageManager가 보관한 컨텍스트(다시하기/진입 시 저장된 Map/Chapter/Stage)가 있으면
+        // DbCacheManager에서 해당 StageInfo의 EstimatedClearTime을 읽어 타이머 기준으로 사용합니다.
+        // Inspector 값은 런타임에 덮어씌워질 수 있습니다.
+
+        if (IsHostNow())
+        {
+            if (StageManager.LastLoadedMapId != 0)
+            {
+                if (DbCacheManager.TryGetStageInfo(StageManager.LastLoadedMapId, StageManager.LastLoadedChapter, StageManager.LastLoadedStageNum, out StageInfo info))
+                {
+                    if (info != null && info.EstimatedClearTime > 0)
+                    {
+                        timerDuration = info.EstimatedClearTime;
+                        Debug.Log($"[GameRuleManager] 제한시간을 DbCacheManager에서 설정합니다. : {timerDuration}s (MapId={info.MapId}, Chapter={info.Chapter}, Stage={info.Stage})");
+                    }
+                    else
+                    {
+                        Debug.Log($"[GameRuleManager] StageInfo는 찾았으나 제한시간이 존재하지 않습니다.");
+                    }
+                }
+                else
+                {
+                    Debug.Log($"[GameRuleManager] 이 MapId에 StageInfo가 존재하지 않습니다.={StageManager.LastLoadedMapId}. Using inspector timerDuration={timerDuration}s");
+                }
+            }
+            else
+            {
+                Debug.Log($"[GameRuleManager] StageManager의 LastLoadedMap Id가 0입니다.");
+            }
+        }
+        else
+        {
+            Debug.Log($"[GameRuleManager] 호스트가 아니기 때문에 EstimatedClearTime을 받아오지 않습니다.");
+        }
 
         if (missionTimerUiRoot != null)
             missionTimerUiRoot.SetActive(false);
 
         GameplayReadyCoordinator.WhenGateReleased(TryStartHostMissionTimer);
         GameplayReadyCoordinator.WhenGateReleased(ShowMissionTimerUiAfterReady);
+
         // [추가] 게임 씬에서 호스트 다시하기 시 서버 응답 S_GAME_READY_TO_START를 받아 현재 씬 재로드.
         // 호스트 나가기 시 피어가 받는 S_RETURN_TO_STAGE_SELECT도 여기서 처리.
         // [수정] OnGameReadyToStartEvent는 데디 서버 발신 → PacketHandler에 있음.
