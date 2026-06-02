@@ -38,7 +38,7 @@ public class LobbyLeaveButton : MonoBehaviour
 
         if (NetManager.Instance == null || !NetManager.Instance.IsConnected)
         {
-            Debug.LogWarning("[LobbyLeaveButton] 서버에 연결되어 있지 않습니다.");
+            MessageManager.Instance?.ShowKey(MessageKeys.NotConnected);
             return;
         }
 
@@ -59,6 +59,7 @@ public class LobbyLeaveButton : MonoBehaviour
 
         if (!packet.Success)
         {
+            MessageManager.Instance?.ShowKey(MessageKeys.LeaveRoomFailed);
             Debug.LogWarning($"[LobbyLeaveButton] 방 떠나기 실패: playerId={packet.PlayerId}");
             return;
         }

@@ -5,20 +5,17 @@ using UnityEngine.UI;
 
 /// <summary>
 /// <see cref="messagePrefab"/>을 매번 인스턴스하여 표시하고, 일정 시간 후 페이드아웃 뒤 <c>Destroy</c>합니다.
-/// 프리팹 루트(또는 자식)에 <see cref="Canvas"/>가 있어야 하며, 본문은 <see cref="TMP_Text"/>로 찾습니다.
+/// 문구는 <see cref="MessageCatalog"/> 의 stringKey 로 조회합니다.
 /// </summary>
 public class MessageManager : MonoBehaviorSingleton<MessageManager>
 {
+    [Header("메시지 카탈로그")]
+    [SerializeField] private MessageCatalog catalog;
+
     [Header("프리팹")]
     [SerializeField] private GameObject messagePrefab;
     [Tooltip("같은 화면에 여러 메시지 시 위에 그리기")]
     [SerializeField] private int canvasSortOrder = 32000;
-
-    const string LoginFailureMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
-    const string LoginNetworkOrProtocolMessage =
-        "서버와의 연결을 실패했습니다.";
-    const string ServerDisconnectedMessage = "서버와의 연결이 끊어졌습니다.";
-    const string InvitePlayerFailedDefault = "초대를 보낼 수 없습니다.";
 
     [Header("표시 타이밍")]
     [SerializeField] private float visibleSecondsBeforeFade = 2f;
@@ -30,11 +27,51 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
     private float messageTextMaxWidth = 900f;
     [SerializeField, Tooltip("한 줄 등 짧은 문구일 때 텍스트 영역 최소 너비.")]
     private float messageTextMinWidth = 120f;
+    [SerializeField, Tooltip("텍스트 영역 최대 높이. 0이면 제한 없음.")]
+    private float messageTextMaxHeight = 0f;
+    [SerializeField, Range(0.3f, 1f), Tooltip("화면 너비 대비 패널 최대 비율.")]
+    private float messageMaxScreenWidthRatio = 0.85f;
     [SerializeField, Tooltip("배경에 더할 여백(좌·우 합, 상·하 합).")]
     private Vector2 messagePanelExtraSize = new Vector2(56f, 40f);
 
+    protected override void Awake()
+    {
+        base.Awake();
+        if (catalog != null)
+            MessageTexts.Initialize(catalog);
+    }
+
+    /// <summary>stringKey에 해당하는 문구를 토스트로 표시합니다.</summary>
+    public void ShowKey(string key, params object[] args)
+    {
+        Show(MessageTexts.Format(key, args));
+    }
+
+    /// <summary>서버 ErrorMsg 유무에 따라 baseKey / withReasonKey 중 하나를 표시합니다.</summary>
+    public void ShowServerError(string baseKey, string withReasonKey, string errorMsg)
+    {
+        if (string.IsNullOrWhiteSpace(errorMsg))
+            ShowKey(baseKey);
+        else
+            ShowKey(withReasonKey, errorMsg.Trim());
+    }
+
+    /// <summary>정적 컨텍스트에서 토스트를 표시합니다. MessageManager가 없으면 무시합니다.</summary>
+    public static void TryShowKey(string key, params object[] args)
+    {
+        if (Instance == null) return;
+        Instance.ShowKey(key, args);
+    }
+
+    /// <summary>정적 컨텍스트에서 서버 오류 토스트를 표시합니다.</summary>
+    public static void TryShowServerError(string baseKey, string withReasonKey, string errorMsg)
+    {
+        if (Instance == null) return;
+        Instance.ShowServerError(baseKey, withReasonKey, errorMsg);
+    }
+
     /// <summary>로그인 거부(자격 증명만 해당한다고 가정할 때).</summary>
-    public void ShowLoginFailure() => Show(LoginFailureMessage);
+    public void ShowLoginFailure() => ShowKey(MessageKeys.LoginInvalidCredentials);
 
     /// <summary>
     /// 서버가 <c>S_LOGIN.success == false</c>를 준 뒤 표시합니다.
@@ -43,22 +80,17 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
     public void ShowLoginFailureAfterServerResponse()
     {
         if (NetManager.Instance == null || !NetManager.Instance.IsConnected)
-            Show(LoginNetworkOrProtocolMessage);
+            ShowKey(MessageKeys.LoginNetworkFailure);
         else
-            Show(LoginFailureMessage);
+            ShowKey(MessageKeys.LoginInvalidCredentials);
     }
 
     /// <summary>빈 바디·깨진 프로토buf 등 로그인 응답을 신뢰할 수 없을 때.</summary>
-    public void ShowLoginResponseUnreadable() => Show(LoginNetworkOrProtocolMessage);
+    public void ShowLoginResponseUnreadable() => ShowKey(MessageKeys.ProtocolUnreadable);
 
     /// <summary>서버 <c>S_INVITE_PLAYER.success == false</c>일 때 사유를 토스트로 표시합니다.</summary>
-    public void ShowInvitePlayerFailed(string errorMsg)
-    {
-        if (string.IsNullOrWhiteSpace(errorMsg))
-            Show(InvitePlayerFailedDefault);
-        else
-            Show($"초대 전송 실패: {errorMsg.Trim()}");
-    }
+    public void ShowInvitePlayerFailed(string errorMsg) =>
+        ShowServerError(MessageKeys.InviteFailed, MessageKeys.InviteFailedWithReason, errorMsg);
 
     /// <summary>기본 대기·페이드 시간으로 표시합니다.</summary>
     public void Show(string message) => Show(message, visibleSecondsBeforeFade, fadeOutDuration);
@@ -97,7 +129,11 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
         if (tmp != null)
         {
             tmp.text = message;
-            FitMessageBackgroundToText(tmp);
+            if (resizePanelToFitText)
+            {
+                FitMessageBackgroundToText(tmp);
+                StartCoroutine(CoFitMessageBackgroundAfterLayout(tmp));
+            }
         }
 
         bool skipWait = false;
@@ -112,34 +148,78 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
         StartCoroutine(CoLifecycle(instance, cg, visibleSeconds, fadeSeconds, () => skipWait));
     }
 
+    IEnumerator CoFitMessageBackgroundAfterLayout(TMP_Text tmp)
+    {
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        FitMessageBackgroundToText(tmp);
+    }
+
     void FitMessageBackgroundToText(TMP_Text tmp)
     {
-        if (!resizePanelToFitText || tmp == null) return;
+        if (tmp == null) return;
 
-        var panelRt = tmp.transform.parent as RectTransform;
+        RectTransform panelRt = FindMessagePanelRect(tmp);
         if (panelRt == null) return;
 
+        RectTransform textRt = tmp.rectTransform;
         tmp.textWrappingMode = TextWrappingModes.Normal;
-        string text = tmp.text;
+
+        float maxTextWidth = messageTextMaxWidth;
+        if (messageMaxScreenWidthRatio > 0f)
+        {
+            float screenLimit = Screen.width * messageMaxScreenWidthRatio - messagePanelExtraSize.x;
+            if (screenLimit > 0f)
+                maxTextWidth = Mathf.Min(maxTextWidth, screenLimit);
+        }
+
+        maxTextWidth = Mathf.Max(maxTextWidth, messageTextMinWidth);
+
+        string text = tmp.text ?? string.Empty;
         tmp.ForceMeshUpdate();
 
         Vector2 unbound = tmp.GetPreferredValues(text, float.PositiveInfinity, 0);
         float innerW;
         float innerH;
 
-        if (unbound.x <= messageTextMaxWidth + 0.01f)
+        if (unbound.x <= maxTextWidth + 0.01f)
         {
             innerW = Mathf.Max(unbound.x, messageTextMinWidth);
             innerH = unbound.y;
         }
         else
         {
-            Vector2 wrapped = tmp.GetPreferredValues(text, messageTextMaxWidth, 0);
-            innerW = messageTextMaxWidth;
+            Vector2 wrapped = tmp.GetPreferredValues(text, maxTextWidth, 0);
+            innerW = maxTextWidth;
             innerH = wrapped.y;
         }
 
-        panelRt.sizeDelta = new Vector2(innerW + messagePanelExtraSize.x, innerH + messagePanelExtraSize.y);
+        if (messageTextMaxHeight > 0f && innerH > messageTextMaxHeight)
+            innerH = messageTextMaxHeight;
+
+        ApplyMessagePanelSize(panelRt, textRt, innerW, innerH);
+    }
+
+    static RectTransform FindMessagePanelRect(TMP_Text tmp)
+    {
+        var image = tmp.GetComponentInParent<Image>();
+        if (image != null)
+            return image.rectTransform;
+
+        return tmp.transform.parent as RectTransform;
+    }
+
+    void ApplyMessagePanelSize(RectTransform panelRt, RectTransform textRt, float innerW, float innerH)
+    {
+        textRt.anchorMin = new Vector2(0.5f, 0.5f);
+        textRt.anchorMax = new Vector2(0.5f, 0.5f);
+        textRt.pivot = new Vector2(0.5f, 0.5f);
+        textRt.anchoredPosition = Vector2.zero;
+        textRt.sizeDelta = new Vector2(innerW, innerH);
+
+        panelRt.sizeDelta = new Vector2(
+            innerW + messagePanelExtraSize.x,
+            innerH + messagePanelExtraSize.y);
     }
 
     void OnEnable()
@@ -155,7 +235,7 @@ public class MessageManager : MonoBehaviorSingleton<MessageManager>
 
     void OnServerDisconnected()
     {
-        Show(ServerDisconnectedMessage);
+        ShowKey(MessageKeys.ServerDisconnected);
     }
 
     IEnumerator CoLifecycle(GameObject instance, CanvasGroup cg, float visibleSeconds, float fadeSeconds, System.Func<bool> shouldSkipWait)

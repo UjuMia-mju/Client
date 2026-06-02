@@ -97,6 +97,7 @@ public class FurnaceObject : MonoBehaviour
     {
         if (isWorking || hasResult)
         {
+            MessageManager.TryShowKey(MessageKeys.FurnaceBusyOrHasResult);
             Debug.LogWarning($"[Client] 용광로({furnaceId})는 이미 작동 중이거나 결과물이 있습니다.");
             return false;
         }
@@ -109,6 +110,7 @@ public class FurnaceObject : MonoBehaviour
             // 호스트: 레시피 먼저 검증 후 요청
             if (!SmeltingRecipeManager.Instance.TryGetRecipe(item.itemStringKey, out _))
             {
+                MessageManager.TryShowKey(MessageKeys.FurnaceCannotSmelt);
                 Debug.LogWarning($"[Furnace] '{item.itemStringKey}'은 제련할 수 없는 아이템입니다.");
                 return false;
             }
@@ -129,6 +131,7 @@ public class FurnaceObject : MonoBehaviour
     {
         if (isWorking)
         {
+            MessageManager.TryShowKey(MessageKeys.FurnaceStillWorking);
             Debug.LogWarning($"[Client] 용광로({furnaceId})는 이미 작동 중입니다.");
             return; // 이미 작동 중이라면 중복 실행 방지
         }
@@ -204,6 +207,7 @@ public class FurnaceObject : MonoBehaviour
 
         if (isWorking)
         {
+            MessageManager.TryShowKey(MessageKeys.FurnaceStillWorking);
             Debug.LogWarning($"[Client] 용광로({furnaceId})는 아직 작동 중입니다.");
             return;
         }

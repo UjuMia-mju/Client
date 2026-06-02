@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec9eacf24f194e80995e07f57930b611, type: 3}
+  m_Name: TutorialData
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialData
+  entries:
+  - chapter: 1
+    stage: 1
+    slides:
+    - spriteKey: Stone_Glow
+      sprite: {fileID: -1997477683, guid: 5180bbb7ead518745a9a762ac3b2610c, type: 3}
+  - chapter: 1
+    stage: 2
+    slides:
+    - spriteKey: Tree
+      sprite: {fileID: 1643417430, guid: 1bac9604adb86ad409ba932e86d6599f, type: 3}
+  - chapter: 1
+    stage: 3
+    slides:
+    - spriteKey: Iron
+      sprite: {fileID: -235000742, guid: 153358643b0af5e42a1eacf9b0a3f864, type: 3}
+  - chapter: 1
+    stage: 4
+    slides:
+    - spriteKey: Jewel
+      sprite: {fileID: 1462815992, guid: 1681f06a3f04a414490fb6a66a8e5f08, type: 3}
+    - spriteKey: Cactus
+      sprite: {fileID: -581349074, guid: 57e9787c612342a489380adaf361b77e, type: 3}
+    - spriteKey: Worm
+      sprite: {fileID: 105012348, guid: 8014a0eef231a2947a6cd9f3177956f8, type: 3}

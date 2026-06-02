@@ -51,6 +51,10 @@ public class LobbyRoomClient : MonoBehaviour
     {
         if (!packet.Success)
         {
+            MessageManager.TryShowServerError(
+                MessageKeys.EnterRoomFailed,
+                MessageKeys.EnterRoomFailedWithReason,
+                packet.ErrorMsg);
             Debug.LogWarning($"[LobbyRoomClient] 방 입장 실패: {packet.ErrorMsg}");
             return;
         }

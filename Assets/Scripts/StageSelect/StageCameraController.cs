@@ -32,9 +32,22 @@ public class StageCameraController : MonoBehaviour
         }
     }
 
+    public IEnumerator ZoomIn(StageNode targetNode)
+    {
+        if (_mainCamera == null || targetNode == null) yield break;
+
+        Vector3 focus = targetNode.GetFocusWorldPosition();
+        float distance = targetNode.GetFocusZoomDistance(zoomDistance);
+
+        Quaternion dynamicTargetRot = Quaternion.Euler(zoomEulerAngles);
+        Vector3 dynamicTargetPos = focus - (dynamicTargetRot * Vector3.forward * distance);
+
+        yield return StartCoroutine(MoveCamera(_mainCamera.transform.position, _mainCamera.transform.rotation, dynamicTargetPos, dynamicTargetRot));
+    }
+
     public IEnumerator ZoomIn(Transform targetTransform)
     {
-        if (_mainCamera == null) yield break;
+        if (_mainCamera == null || targetTransform == null) yield break;
         
         Quaternion dynamicTargetRot = Quaternion.Euler(zoomEulerAngles);
         Vector3 dynamicTargetPos = targetTransform.position - (dynamicTargetRot * Vector3.forward * zoomDistance);
