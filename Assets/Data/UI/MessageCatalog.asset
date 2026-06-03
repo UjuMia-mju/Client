@@ -50,6 +50,8 @@ MonoBehaviour:
   - key: lobby.invite_self_not_allowed
     text: "\uC790\uAE30 \uC790\uC2E0\uC5D0\uAC8C\uB294 \uCD08\uB300\uB97C \uBCF4\uB0BC
       \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."
+  - key: lobby.invite_sent_success
+    text: "\uCD08\uB300 \uC694\uCCAD\uC744 \uBCF4\uB0C8\uC2B5\uB2C8\uB2E4."
   - key: lobby.invite_notification
     text: "{0}\uB2D8\uC774 \uCD08\uB300\uB97C \uBCF4\uB0C8\uC2B5\uB2C8\uB2E4."
   - key: lobby.multiplay_login_required

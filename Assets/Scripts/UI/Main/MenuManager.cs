@@ -20,8 +20,12 @@ public class MenuManager : MonoBehaviour
     private MenuPanelController _menuPanelController;
     private Vector3 finalPanelScale = new Vector3(0.005f, 0.005f, 1f); // 특정 스케일값 유지
     
-    private Key closeKey = Key.Escape;
     private bool isTransitioning = false; // 중복 실행 방지
+
+    /// <summary>Settings 등 MenuPanel 버튼으로 연 서브 패널이 열려 있으면 true.</summary>
+    public bool HasOpenSubPanel => _currentSubPanel != null;
+
+    public bool IsTransitioning => isTransitioning;
 
     private void Awake()
     {
@@ -31,12 +35,14 @@ public class MenuManager : MonoBehaviour
         _menuPanelController = Object.FindFirstObjectByType<MenuPanelController>();
     }
 
-    private void Update()
+    /// <summary>ESC로 서브 패널만 닫기. 처리했으면 true(ExitPopup 띄우지 않음).</summary>
+    public bool TryCloseSubPanelFromEscape()
     {
-        if (Keyboard.current[closeKey].wasPressedThisFrame && _currentSubPanel != null && !isTransitioning)
-        {
-            BackToMainMenu();
-        }
+        if (_currentSubPanel == null || isTransitioning)
+            return false;
+
+        BackToMainMenu();
+        return true;
     }
 
     public void StartZoomSequence(Transform targetTransform, GameObject panelPrefab)

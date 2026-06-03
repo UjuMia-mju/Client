@@ -1468,6 +1468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  damageAmount: 1
 --- !u!65 &123472814
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1487,7 +1488,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &144807123
 GameObject:
@@ -7532,6 +7533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  damageAmount: 1
 --- !u!65 &1149938473
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7551,7 +7553,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1165965458
 PrefabInstance:
@@ -8666,6 +8668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  damageAmount: 1
 --- !u!65 &1320685437
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8685,7 +8688,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1338450724
 GameObject:
@@ -9656,6 +9659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  damageAmount: 1
 --- !u!65 &1439437493
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9675,7 +9679,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1454165999
 GameObject:
@@ -10755,6 +10759,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  damageAmount: 1
 --- !u!65 &1742372386
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10774,7 +10779,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1748099029
 GameObject:
@@ -11201,6 +11206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  damageAmount: 1
 --- !u!65 &1824858130
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11220,7 +11226,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1834754884
 GameObject:
@@ -11267,6 +11273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  damageAmount: 1
 --- !u!65 &1834754887
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11286,7 +11293,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1863924824
 GameObject:
@@ -15513,7 +15520,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2095067930213991399
 MeshRenderer:
@@ -16569,6 +16576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3954f6510b14f9843a69467a9ad62b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageTrigger
+  damageAmount: 1
 --- !u!33 &2859660157446403975
 MeshFilter:
   m_ObjectHideFlags: 0

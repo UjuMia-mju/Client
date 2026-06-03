@@ -188,13 +188,20 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
 
     public void SendStartStage(int mapId, int chapter, int stageIndex)
     {
+        if (NetManager.Instance == null || !NetManager.Instance.IsConnected)
+        {
+            Debug.LogWarning(
+                $"[PacketDispatcher] C_START_STAGE 미전송 (서버 미연결). map={mapId}, ch={chapter}, stage={stageIndex}");
+            return;
+        }
+
         C_START_STAGE packet = new C_START_STAGE
         {
             MapId = mapId,
             Chapter = chapter,
             StageIndex = stageIndex
         };
-        
+
         NetManager.Instance.SendPacket(PacketId.PKT_C_START_STAGE, packet);
     }
 

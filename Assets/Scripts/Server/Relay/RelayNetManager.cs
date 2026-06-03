@@ -20,4 +20,13 @@ public class RelayNetManager : BaseNetSession
             RelayPacketHandler.Instance.HandleRelayPacket(packetId, data);
         });
     }
+
+    public static void Shutdown()
+    {
+        if (_instance == null)
+            return;
+
+        _instance.ForceShutdown(raiseDisconnected: false);
+        _instance = null;
+    }
 }

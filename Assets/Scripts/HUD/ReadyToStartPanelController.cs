@@ -116,6 +116,20 @@ public class ReadyToStartPanelController : MonoBehaviour
         Begin(idOrder ?? Array.Empty<ulong>(), Mathf.Max(0f, delaySeconds), onFinished);
     }
 
+    /// <summary>씬 이탈·세션 정리 시 남아 있는 패널·홀드·트윈을 모두 끕니다.</summary>
+    public static void DismissAllActive()
+    {
+        var panels = UnityEngine.Object.FindObjectsByType<ReadyToStartPanelController>(
+            FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var panel in panels)
+        {
+            if (panel == null) continue;
+            panel.AbortCountdown();
+            panel.KillPanelFadeTween();
+            panel.gameObject.SetActive(false);
+        }
+    }
+
     public void AbortCountdown(Action stillInvokeCallback = null)
     {
         StopCountdownCoroutine();
@@ -255,14 +269,13 @@ public class ReadyToStartPanelController : MonoBehaviour
             if (slot.Profile != null)
             {
                 ApplyHostProfileSprite(slot.Profile, pid == hostId);
-                if (RoomMemberDisplayCache.Instance.TryGet(pid, out var ent))
-                    slot.Profile.color = ent.IsReady ? readyTint : notReadyTint;
+                slot.Profile.color = IsMemberReadyForDisplay(pid) ? readyTint : notReadyTint;
             }
 
             if (slot.NameText != null)
             {
                 var lines = new List<string> { nameLine };
-                if (RoomMemberDisplayCache.Instance.TryGet(pid, out var e) && e.IsReady)
+                if (IsMemberReadyForDisplay(pid))
                     lines.Add("준비");
                 slot.NameText.text = string.Join("\n", lines);
             }
@@ -296,6 +309,14 @@ public class ReadyToStartPanelController : MonoBehaviour
             img.sprite = hostProfileSprite;
         else
             img.sprite = baseline;
+    }
+
+    static bool IsMemberReadyForDisplay(ulong playerId)
+    {
+        if (!RoomMemberDisplayCache.IsLobbyReadyDisplayRelevant)
+            return false;
+
+        return RoomMemberDisplayCache.Instance.TryGet(playerId, out var e) && e.IsReady;
     }
 
     static string ResolvePlayerLabel(ulong playerId)

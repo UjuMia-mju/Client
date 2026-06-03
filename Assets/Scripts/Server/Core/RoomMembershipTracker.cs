@@ -41,6 +41,16 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
         Debug.Log("[RoomMembershipTracker] Reset");
     }
 
+    /// <summary>싱글플레이: 본인만 방에 있는 것처럼 입장 순서를 설정해 AmIFirst()·행성 선택이 동작하게 합니다.</summary>
+    public void SetSoloHost(ulong localPlayerId)
+    {
+        EnsureWired();
+        _orderedIds.Clear();
+        if (localPlayerId != 0)
+            _orderedIds.Add(localPlayerId);
+        Debug.Log($"[RoomMembershipTracker] SetSoloHost id={localPlayerId}");
+    }
+
     public void EnsureWired()
     {
         if (_wired) return;
@@ -50,6 +60,7 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
         PacketHandler.Instance.OnRoomMemberEnterEvent += OnMemberEnter;
         PacketHandler.Instance.OnRoomMemberLeaveEvent += OnMemberLeave;
         PacketHandler.Instance.OnLeaveRoomEvent += OnLeaveRoom;
+        PacketHandler.Instance.OnRoomDestroyEvent += OnRoomDestroy;
 
         Debug.Log("[RoomMembershipTracker] Wired to PacketHandler events.");
 
@@ -111,6 +122,19 @@ public class RoomMembershipTracker : Singleton<RoomMembershipTracker>
     {
         _orderedIds.Clear();
         Debug.Log($"[RoomMembershipTracker] OnLeaveRoom -> clear, success={packet?.Success}, localId={NetManager.Instance?._playerId}");
+        // 씬 전환은 LobbyLeaveButton·PausePanelController 등 요청한 UI가 담당합니다.
+        // 여기서 GoMainIfNeeded()까지 하면 LoadScene이 중복 호출되어 로딩이 90%에서 멈춥니다.
+    }
+
+    private void OnRoomDestroy(S_ROOM_DESTROY packet)
+    {
+        if (packet == null || !packet.Success)
+            return;
+
+        _orderedIds.Clear();
+        PacketHandler.ClearCachedEnterRoom();
+        Debug.Log(
+            $"[RoomMembershipTracker] S_ROOM_DESTROY -> clear, roomId={packet.RoomId}, localId={NetManager.Instance?._playerId}");
         GoMainIfNeeded();
     }
 

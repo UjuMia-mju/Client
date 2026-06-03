@@ -23,6 +23,14 @@ public class NetManager : BaseNetSession
         PlayerTag = tag;
     }
 
+    /// <summary>로컬 계정 세션만 비웁니다. 소켓은 끊지 않습니다.</summary>
+    public void ClearLocalPlayerSession()
+    {
+        _playerId = 0;
+        SetLocalPlayerProfile("", 0);
+        SetLastLoginCredentials("");
+    }
+
     public NetManager()
     {
         // 이벤트 구독: 패킷 도착 시 HandlePacket 호출
@@ -37,6 +45,15 @@ public class NetManager : BaseNetSession
         {
             PacketHandler.Instance.HandlePacket(packetId, data);
         });
+    }
+
+    public static void Shutdown()
+    {
+        if (_instance == null)
+            return;
+
+        _instance.ForceShutdown(raiseDisconnected: false);
+        _instance = null;
     }
 }
 

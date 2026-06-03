@@ -38,6 +38,11 @@ public class ConnectManager : MonoBehaviour
         _connectionRoutine = StartCoroutine(PersistTcpConnectionLoop());
     }
 
+    void OnApplicationQuit()
+    {
+        NetworkSessionShutdown.ShutdownAll();
+    }
+
     void OnDestroy()
     {
         if (Instance != this)
@@ -49,6 +54,7 @@ public class ConnectManager : MonoBehaviour
             _connectionRoutine = null;
         }
 
+        NetworkSessionShutdown.ShutdownAll();
         Instance = null;
     }
 

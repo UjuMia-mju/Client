@@ -77,28 +77,45 @@ public class DesertWorm : Monster
 
         if (hp <= 0)
         {
-            EnterDying();
+            if (!isTakingDamage && hurtCo == null)
+                EnterDying();
             return;
         }
 
-        if (isSpawning) return;
+        if (isSpawning || isTakingDamage) return;
 
         DetectPlayer();
         TryAttack();
     }
 
     // ===== 데미지 받음 =====
-    // 피격 모션/경직 없음: hp만 깎고, 죽으면 사망 진입. 공격 루프는 그대로 진행.
     public override void TakeDamage(int amount)
     {
-        if (!IsHost) return;     // 데미지 판정은 호스트만
+        if (!IsHost) return;
         if (isDying) return;
         if (amount <= 0) return;
 
-        base.TakeDamage(amount); // hp 감소
+        base.TakeDamage(amount);
+        PlayDamageTint(amount);
+        StopBiteIfRunning();
+
+        if (hurtCo != null)
+            StopCoroutine(hurtCo);
 
         if (hp <= 0)
-            EnterDying();
+            hurtCo = StartCoroutine(TakeDamageThenDieRoutine());
+        else
+            hurtCo = StartCoroutine(TakeDamageRoutine());
+    }
+
+    void StopBiteIfRunning()
+    {
+        if (biteCo == null)
+            return;
+
+        StopCoroutine(biteCo);
+        biteCo = null;
+        isBiting = false;
     }
 
     private IEnumerator TakeDamageRoutine()
@@ -106,13 +123,31 @@ public class DesertWorm : Monster
         isTakingDamage = true;
         SetStateHostAndBroadcast(WormAnimState.TakeDamage);
 
-        yield return new WaitForSeconds(takeDamageAnimDuration);
+        if (wormAnimator != null)
+            yield return wormAnimator.WaitForStatePlaybackComplete("TakeDamage", takeDamageAnimDuration);
+        else
+            yield return new WaitForSeconds(takeDamageAnimDuration);
 
         isTakingDamage = false;
         hurtCo = null;
 
         if (!isDying && !isSpawning)
             SetStateHostAndBroadcast(WormAnimState.Idle);
+    }
+
+    IEnumerator TakeDamageThenDieRoutine()
+    {
+        isTakingDamage = true;
+        SetStateHostAndBroadcast(WormAnimState.TakeDamage);
+
+        if (wormAnimator != null)
+            yield return wormAnimator.WaitForStatePlaybackComplete("TakeDamage", takeDamageAnimDuration);
+        else
+            yield return new WaitForSeconds(takeDamageAnimDuration);
+
+        isTakingDamage = false;
+        hurtCo = null;
+        EnterDying();
     }
 
     // ===== AI =====
@@ -197,11 +232,16 @@ public class DesertWorm : Monster
         // 더 자연스럽게 하려면 아래 한 줄을 별도 wait으로 조정 가능
         yield return new WaitForSeconds(telegraphDelay);
 
-        // 3) BiteAttack 애니 + 데미지박스
+        // 3) BiteAttack 애니 재생이 끝난 뒤 데미지(플레이어 HP 감소) 적용
         SetStateHostAndBroadcast(WormAnimState.BiteAttack);
-        SpawnDamageBox(attackPos);
 
-        yield return new WaitForSeconds(biteAnimDuration);
+        if (wormAnimator != null)
+            yield return wormAnimator.WaitForStatePlaybackComplete("BiteAttack", biteAnimDuration);
+        else
+            yield return new WaitForSeconds(biteAnimDuration);
+
+        Vector3 damagePos = targetPlayer != null ? targetPlayer.position : attackPos;
+        SpawnDamageBox(damagePos);
 
         if (!isDying && !isSpawning && !isTakingDamage)
             SetStateHostAndBroadcast(WormAnimState.Idle);

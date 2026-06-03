@@ -25,6 +25,7 @@ public static class MessageKeys
     public const string InviteTargetNameRequired = "lobby.invite_target_name_required";
     public const string InviteTargetTagInvalid = "lobby.invite_target_tag_invalid";
     public const string InviteSelfNotAllowed = "lobby.invite_self_not_allowed";
+    public const string InviteSentSuccess = "lobby.invite_sent_success";
     public const string InviteNotification = "lobby.invite_notification";
     public const string MultiplayLoginRequired = "lobby.multiplay_login_required";
     public const string CreateRoomFailedLeavePrevious = "lobby.create_room_failed_leave_previous";

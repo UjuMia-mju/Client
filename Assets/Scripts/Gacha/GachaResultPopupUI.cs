@@ -60,10 +60,22 @@ public class GachaResultPopupUI : MonoBehaviour
             descriptionText.text = string.IsNullOrWhiteSpace(item.descriptionText) ? "-" : item.descriptionText;
     }
 
+    public bool IsPopupOpen => popupRoot != null && popupRoot.activeSelf;
+
     public void Hide()
     {
         if (popupRoot != null)
             popupRoot.SetActive(false);
+    }
+
+    /// <summary><see cref="ScenePauseMenuController"/> ESC: 결과 팝업만 닫고 일시정지는 열지 않음.</summary>
+    public bool TryCloseFromEscape()
+    {
+        if (!IsPopupOpen)
+            return false;
+
+        OnClickConfirm();
+        return true;
     }
 
     public void OnClickConfirm()

@@ -26,6 +26,7 @@ public class PacketHandler : Singleton<PacketHandler>
     public event Action<S_ROOM_LIST> OnRoomListEvent;
     public event Action<S_ENTER_ROOM> OnEnterRoomEvent;
     public event Action<S_LEAVE_ROOM> OnLeaveRoomEvent;
+    public event Action<S_ROOM_DESTROY> OnRoomDestroyEvent;
     public event Action<S_ROOM_MEMBER_ENTER> OnRoomMemberEnterEvent;
     public event Action<S_ROOM_MEMBER_LEAVE> OnRoomMemberLeaveEvent;
     public event Action<S_INVITE_PLAYER> OnInvitePlayerResultEvent;
@@ -90,6 +91,9 @@ public class PacketHandler : Singleton<PacketHandler>
                 break;
             case PacketId.PKT_S_LEAVE_ROOM:
                 HandleLeaveRoom(data);
+                break;
+            case PacketId.PKT_S_ROOM_DESTROY:
+                HandleRoomDestroy(data);
                 break;
             case PacketId.PKT_S_ROOM_MEMBER_ENTER:
                 HandleRoomMemberEnter(data);
@@ -324,6 +328,12 @@ public class PacketHandler : Singleton<PacketHandler>
         OnEnterRoomEvent?.Invoke(packet);
     }
 
+    /// <summary>메인·세션 초기화 시 로비 입장 캐시를 비웁니다.</summary>
+    public static void ClearCachedEnterRoom()
+    {
+        _cachedEnterRoom = null;
+    }
+
     /// <summary>캐시된 S_ENTER_ROOM(성공)을 반환하고 캐시를 비웁니다. 로비 씬 로드 후 한 번만 호출.</summary>
     public static S_ENTER_ROOM GetAndClearCachedEnterRoom()
     {
@@ -356,6 +366,16 @@ public class PacketHandler : Singleton<PacketHandler>
             $"[PacketHandler][LobbyQA] S_LEAVE_ROOM recv: success={packet.Success}, playerId={packet.PlayerId}, " +
             $"scene={SceneManager.GetActiveScene().name}");
         OnLeaveRoomEvent?.Invoke(packet);
+    }
+
+    private void HandleRoomDestroy(byte[] payloadData)
+    {
+        S_ROOM_DESTROY packet = S_ROOM_DESTROY.Parser.ParseFrom(payloadData);
+        Debug.Log(
+            $"[PacketHandler][LobbyQA] S_ROOM_DESTROY recv: success={packet.Success}, roomId={packet.RoomId}, " +
+            $"scene={SceneManager.GetActiveScene().name}");
+        ClearCachedEnterRoom();
+        OnRoomDestroyEvent?.Invoke(packet);
     }
 
     private void HandleRoomMemberEnter(byte[] payloadData)

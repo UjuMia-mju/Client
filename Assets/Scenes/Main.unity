@@ -1828,6 +1828,7 @@ GameObject:
   - component: {fileID: 1103496823}
   - component: {fileID: 1103496822}
   - component: {fileID: 1103496821}
+  - component: {fileID: 1103496826}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1835,6 +1836,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1103496826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103496820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6f7a8b9c0d14234a5b6c7d8e9f01234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainExitInputController
 --- !u!114 &1103496821
 MonoBehaviour:
   m_ObjectHideFlags: 0

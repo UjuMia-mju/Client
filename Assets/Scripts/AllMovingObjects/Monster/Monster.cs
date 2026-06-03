@@ -11,6 +11,8 @@ public class Monster : MovingObject
 
     protected int hp;
 
+    protected DamageMeshTintController damageTint;
+
     [Header("Scene Placement")]
     [Tooltip("어떤 몬스터 종류인지. 씬 배치 동기화 시 프리팹 매칭용 키.")]
     [SerializeField] private Monsters monsterKey = Monsters.None;
@@ -24,6 +26,25 @@ public class Monster : MovingObject
     {
         base.Awake();
         hp = maxHp;
+        EnsureDamageTint();
+    }
+
+    protected void EnsureDamageTint()
+    {
+        if (damageTint != null)
+            return;
+
+        damageTint = GetComponent<DamageMeshTintController>();
+        if (damageTint == null)
+            damageTint = gameObject.AddComponent<DamageMeshTintController>();
+
+        damageTint.SetMeshRoot(transform);
+    }
+
+    protected void PlayDamageTint(int damageAmount)
+    {
+        EnsureDamageTint();
+        damageTint.PlayHitFlash(damageAmount);
     }
 
     void Update() { }

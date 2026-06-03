@@ -162,8 +162,13 @@ public class InputManager : MonoBehaviorSingleton<InputManager>
 
     protected override void OnDestroy()
     {
-        _actions?.Disable();
-        _actions = null;
+        if (_actions != null)
+        {
+            _actions.Disable();
+            _actions.Dispose();
+            _actions = null;
+        }
+
         base.OnDestroy();
     }
 }

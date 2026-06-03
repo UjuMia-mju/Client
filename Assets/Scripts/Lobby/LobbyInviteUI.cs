@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Protocol;
-using UnityEngine.InputSystem;
-
 
 // 로비에서 초대 보내기 UI.
 // 이 스크립트는 "항상 활성"인 오브젝트(Canvas, 로비 빈 오브젝트 등)에 붙여야 함.
@@ -60,16 +58,16 @@ public class LobbyInviteUI : MonoBehaviour
         //     inviteButton.interactable = false;
     }
 
-    private void Update()
+    public bool IsInvitePanelOpen => panelRoot != null && panelRoot.activeSelf;
+
+    /// <summary><see cref="ScenePauseMenuController"/> ESC 처리 전에 초대 패널만 닫을 때 사용.</summary>
+    public bool TryCloseInvitePanelFromEscape()
     {
-        // ESC 키를 눌렀을 때 패널이 활성화되어 있다면 닫기
-        if (Keyboard.current[Key.Escape].wasPressedThisFrame)
-        {
-            if (panelRoot != null && panelRoot.activeSelf)
-            {
-                OnClickClosePanel();
-            }
-        }
+        if (!IsInvitePanelOpen)
+            return false;
+
+        OnClickClosePanel();
+        return true;
     }
 
     private void OnClickOpenPanel()
@@ -176,7 +174,8 @@ public class LobbyInviteUI : MonoBehaviour
         if (packet.Success)
         {
             Debug.Log($"[LobbyInviteUI] 초대 전송 성공: {packet.PlayerName}#{packet.PlayerTag}");
-            
+            MessageManager.Instance?.ShowKey(MessageKeys.InviteSentSuccess);
+
             // 초대 요청 후 패널 닫기
             OnClickClosePanel();
         }

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class CraftBubbleController : MonoBehaviour
 {
+    /// <summary>다른 HUD·팝업보다 뒤에 그리기 위한 최소 Canvas sort order.</summary>
+    public const int CanvasSortOrder = -32767;
+
     [Serializable]
     public class Ingredient
     {
@@ -43,7 +46,18 @@ public class CraftBubbleController : MonoBehaviour
 
     private void Awake()
     {
+        ApplyCanvasSortOrder();
         RebuildIngredientDictionary();
+    }
+
+    void ApplyCanvasSortOrder()
+    {
+        var canvas = GetComponent<Canvas>();
+        if (canvas == null)
+            return;
+
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = CanvasSortOrder;
     }
 
     private void OnEnable()

@@ -45,6 +45,7 @@ public class Player : MovingObject
     [Header("Player UI")]
     [SerializeField] private HPUIController hpUIController;
     [SerializeField] private OxygenUIController oxygenUIController;
+    [SerializeField] private PlayerDamageOverlayController damageOverlayController;
     [SerializeField] private TextMeshProUGUI NicknameText;
     [SerializeField] private ThrowTrajectoryPreview trajectoryPreview;
     [Header("Hit SFX")]
@@ -102,8 +103,14 @@ public class Player : MovingObject
         }
 
         // ==== 임시 UI 초기화 ===
+        if (damageOverlayController == null)
+            damageOverlayController = GetComponent<PlayerDamageOverlayController>();
+        if (damageOverlayController == null)
+            damageOverlayController = gameObject.AddComponent<PlayerDamageOverlayController>();
+
         hpUIController.SetPlayerStat(playerStat);
         oxygenUIController.playerStat = playerStat;
+        damageOverlayController?.SetPlayerStat(playerStat);
 
         hpUIController.gameObject.SetActive(true);
         oxygenUIController.gameObject.SetActive(true);
@@ -124,6 +131,9 @@ public class Player : MovingObject
             if (t != null)
                 playerMesh = t.gameObject;
         }
+
+        if (damageOverlayController != null && playerMesh != null)
+            damageOverlayController.SetMeshRoot(playerMesh.transform);
 
         playerStat.OnHpChanged += HandleHpChanged;
         playerStat.OnOxygenChanged += HandleOxygenChanged;
@@ -218,6 +228,8 @@ public class Player : MovingObject
         if (playerMesh != null)
             playerMesh.SetActive(false);
 
+        PlayerOverheadUI.SetWorldCanvasActive(transform, false);
+
         if (playerInput != null)
             playerInput.SetInputEnabled(false);
 
@@ -255,6 +267,8 @@ public class Player : MovingObject
     {
         if (playerMesh != null)
             playerMesh.SetActive(true);
+
+        PlayerOverheadUI.SetWorldCanvasActive(transform, true);
 
         if (playerInput != null)
             playerInput.SetInputEnabled(true);

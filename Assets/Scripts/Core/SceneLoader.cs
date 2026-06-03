@@ -12,6 +12,9 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
     [Header("페이드 설정")]
     [SerializeField] private GameObject fadePrefab;
 
+    [Header("종료 확인 팝업")]
+    [SerializeField] private GameObject exitPopupPrefab;
+
     [Header("로딩 UI")]
     [SerializeField] private GameObject loadingPanelPrefab;
     [SerializeField]
@@ -30,11 +33,15 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
     private GameObject loadingInstance;
     private LoadingUIController loadingUi;
 
+    Coroutine _loadCoroutine;
+    string _loadTargetScene;
+
     protected override void Awake()
     {
         base.Awake();
         InitFadeCanvas();
         InitLoadingPanel();
+        ExitPopupManager.Initialize(exitPopupPrefab);
     }
 
     /// <summary>Splash 로고 연출 후 Login으로 가는 최초 전환만 로딩 패널을 쓰지 않습니다.</summary>
@@ -104,17 +111,28 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
         if (fadeInstance == null) InitFadeCanvas();
         if (loadingInstance == null) InitLoadingPanel();
 
-        bool useLoadingUi = !IsSplashToLoginTransition(sceneName);
+        if (_loadCoroutine != null && _loadTargetScene == sceneName)
+        {
+            Debug.Log($"[SceneLoader] 이미 '{sceneName}' 로딩 중 — 중복 요청 무시");
+            return;
+        }
 
-        StopAllCoroutines();
+        if (_loadCoroutine != null)
+            StopCoroutine(_loadCoroutine);
+
+        bool useLoadingUi = !IsSplashToLoginTransition(sceneName);
+        _loadTargetScene = sceneName;
+
         if (CanRunFadeLoad())
-        {
-            StartCoroutine(LoadAsyncSequenceWithFade(sceneName, useLoadingUi));
-        }
+            _loadCoroutine = StartCoroutine(LoadAsyncSequenceWithFade(sceneName, useLoadingUi));
         else
-        {
-            StartCoroutine(LoadAsyncSequenceNoFade(sceneName, useLoadingUi));
-        }
+            _loadCoroutine = StartCoroutine(LoadAsyncSequenceNoFade(sceneName, useLoadingUi));
+    }
+
+    void ClearLoadCoroutineState()
+    {
+        _loadCoroutine = null;
+        _loadTargetScene = null;
     }
 
     private bool CanRunFadeLoad()
@@ -156,6 +174,8 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
             yield return EnforceMinimumLoadingPanelVisible(panelShownRealtime);
             HideLoadingPanel();
         }
+
+        ClearLoadCoroutineState();
     }
 
     private IEnumerator LoadAsyncSequenceWithFade(string sceneName, bool useLoadingUi)
@@ -204,6 +224,8 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 
         fadeCanvasGroup.blocksRaycasts = false;
         fadeInstance.SetActive(false);
+
+        ClearLoadCoroutineState();
     }
 
     private IEnumerator EnforceMinimumLoadingPanelVisible(float panelShownRealtime)
@@ -219,9 +241,7 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
 
     void ShowLoadingPanel()
     {
-        if (loadingUi == null)
-            return;
-        loadingUi.ShowAndResetProgress();
+        ShowLoadingOverlay(resetProgress: !IsLoadingOverlayVisible);
     }
 
     void HideLoadingPanel()
@@ -230,4 +250,26 @@ public class SceneLoader : MonoBehaviorSingleton<SceneLoader>
             return;
         loadingUi.Hide();
     }
+
+    /// <summary>씬 전환 없이 로딩 패널만 표시(스테이지 시작 대기·싱글 부트스트랩 등).</summary>
+    public void ShowLoadingOverlay(bool resetProgress = true)
+    {
+        if (loadingInstance == null)
+            InitLoadingPanel();
+        if (loadingUi == null)
+            return;
+        if (resetProgress || !IsLoadingOverlayVisible)
+            loadingUi.ShowAndResetProgress();
+        else
+            loadingInstance.SetActive(true);
+    }
+
+    /// <summary><see cref="ShowLoadingOverlay"/>로 켠 패널을 숨깁니다.</summary>
+    public void HideLoadingOverlay()
+    {
+        HideLoadingPanel();
+    }
+
+    public bool IsLoadingOverlayVisible =>
+        loadingInstance != null && loadingInstance.activeSelf;
 }
