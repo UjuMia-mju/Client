@@ -38,6 +38,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent += OnPeerSpaceshipInsert;
         PeerPacketHandler.Instance.OnPeerResourceHitEvent += OnPeerResourceHit;
         PeerPacketHandler.Instance.OnPeerPlayerDeadEvent += OnPeerPlayerDead;
+        PeerPacketHandler.Instance.OnPeerMushroomExplodeEvent += OnPeerMushroomExplode;
 
         HostPacketHandler.Instance.OnEnterGameEvent += OnHostEnterGame;
         HostPacketHandler.Instance.OnPlayerEnterEvent += OnServerPlayerEnter;
@@ -56,6 +57,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnResourceDestroyEvent += OnHostResourceDestroy;
         HostPacketHandler.Instance.OnPlayerDeadEvent += OnHostPlayerDead;
         HostPacketHandler.Instance.OnPlayerReviveEvent += OnHostPlayerRevive;
+        HostPacketHandler.Instance.OnMushroomExplodeEvent += OnHostMushroomExplode;
 
         var ph = PacketHandler.Instance;
         if (ph != null)
@@ -121,6 +123,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         PeerPacketHandler.Instance.OnPeerSpaceshipInsertEvent -= OnPeerSpaceshipInsert;
         PeerPacketHandler.Instance.OnPeerResourceHitEvent -= OnPeerResourceHit;
         PeerPacketHandler.Instance.OnPeerPlayerDeadEvent -= OnPeerPlayerDead;
+        PeerPacketHandler.Instance.OnPeerMushroomExplodeEvent -= OnPeerMushroomExplode;
 
         HostPacketHandler.Instance.OnEnterGameEvent -= OnHostEnterGame;
         HostPacketHandler.Instance.OnPlayerEnterEvent -= OnServerPlayerEnter;
@@ -139,6 +142,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnResourceDestroyEvent -= OnHostResourceDestroy;
         HostPacketHandler.Instance.OnPlayerDeadEvent -= OnHostPlayerDead;
         HostPacketHandler.Instance.OnPlayerReviveEvent -= OnHostPlayerRevive;
+        HostPacketHandler.Instance.OnMushroomExplodeEvent -= OnHostMushroomExplode;
 
         var ph = PacketHandler.Instance;
         if (ph != null)
@@ -151,6 +155,24 @@ public class PlayManager : SceneSingleton<PlayManager>
     }
 
     private void Update() { }
+
+    private void OnPeerMushroomExplode(int peerId, byte[] payload)
+    {
+        _ = peerId;
+        if (payload == null || payload.Length == 0)
+            return;
+
+        MushroomExplosionSyncBus.Publish(payload);
+        MushroomExplosionSyncBus.BroadcastExplodeFromHost(payload);
+    }
+
+    private void OnHostMushroomExplode(byte[] payload)
+    {
+        if (payload == null || payload.Length == 0)
+            return;
+
+        MushroomExplosionSyncBus.Publish(payload);
+    }
 
     #region 호스트 → 피어 수신
 

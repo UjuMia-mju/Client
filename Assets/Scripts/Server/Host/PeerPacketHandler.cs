@@ -28,6 +28,7 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
     public event Action<S_GAME_READY_TO_START> OnGameReadyToStartEvent;
     public event Action<int, C_RESOURCE_HIT> OnPeerResourceHitEvent;
     public event Action<int, C_PLAYER_DEAD> OnPeerPlayerDeadEvent;
+    public event Action<int, byte[]> OnPeerMushroomExplodeEvent;
 
     // [추가] 게임플레이 씬 로드 직후의 race 대응:
     //   PlayManager가 아직 OnPeerEnterGameEvent를 구독하기 전에 C_ENTER_GAME이
@@ -56,6 +57,9 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
                 break;
             case PacketId.PKT_C_CHAT:
                 HandlePeerChat(peerId, data);
+                break;
+            case PacketId.PKT_C_MUSHROOM_EXPLODE:
+                HandlePeerMushroomExplode(peerId, data);
                 break;
             case PacketId.PKT_C_PLAYER_ANIMATION:
                 HandlePeerAnimation(peerId, data);
@@ -201,6 +205,16 @@ public class PeerPacketHandler : Singleton<PeerPacketHandler>
         S_CHAT relay = new S_CHAT { PlayerId = (ulong)peerId, Msg = packet.Msg };
 
         PacketSender.Instance.BroadcastToPeers(PacketId.PKT_S_CHAT, relay);
+    }
+
+    private void HandlePeerMushroomExplode(int peerId, byte[] data)
+    {
+        if (data == null || data.Length == 0)
+        {
+            Debug.LogWarning($"[PeerPacketHandler] Invalid mushroom explode payload from peer={peerId}");
+            return;
+        }
+        OnPeerMushroomExplodeEvent?.Invoke(peerId, data);
     }
 
     private void HandlePeerAnimation(int peerId, byte[] data)
