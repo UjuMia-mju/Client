@@ -109,6 +109,8 @@ public class StageManager : MonoBehaviour
             node.Init();
         }
 
+        RedrawAllOrbitLines();
+
         _cameraController.ResetToOrigin();
         _clickOffObjects = GameObject.FindGameObjectsWithTag(Define.Tag.CLICKOFF);
 
@@ -184,6 +186,7 @@ public class StageManager : MonoBehaviour
     {
         if (!packet.Success)
         {
+            MessageManager.TryShowKey(MessageKeys.ClearInfoFailed);
             Debug.LogWarning("[StageManager] S_GET_CLEAR_INFO 실패 — 기존 클리어 표시 유지");
             return;
         }
@@ -204,6 +207,7 @@ public class StageManager : MonoBehaviour
     {
         if (!packet.Success)
         {
+            MessageManager.TryShowKey(MessageKeys.GameClearFailed);
             Debug.LogWarning("[StageManager] S_GAME_CLEAR 실패 — 클리어 표시 유지");
             return;
         }
@@ -365,6 +369,7 @@ public class StageManager : MonoBehaviour
     {
         if (!packet.Success)
         {
+            MessageManager.TryShowKey(MessageKeys.StartStageRejected);
             Debug.LogWarning("[StageManager] 서버가 스테이지 시작을 거절했습니다.");
             return;
         }
@@ -537,7 +542,7 @@ public class StageManager : MonoBehaviour
 
         ToggleFocusMode(targetNode, true);
 
-        yield return StartCoroutine(_cameraController.ZoomIn(targetNode.transform));
+        yield return StartCoroutine(_cameraController.ZoomIn(targetNode));
 
         if (selectPanel != null)
         {
@@ -575,6 +580,16 @@ public class StageManager : MonoBehaviour
         isMovementPaused = false; 
         _currentSelectedNode = null;
         _isTransitioning = false;
+    }
+
+    static void RedrawAllOrbitLines()
+    {
+        var orbitLines = Object.FindObjectsByType<OrbitLineRenderer>(FindObjectsSortMode.None);
+        foreach (var orbitLine in orbitLines)
+        {
+            if (orbitLine != null)
+                orbitLine.RedrawOrbit();
+        }
     }
 
     private void ToggleFocusMode(StageNode targetNode, bool isFocusing)
@@ -642,7 +657,7 @@ public class StageManager : MonoBehaviour
         _guestPreviewNode = node;
         isMovementPaused = true;
         ToggleFocusMode(_guestPreviewNode, true);
-        yield return StartCoroutine(_cameraController.ZoomIn(_guestPreviewNode.transform));
+        yield return StartCoroutine(_cameraController.ZoomIn(_guestPreviewNode));
     }
 
     /// <summary>게스트 미리보기 해제. 호스트와 달리 ZoomOut 연출 없이 원점으로 스냅.</summary>

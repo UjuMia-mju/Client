@@ -92,29 +92,17 @@ public class WindowPanelController : MonoBehaviour
 
     private void ApplyResolution(int index)
     {
-        // [수정] Define.Resolution 리스트 갯수와 인덱스 비교
-        if (index < 0 || index >= Define.Resolution.Count) return;
+        if (index < 0 || index >= Define.Resolution.Count)
+            return;
 
-        // [수정] Define.Resolution에서 직접 width, height 값 가져오기
-        int width = Define.Resolution[index].x;
-        int height = Define.Resolution[index].y;
-
-        Screen.SetResolution(width, height, Screen.fullScreenMode);
+        DisplayResolutionHelper.ApplyResolution(index, Screen.fullScreenMode);
     }
 
     private void ApplyWindowMode(int index)
     {
-        switch (index)
-        {
-            case 0: // 전체 화면
-                Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-                break;
-            case 1: // 테두리 없는 창 모드
-                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-                break;
-            case 2: // 창 모드 (HD 고정)
-                Screen.SetResolution(1280, 720, FullScreenMode.Windowed);
-                break;
-        }
+        int resIndex = DataManager.Instance != null
+            ? DataManager.Instance.data.resolutionIndex
+            : 0;
+        DisplayResolutionHelper.ApplyWindowMode(index, resIndex);
     }
 }

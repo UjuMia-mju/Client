@@ -19,6 +19,7 @@ TagManager:
   - TreasureTrove
   - Monster
   - Weapon
+  - NoOutline
   layers:
   - Default
   - TransparentFX

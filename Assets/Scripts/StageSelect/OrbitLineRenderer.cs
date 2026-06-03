@@ -21,20 +21,32 @@ public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void Start()
     {
+        EnsureInitialized();
+    }
+
+    private void EnsureInitialized()
+    {
+        if (_lineRenderer != null) return;
+
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
         transform.localScale = Vector3.one;
 
         _lineRenderer = GetComponent<LineRenderer>();
         _originalGradient = _lineRenderer.colorGradient;
+    }
 
+    /// <summary>StageNode.Init() 이후 행성 위치에 맞춰 궤도선·히트박스를 다시 그립니다.</summary>
+    public void RedrawOrbit()
+    {
+        EnsureInitialized();
         DrawOrbit();
         GenerateMeshCollider();
     }
 
     private void DrawOrbit()
     {
-        if (orbitCenter == null || targetNode == null) return;
+        if (_lineRenderer == null || orbitCenter == null || targetNode == null) return;
 
         _lineRenderer.positionCount = segments;
         _lineRenderer.useWorldSpace = true;
@@ -42,7 +54,7 @@ public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _lineRenderer.endWidth = lineWidth;
         _lineRenderer.loop = true;
 
-        Vector3 startDirection = targetNode.transform.position - orbitCenter.position;
+        Vector3 startDirection = targetNode.GetOrbitPivotWorldPosition() - orbitCenter.position;
 
         for (int i = 0; i < segments; i++)
         {
@@ -56,6 +68,8 @@ public class OrbitLineRenderer : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void GenerateMeshCollider()
     {
+        if (_lineRenderer == null || Camera.main == null) return;
+
         _lineRenderer.startWidth = lineWidth * hitBoxMultiplier;
         _lineRenderer.endWidth = lineWidth * hitBoxMultiplier;
 

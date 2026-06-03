@@ -22,8 +22,8 @@ public class WarningMessageController : MonoBehaviour
     public void Initialize(string existingActionName, string newActionName, string conflictingKey, Action onKeepExisting, Action onApplyNew)
     {
         // 텍스트: "이동 (W)" / "던지기 (W)"
-        leftText.text = $"{existingActionName} ({conflictingKey})";
-        rightText.text = $"{newActionName} ({conflictingKey})";
+        leftText.text = MessageTexts.Format(MessageKeys.KeyBindingConflictChoice, existingActionName, conflictingKey);
+        rightText.text = MessageTexts.Format(MessageKeys.KeyBindingConflictChoice, newActionName, conflictingKey);
 
         _onKeepExisting = onKeepExisting;
         _onApplyNew = onApplyNew;

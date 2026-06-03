@@ -38,7 +38,7 @@ public class LoginManager : SceneSingleton<LoginManager>
         // 빈 값 체크
         if (string.IsNullOrEmpty(inputId) || string.IsNullOrEmpty(inputPw))
         {
-            MessageManager.Instance.Show("아이디와 비밀번호를 입력해 주세요.");
+            MessageManager.Instance.ShowKey(MessageKeys.LoginEmptyCredentials);
             return;
         }
 

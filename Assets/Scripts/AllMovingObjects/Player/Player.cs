@@ -451,6 +451,7 @@ public class Player : MovingObject
                     }
                     else
                     {
+                        MessageManager.TryShowKey(MessageKeys.FurnaceStillProcessing);
                         Debug.Log("아직 용광로가 이전 작업을 처리 중입니다!");
                     }
                 }

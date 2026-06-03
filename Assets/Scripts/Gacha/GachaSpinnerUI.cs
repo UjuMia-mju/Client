@@ -78,9 +78,16 @@ public class GachaSpinnerUI : MonoBehaviour
                 itemData = gachaManager.allItems[Random.Range(0, gachaManager.allItems.Count)];
             }
 
-            // 슬롯 UI 업데이트 (프리팹 구조에 맞춰 수정 필요)
-            // 예: newSlot의 자식 Image에 icon 할당
-            newSlot.transform.GetChild(0).GetComponent<Image>().sprite = itemData.icon;
+            // 슬롯 UI 업데이트
+            var slotUI = newSlot.GetComponent<GachaItemSlotUI>();
+            if (slotUI != null)
+                slotUI.SetItem(itemData);
+            else
+            {
+                var icon = newSlot.transform.Find("Icon")?.GetComponent<Image>();
+                if (icon != null)
+                    icon.sprite = itemData.icon;
+            }
         }
         
         // 레이아웃이 즉시 업데이트되도록 강제

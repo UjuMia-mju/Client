@@ -29,6 +29,10 @@ public abstract class ResourceObject : MonoBehaviour
             return;
         }
 
+        // StageSelect 등 ResourceManager가 없는 씬(장식용 프리팹)에서는 등록 생략
+        if (ResourceManager.Instance == null)
+            return;
+
         ResourceManager.Instance.RegisterResource(this);
 
         if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)

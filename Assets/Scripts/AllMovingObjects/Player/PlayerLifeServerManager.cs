@@ -5,7 +5,7 @@ using Protocol;
 
 public class PlayerLifeServerManager : MonoBehaviorSingleton<PlayerLifeServerManager>
 {
-    private const float RESPAWN_DELAY = 15f;
+    public const float RespawnDelaySeconds = 15f;
 
     private readonly Dictionary<ulong, Coroutine> respawnCoroutines = new Dictionary<ulong, Coroutine>();
 
@@ -41,7 +41,7 @@ public class PlayerLifeServerManager : MonoBehaviorSingleton<PlayerLifeServerMan
             return;
         }
 
-        Debug.Log($"[PlayerLifeServerManager] 사망 확정 → 브로드캐스트 + {RESPAWN_DELAY}s 후 부활. playerId={playerId}");
+        Debug.Log($"[PlayerLifeServerManager] 사망 확정 → 브로드캐스트 + {RespawnDelaySeconds}s 후 부활. playerId={playerId}");
 
         PacketSender.Instance.BroadcastPlayerDead(playerId);
 
@@ -56,7 +56,7 @@ public class PlayerLifeServerManager : MonoBehaviorSingleton<PlayerLifeServerMan
 
     private IEnumerator RespawnPlayerAfterDelay(ulong playerId)
     {
-        yield return new WaitForSeconds(RESPAWN_DELAY);
+        yield return new WaitForSeconds(RespawnDelaySeconds);
         respawnCoroutines.Remove(playerId);
 
         (Vector3 pos, Quaternion rot) = PlayManager.Instance != null

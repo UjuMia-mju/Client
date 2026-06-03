@@ -42,6 +42,7 @@ public class MainMultiPlayHandler : MonoBehaviour
 
         if (!packet.Success)
         {
+            MessageManager.Instance?.ShowKey(MessageKeys.CreateRoomFailedLeavePrevious);
             Debug.LogWarning(
                 "[MainMultiPlayHandler] 이전 방 퇴장에 실패해 방을 새로 만들 수 없습니다. 로비/메인을 왕복하거나 다시 시도하세요.");
             return;
@@ -64,6 +65,11 @@ public class MainMultiPlayHandler : MonoBehaviour
                 return;
             }
 
+            string errorMsg = string.IsNullOrWhiteSpace(packet.ErrorMsg) ? string.Empty : packet.ErrorMsg.Trim();
+            MessageManager.Instance?.ShowServerError(
+                MessageKeys.CreateRoomFailed,
+                MessageKeys.CreateRoomFailedWithReason,
+                errorMsg);
             Debug.LogWarning($"[MainMultiPlayHandler] 방 생성 실패: {packet.ErrorMsg}");
             return;
         }

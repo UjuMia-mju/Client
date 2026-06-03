@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -127,26 +128,47 @@ public class LobbyInviteUI : MonoBehaviour
         // 유저 이름 검증
         if (string.IsNullOrEmpty(playerName))
         {
-            Debug.LogWarning("[LobbyInviteUI] 초대할 유저 이름을 입력하세요.");
+            MessageManager.Instance?.ShowKey(MessageKeys.InviteTargetNameRequired);
             return;
         }
 
         // 태그는 숫자여야 함
         if (!int.TryParse(tagStr, out int playerTag))
         {
-            Debug.LogWarning("[LobbyInviteUI] 유저 태그(숫자)를 입력하세요. 예: 1234");
+            MessageManager.Instance?.ShowKey(MessageKeys.InviteTargetTagInvalid);
             return;
         }
 
         // 서버 연결 여부 확인
         if (!NetManager.Instance.IsConnected)
         {
-            Debug.LogWarning("[LobbyInviteUI] 서버에 연결되지 않았습니다.");
+            MessageManager.Instance?.ShowKey(MessageKeys.NotConnected);
+            return;
+        }
+
+        if (IsSelfInvite(playerName, playerTag))
+        {
+            MessageManager.Instance?.ShowKey(MessageKeys.InviteSelfNotAllowed);
             return;
         }
 
         // C_INVITE_PLAYER 패킷 전송 → 서버가 S_INVITE_PLAYER(보낸 사람), S_INVITE_NOTIFICATION(받는 사람) 처리
         PacketDispatcher.Instance.SendInvitePlayer(playerName, playerTag);
+    }
+
+    private static bool IsSelfInvite(string targetName, int targetTag)
+    {
+        var nm = NetManager.Instance;
+        if (nm == null) return false;
+
+        // 닉네임#태그 조합으로 식별 — 태그만 같아도 다른 유저일 수 있음
+        string myName = RoomMemberDisplayCache.WithoutDiscriminatorTag(nm.PlayerName);
+        string theirName = RoomMemberDisplayCache.WithoutDiscriminatorTag(targetName);
+        if (string.IsNullOrEmpty(myName) || string.IsNullOrEmpty(theirName))
+            return false;
+
+        return targetTag == nm.PlayerTag
+            && string.Equals(myName, theirName, StringComparison.OrdinalIgnoreCase);
     }
 
     private void OnInvitePlayerResult(S_INVITE_PLAYER packet)
@@ -159,6 +181,21 @@ public class LobbyInviteUI : MonoBehaviour
             OnClickClosePanel();
         }
         else
-            MessageManager.Instance.ShowInvitePlayerFailed(packet.ErrorMsg);
+        {
+            if (IsSelfInviteServerError(packet.ErrorMsg))
+                MessageManager.Instance.ShowKey(MessageKeys.InviteSelfNotAllowed);
+            else
+                MessageManager.Instance.ShowInvitePlayerFailed(packet.ErrorMsg);
+        }
+    }
+
+    private static bool IsSelfInviteServerError(string errorMsg)
+    {
+        if (string.IsNullOrWhiteSpace(errorMsg)) return false;
+        string msg = errorMsg.Trim();
+        return msg.IndexOf("self", StringComparison.OrdinalIgnoreCase) >= 0
+            || msg.IndexOf("yourself", StringComparison.OrdinalIgnoreCase) >= 0
+            || msg.Contains("자기")
+            || msg.Contains("본인");
     }
 }

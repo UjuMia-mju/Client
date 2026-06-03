@@ -31,20 +31,45 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
         net.SendPacket(PacketId.PKT_C_LOGIN, loginPacket);
     }
 
+    public void SendGetCurrency()
+    {
+        if (!TryGetConnectedNet(out NetManager session))
+            return;
+
+        session.SendPacket(PacketId.PKT_C_GET_CURRENCY, new C_GET_CURRENCY());
+    }
+
     public void SendGachaPoolList()
     {
         C_GACHA_POOL_LIST packet = new C_GACHA_POOL_LIST();
         net.SendPacket(PacketId.PKT_C_GACHA_POOL_LIST, packet);
     }
 
-    public void SendGacha(int poolId, int pullCount)
+    public bool SendGacha(int poolId, int pullCount)
     {
+        if (!TryGetConnectedNet(out NetManager session))
+            return false;
+
         C_GACHA packet = new C_GACHA
         {
             PoolId = poolId,
             PullCount = pullCount
         };
-        net.SendPacket(PacketId.PKT_C_GACHA, packet);
+        Debug.Log("클라이언트가 가챠 요청을 보냄");
+        session.SendPacket(PacketId.PKT_C_GACHA, packet);
+        return true;
+    }
+
+    static bool TryGetConnectedNet(out NetManager session)
+    {
+        session = NetManager.Instance;
+        if (session == null || !session.IsConnected)
+        {
+            Debug.LogWarning("[PacketDispatcher] 패킷 전송 실패: 서버에 연결되어 있지 않습니다.");
+            return false;
+        }
+
+        return true;
     }
 
     public void SendMySkins()

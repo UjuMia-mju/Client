@@ -21,7 +21,7 @@ public class MenuPanelController : MonoBehaviour
     [SerializeField] private Button multiPlayButton;
     [SerializeField] private MenuSet settings;
     [SerializeField] private MenuSet custom;
-    [SerializeField] private MenuSet store;
+    [SerializeField] private Button gachaButton;
     
     [Header(" ")]
     [SerializeField] private MenuManager menuManager;
@@ -36,7 +36,13 @@ public class MenuPanelController : MonoBehaviour
     
     void Start()
     {
-        _allMenuSets = new List<MenuSet> { settings, custom, store };
+        _allMenuSets = new List<MenuSet> { settings, custom };
+
+        if (gachaButton != null)
+        {
+            _buttonOriginScales[gachaButton] = gachaButton.transform.localScale;
+            InitGachaButton(gachaButton);
+        }
 
         // 1. Tag가 달린 모든 오브젝트 저장 (복구용)
         GameObject[] mainButtons = GameObject.FindGameObjectsWithTag(Define.Tag.MAINBUTTON);
@@ -58,12 +64,16 @@ public class MenuPanelController : MonoBehaviour
             InitMultiPlayButton(multiPlayButton);
         }
 
-        // 3. 패널 오픈 버튼 초기화 (기존 MenuSet)
+        // 3. 패널 오픈 / 메시지 버튼 초기화
         foreach (var set in _allMenuSets)
         {
             if (set.button == null) continue;
             _buttonOriginScales[set.button] = set.button.transform.localScale;
-            InitPanelButton(set); 
+
+            if (set.button == custom.button)
+                InitMessageButton(set.button, MessageKeys.MainCustomComingSoon);
+            else
+                InitPanelButton(set);
         }
     }
     
@@ -89,13 +99,25 @@ public class MenuPanelController : MonoBehaviour
             if (NetManager.Instance != null && NetManager.Instance.IsConnected)
                 PacketDispatcher.Instance.SendCreateRoom();
             else
-                Debug.LogWarning("[MenuPanelController] 서버에 연결되지 않았습니다. 로그인 후 멀티플레이를 이용하세요.");
+                MessageManager.Instance?.ShowKey(MessageKeys.MultiplayLoginRequired);
         });
         AddHoverEvents(btn);
     }
 
     /// <summary>
-    /// 패널 오픈 전용 버튼 초기화 (Settings, Custom, Store)
+    /// 가챠: Gacha 씬으로 이동
+    /// </summary>
+    private void InitGachaButton(Button btn)
+    {
+        btn.onClick.AddListener(() => {
+            SoundManager.Instance.PlaySFX("Click2");
+            SceneLoader.Instance.LoadScene(Define.Scene.GACHA);
+        });
+        AddHoverEvents(btn);
+    }
+
+    /// <summary>
+    /// 패널 오픈 전용 버튼 초기화 (Settings)
     /// </summary>
     private void InitPanelButton(MenuSet set)
     {
@@ -104,7 +126,20 @@ public class MenuPanelController : MonoBehaviour
             OnButtonClicked(set.button, set.panelPrefab);
         });
 
-        AddHoverEvents(set.button); // 공통 호버 이벤트 연결
+        AddHoverEvents(set.button);
+    }
+
+    /// <summary>
+    /// 패널 대신 토스트 메시지만 표시 (Custom 등)
+    /// </summary>
+    private void InitMessageButton(Button btn, string messageKey)
+    {
+        btn.onClick.AddListener(() => {
+            SoundManager.Instance.PlaySFX("Click2");
+            MessageManager.Instance?.ShowKey(messageKey);
+        });
+
+        AddHoverEvents(btn);
     }
 
     /// <summary>
