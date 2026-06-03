@@ -166,12 +166,16 @@ public class GachaManager : MonoBehaviour
             return;
         }
 
-        if (!pool.IsActive)
-        {
-            Debug.LogWarning($"[GachaManager] poolId={pool.PoolId} 비활성 풀입니다.");
-            MessageManager.TryShowKey(MessageKeys.GachaInvalidPool);
-            return;
-        }
+        // 20260603 홍성민 수정
+        // 뽑기 테스트 도중 해당 구문이 문제 없는 풀에도 적용되어 뽑기 패킷을 보내지 않는 로직 에러가 있었습니다.
+        // 그런데 이 가드를 추가하신 이유도 아마 있으실 거라고 생각은 하는데, 일단 풀 활성화 여부 자체를 서버쪽에서 검사를 해준다고 합니다. (IsActive)
+        // 기능이 동작하지 않으므로 주석화합니다. 혹시 이 여부를 검사하신 이유를 아시는 분이 계시다면 주석으로 서술해주시면 감사하겠습니다.
+        //if (!pool.IsActive)
+        //{
+        //    Debug.LogWarning($"[GachaManager] poolId={pool.PoolId} 비활성 풀입니다.");
+        //    MessageManager.TryShowKey(MessageKeys.GachaInvalidPool);
+        //    return;
+        //}
 
         if (pool.Skins == null || pool.Skins.Count == 0)
         {

@@ -55,6 +55,7 @@ public class PacketDispatcher : Singleton<PacketDispatcher>
             PoolId = poolId,
             PullCount = pullCount
         };
+        Debug.Log("클라이언트가 가챠 요청을 보냄");
         session.SendPacket(PacketId.PKT_C_GACHA, packet);
         return true;
     }
