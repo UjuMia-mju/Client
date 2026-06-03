@@ -1,4 +1,4 @@
-public enum PacketId : ushort
+﻿public enum PacketId : ushort
 {
     PKT_C_GET_DB_DATA = 1000,
     PKT_C_TEST_ENTER_ROOM = 1001,
@@ -93,5 +93,7 @@ public enum PacketId : ushort
     PKT_S_MONSTER_SPAWN = 2033,
     PKT_S_MONSTER_DEAD = 2034,
     PKT_S_MONSTER_ANIMATION = 2035,
-    PKT_S_MONSTER_MOVE = 2036
+    PKT_S_MONSTER_MOVE = 2036,
+    PKT_S_MUSHROOM_EXPLODE = 2037,
+    PKT_C_MUSHROOM_EXPLODE = 2038,
 }
