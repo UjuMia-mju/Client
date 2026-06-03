@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 
 public class Items : MovingObject
@@ -12,7 +13,9 @@ public class Items : MovingObject
 
     [HideInInspector] public int itemId;
 
-    [SerializeField, ItemKey] private string itemKey;
+    [SerializeField, ItemKey]
+    [FormerlySerializedAs("itemStringKey")]
+    private string itemKey;
     public string itemStringKey => itemKey;
 
     [SerializeField] private float lerpSpeed = 25f;

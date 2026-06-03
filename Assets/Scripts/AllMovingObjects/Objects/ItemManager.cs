@@ -30,9 +30,14 @@ public class ItemManager : MonoBehaviour
         public string key;
         public Vector3 pos;
         public Quaternion rot;
+        public int attempts;
     }
     private readonly List<PendingSpawn> _pendingNetworkSpawns = new List<PendingSpawn>();
     private bool _scenePlacedRegistered;
+
+    /// <summary>씬 배치 아이템을 패킷 위치와 매칭할 때 허용 거리(자원 매니저와 동일).</summary>
+    const float ScenePlacedMatchMaxDist = 1.0f;
+    const int MaxSceneSpawnRetryAttempts = 60;
 
     private void Awake()
     {
@@ -58,6 +63,18 @@ public class ItemManager : MonoBehaviour
 
             _pendingScenePlacedItems.Add(it);
         }
+
+        _pendingScenePlacedItems.Sort(CompareScenePlacedForSync);
+    }
+
+    private void Update()
+    {
+        if (ConnectManager.Instance == null || ConnectManager.Instance.isHost)
+            return;
+        if (!_scenePlacedRegistered || _pendingNetworkSpawns.Count == 0)
+            return;
+
+        RetryPendingNetworkSpawns();
     }
 
     private IEnumerator Start()
@@ -96,11 +113,50 @@ public class ItemManager : MonoBehaviour
         // 피어: 등록 전에 먼저 도착한 스폰 패킷 일괄 처리
         if (!isHost && _pendingNetworkSpawns.Count > 0)
         {
-            PendingSpawn[] buffered = _pendingNetworkSpawns.ToArray();
-            _pendingNetworkSpawns.Clear();
-            foreach (PendingSpawn s in buffered)
-                SpawnItemFromNetwork(s.itemId, s.key, s.pos, s.rot);
+            _pendingNetworkSpawns.Sort(ComparePendingSpawn);
+            RetryPendingNetworkSpawns();
         }
+    }
+
+    static int CompareScenePlacedForSync(Items a, Items b)
+    {
+        if (a == null && b == null) return 0;
+        if (a == null) return 1;
+        if (b == null) return -1;
+
+        int keyCmp = string.Compare(a.itemStringKey, b.itemStringKey, System.StringComparison.Ordinal);
+        if (keyCmp != 0) return keyCmp;
+
+        Vector3 pa = a.transform.position;
+        Vector3 pb = b.transform.position;
+        int x = pa.x.CompareTo(pb.x);
+        if (x != 0) return x;
+        int y = pa.y.CompareTo(pb.y);
+        if (y != 0) return y;
+        return pa.z.CompareTo(pb.z);
+    }
+
+    static int ComparePendingSpawn(PendingSpawn a, PendingSpawn b)
+    {
+        int keyCmp = string.Compare(a.key, b.key, System.StringComparison.Ordinal);
+        if (keyCmp != 0) return keyCmp;
+
+        int x = a.pos.x.CompareTo(b.pos.x);
+        if (x != 0) return x;
+        int y = a.pos.y.CompareTo(b.pos.y);
+        if (y != 0) return y;
+        return a.pos.z.CompareTo(b.pos.z);
+    }
+
+    void RetryPendingNetworkSpawns()
+    {
+        if (_pendingNetworkSpawns.Count == 0)
+            return;
+
+        PendingSpawn[] buffered = _pendingNetworkSpawns.ToArray();
+        _pendingNetworkSpawns.Clear();
+        foreach (PendingSpawn s in buffered)
+            SpawnItemFromNetwork(s.itemId, s.key, s.pos, s.rot, s.attempts);
     }
 
     public void RegisterItem(Items item)
@@ -180,6 +236,11 @@ public class ItemManager : MonoBehaviour
 
     public void SpawnItemFromNetwork(int itemId, string itemStringKey, Vector3 pos, Quaternion rot)
     {
+        SpawnItemFromNetwork(itemId, itemStringKey, pos, rot, 0);
+    }
+
+    void SpawnItemFromNetwork(int itemId, string itemStringKey, Vector3 pos, Quaternion rot, int attempts)
+    {
         Debug.Log($"[ItemManager] SpawnItemFromNetwork: key={itemStringKey}, id={itemId}, pos={pos}");
 
         bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
@@ -187,7 +248,14 @@ public class ItemManager : MonoBehaviour
         // 피어 측: 사전 등록이 끝나기 전에 도착한 스폰은 버퍼링.
         if (!isHost && !_scenePlacedRegistered)
         {
-            _pendingNetworkSpawns.Add(new PendingSpawn { itemId = itemId, key = itemStringKey, pos = pos, rot = rot });
+            _pendingNetworkSpawns.Add(new PendingSpawn
+            {
+                itemId = itemId,
+                key = itemStringKey,
+                pos = pos,
+                rot = rot,
+                attempts = attempts
+            });
             return;
         }
 
@@ -215,7 +283,26 @@ public class ItemManager : MonoBehaviour
             return;
         }
 
-        // 3) 일반 네트워크 스폰
+        // 3) 일반 네트워크 스폰 — 씬 배치 후보가 남아 있으면 중복 Instantiate 대신 재시도
+        if (!isHost && HasPendingScenePlacedWithKey(itemStringKey))
+        {
+            if (attempts < MaxSceneSpawnRetryAttempts)
+            {
+                _pendingNetworkSpawns.Add(new PendingSpawn
+                {
+                    itemId = itemId,
+                    key = itemStringKey,
+                    pos = pos,
+                    rot = rot,
+                    attempts = attempts + 1
+                });
+                return;
+            }
+
+            Debug.LogWarning(
+                $"[ItemManager] 씬 배치 매칭 재시도 초과. key={itemStringKey}, id={itemId}, pos={pos}");
+        }
+
         GameObject prefab = GetPrefabByKey(itemStringKey);
         if (prefab == null)
         {
@@ -246,7 +333,31 @@ public class ItemManager : MonoBehaviour
                 best = it;
             }
         }
-        return best;
+
+        if (best != null && bestDist <= ScenePlacedMatchMaxDist)
+            return best;
+
+        if (best != null)
+        {
+            Debug.LogWarning(
+                $"[ItemManager] 씬 배치 매칭 거리 초과: key={key}, dist={bestDist:F2}m (max={ScenePlacedMatchMaxDist}m)");
+        }
+
+        return null;
+    }
+
+    bool HasPendingScenePlacedWithKey(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            return false;
+
+        foreach (Items it in _pendingScenePlacedItems)
+        {
+            if (it != null && it.itemStringKey == key)
+                return true;
+        }
+
+        return false;
     }
 
     private IEnumerator PostSpawnSetup(Items itemComp, int newId, Vector3 spawnOrigin, Quaternion spawnRot)
@@ -265,19 +376,13 @@ public class ItemManager : MonoBehaviour
 
     private Items FindScenePlacedItem(string key, Vector3 pos)
     {
-        // 호스트가 떨군 새 드롭(=런타임 스폰)이 주변의 같은 키 씬 배치 아이템과
-        // 잘못 매칭되는 사고를 막기 위해 거리 임계값을 둔다.
-        // 씬 배치 아이템 ID 동기화 시점에는 호스트/피어가 같은 위치이므로
-        // 1m 정도면 충분히 식별 가능.
-        const float SCENE_MATCH_MAX_DIST = 1.0f;
-
         Items best = null;
         float bestDist = float.MaxValue;
         foreach (var item in itemDic.Values)
         {
             if (item == null) continue;
             if (!item.IsScenePlacedItem) continue;
-            if (item.HasBeenSyncedFromNetwork) continue; // 이미 동기화 끝난 씬 배치 아이템은 후보 제외
+            if (item.HasBeenSyncedFromNetwork) continue;
             if (item.itemStringKey != key) continue;
 
             float d = Vector3.Distance(item.transform.position, pos);
@@ -287,7 +392,7 @@ public class ItemManager : MonoBehaviour
                 best = item;
             }
         }
-        return best != null && bestDist <= SCENE_MATCH_MAX_DIST ? best : null;
+        return best != null && bestDist <= ScenePlacedMatchMaxDist ? best : null;
     }
 
     public GameObject GetPrefabByKey(string key)
