@@ -28,7 +28,7 @@ public class Items : MovingObject
 
     [Tooltip("씬에 미리 배치된 아이템이면 체크. 호스트가 피어에게 초기 ID를 동기화합니다.")]
     [SerializeField] private bool isScenePlacedItem = false;
-    public bool IsScenePlacedItem => isScenePlacedItem;
+    //public bool IsScenePlacedItem => isScenePlacedItem;
 
     /// <summary>씬 배치 아이템 ID가 호스트로부터 한 번이라도 동기화됐는지.
     /// true 가 되면 ItemManager.FindScenePlacedItem 의 후보에서 제외되어

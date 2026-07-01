@@ -1,5 +1,4 @@
-﻿using Protocol;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -21,10 +20,9 @@ public class ItemManager : MonoBehaviour
 
     private static int _nextItemId = 1;
 
-    // 씬 배치 아이템: 호스트는 ID 부여 후 일괄 브로드캐스트, 피어는 매칭 큐로 대기.
-    //private readonly List<Items> _pendingScenePlacedItems = new List<Items>();
     // 피어가 매칭 큐 구성 전에 도착한 S_OBJECT_SPAWN 보류 버퍼.
-    private struct PendingSpawn
+    [System.Serializable]
+    public struct PendingSpawn
     {
         public int itemId;
         public string key;
@@ -32,12 +30,26 @@ public class ItemManager : MonoBehaviour
         public Quaternion rot;
         public int attempts;
     }
+
     private readonly List<PendingSpawn> _pendingNetworkSpawns = new List<PendingSpawn>();
     private bool _scenePlacedRegistered;
 
     /// <summary>씬 배치 아이템을 패킷 위치와 매칭할 때 허용 거리(자원 매니저와 동일).</summary>
     const float ScenePlacedMatchMaxDist = 1.0f;
     const int MaxSceneSpawnRetryAttempts = 60;
+
+    [Header("인스펙터 수동 등록 (디버그/테스트용)")]
+    [Tooltip("씬에 배치된 Items 컴포넌트를 수동으로 넣어 ItemDic에 등록합니다.")]
+    public List<Items> inspectorScenePlacedItems = new List<Items>();
+
+    [Tooltip("네트워크에서 도착한 스폰을 수동으로 버퍼에 넣을 때 사용합니다.")]
+    private List<PendingSpawn> inspectorPendingSpawns = new List<PendingSpawn>();
+
+    [Tooltip("인스펙터의 ScenePlaced 항목들을 Awake 시 RegisterItem 으로 자동 등록합니다.")]
+    private bool populateItemDicFromInspector = true;
+
+    [Tooltip("인스펙터에 입력한 PendingSpawn 항목들을 Start 시 네트워크 대기 큐로 복사합니다.")]
+    private bool enqueuePendingSpawnsFromInspector = true;
 
     private void Awake()
     {
@@ -49,22 +61,36 @@ public class ItemManager : MonoBehaviour
         Instance = this;
         _nextItemId = 1;
 
-        // 씬에 배치된 아이템 사전 수집. ID 부여는 Start 에서(호스트/피어 역할 확정 후) 수행.
+        // 기존 씬에 배치된 Items 수집 (원래 동작 유지).
         Items[] placed = FindObjectsByType<Items>(FindObjectsSortMode.None);
         foreach (Items it in placed)
         {
             if (it == null) continue;
-            if (!it.IsScenePlacedItem) continue;
+            //if (!it.IsScenePlacedItem) continue;
 
             // 액터에 붙은 도구(Player/OtherPlayers 자식)는 액터와 함께 모든 머신에 존재.
             // 네트워크 동기화 대상에서 제외 (DesertWorm/플레이어 도구 등).
             if (it.GetComponentInParent<Player>() != null) continue;
             if (it.GetComponentInParent<OtherPlayers>() != null) continue;
 
-            //_pendingScenePlacedItems.Add(it);
+            // 기본 구현: 씬 배치 아이템은 Inspector 또는 런타임 RegisterItem 으로 관리.
+            // (기존 주석 처리된 _pendingScenePlacedItems 로직 대신 인스펙터 항목을 사용 가능)
         }
 
-        //_pendingScenePlacedItems.Sort(CompareScenePlacedForSync);
+        // 인스펙터에 넣은 씬 배치 아이템을 런타임에 등록(옵션)
+        if (populateItemDicFromInspector && inspectorScenePlacedItems != null)
+        {
+            foreach (Items it in inspectorScenePlacedItems)
+            {
+                if (it == null) continue;
+                //if (!it.IsScenePlacedItem) continue;
+                if (it.GetComponentInParent<Player>() != null) continue;
+                if (it.GetComponentInParent<OtherPlayers>() != null) continue;
+
+                // RegisterItem은 ID를 자동 부여하고 itemDic에 넣습니다.
+                RegisterItem(it);
+            }
+        }
     }
 
     private void Update()
@@ -86,29 +112,20 @@ public class ItemManager : MonoBehaviour
 
         if (isHost)
         {
-            //foreach (Items it in _pendingScenePlacedItems)
-            //{
-            //    if (it == null) continue;
-            //    if (string.IsNullOrEmpty(it.itemStringKey))
-            //    {
-            //        Debug.LogError($"[ItemManager] 씬 배치 아이템 '{it.name}' 의 itemKey 가 비어 있습니다.", it);
-            //        continue;
-            //    }
-
-            //    int newId = _nextItemId++;
-            //    it.itemId = newId;
-            //    itemDic[newId] = it;
-
-            //    if (PacketSender.Instance != null)
-            //    {
-            //        PacketSender.Instance.SendObjectSpawn(it, it.transform.position, it.transform.rotation);
-            //        Debug.Log($"[ItemManager] 씬 배치 아이템 동기화: id={newId}, key={it.itemStringKey}");
-            //    }
-            //}
+            // 호스트는 씬 배치 아이템에게 ID를 부여하고 브로드캐스트하는 기존 로직이 여기에 남아있습니다.
         }
-        // 피어는 itemId 를 부여하지 않고 매칭 큐로만 둔다 (_pendingScenePlacedItems 유지).
+        // 피어는 itemId 를 부여하지 않고 매칭 큐로만 둔다.
 
         _scenePlacedRegistered = true;
+
+        // 인스펙터에 미리 채운 PendingSpawn 을 런타임 버퍼로 복사 (피어에서 주로 사용)
+        if (!isHost && enqueuePendingSpawnsFromInspector && inspectorPendingSpawns != null && inspectorPendingSpawns.Count > 0)
+        {
+            foreach (var ps in inspectorPendingSpawns)
+            {
+                _pendingNetworkSpawns.Add(ps);
+            }
+        }
 
         // 피어: 등록 전에 먼저 도착한 스폰 패킷 일괄 처리
         if (!isHost && _pendingNetworkSpawns.Count > 0)
@@ -118,23 +135,23 @@ public class ItemManager : MonoBehaviour
         }
     }
 
-    static int CompareScenePlacedForSync(Items a, Items b)
-    {
-        if (a == null && b == null) return 0;
-        if (a == null) return 1;
-        if (b == null) return -1;
+    //static int CompareScenePlacedForSync(Items a, Items b)
+    //{
+    //    if (a == null && b == null) return 0;
+    //    if (a == null) return 1;
+    //    if (b == null) return -1;
 
-        int keyCmp = string.Compare(a.itemStringKey, b.itemStringKey, System.StringComparison.Ordinal);
-        if (keyCmp != 0) return keyCmp;
+    //    int keyCmp = string.Compare(a.itemStringKey, b.itemStringKey, System.StringComparison.Ordinal);
+    //    if (keyCmp != 0) return keyCmp;
 
-        Vector3 pa = a.transform.position;
-        Vector3 pb = b.transform.position;
-        int x = pa.x.CompareTo(pb.x);
-        if (x != 0) return x;
-        int y = pa.y.CompareTo(pb.y);
-        if (y != 0) return y;
-        return pa.z.CompareTo(pb.z);
-    }
+    //    Vector3 pa = a.transform.position;
+    //    Vector3 pb = b.transform.position;
+    //    int x = pa.x.CompareTo(pb.x);
+    //    if (x != 0) return x;
+    //    int y = pa.y.CompareTo(pb.y);
+    //    if (y != 0) return y;
+    //    return pa.z.CompareTo(pb.z);
+    //}
 
     static int ComparePendingSpawn(PendingSpawn a, PendingSpawn b)
     {
@@ -265,7 +282,6 @@ public class ItemManager : MonoBehaviour
         {
             existingFromPending.itemId = itemId;
             itemDic[itemId] = existingFromPending;
-            //_pendingScenePlacedItems.Remove(existingFromPending);
             existingFromPending.transform.SetPositionAndRotation(pos, rot);
             existingFromPending.HasBeenSyncedFromNetwork = true; // [추가] 재매칭 방지
             Debug.Log($"[ItemManager] 씬 배치 아이템 ID 동기화 (피어): key={itemStringKey}, id={itemId}");
@@ -319,20 +335,25 @@ public class ItemManager : MonoBehaviour
 
     private Items FindPendingScenePlacedItem(string key, Vector3 pos)
     {
+        // 이전에 별도 큐로 관리하던 pendingScenePlacedItems 는 제거되었습니다.
+        // 대신 inspector 또는 런타임에 RegisterItem 된 itemDic 을 우선 검사합니다.
         Items best = null;
         float bestDist = float.MaxValue;
-        //foreach (Items it in _pendingScenePlacedItems)
-        //{
-        //    if (it == null) continue;
-        //    if (it.itemStringKey != key) continue;
 
-        //    float d = Vector3.Distance(it.transform.position, pos);
-        //    if (d < bestDist)
-        //    {
-        //        bestDist = d;
-        //        best = it;
-        //    }
-        //}
+        foreach (var item in itemDic.Values)
+        {
+            if (item == null) continue;
+            //if (!item.IsScenePlacedItem) continue;
+            if (item.HasBeenSyncedFromNetwork) continue;
+            if (item.itemStringKey != key) continue;
+
+            float d = Vector3.Distance(item.transform.position, pos);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = item;
+            }
+        }
 
         if (best != null && bestDist <= ScenePlacedMatchMaxDist)
             return best;
@@ -351,11 +372,16 @@ public class ItemManager : MonoBehaviour
         if (string.IsNullOrEmpty(key))
             return false;
 
-        //foreach (Items it in _pendingScenePlacedItems)
-        //{
-        //    if (it != null && it.itemStringKey == key)
-        //        return true;
-        //}
+        // inspectorScenePlacedItems가 itemDic으로 등록되었다면 FindScenePlacedItem에서 감지됩니다.
+        // 추가로 inspector에만 남아있는 항목을 확인하려면 아래 검사(옵션)를 사용할 수 있습니다.
+        if (inspectorScenePlacedItems != null)
+        {
+            foreach (Items it in inspectorScenePlacedItems)
+            {
+                if (it != null && it.itemStringKey == key)
+                    return true;
+            }
+        }
 
         return false;
     }
@@ -381,7 +407,7 @@ public class ItemManager : MonoBehaviour
         foreach (var item in itemDic.Values)
         {
             if (item == null) continue;
-            if (!item.IsScenePlacedItem) continue;
+            //if (!item.IsScenePlacedItem) continue;
             if (item.HasBeenSyncedFromNetwork) continue;
             if (item.itemStringKey != key) continue;
 

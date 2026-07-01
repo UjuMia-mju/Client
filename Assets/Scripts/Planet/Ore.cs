@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Ore : ResourceObject
 {
@@ -13,7 +13,7 @@ public class Ore : ResourceObject
     public override int MaxDrops => maxDrops;
 
     private const float ORE_THROW_HEIGHT = 3.5f;
-    private const float ORE_THROW_FORCE = 150f;
+    private const float ORE_THROW_FORCE = 0f;
 
     /// <summary>도구가 1회 타격했을 때 호출. 카운트/드롭/파괴는 모두 호스트가 결정.</summary>
     public override void OnHit()
