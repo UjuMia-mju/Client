@@ -810,6 +810,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 51979798}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &51979800 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 51979798}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &64292636
 GameObject:
   m_ObjectHideFlags: 0
@@ -1842,6 +1853,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &270964664
 MeshRenderer:
@@ -2431,6 +2444,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 356768675}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &356768677 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 356768675}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1001 &369052168
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2517,6 +2541,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 369052168}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &369052170 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 369052168}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &390335396
 GameObject:
   m_ObjectHideFlags: 0
@@ -2567,6 +2602,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &390335400
 MeshRenderer:
@@ -3360,6 +3397,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &509975839
 MeshRenderer:
@@ -3712,6 +3751,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 537310445}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &537310447 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 537310445}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &543066518
 GameObject:
   m_ObjectHideFlags: 0
@@ -3887,6 +3937,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 546302196}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &546302198 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 546302196}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &547957112
 GameObject:
   m_ObjectHideFlags: 0
@@ -4912,6 +4973,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5597002278806442958, guid: fa4c8c397455d6943b5f5d458fc50f36, type: 3}
+--- !u!114 &633264991 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8811113944146348454, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
+  m_PrefabInstance: {fileID: 633264987}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633264989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fc1faccd5147f9479802a4fae08d4ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Ore
 --- !u!1 &647004308
 GameObject:
   m_ObjectHideFlags: 0
@@ -5250,6 +5322,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 720435547}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &720435549 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 720435547}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &732534453
 GameObject:
   m_ObjectHideFlags: 0
@@ -5639,6 +5722,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &815957754
 MeshRenderer:
@@ -5849,6 +5934,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 824414451}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &824414453 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 824414451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &844552559
 GameObject:
   m_ObjectHideFlags: 0
@@ -6834,6 +6930,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &1021907339
 MeshRenderer:
@@ -8623,6 +8721,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 1315901078}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1315901080 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 1315901078}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &1320685434
 GameObject:
   m_ObjectHideFlags: 0
@@ -9147,6 +9256,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5597002278806442958, guid: fa4c8c397455d6943b5f5d458fc50f36, type: 3}
+--- !u!114 &1382407972 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8811113944146348454, guid: e3d2c1b0a9784653b2a1908c7d6e5f4a, type: 3}
+  m_PrefabInstance: {fileID: 1382407968}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382407970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fc1faccd5147f9479802a4fae08d4ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Ore
 --- !u!1 &1386027014
 GameObject:
   m_ObjectHideFlags: 0
@@ -9387,6 +9507,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 1393894111}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1393894113 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 1393894111}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &1411828387
 GameObject:
   m_ObjectHideFlags: 0
@@ -9726,6 +9857,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemManager
   itemCatalog: {fileID: 11400000, guid: e2f3a4b5c6d798e90a1b2c3d4e5f6a01, type: 2}
+  inspectorScenePlacedItems:
+  - {fileID: 7013151031209110760}
+  - {fileID: 7013151031018803885}
+  - {fileID: 7013151032247176230}
+  - {fileID: 7013151031610332514}
+  - {fileID: 7013151032033057681}
+  - {fileID: 64292638}
+  - {fileID: 1270936913}
+  - {fileID: 3775514731501508184}
 --- !u!1 &1459125063
 GameObject:
   m_ObjectHideFlags: 0
@@ -9887,6 +10027,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: glow_ore
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &1465519122
 MeshRenderer:
@@ -10428,6 +10570,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 1617023843}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1617023845 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 1617023843}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1 &1661420123
 GameObject:
   m_ObjectHideFlags: 0
@@ -10524,6 +10677,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &1681381280
 MeshRenderer:
@@ -11353,6 +11508,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterManager
   monsterCatalog: {fileID: 11400000, guid: 48d2c3e2d355be24baa9e4403fa127c6, type: 2}
+  inspectorScenePlacedMonsters:
+  - {fileID: 720435549}
+  - {fileID: 356768677}
+  - {fileID: 51979800}
+  - {fileID: 546302198}
+  - {fileID: 537310447}
+  - {fileID: 824414453}
+  - {fileID: 1884560008}
+  - {fileID: 1315901080}
+  - {fileID: 1617023845}
+  - {fileID: 1393894113}
+  - {fileID: 369052170}
 --- !u!1001 &1884560006
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11439,6 +11606,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
   m_PrefabInstance: {fileID: 1884560006}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1884560008 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4515732340426379137, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+  m_PrefabInstance: {fileID: 1884560006}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49b25669cabcf6749bad8148d28f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesertWorm
 --- !u!1001 &1925021050
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12294,6 +12472,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &2001769688
 MeshRenderer:
@@ -12975,6 +13155,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &2062297964
 MeshRenderer:
@@ -13459,6 +13641,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
   resourceCatalog: {fileID: 11400000, guid: 451f65a18b800334a9ebef344f2beaef, type: 2}
+  inspectorScenePlacedResources:
+  - {fileID: 766226041308929345}
+  - {fileID: 4204649771494428105}
+  - {fileID: 4204649771779150288}
+  - {fileID: 4204649773016247425}
+  - {fileID: 4204649771290203193}
+  - {fileID: 4204649770997262716}
+  - {fileID: 1750702706}
+  - {fileID: 4204649772448602924}
+  - {fileID: 4204649772133737093}
+  - {fileID: 4204649772380876878}
+  - {fileID: 815957752}
+  - {fileID: 270964662}
+  - {fileID: 1681381278}
+  - {fileID: 2132481150}
+  - {fileID: 390335398}
+  - {fileID: 1021907337}
+  - {fileID: 2062297962}
+  - {fileID: 2001769686}
+  - {fileID: 509975837}
+  - {fileID: 1465519120}
+  - {fileID: 633264991}
+  - {fileID: 1382407972}
 --- !u!114 &2107563287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13521,6 +13726,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &2132481152
 MeshRenderer:

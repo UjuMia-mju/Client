@@ -23,7 +23,7 @@ public class ItemManager : MonoBehaviour
     // 동적으로 스폰되는 아이템:  4000 이상        → _nextItemId 로 부여.
     // 두 대역이 절대 겹치지 않으므로 네트워크 스폰이 씬 아이템 ID를 침범할 수 없다.
     private const int DynamicIdBase = 4000;
-    private static int _nextItemId = DynamicIdBase;
+    private int _nextItemId = DynamicIdBase;
 
     // 피어가 매칭 큐 구성 전에 도착한 S_OBJECT_SPAWN 보류 버퍼.
     [System.Serializable]

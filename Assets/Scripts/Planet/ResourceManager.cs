@@ -6,7 +6,6 @@ using UnityEditor;
 using System.Linq;
 #endif
 
-/// <summary>
 /// 씬에 배치된 채집 가능한 자원(광석/나무 등)을 ID로 관리합니다.
 ///
 /// [정리된 방식 — ItemManager와 동일]
@@ -17,7 +16,7 @@ using System.Linq;
 ///  - 파괴는 ID로 처리하며, 양쪽이 같은 ID를 가지므로 그대로 동작한다.
 ///
 /// 채굴/벌목 진행과 아이템 드롭은 ResourceServerManager(호스트 권위)에서 담당.
-/// </summary>
+
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }

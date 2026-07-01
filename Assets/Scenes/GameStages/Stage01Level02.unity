@@ -19700,6 +19700,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1874630840073146240, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
   m_PrefabInstance: {fileID: 172210173}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &172210175 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -9158624140659020900, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
+  m_PrefabInstance: {fileID: 172210173}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83bf26b119ae29f408a7d29ace922991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreeResource
 --- !u!1 &173274953
 GameObject:
   m_ObjectHideFlags: 0
@@ -60160,6 +60171,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4102820359882127031, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
   m_PrefabInstance: {fileID: 523643617}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &523643619 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -641490041308435627, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
+  m_PrefabInstance: {fileID: 523643617}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83bf26b119ae29f408a7d29ace922991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreeResource
 --- !u!1 &524389002
 GameObject:
   m_ObjectHideFlags: 0
@@ -64029,6 +64051,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemManager
   itemCatalog: {fileID: 11400000, guid: e2f3a4b5c6d798e90a1b2c3d4e5f6a01, type: 2}
+  inspectorScenePlacedItems:
+  - {fileID: 7334006729128882359}
+  - {fileID: 1865427946}
 --- !u!1 &561788591
 GameObject:
   m_ObjectHideFlags: 0
@@ -97273,6 +97298,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2543580424488624242, guid: 1dfbe455d1a22c947b309a13a4d35e9a, type: 3}
   m_PrefabInstance: {fileID: 870969572}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &870969574 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -3051276145399313687, guid: 1dfbe455d1a22c947b309a13a4d35e9a, type: 3}
+  m_PrefabInstance: {fileID: 870969572}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83bf26b119ae29f408a7d29ace922991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreeResource
 --- !u!1 &871277748
 GameObject:
   m_ObjectHideFlags: 0
@@ -103810,6 +103846,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
   resourceCatalog: {fileID: 11400000, guid: 451f65a18b800334a9ebef344f2beaef, type: 2}
+  inspectorScenePlacedResources:
+  - {fileID: 505601745}
+  - {fileID: 2025604397}
+  - {fileID: 1633647772}
+  - {fileID: 1682075965}
+  - {fileID: 380060817}
+  - {fileID: 1183404948}
+  - {fileID: 533869307}
+  - {fileID: 1687786316}
+  - {fileID: 996931806}
+  - {fileID: 963899512450262341}
+  - {fileID: 226674628}
+  - {fileID: 1252156939}
+  - {fileID: 1448849317}
+  - {fileID: 203470384}
+  - {fileID: 870969574}
+  - {fileID: 2077253636}
+  - {fileID: 1824247353}
+  - {fileID: 523643619}
+  - {fileID: 1594027620}
+  - {fileID: 172210175}
 --- !u!114 &936394858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176600,6 +176657,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1506832764636065919, guid: c2224c0763d63dd46ab126ba55e03e68, type: 3}
   m_PrefabInstance: {fileID: 1594027618}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1594027620 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4239070991923920182, guid: c2224c0763d63dd46ab126ba55e03e68, type: 3}
+  m_PrefabInstance: {fileID: 1594027618}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83bf26b119ae29f408a7d29ace922991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreeResource
 --- !u!1 &1594400356
 GameObject:
   m_ObjectHideFlags: 0
@@ -201273,6 +201341,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1874630840073146240, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
   m_PrefabInstance: {fileID: 1824247351}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1824247353 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -9158624140659020900, guid: 9887adb28c2d37842bd68f0d0d85d566, type: 3}
+  m_PrefabInstance: {fileID: 1824247351}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83bf26b119ae29f408a7d29ace922991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreeResource
 --- !u!1 &1824496311
 GameObject:
   m_ObjectHideFlags: 0
@@ -206251,6 +206330,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee89216f6f5a93e40a7bdb9498ac0ff5, type: 3}
+--- !u!114 &1865427946 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -7881133780494470817, guid: ee89216f6f5a93e40a7bdb9498ac0ff5, type: 3}
+  m_PrefabInstance: {fileID: 1865427945}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25bf613dcef63f4eabe9348faacd962, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Axe
 --- !u!1 &1866546969
 GameObject:
   m_ObjectHideFlags: 0
@@ -207320,7 +207410,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0ed162b0230c043b9de84fac61b4e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameRuleManager
-  timerDuration: 210
   clearPanel: {fileID: 297164733}
   missionTimerUiRoot: {fileID: 1997255342}
 --- !u!1 &1877193962
@@ -230764,6 +230853,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4102820359882127031, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
   m_PrefabInstance: {fileID: 2077253634}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2077253636 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -641490041308435627, guid: 0e3b32c0bdf40564e86f78e9deb67bf1, type: 3}
+  m_PrefabInstance: {fileID: 2077253634}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83bf26b119ae29f408a7d29ace922991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreeResource
 --- !u!1 &2077405445
 GameObject:
   m_ObjectHideFlags: 0
