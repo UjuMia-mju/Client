@@ -53,7 +53,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent += OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent += OnHostSpaceshipComplete;
         HostPacketHandler.Instance.OnTimerSyncEvent += OnHostTimerSync;
-        HostPacketHandler.Instance.OnResourceSpawnEvent += OnHostResourceSpawn;
+        //HostPacketHandler.Instance.OnResourceSpawnEvent += OnHostResourceSpawn;
         HostPacketHandler.Instance.OnResourceDestroyEvent += OnHostResourceDestroy;
         HostPacketHandler.Instance.OnPlayerDeadEvent += OnHostPlayerDead;
         HostPacketHandler.Instance.OnPlayerReviveEvent += OnHostPlayerRevive;
@@ -138,7 +138,7 @@ public class PlayManager : SceneSingleton<PlayManager>
         HostPacketHandler.Instance.OnSpaceshipUpdateEvent -= OnHostSpaceshipUpdate;
         HostPacketHandler.Instance.OnSpaceshipCompleteEvent -= OnHostSpaceshipComplete;
         HostPacketHandler.Instance.OnTimerSyncEvent -= OnHostTimerSync;
-        HostPacketHandler.Instance.OnResourceSpawnEvent -= OnHostResourceSpawn;
+        //HostPacketHandler.Instance.OnResourceSpawnEvent -= OnHostResourceSpawn;
         HostPacketHandler.Instance.OnResourceDestroyEvent -= OnHostResourceDestroy;
         HostPacketHandler.Instance.OnPlayerDeadEvent -= OnHostPlayerDead;
         HostPacketHandler.Instance.OnPlayerReviveEvent -= OnHostPlayerRevive;
@@ -321,11 +321,11 @@ public class PlayManager : SceneSingleton<PlayManager>
     private void OnHostTimerSync(S_TIMER_SYNC packet)
         => GameRuleManager.Instance.SyncTimer(packet.RemainingTime);
 
-    private void OnHostResourceSpawn(S_RESOURCE_SPAWN packet)
-    {
-        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
-        ResourceManager.Instance.ApplyResourceIdFromNetwork(packet.ResourceId, packet.ResourceStringKey, pos);
-    }
+    //private void OnHostResourceSpawn(S_RESOURCE_SPAWN packet)
+    //{
+    //    Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+    //    ResourceManager.Instance.ApplyResourceIdFromNetwork(packet.ResourceId, packet.ResourceStringKey, pos);
+    //}
 
     private void OnHostResourceDestroy(S_RESOURCE_DESTROY packet)
     {

@@ -4969,6 +4969,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
   resourceCatalog: {fileID: 11400000, guid: 451f65a18b800334a9ebef344f2beaef, type: 2}
+  inspectorScenePlacedResources:
+  - {fileID: 505601745}
+  - {fileID: 2025604397}
+  - {fileID: 683927057}
+  - {fileID: 1633647772}
+  - {fileID: 1682075965}
+  - {fileID: 380060817}
+  - {fileID: 1183404948}
+  - {fileID: 533869307}
+  - {fileID: 1687786316}
+  - {fileID: 996931806}
+  - {fileID: 963899512450262341}
+  - {fileID: 226674628}
+  - {fileID: 1252156939}
 --- !u!114 &936394858
 MonoBehaviour:
   m_ObjectHideFlags: 0

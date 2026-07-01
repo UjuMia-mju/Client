@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// 씬에 배치된 채집 가능한 자원(광석/나무 등)의 공통 베이스.
@@ -35,8 +35,8 @@ public abstract class ResourceObject : MonoBehaviour
 
         ResourceManager.Instance.RegisterResource(this);
 
-        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
-            StartCoroutine(ResourceManager.Instance.SyncScenePlacedResourceNextFrame(this));
+        //if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
+        //    StartCoroutine(ResourceManager.Instance.SyncScenePlacedResourceNextFrame(this));
     }
 
     protected virtual void OnDestroy()
