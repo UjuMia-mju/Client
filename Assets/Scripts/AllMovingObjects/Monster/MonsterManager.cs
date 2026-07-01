@@ -117,12 +117,25 @@ public class MonsterManager : MonoBehaviour
     // ── 호스트: 게임 중 동적 몬스터 스폰 ─────────────────────────────
     public void SpawnMonster(Monsters monsterKey, Vector3 pos, Quaternion rot)
     {
-        if (!IsHost()) return;
+        Debug.Log("몬스터 소환");
+        if (!IsHost())
+        {
+            Debug.Log("몬스터 : 호스트가 아니므로 동작하지 않음.");
+            return; 
+        } 
 
         GameObject prefab = FindPrefabByKey(monsterKey);
-        if (prefab == null) return;
+        if (prefab == null)
+        {
+            Debug.Log("몬스터: 몬스터 키가 없으므로 동작하지 않음.");
+            return;
+        }
+
 
         int newId = nextMonsterId++;   // 4000+ 대역
+
+        Debug.Log($"몬스터 : Registered Monster = {newId}");
+
         GameObject spawned = Instantiate(prefab, pos, rot);
         AssignMonsterId(spawned, newId);
         monsterDic[newId] = spawned;

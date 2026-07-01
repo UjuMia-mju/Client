@@ -506,14 +506,15 @@ public class StageManager : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         _fallbackCoroutine = null;
-
         if (_gameplaySceneLoadStarted) yield break;
 
         var tracker = RoomMembershipTracker.Instance;
-        bool isHost = (ConnectManager.Instance != null && ConnectManager.Instance.isHost)
-                        || tracker.AmIFirst();
-        ConnectManager.Instance.SetHostRole(isHost);
 
+        // ★ 기존 isHost(인스펙터 값)를 참고하지 않고, 방 입장 순서로만 결정한다.
+        //   0번째로 입장한 유저만 호스트.
+        bool isHost = tracker != null && tracker.AmIFirst();
+
+        ConnectManager.Instance.SetHostRole(isHost);
         GameplayReadyCoordinator.SetPendingFallback(tracker.OrderedIds, 3);
         DoLoadGameplayScene();
     }
