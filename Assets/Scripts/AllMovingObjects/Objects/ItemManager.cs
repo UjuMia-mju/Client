@@ -1,4 +1,4 @@
-using Protocol;
+﻿using Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +22,7 @@ public class ItemManager : MonoBehaviour
     private static int _nextItemId = 1;
 
     // 씬 배치 아이템: 호스트는 ID 부여 후 일괄 브로드캐스트, 피어는 매칭 큐로 대기.
-    private readonly List<Items> _pendingScenePlacedItems = new List<Items>();
+    //private readonly List<Items> _pendingScenePlacedItems = new List<Items>();
     // 피어가 매칭 큐 구성 전에 도착한 S_OBJECT_SPAWN 보류 버퍼.
     private struct PendingSpawn
     {
@@ -61,10 +61,10 @@ public class ItemManager : MonoBehaviour
             if (it.GetComponentInParent<Player>() != null) continue;
             if (it.GetComponentInParent<OtherPlayers>() != null) continue;
 
-            _pendingScenePlacedItems.Add(it);
+            //_pendingScenePlacedItems.Add(it);
         }
 
-        _pendingScenePlacedItems.Sort(CompareScenePlacedForSync);
+        //_pendingScenePlacedItems.Sort(CompareScenePlacedForSync);
     }
 
     private void Update()
@@ -86,25 +86,25 @@ public class ItemManager : MonoBehaviour
 
         if (isHost)
         {
-            foreach (Items it in _pendingScenePlacedItems)
-            {
-                if (it == null) continue;
-                if (string.IsNullOrEmpty(it.itemStringKey))
-                {
-                    Debug.LogError($"[ItemManager] 씬 배치 아이템 '{it.name}' 의 itemKey 가 비어 있습니다.", it);
-                    continue;
-                }
+            //foreach (Items it in _pendingScenePlacedItems)
+            //{
+            //    if (it == null) continue;
+            //    if (string.IsNullOrEmpty(it.itemStringKey))
+            //    {
+            //        Debug.LogError($"[ItemManager] 씬 배치 아이템 '{it.name}' 의 itemKey 가 비어 있습니다.", it);
+            //        continue;
+            //    }
 
-                int newId = _nextItemId++;
-                it.itemId = newId;
-                itemDic[newId] = it;
+            //    int newId = _nextItemId++;
+            //    it.itemId = newId;
+            //    itemDic[newId] = it;
 
-                if (PacketSender.Instance != null)
-                {
-                    PacketSender.Instance.SendObjectSpawn(it, it.transform.position, it.transform.rotation);
-                    Debug.Log($"[ItemManager] 씬 배치 아이템 동기화: id={newId}, key={it.itemStringKey}");
-                }
-            }
+            //    if (PacketSender.Instance != null)
+            //    {
+            //        PacketSender.Instance.SendObjectSpawn(it, it.transform.position, it.transform.rotation);
+            //        Debug.Log($"[ItemManager] 씬 배치 아이템 동기화: id={newId}, key={it.itemStringKey}");
+            //    }
+            //}
         }
         // 피어는 itemId 를 부여하지 않고 매칭 큐로만 둔다 (_pendingScenePlacedItems 유지).
 
@@ -265,7 +265,7 @@ public class ItemManager : MonoBehaviour
         {
             existingFromPending.itemId = itemId;
             itemDic[itemId] = existingFromPending;
-            _pendingScenePlacedItems.Remove(existingFromPending);
+            //_pendingScenePlacedItems.Remove(existingFromPending);
             existingFromPending.transform.SetPositionAndRotation(pos, rot);
             existingFromPending.HasBeenSyncedFromNetwork = true; // [추가] 재매칭 방지
             Debug.Log($"[ItemManager] 씬 배치 아이템 ID 동기화 (피어): key={itemStringKey}, id={itemId}");
@@ -321,18 +321,18 @@ public class ItemManager : MonoBehaviour
     {
         Items best = null;
         float bestDist = float.MaxValue;
-        foreach (Items it in _pendingScenePlacedItems)
-        {
-            if (it == null) continue;
-            if (it.itemStringKey != key) continue;
+        //foreach (Items it in _pendingScenePlacedItems)
+        //{
+        //    if (it == null) continue;
+        //    if (it.itemStringKey != key) continue;
 
-            float d = Vector3.Distance(it.transform.position, pos);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = it;
-            }
-        }
+        //    float d = Vector3.Distance(it.transform.position, pos);
+        //    if (d < bestDist)
+        //    {
+        //        bestDist = d;
+        //        best = it;
+        //    }
+        //}
 
         if (best != null && bestDist <= ScenePlacedMatchMaxDist)
             return best;
@@ -351,11 +351,11 @@ public class ItemManager : MonoBehaviour
         if (string.IsNullOrEmpty(key))
             return false;
 
-        foreach (Items it in _pendingScenePlacedItems)
-        {
-            if (it != null && it.itemStringKey == key)
-                return true;
-        }
+        //foreach (Items it in _pendingScenePlacedItems)
+        //{
+        //    if (it != null && it.itemStringKey == key)
+        //        return true;
+        //}
 
         return false;
     }
