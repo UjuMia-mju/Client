@@ -41,11 +41,18 @@ public class ResourceManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log($"[ResourceManager] Awake 시작. GetInstanceID={GetInstanceID()}, " +
+              $"Instance==null:{Instance == null}, " +
+              $"Instance==this:{Instance == this}, " +
+              $"리스트카운트={inspectorScenePlacedResources?.Count ?? -1}");
+
         if (Instance != null && Instance != this)
         {
+            Debug.LogWarning($"[ResourceManager] 중복으로 판단되어 파괴됨. 이 오브젝트 GetInstanceID={GetInstanceID()}, 살아남는 Instance GetInstanceID={Instance.GetInstanceID()}");
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
 
         // 씬 자원을 인스펙터 리스트 순서대로 1,2,3... 등록.
@@ -59,6 +66,12 @@ public class ResourceManager : MonoBehaviour
                 RegisterScenePlacedResource(r, ref scenePlacedNextId);
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     private IEnumerator Start()
