@@ -28,7 +28,7 @@ public class Items : MovingObject
 
     [Tooltip("씬에 미리 배치된 아이템이면 체크. 호스트가 피어에게 초기 ID를 동기화합니다.")]
     [SerializeField] private bool isScenePlacedItem = false;
-    public bool IsScenePlacedItem => isScenePlacedItem;
+    //public bool IsScenePlacedItem => isScenePlacedItem;
 
     /// <summary>씬 배치 아이템 ID가 호스트로부터 한 번이라도 동기화됐는지.
     /// true 가 되면 ItemManager.FindScenePlacedItem 의 후보에서 제외되어
@@ -37,10 +37,11 @@ public class Items : MovingObject
 
     private void Start()
     {
-        // [수정] 씬 배치 아이템은 ItemManager.Awake/Start 에서 일괄 사전 등록한다.
-        //       여기서 RegisterItem 을 호출하면 피어 측에서 itemId 가 호스트와 다르게 부여되어
-        //       PICKUP/DROP/MOVE 패킷 ID 매칭이 어긋남(야구배트 2개, 삽이 따라다님 등 증상).
-        if (!isScenePlacedItem)
+        // 동적 아이템 등록은 호스트만 수행한다.
+        // 피어는 네트워크 스폰 패킷(SpawnItemFromNetwork → OverrideItemId)으로 ID를 받으므로
+        // 여기서 RegisterItem 을 부르면 피어가 로컬 번호를 잘못 매긴다. (몬스터 방식과 통일)
+        bool isHost = ConnectManager.Instance == null || ConnectManager.Instance.isHost;
+        if (!isScenePlacedItem && isHost)
         {
             ItemManager.Instance.RegisterItem(this);
         }

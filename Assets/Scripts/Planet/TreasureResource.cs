@@ -20,7 +20,7 @@ public class TreasureResource : ResourceObject
     private const float GEM_THROW_HEIGHT = 0f;
     private const float GEM_THROW_FORCE = 0f;
 
-    /// <summary>도구가 1회 타격했을 때 호출. 카운트/드롭/파괴는 모두 호스트가 결정.</summary>
+    // 도구가 1회 타격했을 때 호출. 카운트/드롭/파괴는 모두 호스트가 결정.
     public override void OnHit()
     {
         Debug.Log($"[Treasure] OnHit. id={resourceId}, isTrap={isTrap}");
@@ -31,10 +31,10 @@ public class TreasureResource : ResourceObject
             PacketSender.Instance.SendResourceHit(resourceId);
     }
 
-    /// <summary>Shovel 호환용 alias.</summary>
+    // Shovel 호환용 alias.
     public void Dig() => OnHit();
 
-    /// <summary>호스트 권위 측에서 보석을 떨어뜨리거나, 트랩이면 DesertWorm을 스폰.</summary>
+    // 호스트 권위 측에서 보석을 떨어뜨리거나, 트랩이면 DesertWorm을 스폰.
     public override void SpawnDropAndBroadcast()
     {
         if (isTrap)

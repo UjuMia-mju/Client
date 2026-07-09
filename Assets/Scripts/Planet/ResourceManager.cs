@@ -6,14 +6,17 @@ using UnityEditor;
 using System.Linq;
 #endif
 
-/// <summary>
 /// 씬에 배치된 채집 가능한 자원(광석/나무 등)을 ID로 관리합니다.
-/// ItemManager와 동일한 패턴:
-///  - 자동 증가 ID 부여
-///  - 씬 배치 자원의 ID를 호스트 기준으로 피어와 동기화
-///  - 네트워크 파괴 패킷 수신 시 로컬 GameObject 제거
+///
+/// [정리된 방식 — ItemManager와 동일]
+///  - 씬 자원은 호스트/피어 양쪽 씬에 이미 똑같이 존재하므로 네트워크로 ID를 주고받지 않는다.
+///  - 대신 인스펙터 리스트(inspectorScenePlacedResources) 순서대로 1,2,3... 고정 ID를 부여한다.
+///    → 같은 씬을 쓰는 한 호스트/피어가 항상 같은 순서로 같은 ID를 받는다.
+///  - 거리(pos) 기반 네트워크 매칭 로직은 전부 제거 (ID 어긋남 원천 차단).
+///  - 파괴는 ID로 처리하며, 양쪽이 같은 ID를 가지므로 그대로 동작한다.
+///
 /// 채굴/벌목 진행과 아이템 드롭은 ResourceServerManager(호스트 권위)에서 담당.
-/// </summary>
+
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }
@@ -25,66 +28,67 @@ public class ResourceManager : MonoBehaviour
 
     public ResourceCatalog Catalog => resourceCatalog;
 
-    private static int _nextResourceId = 1;
-    private bool _scenePlacedRegistered;
+    [Header("인스펙터 수동 등록")]
+    [Tooltip("씬에 배치된 ResourceObject를 넣으면 리스트 순서대로 1,2,3... ID가 부여됩니다.\n호스트/피어 양쪽에서 같은 순서 = 같은 ID.")]
+    public List<ResourceObject> inspectorScenePlacedResources = new List<ResourceObject>();
 
-    // 피어에서 씬 배치 자원과 호스트 자원 ID를 1:1 매칭하기 위한 대기 목록.
-    private readonly List<ResourceObject> _pendingScenePlacedResources = new List<ResourceObject>();
+    [Tooltip("인스펙터의 자원 항목들을 Awake 시 등록합니다.")]
+    private bool populateResourceDicFromInspector = true;
 
-    // 피어가 자원 등록을 마치기 전에 도착한 S_RESOURCE_SPAWN 보류 버퍼.
-    private struct PendingResourceSpawn
-    {
-        public int resourceId;
-        public string key;
-        public Vector3 pos;
-        public int attempts;
-    }
-    private readonly List<PendingResourceSpawn> _pendingNetworkResourceSpawns = new List<PendingResourceSpawn>();
+    // 피어가 등록을 마치기 전에 도착한 파괴 패킷 보류 버퍼.
     private readonly HashSet<int> _pendingNetworkResourceDestroys = new HashSet<int>();
-    private const int MAX_SYNC_RETRY_ATTEMPTS = 60; // 약 1초(@60fps) 재시도
+    private bool _scenePlacedRegistered;
 
     private void Awake()
     {
+        Debug.Log($"[ResourceManager] Awake 시작. GetInstanceID={GetInstanceID()}, " +
+              $"Instance==null:{Instance == null}, " +
+              $"Instance==this:{Instance == this}, " +
+              $"리스트카운트={inspectorScenePlacedResources?.Count ?? -1}");
+
         if (Instance != null && Instance != this)
         {
+            Debug.LogWarning($"[ResourceManager] 중복으로 판단되어 파괴됨. 이 오브젝트 GetInstanceID={GetInstanceID()}, 살아남는 Instance GetInstanceID={Instance.GetInstanceID()}");
             Destroy(gameObject);
             return;
         }
-        Instance = this;
-        _nextResourceId = 1;
 
-        ResourceObject[] placed = FindObjectsByType<ResourceObject>(FindObjectsSortMode.None);
-        foreach (ResourceObject r in placed)
+        Instance = this;
+
+        // 씬 자원을 인스펙터 리스트 순서대로 1,2,3... 등록.
+        // 씬 자원은 호스트/피어 양쪽에 이미 존재하므로 네트워크로 주고받지 않는다.
+        if (populateResourceDicFromInspector && inspectorScenePlacedResources != null)
         {
-            if (r == null) continue;
-            _pendingScenePlacedResources.Add(r);
+            int scenePlacedNextId = 1;
+            foreach (ResourceObject r in inspectorScenePlacedResources)
+            {
+                if (r == null) continue;
+                RegisterScenePlacedResource(r, ref scenePlacedNextId);
+            }
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     private IEnumerator Start()
     {
-        // ResourceObject.Start 등록 완료 대기
+        // ResourceObject.Start 등록 완료 대기 / ConnectManager 초기화 보장.
         yield return null;
         _scenePlacedRegistered = true;
 
-        bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
-        if (!isHost && _pendingNetworkResourceSpawns.Count > 0)
-        {
-            PendingResourceSpawn[] buffered = _pendingNetworkResourceSpawns.ToArray();
-            _pendingNetworkResourceSpawns.Clear();
-            foreach (PendingResourceSpawn s in buffered)
-                ApplyResourceIdFromNetwork(s.resourceId, s.key, s.pos);
-        }
+        // 피어: 등록 전에 먼저 도착한 파괴 패킷 일괄 처리.
+        if (_pendingNetworkResourceDestroys.Count > 0)
+            RetryPendingResourceDestroys();
     }
 
     private void Update()
     {
-        bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
-        if (isHost || !_scenePlacedRegistered)
+        if (!_scenePlacedRegistered)
             return;
-
-        if (_pendingNetworkResourceSpawns.Count > 0)
-            RetryPendingResourceSpawns();
 
         if (_pendingNetworkResourceDestroys.Count > 0)
             RetryPendingResourceDestroys();
@@ -93,19 +97,61 @@ public class ResourceManager : MonoBehaviour
     // ======================================================================
     // 등록/해제
     // ======================================================================
-    public void RegisterResource(ResourceObject resource)
+
+    /// <summary>
+    /// 씬 배치 자원 전용 등록. 리스트 순서대로 1,2,3... 부여.
+    /// </summary>
+    private void RegisterScenePlacedResource(ResourceObject resource, ref int scenePlacedNextId)
     {
-        // 카탈로그에 등록된 키인지 검증만 수행
+        if (resource == null) return;
+
         if (resourceCatalog != null && !string.IsNullOrEmpty(resource.resourceStringKey))
         {
             if (!resourceCatalog.TryGet(resource.resourceStringKey, out _))
             {
-                Debug.LogError($"[ResourceManager] '{resource.name}' 의 키 '{resource.resourceStringKey}' 가 ResourceCatalog에 등록되지 않았습니다.", resource);
+                Debug.LogError($"[ResourceManager] '{resource.name}' 의 키 '{resource.resourceStringKey}' 가 ResourceCatalog에 없습니다.", resource);
                 return;
             }
         }
 
-        resource.resourceId = _nextResourceId++;
+        resource.resourceId = scenePlacedNextId++;
+
+        if (!_resourceDic.ContainsKey(resource.resourceId))
+        {
+            _resourceDic.Add(resource.resourceId, resource);
+            Debug.Log($"[ResourceManager] ✓ Registered scene resource: {resource.name} (id={resource.resourceId}, key={resource.resourceStringKey})");
+        }
+        else
+        {
+            Debug.LogWarning($"[ResourceManager] 씬 자원 id={resource.resourceId} 중복. 대상: {resource.name}");
+        }
+    }
+
+    /// <summary>
+    /// 런타임 동적 등록(필요 시). 씬 자원 대역(1~) 위쪽에서 부여.
+    /// 현재 구조상 씬 자원만 다루면 거의 쓰이지 않지만 호환용으로 남김.
+    /// </summary>
+    public void RegisterResource(ResourceObject resource)
+    {
+        if (resource == null) return;
+
+        if (resourceCatalog != null && !string.IsNullOrEmpty(resource.resourceStringKey))
+        {
+            if (!resourceCatalog.TryGet(resource.resourceStringKey, out _))
+            {
+                Debug.LogError($"[ResourceManager] '{resource.name}' 의 키 '{resource.resourceStringKey}' 가 ResourceCatalog에 없습니다.", resource);
+                return;
+            }
+        }
+
+        // 이미 유효한 ID가 있으면 그대로 등록, 없으면 리스트 최대값 뒤에 부여.
+        if (resource.resourceId <= 0)
+        {
+            int maxId = 0;
+            foreach (var k in _resourceDic.Keys) if (k > maxId) maxId = k;
+            resource.resourceId = maxId + 1;
+        }
+
         if (!_resourceDic.ContainsKey(resource.resourceId))
         {
             _resourceDic.Add(resource.resourceId, resource);
@@ -116,12 +162,12 @@ public class ResourceManager : MonoBehaviour
     public void UnregisterResource(ResourceObject resource)
     {
         if (resource == null) return;
-        if (_resourceDic.ContainsKey(resource.resourceId))
+        // dic[id] 가 다른 자원일 수 있으므로 값 체크 후 제거.
+        if (_resourceDic.TryGetValue(resource.resourceId, out ResourceObject mapped) && ReferenceEquals(mapped, resource))
         {
             _resourceDic.Remove(resource.resourceId);
             Debug.Log($"[ResourceManager] ✓ Unregistered resource: {resource.name} (id={resource.resourceId})");
         }
-        _pendingScenePlacedResources.Remove(resource);
     }
 
     public ResourceObject GetResource(int id)
@@ -141,153 +187,24 @@ public class ResourceManager : MonoBehaviour
 
     public IEnumerable<ResourceObject> AllResources => _resourceDic.Values;
 
-    /// <summary>호스트가 보낸 ID로 로컬 자원의 ID를 교체. 씬 배치 자원 동기화 용.</summary>
-    public void OverrideResourceId(ResourceObject resource, int newId)
-    {
-        if (resource == null) return;
-
-        if (_resourceDic.ContainsKey(resource.resourceId))
-            _resourceDic.Remove(resource.resourceId);
-
-        resource.resourceId = newId;
-
-        if (!_resourceDic.ContainsKey(newId))
-            _resourceDic.Add(newId, resource);
-        else
-            _resourceDic[newId] = resource;
-
-        Debug.Log($"[ResourceManager] ✓ OverrideResourceId: {resource.name} → id={newId}");
-    }
-
-    // ======================================================================
-    // 씬 배치 자원 동기화
-    // ======================================================================
-    /// <summary>
-    /// 호스트가 자기 씬의 자원 ID를 피어에게 일괄 동기화.
-    /// ResourceObject.Start() → 호스트인 경우 이 코루틴이 시작됨.
-    /// </summary>
-    public IEnumerator SyncScenePlacedResourceNextFrame(ResourceObject resource)
-    {
-        yield return null; // RegisterResource 완료 보장
-        if (resource == null) yield break;
-
-        PacketSender.Instance.BroadcastResourceSpawn(resource);
-        Debug.Log($"[ResourceManager] BroadcastResourceSpawn: id={resource.resourceId}, key={resource.resourceStringKey}");
-    }
-
-    /// <summary>
-    /// 피어 측: 호스트로부터 받은 씬 배치 자원 ID를 로컬에 적용.
-    /// pos 기반으로 같은 자원을 찾아 ID를 덮어쓴다.
-    /// </summary>
-    public void ApplyResourceIdFromNetwork(int resourceId, string resourceStringKey, Vector3 pos)
-    {
-        bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
-        if (!isHost && !_scenePlacedRegistered)
-        {
-            _pendingNetworkResourceSpawns.Add(new PendingResourceSpawn
-            {
-                resourceId = resourceId,
-                key = resourceStringKey,
-                pos = pos,
-                attempts = 0
-            });
-            return;
-        }
-
-        ResourceObject existing = FindPendingScenePlacedResource(resourceStringKey, pos);
-        if (existing != null)
-        {
-            OverrideResourceId(existing, resourceId);
-            existing.HasBeenSyncedFromNetwork = true;
-            _pendingScenePlacedResources.Remove(existing);
-            return;
-        }
-
-        existing = FindScenePlacedResource(resourceStringKey, pos);
-        if (existing == null)
-        {
-            if (!isHost)
-            {
-                _pendingNetworkResourceSpawns.Add(new PendingResourceSpawn
-                {
-                    resourceId = resourceId,
-                    key = resourceStringKey,
-                    pos = pos,
-                    attempts = 1
-                });
-            }
-            Debug.LogWarning($"[ResourceManager] ApplyResourceIdFromNetwork: 매칭 자원 없음(재시도 예정). key={resourceStringKey}, id={resourceId}, pos={pos}");
-            return;
-        }
-
-        OverrideResourceId(existing, resourceId);
-        existing.HasBeenSyncedFromNetwork = true;
-        TryApplyPendingDestroy(resourceId);
-    }
-
-    private ResourceObject FindPendingScenePlacedResource(string key, Vector3 pos)
-    {
-        const float SCENE_MATCH_MAX_DIST = 1.0f;
-
-        ResourceObject best = null;
-        float bestDist = float.MaxValue;
-
-        foreach (ResourceObject r in _pendingScenePlacedResources)
-        {
-            if (r == null) continue;
-            if (r.HasBeenSyncedFromNetwork) continue;
-            if (r.resourceStringKey != key) continue;
-
-            float d = Vector3.Distance(r.transform.position, pos);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = r;
-            }
-        }
-
-        return best != null && bestDist <= SCENE_MATCH_MAX_DIST ? best : null;
-    }
-
-    private ResourceObject FindScenePlacedResource(string key, Vector3 pos)
-    {
-        const float SCENE_MATCH_MAX_DIST = 1.0f;
-
-        ResourceObject best = null;
-        float bestDist = float.MaxValue;
-        foreach (var r in _resourceDic.Values)
-        {
-            if (r == null) continue;
-            if (r.HasBeenSyncedFromNetwork) continue;
-            if (r.resourceStringKey != key) continue;
-
-            float d = Vector3.Distance(r.transform.position, pos);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = r;
-            }
-        }
-        return best != null && bestDist <= SCENE_MATCH_MAX_DIST ? best : null;
-    }
-
     // ======================================================================
     // 네트워크 파괴 처리
     // ======================================================================
     /// <summary>
     /// 피어 측: 호스트로부터 S_RESOURCE_DESTROY 수신 시 호출.
     /// 호스트 측: ResourceServerManager가 호출하여 로컬도 동일하게 정리.
+    /// 씬 자원은 양쪽이 같은 ID를 가지므로 ID만으로 안전하게 파괴된다.
     /// </summary>
     public void DestroyResourceFromNetwork(int resourceId)
     {
         ResourceObject resource = GetResource(resourceId);
         if (resource == null)
         {
-            bool isHost = ConnectManager.Instance != null && ConnectManager.Instance.isHost;
-            if (!isHost)
+            // 아직 등록 전이면 보류했다가 등록 후 처리.
+            if (!_scenePlacedRegistered)
             {
                 _pendingNetworkResourceDestroys.Add(resourceId);
-                Debug.LogWarning($"[ResourceManager] DestroyResourceFromNetwork: id={resourceId} 없음(동기화 대기 보류)");
+                Debug.LogWarning($"[ResourceManager] DestroyResourceFromNetwork: id={resourceId} 없음(등록 대기 보류)");
                 return;
             }
 
@@ -300,43 +217,11 @@ public class ResourceManager : MonoBehaviour
         Debug.Log($"[ResourceManager] 자원 파괴: id={resourceId}");
     }
 
-    private void RetryPendingResourceSpawns()
-    {
-        List<PendingResourceSpawn> survivors = new List<PendingResourceSpawn>();
-
-        for (int i = 0; i < _pendingNetworkResourceSpawns.Count; i++)
-        {
-            PendingResourceSpawn p = _pendingNetworkResourceSpawns[i];
-            ResourceObject matched = FindPendingScenePlacedResource(p.key, p.pos);
-            if (matched == null)
-                matched = FindScenePlacedResource(p.key, p.pos);
-
-            if (matched != null)
-            {
-                OverrideResourceId(matched, p.resourceId);
-                matched.HasBeenSyncedFromNetwork = true;
-                _pendingScenePlacedResources.Remove(matched);
-                TryApplyPendingDestroy(p.resourceId);
-                continue;
-            }
-
-            p.attempts++;
-            if (p.attempts < MAX_SYNC_RETRY_ATTEMPTS)
-            {
-                survivors.Add(p);
-            }
-            else
-            {
-                Debug.LogWarning($"[ResourceManager] Resource ID 동기화 최종 실패: key={p.key}, id={p.resourceId}, pos={p.pos}");
-            }
-        }
-
-        _pendingNetworkResourceSpawns.Clear();
-        _pendingNetworkResourceSpawns.AddRange(survivors);
-    }
-
     private void RetryPendingResourceDestroys()
     {
+        if (_pendingNetworkResourceDestroys.Count == 0)
+            return;
+
         List<int> resolved = new List<int>();
         foreach (int resourceId in _pendingNetworkResourceDestroys)
         {
@@ -351,21 +236,6 @@ public class ResourceManager : MonoBehaviour
 
         for (int i = 0; i < resolved.Count; i++)
             _pendingNetworkResourceDestroys.Remove(resolved[i]);
-    }
-
-    private void TryApplyPendingDestroy(int resourceId)
-    {
-        if (!_pendingNetworkResourceDestroys.Contains(resourceId))
-            return;
-
-        ResourceObject resource = GetResource(resourceId);
-        if (resource == null)
-            return;
-
-        UnregisterResource(resource);
-        Destroy(resource.gameObject);
-        _pendingNetworkResourceDestroys.Remove(resourceId);
-        Debug.Log($"[ResourceManager] 동기화 직후 보류 파괴 적용: id={resourceId}");
     }
 
     // ======================================================================

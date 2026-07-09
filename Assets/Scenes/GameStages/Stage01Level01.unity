@@ -977,6 +977,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: glow_ore
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &226674630
 MeshRenderer:
@@ -1087,10 +1089,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1885911027}
   - {fileID: 669581821}
-  - {fileID: 560856788}
   - {fileID: 1876827128}
-  - {fileID: 936394856}
   - {fileID: 1239637296}
   - {fileID: 1686717108}
   - {fileID: 815630919}
@@ -1949,6 +1950,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &380060819
 MeshRenderer:
@@ -2699,6 +2702,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!64 &505601746
 MeshCollider:
@@ -2772,8 +2777,8 @@ Transform:
   m_GameObject: {fileID: 515697150}
   serializedVersion: 2
   m_LocalRotation: {x: -0.21711229, y: -0.20033465, z: 0.48113102, w: 0.8253734}
-  m_LocalPosition: {x: -12.85, y: -10.67, z: -14.85}
-  m_LocalScale: {x: 1.1827216, y: 4.668763, z: 8.080964}
+  m_LocalPosition: {x: -12.73, y: -10.75, z: -14.75}
+  m_LocalScale: {x: 1.1827216, y: 4.668763, z: 6.3548703}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 387310944}
@@ -3049,6 +3054,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &533869309
 MeshRenderer:
@@ -3154,11 +3161,11 @@ Transform:
   m_GameObject: {fileID: 560856787}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 15.41102, y: -20.62822, z: -4.51485}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 229907645}
+  m_Father: {fileID: 826209477}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &560856789
 MonoBehaviour:
@@ -3173,6 +3180,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemManager
   itemCatalog: {fileID: 11400000, guid: e2f3a4b5c6d798e90a1b2c3d4e5f6a01, type: 2}
+  inspectorScenePlacedItems:
+  - {fileID: 7013151032448233170}
+  - {fileID: 7013151032187080042}
+  - {fileID: 7013151030689543660}
+  - {fileID: 7013151031139252867}
+  - {fileID: 7013151032646458114}
+  - {fileID: 1067763731}
+  - {fileID: 497090740}
+  - {fileID: 1145330493}
+  - {fileID: 947344222}
+  - {fileID: 595604733}
+  - {fileID: 7334006729128882359}
+  - {fileID: 1501175922}
+  - {fileID: 7013151031403832585}
+  - {fileID: 7013151031047066036}
+  - {fileID: 7013151032039408778}
+  - {fileID: 7013151031727757215}
+  - {fileID: 7013151031291436159}
+  - {fileID: 7013151032181609927}
 --- !u!65 &566813169
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3847,6 +3873,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &683927059
 MeshRenderer:
@@ -4234,8 +4262,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 819753110}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7031255, y: 0.07493011, z: -0.07493011, w: 0.7031255}
-  m_LocalPosition: {x: 0.0029900002, y: 0.000070002556, z: 0.01283001}
+  m_LocalRotation: {x: 0.70761937, y: 0.09041819, z: -0.09270997, w: 0.6946253}
+  m_LocalPosition: {x: 0.00292, y: 0.00006, z: 0.01248}
   m_LocalScale: {x: 0.0015545501, y: 0.0049101105, z: 0.0013205498}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4244,7 +4272,7 @@ Transform:
   - {fileID: 4158774011289572502}
   - {fileID: 326273630}
   m_Father: {fileID: 4943720041582861401}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 91.069, y: 17.442993, z: 2.5619965}
 --- !u!65 &819753112
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4354,6 +4382,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpaceShipCraftBubble
   bubblePrefab: {fileID: 4681354145857251170, guid: c3aa96aece102614e8ed06b732452b24, type: 3}
+--- !u!1 &826209476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 826209477}
+  m_Layer: 0
+  m_Name: GameManagersButDestroy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &826209477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826209476}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -15.41102, y: 20.62822, z: 4.51485}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 560856788}
+  - {fileID: 936394856}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &845625367
 GameObject:
   m_ObjectHideFlags: 0
@@ -4903,10 +4964,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 936394856}
-  - component: {fileID: 936394858}
   - component: {fileID: 936394857}
   m_Layer: 0
-  m_Name: ResourceManagers
+  m_Name: ResourceManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4920,12 +4980,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 936394855}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 15.41102, y: -20.62822, z: -4.51485}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 229907645}
+  m_Father: {fileID: 826209477}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &936394857
 MonoBehaviour:
@@ -4940,18 +5000,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
   resourceCatalog: {fileID: 11400000, guid: 451f65a18b800334a9ebef344f2beaef, type: 2}
---- !u!114 &936394858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936394855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6e94db7a2f33b042a474447e773d588, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ResourceServerManager
+  inspectorScenePlacedResources:
+  - {fileID: 505601745}
+  - {fileID: 2025604397}
+  - {fileID: 683927057}
+  - {fileID: 1633647772}
+  - {fileID: 1682075965}
+  - {fileID: 380060817}
+  - {fileID: 1183404948}
+  - {fileID: 533869307}
+  - {fileID: 1687786316}
+  - {fileID: 996931806}
+  - {fileID: 963899512450262341}
+  - {fileID: 226674628}
+  - {fileID: 1252156939}
 --- !u!1 &944178291
 GameObject:
   m_ObjectHideFlags: 0
@@ -5520,6 +5582,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &996931808
 MeshRenderer:
@@ -6532,6 +6596,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &1183404950
 MeshRenderer:
@@ -6757,6 +6823,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: glow_ore
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &1252156941
 MeshRenderer:
@@ -8612,6 +8680,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &1633647774
 MeshRenderer:
@@ -9029,6 +9099,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &1682075967
 MeshRenderer:
@@ -9222,6 +9294,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &1687786318
 MeshRenderer:
@@ -10018,6 +10092,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameRuleManager
   clearPanel: {fileID: 297164733}
   missionTimerUiRoot: {fileID: 1997255342}
+--- !u!1 &1885911026
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1885911027}
+  - component: {fileID: 1885911029}
+  m_Layer: 0
+  m_Name: ResourceServerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1885911027
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885911026}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 229907645}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1885911029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885911026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6e94db7a2f33b042a474447e773d588, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceServerManager
 --- !u!1 &1898954484
 GameObject:
   m_ObjectHideFlags: 0
@@ -10156,7 +10274,7 @@ Transform:
   m_GameObject: {fileID: 1927737955}
   serializedVersion: 2
   m_LocalRotation: {x: -0.21269827, y: -0.4541252, z: -0.85193294, w: 0.15079811}
-  m_LocalPosition: {x: 6.8667803, y: -3.7449281, z: 10.369332}
+  m_LocalPosition: {x: 6.63, y: -4.64, z: 9.84}
   m_LocalScale: {x: 64.256004, y: 65.772, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10870,6 +10988,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: stone_ore
   orePrefab: {fileID: 5248076910442429696, guid: 1d400eb317220e347bbe754976188690, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 2
 --- !u!23 &2025604399
 MeshRenderer:
@@ -11664,8 +11784,8 @@ Transform:
   m_GameObject: {fileID: 919132149526282787}
   serializedVersion: 2
   m_LocalRotation: {x: -0.49699613, y: 0.10667212, z: 0.18072052, w: 0.8419953}
-  m_LocalPosition: {x: -4.0348406, y: -14.790283, z: -14.972878}
-  m_LocalScale: {x: 15.263464, y: 22.51718, z: 11.008156}
+  m_LocalPosition: {x: -4.0348, y: -14.79, z: -14.973}
+  m_LocalScale: {x: 17.80483, y: 22.51718, z: 13.919813}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 387310944}
@@ -12089,6 +12209,8 @@ MonoBehaviour:
   resourceId: 0
   resourceKey: glow_ore
   orePrefab: {fileID: 5248076910442429696, guid: 3522921c34cb94c438dfc0ec190dc0a2, type: 3}
+  hitSfxName: OreHit
+  hitSfxVolumeScale: 0.9
   maxDrops: 1
 --- !u!23 &1069859715768806527
 MeshRenderer:
@@ -17581,3 +17703,4 @@ SceneRoots:
   - {fileID: 956947293}
   - {fileID: 1241497191}
   - {fileID: 1439241133}
+  - {fileID: 826209477}
