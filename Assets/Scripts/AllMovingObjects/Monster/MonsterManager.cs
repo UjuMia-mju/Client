@@ -222,6 +222,14 @@ public class MonsterManager : MonoBehaviour
 
             return;
         }
+
+        KingSlimeAnimator slimeAnimator = spawned.GetComponent<KingSlimeAnimator>();
+        if (slimeAnimator != null)
+        {
+            var state = (KingSlimeAnimState)stateInt;
+            slimeAnimator.SetState(state);
+            return;
+        }
     }
 
     public void UpdateTransformFromNetwork(int id, Vector3 pos, Quaternion rot)
