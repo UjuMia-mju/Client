@@ -748,6 +748,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertWorm (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.0005
@@ -841,7 +845,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &64292637
 Transform:
   m_ObjectHideFlags: 0
@@ -1106,6 +1110,80 @@ Transform:
   - {fileID: 1863924825}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &70854056
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1993481656}
+    m_Modifications:
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00546
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.00721
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.680907
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.37880057
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.34702766
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.52196515
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 171.165
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 241.456
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 260.204
+      objectReference: {fileID: 0}
+    - target: {fileID: 8882482235741958061, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: m_Name
+      value: KingSlime
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+--- !u!4 &70854057 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+  m_PrefabInstance: {fileID: 70854056}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &74217058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2416,6 +2494,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertWorm (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.0005
@@ -2512,6 +2594,10 @@ PrefabInstance:
     - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_Name
       value: DesertWorm (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
@@ -3723,6 +3809,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertWorm (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.0005000001
@@ -3908,6 +3998,10 @@ PrefabInstance:
     - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_Name
       value: DesertWorm (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
@@ -5294,6 +5388,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertWorm
       objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.00049999997
@@ -5905,6 +6003,10 @@ PrefabInstance:
     - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_Name
       value: DesertWorm (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
@@ -8308,7 +8410,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1270936912
 Transform:
   m_ObjectHideFlags: 0
@@ -8736,6 +8838,10 @@ PrefabInstance:
     - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_Name
       value: DesertWorm (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
@@ -9359,7 +9465,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1386027015
 Transform:
   m_ObjectHideFlags: 0
@@ -9521,6 +9627,10 @@ PrefabInstance:
     - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_Name
       value: DesertWorm (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
@@ -10629,6 +10739,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertWorm (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.0005000001
@@ -11256,7 +11370,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1777648575
 Transform:
   m_ObjectHideFlags: 0
@@ -11651,6 +11765,10 @@ PrefabInstance:
     - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_Name
       value: DesertWorm (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 123032, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 415900, guid: ae6d0c64b4bac074b82d2ad7f8bc0705, type: 3}
       propertyPath: m_LocalScale.x
@@ -12307,6 +12425,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 70854057}
   - {fileID: 720435548}
   - {fileID: 356768676}
   - {fileID: 51979799}
@@ -17398,7 +17517,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &4204649770997262716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20179,7 +20298,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5248076911043043754
 GameObject:
   m_ObjectHideFlags: 0
@@ -20201,7 +20320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5248076911443712032
 GameObject:
   m_ObjectHideFlags: 0
@@ -20223,7 +20342,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5248076911696195417
 GameObject:
   m_ObjectHideFlags: 0
@@ -20245,7 +20364,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5248076912553359598
 GameObject:
   m_ObjectHideFlags: 0
@@ -20267,7 +20386,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &5333863913348858637
 MeshRenderer:
   m_ObjectHideFlags: 0
