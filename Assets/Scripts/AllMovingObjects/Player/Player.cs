@@ -872,7 +872,7 @@ public class Player : MovingObject
             return;
 
 
-        // 던지기가 실행된 시점에서 투척무기를 찾는다.
+        // 던지기가 실행된 시점에서 던졌던 투척무기를 찾는다.
         FindThrowingWeaponAndTriggerIt();
 
         isPlayerGetSomething = false;
@@ -982,7 +982,7 @@ public class Player : MovingObject
 
         foreach (Transform child in children)
         {
-            if (child.name == "Socket")
+            if (child.name == SOCKET)
             {
                 socketTransform = child;
                 break;
@@ -991,13 +991,14 @@ public class Player : MovingObject
 
         if (socketTransform != null)
         {
+            // 아쿠아마린 -> 자식객체 BossDamageTrigger
             Transform aquaTransform = socketTransform.Find("Aqua/BossDamageTrigger");
             if (aquaTransform != null)
             {
                 Aquamarine aquamarine = aquaTransform.GetComponent<Aquamarine>();
                 if (aquamarine != null)
                 {
-                    aquamarine.SetActiveAquaTriggerByAnimEvent();
+                    aquamarine.SetActiveAquaTrigger();
                 }
             }
         }
