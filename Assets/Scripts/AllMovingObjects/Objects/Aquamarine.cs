@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Aquamarine : MonoBehaviour
 {
     private const string SOCKET = "Socket";
 
-    private bool isTriggered = false;   
+
+    private bool isTriggered = false;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -36,6 +36,4 @@ public class Aquamarine : MonoBehaviour
     {
         isTriggered = true;
     }
-
-
 }

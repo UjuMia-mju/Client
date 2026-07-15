@@ -72,9 +72,6 @@ public class Items : MovingObject
                     Physics.IgnoreCollision(myCol, rpCol, true);
             }
         }
-
-        // [삭제] 씬 배치 아이템 BroadcastSpawn 도 ItemManager 가 담당하도록 이동.
-        //       (런타임 스폰은 SpawnItemAndBroadcast 경로로 처리)
     }
 
     private void FixedUpdate()

@@ -116,6 +116,7 @@ public class OtherPlayers : MovingObject
 
     private void FixedUpdate()
     {
+        Debug.Log("이 원격 플레이어의 아이디는 : " + PlayerId);
         if (_isDead) return;
         Moving(Vector3.zero);
     }

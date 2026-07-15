@@ -871,12 +871,17 @@ public class Player : MovingObject
         if (nearestObject != null && nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
             return;
 
+
+        // 던지기가 실행된 시점에서 투척무기를 찾는다.
+        FindThrowingWeaponAndTriggerIt();
+
         isPlayerGetSomething = false;
         SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), true);
         playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetThrowAimDirection());
         if (trajectoryPreview != null)
             trajectoryPreview.Hide();
         StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
+
     }
 
 
@@ -969,4 +974,17 @@ public class Player : MovingObject
             PeerStatManager.Instance.RegisterPlayer((ulong)NetManager.Instance._playerId, playerStat);
     }
 
+    private void FindThrowingWeaponAndTriggerIt()
+    {
+        Transform socketTransform = transform.Find("Socket");
+        if (socketTransform != null)
+        {
+            Aquamarine aquamarine = socketTransform.GetComponent<Aquamarine>();
+            if (aquamarine != null)
+            {
+                Debug.Log("아쿠아마린을 찾았다!");
+                // 필요하다면 aquamarine으로 추가 로직 수행
+            }
+        }
+    }
 }
