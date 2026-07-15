@@ -30,6 +30,7 @@ public class Aquamarine : MonoBehaviour
         if (ConnectManager.Instance == null || !ConnectManager.Instance.isHost) return;
 
 
+
     }
 
     public void SetActiveAquaTriggerByAnimEvent()
