@@ -4,7 +4,7 @@ using Protocol;
 
 public class KingSlime : Monster
 {
-
+    [SerializeField] private Rigidbody rigidbodyDragAndDrop;
     private KingSlimeAnimator kingSlimeAnimator;
 
     private KingSlimeAnimState? lastAppliedState;
@@ -16,6 +16,15 @@ public class KingSlime : Monster
 
     private bool IsHost =>
         ConnectManager.Instance != null && ConnectManager.Instance.isHost;
+
+
+    [SerializeField] private int damage = 1;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        rb = rigidbodyDragAndDrop;
+    }
 
     private IEnumerator Start()
     {
@@ -87,5 +96,27 @@ public class KingSlime : Monster
         lastAppliedState = newState;
         PlayLocalState(newState);
         BroadcastAnimState(newState);
+    }
+
+    public void SlimeHit(int damage)
+    {
+        Debug.Log("KingSlime : 맞았어.");
+        TakeDamage(damage);
+        BroadcastMonsterHit(damage);
+    }
+
+    // 몬스터 Hit 패킷 송신
+    private void BroadcastMonsterHit(int damage)
+    {
+        if (!IsHost) return;
+        if (PacketSender.Instance == null) return;
+
+        S_MONSTER_HIT packet = new S_MONSTER_HIT
+        {
+            MonsterId = monsterId,
+            Damage = damage
+        };
+
+        PacketSender.Instance.BroadcastMonsterHit(packet);
     }
 }

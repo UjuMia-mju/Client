@@ -201,5 +201,10 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     // 몬스터 위치/회전 브로드캐스트 (호스트 전용)
     public void BroadcastMonsterMove(S_MONSTER_MOVE packet)
         => TryHostBroadcast(() => hostSender.BroadcastToPeers(PacketId.PKT_S_MONSTER_MOVE, packet));
+
+    // 몬스터 피격 브로드캐스트 (호스트 전용)
+    public void BroadcastMonsterHit(S_MONSTER_HIT packet)
+        => TryHostBroadcast(() => hostSender.BroadcastToPeers(PacketId.PKT_S_MONSTER_HIT, packet));
+
     #endregion
 }

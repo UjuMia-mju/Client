@@ -43,7 +43,12 @@ public class Aquamarine : MonoBehaviour
             Debug.Log("Aquamarine : 검사 문제없고 데미지 줌");
 
             // TODO : 현재 데미지는 BROADCAST되지 않음. 이를 해결해야 함. 일단 로컬에서는 작동함.
-            victim.TakeDamage(damage);
+            KingSlime kingSlime = victim.GetComponent<KingSlime>();
+            if (kingSlime != null)
+            {
+                // KingSlime 전용 로직 실행
+                kingSlime.SlimeHit(damage);
+            }
         }
 
     }
