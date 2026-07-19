@@ -268,4 +268,33 @@ public class OtherPlayers : MovingObject
     {
         return otherPlayerAnimator != null ? otherPlayerAnimator.GetInteger("AnimationPar") : -1;
     }
+
+    public void FindThrowingWeaponAndTriggerIt()
+    {
+        Transform[] children = GetComponentsInChildren<Transform>(true);
+        Transform socketTransform = null;
+        foreach (Transform child in children)
+        {
+            if (child.name == "SOCKET" || child.name == "Socket")
+            {
+                socketTransform = child;
+                break;
+            }
+        }
+
+        if (socketTransform != null)
+        {
+            Transform aquaTransform = socketTransform.Find("Aqua/BossDamageTrigger");
+
+            if (aquaTransform != null)
+            {
+                Aquamarine aquamarine = aquaTransform.GetComponent<Aquamarine>();
+
+                if (aquamarine != null)
+                {
+                    aquamarine.SetActiveAquaTrigger();
+                }
+            }
+        }
+    }
 }

@@ -872,8 +872,6 @@ public class Player : MovingObject
             return;
 
 
-        // 던지기가 실행된 시점에서 던졌던 투척무기를 찾는다.
-        FindThrowingWeaponAndTriggerIt();
 
         isPlayerGetSomething = false;
         SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), true);
@@ -974,7 +972,7 @@ public class Player : MovingObject
             PeerStatManager.Instance.RegisterPlayer((ulong)NetManager.Instance._playerId, playerStat);
     }
 
-    private void FindThrowingWeaponAndTriggerIt()
+    public void FindThrowingWeaponAndTriggerIt()
     {
         // 현재 오브젝트의 모든 자식 트랜스폼을 가져온다
         Transform[] children = GetComponentsInChildren<Transform>(true);

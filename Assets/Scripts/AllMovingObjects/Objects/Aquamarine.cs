@@ -10,16 +10,21 @@ public class Aquamarine : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"Aquamarine OnTriggerEnter - isTriggered:{isTriggered}, parent:{transform.root.parent}");
+
         // 최종 트리거 판단
         // 트리거가 false인 경우 그냥 리턴
-        if (!isTriggered)
+        if (!isTriggered || transform.root.parent != null)
         {
+            Debug.Log($"[Aquamarine] BLOCKED - isTriggered:{isTriggered}, root.parent:{transform.root.parent}");
             return;
         }
 
         // 던져서 부딫힌게 행성인 경우 트리거 비활성화후 리턴
         else if (isTriggered)
         {
+
+            // 행성에 떨어지면 트리거 비활성화인데 조금 조악함.
             if (other.CompareTag(Define.Tag.PLANET))
             {
                 isTriggered = false;
@@ -42,7 +47,6 @@ public class Aquamarine : MonoBehaviour
             //
             Debug.Log("Aquamarine : 검사 문제없고 데미지 줌");
 
-            // TODO : 현재 데미지는 BROADCAST되지 않음. 이를 해결해야 함. 일단 로컬에서는 작동함.
             KingSlime kingSlime = victim.GetComponent<KingSlime>();
             if (kingSlime != null)
             {

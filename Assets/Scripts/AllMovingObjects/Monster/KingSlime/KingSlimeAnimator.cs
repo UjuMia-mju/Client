@@ -4,7 +4,8 @@ using System.Collections;
 public enum KingSlimeAnimState
 {
     Idle = 0,
-    JumpAttack = 1
+    JumpAttack = 1,
+    Die = 2
 }
 
 public class KingSlimeAnimator : MonoBehaviour
