@@ -55,7 +55,7 @@ public class Aquamarine : MonoBehaviour
 
             // 동작 완료 후 파괴
 
-            Items itemComp = other.GetComponentInParent<Items>();
+            Items itemComp = transform.parent.GetComponent<Items>();
             if (itemComp != null)
             {
                 PacketSender.Instance.SendObjectDestroy(itemComp.itemId);

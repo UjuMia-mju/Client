@@ -174,12 +174,16 @@ public class KingSlime : Monster
                 MonsterManager.Instance.MonsterDead(monsterId);
             else
                 Destroy(gameObject);
+
+
+            CompleteMonsterClear();
         }
         else
         {
             // 피어는 그냥 파괴만. DestroyFromNetwork 가 이미 호출돼 dic 에서 제거된 상태.
             Destroy(gameObject);
         }
+
     }
 
     public override void PlayDeathAndDestroy()
@@ -207,5 +211,32 @@ public class KingSlime : Monster
         yield return new WaitForSeconds(seconds);
         if (this != null && gameObject != null)
             Destroy(gameObject);
+    }
+
+
+    public void CompleteMonsterClear()
+    {
+        Debug.Log("우주선 조립이 완료되었습니다!");
+
+        // 호스트만 피어들에게 완료 브로드캐스트 (씬 단독 실행 시 ConnectManager 없을 수 있으므로 null 체크)
+        if (ConnectManager.Instance != null && ConnectManager.Instance.isHost)  
+        {
+            PacketSender.Instance.BroadcastSpaceshipComplete(true);
+
+            int mapId = StageManager.LastLoadedMapId;
+            var grm = GameRuleManager.Instance;
+            int elapsed = grm != null ? grm.GetMissionElapsedSecondsRounded() : 0;
+            var stars = 3;
+            if (mapId != 0 && PacketDispatcher.Instance != null)
+                PacketDispatcher.Instance.SendGameClear(mapId, stars, elapsed);
+            else if (mapId == 0)
+                Debug.LogWarning("[SpaceshipAssembly] LastLoadedMapId가 0 — C_GAME_CLEAR 미전송");
+
+            GameRuleManager.Instance.ReturnToStageSelectScene(true, stars);
+            return;
+        }
+
+        var starsLocal = 3;
+        GameRuleManager.Instance.ReturnToStageSelectScene(true, starsLocal);
     }
 }
