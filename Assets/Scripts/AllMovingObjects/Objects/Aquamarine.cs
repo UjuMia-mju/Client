@@ -23,7 +23,6 @@ public class Aquamarine : MonoBehaviour
         // 던져서 부딫힌게 행성인 경우 트리거 비활성화후 리턴
         else if (isTriggered)
         {
-
             // 행성에 떨어지면 트리거 비활성화인데 조금 조악함.
             if (other.CompareTag(Define.Tag.PLANET))
             {
@@ -53,6 +52,15 @@ public class Aquamarine : MonoBehaviour
                 // KingSlime 전용 로직 실행
                 kingSlime.SlimeHit(damage);
             }
+
+            // 동작 완료 후 파괴
+
+            Items itemComp = other.GetComponentInParent<Items>();
+            if (itemComp != null)
+            {
+                PacketSender.Instance.SendObjectDestroy(itemComp.itemId);
+            }
+            Destroy(transform.parent.gameObject);
         }
 
     }

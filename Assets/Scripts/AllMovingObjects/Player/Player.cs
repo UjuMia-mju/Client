@@ -974,30 +974,37 @@ public class Player : MovingObject
 
     public void FindThrowingWeaponAndTriggerIt()
     {
-        // 현재 오브젝트의 모든 자식 트랜스폼을 가져온다
         Transform[] children = GetComponentsInChildren<Transform>(true);
         Transform socketTransform = null;
-
         foreach (Transform child in children)
         {
-            if (child.name == SOCKET)
+            if (child.name == "SOCKET" || child.name == "Socket")
             {
                 socketTransform = child;
                 break;
             }
         }
 
-        if (socketTransform != null)
+        if (socketTransform == null) return;
+
+        foreach (Transform child in socketTransform)
         {
-            // 아쿠아마린 -> 자식객체 BossDamageTrigger
-            Transform aquaTransform = socketTransform.Find("Aqua/BossDamageTrigger");
-            if (aquaTransform != null)
+            if (!child.name.StartsWith("Aqua"))
             {
-                Aquamarine aquamarine = aquaTransform.GetComponent<Aquamarine>();
-                if (aquamarine != null)
-                {
-                    aquamarine.SetActiveAquaTrigger();
-                }
+                continue;
+            }
+
+            // Aqua의 바로 아래 자식 중에서 BossDamageTrigger를 찾음
+            Transform boxTransform = child.Find("BossDamageTrigger");
+            if (boxTransform == null)
+            {
+                continue;
+            }
+
+            Aquamarine aquamarine = boxTransform.GetComponent<Aquamarine>();
+            if (aquamarine != null)
+            {
+                aquamarine.SetActiveAquaTrigger();
             }
         }
     }

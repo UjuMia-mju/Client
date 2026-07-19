@@ -282,18 +282,26 @@ public class OtherPlayers : MovingObject
             }
         }
 
-        if (socketTransform != null)
+        if (socketTransform == null) return;
+
+        foreach (Transform child in socketTransform)
         {
-            Transform aquaTransform = socketTransform.Find("Aqua/BossDamageTrigger");
-
-            if (aquaTransform != null)
+            if (!child.name.StartsWith("Aqua"))
             {
-                Aquamarine aquamarine = aquaTransform.GetComponent<Aquamarine>();
+                continue;
+            }
 
-                if (aquamarine != null)
-                {
-                    aquamarine.SetActiveAquaTrigger();
-                }
+            // Aqua의 바로 아래 자식 중에서 BossDamageTrigger를 찾음
+            Transform boxTransform = child.Find("BossDamageTrigger");
+            if (boxTransform == null)
+            {
+                continue;
+            }
+
+            Aquamarine aquamarine = boxTransform.GetComponent<Aquamarine>();
+            if (aquamarine != null)
+            {
+                aquamarine.SetActiveAquaTrigger();
             }
         }
     }
