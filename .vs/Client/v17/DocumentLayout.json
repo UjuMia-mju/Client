@@ -3,20 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\aquamarine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\aquamarine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\kingslime\\kingslime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\kingslime\\kingslime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\crafting\\spaceshipassembly.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\crafting\\spaceshipassembly.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\allmovingobjects\\objects\\aquamarine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\aquamarine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\crafting\\spaceshipassembly.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\crafting\\spaceshipassembly.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -43,7 +43,7 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playeritemsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\server\\relay\\relaypackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\relay\\relaypackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\relay\\relaypackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -378,11 +378,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "SpaceshipAssembly.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
@@ -390,18 +390,17 @@
               "RelativeToolTip": "Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAIwBgAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T07:10:44.977Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-19T07:10:44.977Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "PlayManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PlayManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\PlayManager.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PlayManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\Server\\PlayManager.cs",
-              "ViewState": "AgIAAH4CAAAAAAAAAAAowPsBAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-19T05:47:14.589Z",
               "EditorCaption": ""
@@ -416,8 +415,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
               "ViewState": "AgIAALwBAAAAAAAAAADwv+ABAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T09:57:36.814Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-05T09:57:36.814Z"
             },
             {
               "$type": "Document",
@@ -429,8 +427,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Relay\\RelayPacketHandler.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-15T23:50:40.476Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-15T23:50:40.476Z"
             },
             {
               "$type": "Document",
@@ -442,12 +439,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
               "ViewState": "AgIAAE4AAAAAAAAAAAAQwGUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T13:57:14.682Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T13:57:14.682Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Aquamarine.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Aquamarine.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Aquamarine.cs",
@@ -468,8 +464,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
               "ViewState": "AgIAAAIBAAAAAAAAAAAAwCEBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T11:02:23.024Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-05T11:02:23.024Z"
             },
             {
               "$type": "Document",
@@ -481,8 +476,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAAAGIAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T19:07:17.389Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T19:07:17.389Z"
             },
             {
               "$type": "Document",
@@ -492,7 +486,7 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlime.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlime.cs",
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlime.cs",
-              "ViewState": "AgIAAJoAAAAAAAAAAAAiwKAAAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-13T11:27:43.751Z",
               "EditorCaption": ""
@@ -579,8 +573,7 @@
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
               "ViewState": "AgIAAPcAAAAAAAAAAAAuwCABAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-02T09:54:19.087Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-02T09:54:19.087Z"
             },
             {
               "$type": "Document",
@@ -592,8 +585,7 @@
               "RelativeToolTip": "Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
               "ViewState": "AgIAABcAAAAAAAAAAADwvxoAAABLAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T10:50:20.484Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T10:50:20.484Z"
             },
             {
               "$type": "Document",

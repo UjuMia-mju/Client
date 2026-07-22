@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Protocol;
+using System.Collections.Generic;
 
 public class KingSlime : Monster
 {
@@ -23,6 +24,8 @@ public class KingSlime : Monster
     [SerializeField] private int damage = 1;
 
     [SerializeField] private float dieAnimDuration = 1.2f;
+
+    [SerializeField] private List<GameObject> meteorPosList;
 
     protected override void Awake()
     {
