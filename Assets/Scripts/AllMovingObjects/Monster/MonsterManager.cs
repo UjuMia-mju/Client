@@ -266,4 +266,14 @@ public class MonsterManager : MonoBehaviour
         Monster monsterComp = spawned.GetComponent<Monster>();
         if (monsterComp != null) monsterComp.ApplyDamage(damage);
     }
+
+    public void SpawnMeteorFromNetwork(int monsterId, Vector3 position)
+    {
+        if (!monsterDic.TryGetValue(monsterId, out GameObject spawned) || spawned == null)
+            return;
+
+        KingSlime kingSlime = spawned.GetComponent<KingSlime>();
+        if (kingSlime != null)
+            kingSlime.SpawnMeteorFromNetwork(position);
+    }
 }

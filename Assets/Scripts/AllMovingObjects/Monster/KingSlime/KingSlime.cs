@@ -11,7 +11,6 @@ public class KingSlime : Monster
     private KingSlimeAnimState? lastAppliedState;
 
 
-    private bool isBiting;
     private bool isTakingDamage;
     private bool isDying;
 
@@ -20,12 +19,22 @@ public class KingSlime : Monster
     private bool IsHost =>
         ConnectManager.Instance != null && ConnectManager.Instance.isHost;
 
+    [SerializeField] private GameObject damageBox;
+    private const float DAMAGE_BOX_LIFE_TIME = 0.5f;
 
     [SerializeField] private int damage = 1;
 
     [SerializeField] private float dieAnimDuration = 1.2f;
 
     [SerializeField] private List<GameObject> meteorPosList;
+    [SerializeField] private GameObject meteorPrefab;
+    [SerializeField] private Transform meteorTargetPos;
+
+    [SerializeField] private float meteorInterval = 2f;
+    private Coroutine meteorCo;
+
+    [SerializeField] private int meteorMinCount = 5;
+    [SerializeField] private int meteorMaxCount = 6;   // exclusive upper bound로 쓸 예정 (Random.Range(min, max+1))
 
     protected override void Awake()
     {
@@ -44,16 +53,18 @@ public class KingSlime : Monster
         {
             BroadcastAnimState(KingSlimeAnimState.Idle);
 
-            // Spawn 도중 사망 처리가 시작됐다면 Idle 덮어쓰기 금지
             if (isDying) yield break;
 
             SetStateHostAndBroadcast(KingSlimeAnimState.Idle);
+
+            meteorCo = StartCoroutine(MeteorLoopRoutine());   // 추가
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        // 호스트 권위
         if (!IsHost) return;
         if (isDying) return;
 
@@ -149,8 +160,9 @@ public class KingSlime : Monster
         if (isDying) return;
         isDying = true;
 
-        // 진행 중 모든 부수 코루틴 중단
         if (hurtCo != null) { StopCoroutine(hurtCo); hurtCo = null; isTakingDamage = false; }
+
+        if (meteorCo != null) { StopCoroutine(meteorCo); meteorCo = null; }   // 추가
 
         SetStateHostAndBroadcast(KingSlimeAnimState.Die);
     }
@@ -241,5 +253,76 @@ public class KingSlime : Monster
 
         var starsLocal = 3;
         GameRuleManager.Instance.ReturnToStageSelectScene(true, starsLocal);
+    }
+
+    // 공격 판정
+    private void SpawnDamageBox(Vector3 position)
+    {
+        if (damageBox == null) return;
+
+        GameObject box = Instantiate(damageBox, position, Quaternion.identity);
+        Destroy(box, DAMAGE_BOX_LIFE_TIME);
+    }
+
+    private void SpawnMeteor()
+    {
+        if (meteorPrefab == null || meteorPosList == null || meteorPosList.Count == 0) return;
+
+        List<GameObject> shuffled = new List<GameObject>(meteorPosList);
+        for (int i = shuffled.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (shuffled[i], shuffled[j]) = (shuffled[j], shuffled[i]);
+        }
+
+        int count = Random.Range(meteorMinCount, meteorMaxCount + 1);
+        count = Mathf.Min(count, shuffled.Count);   // 리스트보다 많이 뽑는 것 방지
+
+        for (int i = 0; i < count; i++)
+        {
+            GameObject posObj = shuffled[i];
+            if (posObj == null) continue;
+
+            Vector3 spawnPos = posObj.transform.position;
+
+            GameObject meteor = Instantiate(meteorPrefab, spawnPos, Quaternion.identity);
+            meteor.GetComponent<Meteor>()?.SetTargetPosition(meteorTargetPos.position);
+
+            BroadcastMeteorSpawn(spawnPos);
+        }
+    }
+
+    private void BroadcastMeteorSpawn(Vector3 position)
+    {
+        if (!IsHost) return;
+        if (PacketSender.Instance == null) return;
+
+        S_METEOR_SPAWN packet = new S_METEOR_SPAWN
+        {
+            MonsterId = monsterId,
+            Pos = new PosInfo { X = position.x, Y = position.y, Z = position.z }
+        };
+
+        PacketSender.Instance.BroadcastMeteorSpawn(packet);
+    }
+
+    public void SpawnMeteorFromNetwork(Vector3 position)
+    {
+        if (meteorPrefab == null) return;
+
+        GameObject meteor = Instantiate(meteorPrefab, position, Quaternion.identity);
+        meteor.GetComponent<Meteor>()?.SetTargetPosition(meteorTargetPos.position);
+    }
+
+    private IEnumerator MeteorLoopRoutine()
+    {
+        while (!isDying)
+        {
+            yield return new WaitForSeconds(meteorInterval);
+
+            if (isDying) yield break;
+
+            SpawnMeteor();
+        }
     }
 }

@@ -602,3 +602,8 @@ message S_MONSTER_HIT{
 message S_MONSTER_DEAD{
 	int32 monster_id = 1;
 }
+
+message S_METEOR_SPAWN{
+	int32 monster_id = 1;
+	PosInfo pos = 2;
+}

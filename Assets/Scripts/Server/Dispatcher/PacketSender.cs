@@ -206,5 +206,9 @@ public class PacketSender : MonoBehaviorSingleton<PacketSender>
     public void BroadcastMonsterHit(S_MONSTER_HIT packet)
         => TryHostBroadcast(() => hostSender.BroadcastToPeers(PacketId.PKT_S_MONSTER_HIT, packet));
 
+    // 메테오 소환 브로드캐스트
+    public void BroadcastMeteorSpawn(S_METEOR_SPAWN packet)
+        => TryHostBroadcast(() => hostSender.BroadcastToPeers(PacketId.PKT_S_METEOR_SPAWN, packet));
+
     #endregion
 }

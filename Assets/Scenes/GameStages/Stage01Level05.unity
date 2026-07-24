@@ -734,6 +734,18 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: damageBox
+      value: 
+      objectReference: {fileID: 5586521096546025729, guid: 76a20f9e70afb4a4fbe99b1636f24dac, type: 3}
+    - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: meteorPrefab
+      value: 
+      objectReference: {fileID: 7384088209249105877, guid: a45f1ba4d45ef304a857c7bc8c252f49, type: 3}
+    - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
+      propertyPath: meteorTargetPos
+      value: 
+      objectReference: {fileID: 602545346}
+    - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
       propertyPath: meteorPosList.Array.size
       value: 11
       objectReference: {fileID: 0}

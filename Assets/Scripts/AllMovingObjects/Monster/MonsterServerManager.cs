@@ -12,6 +12,7 @@ public class MonsterServerManager : MonoBehaviour
             HostPacketHandler.Instance.OnMonsterAnimationEvent += OnAnimationReceived;
             HostPacketHandler.Instance.OnMonsterMoveEvent += OnMoveReceived;
             HostPacketHandler.Instance.OnMonsterHitEvent += OnHitReceived;
+            HostPacketHandler.Instance.OnMeteorSpawnEvent += OnMeteorSpawnReceived;
         }
     }
 
@@ -24,6 +25,7 @@ public class MonsterServerManager : MonoBehaviour
             HostPacketHandler.Instance.OnMonsterAnimationEvent -= OnAnimationReceived;
             HostPacketHandler.Instance.OnMonsterMoveEvent -= OnMoveReceived;
             HostPacketHandler.Instance.OnMonsterHitEvent -= OnHitReceived;
+            HostPacketHandler.Instance.OnMeteorSpawnEvent -= OnMeteorSpawnReceived;
         }
     }
 
@@ -57,5 +59,11 @@ public class MonsterServerManager : MonoBehaviour
     private void OnHitReceived(S_MONSTER_HIT packet)
     {
         MonsterManager.Instance.ApplyDamageFromNetwork(packet.MonsterId, packet.Damage);
+    }
+
+    private void OnMeteorSpawnReceived(S_METEOR_SPAWN packet)
+    {
+        Vector3 pos = new Vector3(packet.Pos.X, packet.Pos.Y, packet.Pos.Z);
+        MonsterManager.Instance.SpawnMeteorFromNetwork(packet.MonsterId, pos);
     }
 }
