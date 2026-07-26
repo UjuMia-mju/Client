@@ -730,25 +730,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 1993481656}
     m_Modifications:
     - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
-      propertyPath: maxHp
-      value: 2
+      propertyPath: detectRadius
+      value: 15
       objectReference: {fileID: 0}
-    - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
-      propertyPath: damageBox
-      value: 
-      objectReference: {fileID: 5586521096546025729, guid: 76a20f9e70afb4a4fbe99b1636f24dac, type: 3}
-    - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
-      propertyPath: meteorPrefab
-      value: 
-      objectReference: {fileID: 7384088209249105877, guid: a45f1ba4d45ef304a857c7bc8c252f49, type: 3}
     - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
       propertyPath: meteorTargetPos
       value: 
       objectReference: {fileID: 602545346}
-    - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
-      propertyPath: meteorPosList.Array.size
-      value: 11
-      objectReference: {fileID: 0}
     - target: {fileID: -8546429011651440372, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
       propertyPath: 'meteorPosList.Array.data[0]'
       value: 
@@ -793,18 +781,6 @@ PrefabInstance:
       propertyPath: 'meteorPosList.Array.data[10]'
       value: 
       objectReference: {fileID: 703299090}
-    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.005
-      objectReference: {fileID: 0}
-    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.005
-      objectReference: {fileID: 0}
-    - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.005
-      objectReference: {fileID: 0}
     - target: {fileID: 7478139613578557310, guid: 339736bdfaa2caf4ebbb6f3cc5223da8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0076274793
@@ -4525,7 +4501,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1368340870
 Transform:
   m_ObjectHideFlags: 0

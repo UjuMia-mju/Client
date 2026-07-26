@@ -62,6 +62,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4842918485249064526}
   m_LocalEulerAnglesHint: {x: 78.73251, y: 90, z: 0}
+--- !u!1 &2636558701779047955
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3918060903975591374}
+  m_Layer: 0
+  m_Name: ActualPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3918060903975591374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636558701779047955}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.421, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7478139613578557310}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4294890137247186993
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,11 +530,12 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.524, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8212746346183492432}
   - {fileID: 3614232321252597926}
+  - {fileID: 3918060903975591374}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &5507022013733151231
@@ -545,12 +577,35 @@ MonoBehaviour:
   rotationSpeed: 0
   drawDebugGizmos: 1
   monsterId: 0
-  maxHp: 3
+  maxHp: 2
   attack: 1
   monsterKey: 3
   isScenePlacedMonster: 1
   rigidbodyDragAndDrop: {fileID: 1780033841823665230}
+  damageBox: {fileID: 5586521096546025729, guid: bf49354256f64604a9ca63f74b78e088, type: 3}
   damage: 1
+  dieAnimDuration: 1.2
+  meteorPosList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  meteorPrefab: {fileID: 7384088209249105877, guid: a45f1ba4d45ef304a857c7bc8c252f49, type: 3}
+  meteorTargetPos: {fileID: 0}
+  meteorInterval: 2
+  meteorMinCount: 5
+  meteorMaxCount: 6
+  detectGizmoColor: {r: 1, g: 0.2, b: 0.25, a: 0.25}
+  detectGizmoWireColor: {r: 1, g: 0, b: 0, a: 0.9}
+  detectRadius: 11
+  actualThisTransform: {fileID: 3918060903975591374}
 --- !u!114 &-3646148336784361996
 MonoBehaviour:
   m_ObjectHideFlags: 0

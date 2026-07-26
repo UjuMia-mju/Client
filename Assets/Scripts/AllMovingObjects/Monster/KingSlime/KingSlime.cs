@@ -36,6 +36,23 @@ public class KingSlime : Monster
     [SerializeField] private int meteorMinCount = 5;
     [SerializeField] private int meteorMaxCount = 6;   // exclusive upper bound로 쓸 예정 (Random.Range(min, max+1))
 
+
+    [Header("Gizmo")]
+    [SerializeField] private Color detectGizmoColor = new Color(1f, 0.2f, 0.25f, 0.25f);
+    [SerializeField] private Color detectGizmoWireColor = new Color(1f, 0f, 0f, 0.9f);
+    [SerializeField] private float detectRadius;
+
+
+    private bool isJumpingAttack;
+    private Coroutine jumpCo;
+    private float jumpAnimDuration = 0.4f;
+
+    public Transform actualThisTransform;
+
+    [Header("Attack Settings")]
+    [SerializeField] private float attackInterval = 1f; // 공격 속도(공격 간 최소 간격, 초)
+    private float lastAttackTime = -Mathf.Infinity;
+
     protected override void Awake()
     {
         base.Awake();
@@ -77,8 +94,7 @@ public class KingSlime : Monster
 
         //if (isSpawning || isTakingDamage) return;
 
-        //DetectPlayer();
-        //TryAttack();
+        DetectPlayerAndAttack();
     }
 
 
@@ -260,7 +276,7 @@ public class KingSlime : Monster
     {
         if (damageBox == null) return;
 
-        GameObject box = Instantiate(damageBox, position, Quaternion.identity);
+        GameObject box = Instantiate(damageBox, position, this.transform.rotation);
         Destroy(box, DAMAGE_BOX_LIFE_TIME);
     }
 
@@ -324,5 +340,94 @@ public class KingSlime : Monster
 
             SpawnMeteor();
         }
+    }
+
+
+    // 탐지범위 Gizmo
+    protected override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+        DrawDetectGizmo();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        DrawDetectGizmo();
+    }
+
+    private void DrawDetectGizmo()
+    {
+        Gizmos.color = detectGizmoColor;
+        Gizmos.DrawSphere(actualThisTransform.position, detectRadius);
+
+        Gizmos.color = detectGizmoWireColor;
+        Gizmos.DrawWireSphere(actualThisTransform.position, detectRadius);
+    }
+
+    private void DetectPlayerAndAttack()
+    {
+        // 아직 쿨타임이 안 지났거나 이미 공격 중이면 무시
+        if (isJumpingAttack || jumpCo != null) return;
+        if (Time.time - lastAttackTime < attackInterval) return;
+
+        Collider[] hits = Physics.OverlapSphere(actualThisTransform.position, detectRadius);
+        float closestDist = float.MaxValue;
+        Transform closest = null;
+
+        foreach (var hit in hits)
+        {
+            if (!hit.CompareTag(Define.Tag.PLAYER)) continue;
+
+            // 죽은 플레이어 제외 (로컬/원격 모두)
+            Player localPlayer = hit.GetComponentInParent<Player>();
+            if (localPlayer != null)
+            {
+                PlayerStat stat = localPlayer.GetComponent<PlayerStat>();
+                if (stat != null && stat.GetHp() <= 0) continue;
+            }
+            else
+            {
+                OtherPlayers remotePlayer = hit.GetComponentInParent<OtherPlayers>();
+                if (remotePlayer != null
+                    && HostStatManager.Instance != null
+                    && HostStatManager.Instance.TryGetPlayerStat(remotePlayer.PlayerId, out var remoteStat)
+                    && remoteStat != null
+                    && remoteStat.GetHp() <= 0)
+                {
+                    continue;
+                }
+            }
+
+            float dist = Vector3.Distance(actualThisTransform.position, hit.transform.position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closest = hit.transform;
+            }
+        }
+
+        if (closest != null)
+        {
+            lastAttackTime = Time.time; // 공격 시작 시각 기록 -> 다음 공격은 attackInterval 이후 가능
+
+
+            jumpCo = StartCoroutine(JumpAttack());
+        }
+    }
+
+    private IEnumerator JumpAttack()
+    {
+        SetStateHostAndBroadcast(KingSlimeAnimState.JumpingAttack);
+
+        yield return new WaitForSeconds(jumpAnimDuration);
+
+        SpawnDamageBox(actualThisTransform.position);
+
+        if (!isDying && !isTakingDamage)
+            SetStateHostAndBroadcast(KingSlimeAnimState.Idle);
+
+        yield return new WaitForSeconds(attackInterval); // Idle 상태로 1초 대기
+
+        jumpCo = null; // 여기서 풀어줘야 DetectPlayerAndAttack이 다음 공격을 다시 시작함
     }
 }
