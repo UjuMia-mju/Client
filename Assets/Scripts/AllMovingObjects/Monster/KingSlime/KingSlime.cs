@@ -52,6 +52,9 @@ public class KingSlime : Monster
     [Header("Attack Settings")]
     [SerializeField] private float attackInterval = 1f; // 공격 속도(공격 간 최소 간격, 초)
     private float lastAttackTime = -Mathf.Infinity;
+    private Quaternion targetRotation;
+    private bool hasTargetRotation;
+
 
     protected override void Awake()
     {
@@ -95,6 +98,16 @@ public class KingSlime : Monster
         //if (isSpawning || isTakingDamage) return;
 
         DetectPlayerAndAttack();
+
+        // 목표 방향으로 부드럽게 회전
+        if (hasTargetRotation)
+        {
+            actualThisTransform.rotation = Quaternion.Slerp(
+                actualThisTransform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
     }
 
 
@@ -408,8 +421,17 @@ public class KingSlime : Monster
 
         if (closest != null)
         {
-            lastAttackTime = Time.time; // 공격 시작 시각 기록 -> 다음 공격은 attackInterval 이후 가능
+            // 가장 가까운 플레이어 방향을 목표 회전값으로 저장 (Y축만)
+            Vector3 lookDir = closest.position - actualThisTransform.position;
+            lookDir.y = 0f; // 위아래로 기울지 않도록 수평 방향만 사용
 
+            if (lookDir.sqrMagnitude > 0.0001f)
+            {
+                targetRotation = Quaternion.LookRotation(lookDir);
+                hasTargetRotation = true;
+            }
+
+            lastAttackTime = Time.time; // 공격 시작 시각 기록 -> 다음 공격은 attackInterval 이후 가능
 
             jumpCo = StartCoroutine(JumpAttack());
         }
