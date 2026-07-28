@@ -42,7 +42,6 @@ public class KingSlime : Monster
     [SerializeField] private Color detectGizmoWireColor = new Color(1f, 0f, 0f, 0.9f);
     [SerializeField] private float detectRadius;
 
-
     private bool isJumpingAttack;
     private Coroutine jumpCo;
     private float jumpAnimDuration = 0.4f;
@@ -84,7 +83,6 @@ public class KingSlime : Monster
     // Update is called once per frame
     void Update()
     {
-        // 호스트 권위
         if (!IsHost) return;
         if (isDying) return;
 
@@ -95,21 +93,8 @@ public class KingSlime : Monster
             return;
         }
 
-        //if (isSpawning || isTakingDamage) return;
-
         DetectPlayerAndAttack();
-
-        // 목표 방향으로 부드럽게 회전
-        if (hasTargetRotation)
-        {
-            actualThisTransform.rotation = Quaternion.Slerp(
-                actualThisTransform.rotation,
-                targetRotation,
-                rotationSpeed * Time.deltaTime
-            );
-        }
     }
-
 
     private void PlayLocalState(KingSlimeAnimState newState)
     {
@@ -421,24 +406,18 @@ public class KingSlime : Monster
 
         if (closest != null)
         {
-            // 가장 가까운 플레이어 방향을 목표 회전값으로 저장 (Y축만)
-            Vector3 lookDir = closest.position - actualThisTransform.position;
-            lookDir.y = 0f; // 위아래로 기울지 않도록 수평 방향만 사용
-
-            if (lookDir.sqrMagnitude > 0.0001f)
-            {
-                targetRotation = Quaternion.LookRotation(lookDir);
-                hasTargetRotation = true;
-            }
-
             lastAttackTime = Time.time; // 공격 시작 시각 기록 -> 다음 공격은 attackInterval 이후 가능
 
-            jumpCo = StartCoroutine(JumpAttack());
+            jumpCo = StartCoroutine(JumpAttack(closest));
         }
     }
 
-    private IEnumerator JumpAttack()
+    private IEnumerator JumpAttack(Transform target)
     {
+        // 공격 전 타겟 방향으로 부드럽게 회전 (this.transform 기준)
+        if (target != null)
+            yield return StartCoroutine(FaceTargetHorizontally(target.position));
+
         SetStateHostAndBroadcast(KingSlimeAnimState.JumpingAttack);
 
         yield return new WaitForSeconds(jumpAnimDuration);
@@ -451,5 +430,43 @@ public class KingSlime : Monster
         yield return new WaitForSeconds(attackInterval); // Idle 상태로 1초 대기
 
         jumpCo = null; // 여기서 풀어줘야 DetectPlayerAndAttack이 다음 공격을 다시 시작함
+    }
+
+    /// <summary>
+    /// 수평(this.transform.up 축 기준) 방향만 타겟을 향하도록 보간 회전.
+    /// 회전이 끝나면 코루틴 종료.
+    /// </summary>
+    private IEnumerator FaceTargetHorizontally(Vector3 targetPos)
+    {
+        const float epsilonDeg = 0.5f;
+
+        while (true)
+        {
+            Vector3 up = this.transform.up;
+            Vector3 toTarget = targetPos - this.transform.position;
+            Vector3 flatDir = Vector3.ProjectOnPlane(toTarget, up);
+            if (flatDir.sqrMagnitude < 1e-6f) yield break;
+
+            Quaternion targetRot = Quaternion.LookRotation(flatDir.normalized, up);
+            float angle = Quaternion.Angle(this.transform.rotation, targetRot);
+            if (angle < epsilonDeg) yield break;
+
+            this.transform.rotation = Quaternion.RotateTowards(
+                this.transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+
+            // 매 프레임 피어에게 회전 동기화
+            if (PacketSender.Instance != null)
+            {
+                S_MONSTER_MOVE movePacket = new S_MONSTER_MOVE
+                {
+                    MonsterId = monsterId,
+                    Pos = new PosInfo { X = this.transform.position.x, Y = this.transform.position.y, Z = this.transform.position.z },
+                    Rot = new RotInfo { X = this.transform.rotation.x, Y = this.transform.rotation.y, Z = this.transform.rotation.z, W = this.transform.rotation.w }
+                };
+                PacketSender.Instance.BroadcastMonsterMove(movePacket);
+            }
+
+            yield return null;
+        }
     }
 }
