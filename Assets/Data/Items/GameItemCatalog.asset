@@ -69,3 +69,7 @@ MonoBehaviour:
     displayName: "\uC57C\uAD6C\uBC30\uD2B8"
     icon: {fileID: 0}
     prefab: {fileID: 0}
+  - key: Aqua
+    displayName: "\uC544\uCFE0\uC544\uB9C8\uB9B0"
+    icon: {fileID: 787572454, guid: 6c3073ecedf0ea74e83f68bd6bfe9581, type: 3}
+    prefab: {fileID: 5248076910442429696, guid: cb442a0fe5232534aa16268a7ec8f803, type: 3}

@@ -34,7 +34,9 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
     public event Action<S_MONSTER_DEAD> OnMonsterDeadEvent;
     public event Action<S_MONSTER_ANIMATION> OnMonsterAnimationEvent;
     public event System.Action<Protocol.S_MONSTER_MOVE> OnMonsterMoveEvent;
+    public event System.Action<Protocol.S_MONSTER_HIT> OnMonsterHitEvent;
     public event Action<byte[]> OnMushroomExplodeEvent;
+    public event Action<S_METEOR_SPAWN> OnMeteorSpawnEvent; 
 
     public void HandlePacket(PacketId packetId, byte[] data)
     {
@@ -123,6 +125,12 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
                 break;
             case PacketId.PKT_S_MONSTER_MOVE:
                 HandleMonsterMove(data);
+                break;
+            case PacketId.PKT_S_MONSTER_HIT:
+                HandleMonsterHit(data);
+                break;
+            case PacketId.PKT_S_METEOR_SPAWN:
+                HandleMeteorSpawn(data);
                 break;
             default:
                 Debug.LogWarning($"[HostPacketHandler] Unhandled packet ID: {packetId}");
@@ -314,4 +322,19 @@ public class HostPacketHandler : Singleton<HostPacketHandler>
         S_MONSTER_MOVE packet = S_MONSTER_MOVE.Parser.ParseFrom(data);
         OnMonsterMoveEvent?.Invoke(packet);
     }
+
+
+    private void HandleMonsterHit(byte[] data)
+    {
+        S_MONSTER_HIT packet = S_MONSTER_HIT.Parser.ParseFrom(data);
+        OnMonsterHitEvent?.Invoke(packet);
+    }
+
+    private void HandleMeteorSpawn(byte[] data)
+    {
+        S_METEOR_SPAWN packet = S_METEOR_SPAWN.Parser.ParseFrom(data);
+        OnMeteorSpawnEvent?.Invoke(packet);
+    }
+
+
 }

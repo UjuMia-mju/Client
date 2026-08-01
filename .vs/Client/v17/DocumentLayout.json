@@ -3,20 +3,156 @@
   "WorkspaceRootPath": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourcemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourcemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\allmovingobjects\\monster\\kingslime\\kingslime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\kingslime\\kingslime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|c:\\users\\owner\\desktop\\files\\teamproject\\client\\assets\\scripts\\allmovingobjects\\objects\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourceservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourceservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\desertworm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\desertworm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monstermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monstermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\desertwormanimator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\desertwormanimator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monsterservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monsterservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\treasureresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\treasureresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\movingobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\movingobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\kingslime\\kingslimeanimator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\kingslime\\kingslimeanimator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\kingslime\\meteor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\kingslime\\meteor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\peer\\hostpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\peer\\hostpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\packetsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\packetsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dedicate\\packetdispatcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dedicate\\packetdispatcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\iclientsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\iclientsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\peersender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\peersender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\ihostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\ihostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\hostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\hostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\ore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\ore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourceobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourceobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\damagetrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\damagetrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\aquamarine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\aquamarine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\crafting\\spaceshipassembly.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\crafting\\spaceshipassembly.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\otherplayers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\otherplayers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\host\\peerpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\host\\peerpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\playeritemsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playeritemsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\relay\\relaypackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\relay\\relaypackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dedicate\\netmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dedicate\\netmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dedicate\\packethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dedicate\\packethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\ui\\messagemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ui\\messagemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\items\\furnaceservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\items\\furnaceservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\axe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\axe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\stageselect\\stagenode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\stageselect\\stagenode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monsterenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monsterenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourcemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourcemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourceservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourceservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\items\\smeltingrecipemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -29,10 +165,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dbcachemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dbcachemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\core\\connectmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -51,10 +183,6 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ui\\main\\clientsessionreset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\ui\\messagemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ui\\messagemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\core\\roommembershiptracker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\core\\roommembershiptracker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -67,14 +195,6 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamerule\\gamerulemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\treasureresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\treasureresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\baseballbat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\baseballbat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\treeresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\treeresource.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -83,40 +203,12 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\items\\itemcatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\core\\packetid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\playmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\hostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\hostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\items\\furnaceservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\items\\furnaceservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourcecatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourcecatalog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monsterservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monsterservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\items\\furnaceclientmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\items\\furnaceclientmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\host\\peerpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\host\\peerpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\core\\mushroomexplosionsyncbus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -127,56 +219,12 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gacha\\gachamanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dedicate\\packethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dedicate\\packethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dedicate\\packetdispatcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dedicate\\packetdispatcher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\packetsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\packetsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\ihostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\ihostsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\stageselect\\stagenode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\stageselect\\stagenode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\items\\furnaceobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\items\\furnaceobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\ore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\ore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\SceneObjectId.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Core\\SceneObjectId.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\iclientsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\iclientsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\resourceobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\resourceobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\desertworm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\desertworm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\desertwormanimator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\desertwormanimator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\hud\\hpuicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -193,14 +241,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\peer\\peerstatmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\peer\\peerstatmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\planet\\damagetrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\planet\\damagetrigger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\peer\\hostpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\peer\\hostpackethandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\stageselect\\stageuimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -231,14 +271,6 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\shovel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\core\\define.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\core\\define.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\monster\\monsterenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\monster\\monsterenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\hud\\craftbubblecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\hud\\craftbubblecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -247,36 +279,12 @@
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\crafting\\furnace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\crafting\\spaceshipassembly.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\crafting\\spaceshipassembly.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\server\\dispatcher\\peersender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\server\\dispatcher\\peersender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\objects\\axe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\objects\\axe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\otherplayers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\otherplayers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\movingobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\movingobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\playerlifeservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playerlifeservermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\footstepemitter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\footstepemitter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\playeritemsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\allmovingobjects\\player\\playeritemsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{12F44184-A422-5F27-22E6-507969043F15}|Assembly-CSharp.csproj|C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\assets\\scripts\\allmovingobjects\\player\\playerstat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -382,160 +390,312 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 15,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MonsterManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
-              "ViewState": "AgIAAGcAAAAAAAAAAAAWwIMAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-01T20:51:23.049Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ResourceManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceManager.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAAAAADQAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-27T13:34:19.162Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "PacketId.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\PacketId.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\PacketId.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAAAIwF0AAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T19:07:17.389Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "GameManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\GameManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\GameManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\GameManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\GameManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAABIwAwAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-14T03:51:41.258Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "DesertWorm.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
+              "ViewState": "AgIAAJoBAAAAAAAAAAAAAKUBAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-28T07:57:09.383Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PacketSender.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
+              "ViewState": "AgIAALsAAAAAAAAAAIA7wM4AAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-09T13:57:14.682Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
               "Title": "ItemManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\ItemManager.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAAAH4BAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAGcAAAAAAAAAAAAewH0AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-01T08:10:44.832Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-01T08:10:44.832Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "ConnectManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAAABwAAAAQAAAAAAAAAA==",
+              "DocumentIndex": 14,
+              "Title": "IClientSender.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T10:03:07.511Z"
+              "WhenOpened": "2026-04-09T15:16:49.725Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Player.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMIAAAAUAAAAAAAAAA==",
+              "DocumentIndex": 15,
+              "Title": "PeerSender.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAvwEEAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T09:57:36.814Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "LobbyManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Lobby\\LobbyManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Lobby\\LobbyManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Lobby\\LobbyManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Lobby\\LobbyManager.cs",
-              "ViewState": "AgIAANkAAAAAAAAAAAAAANkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-07T01:19:44.513Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "LobbyRoomClient.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Lobby\\LobbyRoomClient.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Lobby\\LobbyRoomClient.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Lobby\\LobbyRoomClient.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Lobby\\LobbyRoomClient.cs",
-              "ViewState": "AgIAAGkAAAAAAAAAAAA7wIoAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-07T01:19:59.376Z"
+              "WhenOpened": "2026-04-04T01:41:11.286Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "SmeltingRecipeManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "MonsterServerManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-10T07:33:23.06Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-17T19:41:03.834Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "DamageTrigger.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\DamageTrigger.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\DamageTrigger.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\DamageTrigger.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\DamageTrigger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T09:32:30.604Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MovingObject.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-09T16:19:49.231Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ResourceServerManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceServerManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceServerManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceServerManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceServerManager.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAADwvwsAAAA6AAAAAAAAAA==",
+              "Title": "MonsterManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterManager.cs",
+              "ViewState": "AgIAAJMAAAAAAAAAAAAiwNIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-07T11:34:55.288Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-24T06:47:20.742Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 27,
+              "Title": "PlayerItemSystem.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
+              "ViewState": "AgIAAPcAAAAAAAAAAAAuwCABAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-02T09:54:19.087Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "PacketDispatcher.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF0AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T10:07:15.524Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "SpaceshipAssembly.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAIwBgAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-19T07:10:44.977Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "Axe.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAkwDgAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T12:41:20.825Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "TreasureResource.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\TreasureResource.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\TreasureResource.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\TreasureResource.cs",
               "RelativeToolTip": "Assets\\Scripts\\Planet\\TreasureResource.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAEwFEAAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAADsAAAAAAAAAAABIwFQAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-01T21:22:37.934Z"
             },
             {
               "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "HostPacketHandler.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAAwIMAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T11:24:33.373Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "KingSlime.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlime.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlime.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlime.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlime.cs",
+              "ViewState": "AgIAAIYAAAAAAAAAAAD4v50AAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-13T11:27:43.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DesertWormAnimator.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-28T07:02:52.092Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "IHostSender.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAArwBIAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-09T13:56:58.734Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "HostSender.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
+              "ViewState": "AgIAALIAAAAAAAAAAAAewLkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-04T01:40:53.903Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "KingSlimeAnimator.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlimeAnimator.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlimeAnimator.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlimeAnimator.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\KingSlimeAnimator.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAAQwC4AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-13T11:14:29.683Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Ore.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Ore.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\Ore.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Ore.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\Ore.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAswC4AAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-18T10:29:25.39Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "ResourceObject.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceObject.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceObject.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceObject.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceObject.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAQwDMAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-27T13:39:28.022Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 11,
+              "Title": "PacketId.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\PacketId.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\PacketId.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\PacketId.cs",
+              "ViewState": "AgIAAEsAAAAAAAAAAAD4v2IAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T19:07:17.389Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Player.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\Player.cs",
+              "ViewState": "AgIAABEDAAAAAAAAAADgvycDAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T09:57:36.814Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Meteor.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\Meteor.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\Meteor.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\Meteor.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\KingSlime\\Meteor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-24T05:27:23.935Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
               "Title": "ClientSessionReset.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\UI\\Main\\ClientSessionReset.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\Main\\ClientSessionReset.cs",
@@ -547,19 +707,223 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 30,
+              "Title": "PacketHandler.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAUwC8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T12:57:26.077Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "MonsterEnum.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T20:10:58.109Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "NetManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\NetManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\dedicate\\NetManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\NetManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\dedicate\\NetManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAUAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-15T23:50:50.568Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "OtherPlayers.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
+              "ViewState": "AgIAAAIBAAAAAAAAAAAAwCEBAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-05T11:02:23.024Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Aquamarine.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Aquamarine.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Aquamarine.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Aquamarine.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Aquamarine.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAwDoAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-15T05:02:20.757Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "RelayPacketHandler.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Relay\\RelayPacketHandler.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Relay\\RelayPacketHandler.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Relay\\RelayPacketHandler.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Relay\\RelayPacketHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-15T23:50:40.476Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "PlayManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PlayManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\PlayManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PlayManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\PlayManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-19T05:47:14.589Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "PeerPacketHandler.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAADwvxoAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T10:50:20.484Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
               "Title": "MessageManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\UI\\MessageManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\MessageManager.cs",
               "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\UI\\MessageManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\UI\\MessageManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-07T01:19:17.807Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 32,
+              "Title": "FurnaceServerManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceServerManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\FurnaceServerManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceServerManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Items\\FurnaceServerManager.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAAwDwAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-09T16:23:22.173Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "ResourceServerManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceServerManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceServerManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceServerManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceServerManager.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAADwvwsAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-07T11:34:55.288Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "StageNode.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\StageSelect\\StageNode.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\StageSelect\\StageNode.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\StageSelect\\StageNode.cs",
+              "RelativeToolTip": "Assets\\Scripts\\StageSelect\\StageNode.cs",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAQwCcAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-01T22:51:17.21Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "GameManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\GameManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\GameManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\GameManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\GameManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAABIwAwAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T03:51:41.258Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "ResourceManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceManager.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAABIwDQAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-27T13:34:19.162Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "SmeltingRecipeManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Items\\SmeltingRecipeManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T07:33:23.06Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "LobbyRoomClient.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Lobby\\LobbyRoomClient.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Lobby\\LobbyRoomClient.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Lobby\\LobbyRoomClient.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Lobby\\LobbyRoomClient.cs",
+              "ViewState": "AgIAAGkAAAAAAAAAAAA7wIoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-07T01:19:59.376Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "LobbyManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Lobby\\LobbyManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Lobby\\LobbyManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Lobby\\LobbyManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Lobby\\LobbyManager.cs",
+              "ViewState": "AgIAANkAAAAAAAAAAAAAANkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-07T01:19:44.513Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "ConnectManager.cs",
+              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
+              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Server\\Core\\ConnectManager.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAAABwAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T10:03:07.511Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
               "Title": "DbCacheManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\DbCacheManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\DbCacheManager.cs",
@@ -571,7 +935,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 49,
               "Title": "ItemCatalog.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\ItemCatalog.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\ItemCatalog.cs",
@@ -583,7 +947,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 48,
               "Title": "TreeResource.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\TreeResource.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\TreeResource.cs",
@@ -595,7 +959,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 45,
               "Title": "RoomMembershipTracker.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\RoomMembershipTracker.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\RoomMembershipTracker.cs",
@@ -607,7 +971,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 46,
               "Title": "StageManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\StageSelect\\StageManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\StageSelect\\StageManager.cs",
@@ -619,7 +983,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 47,
               "Title": "GameRuleManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\GameRule\\GameRuleManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameRule\\GameRuleManager.cs",
@@ -631,43 +995,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "PlayManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PlayManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\PlayManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PlayManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\PlayManager.cs",
-              "ViewState": "AgIAAOgAAAAAAAAAAAAiwBQBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T15:56:50.268Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "HostSender.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\HostSender.cs",
-              "ViewState": "AgIAANQAAAAAAAAAAAAtwOMAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-04T01:40:53.903Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "FurnaceServerManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceServerManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\FurnaceServerManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceServerManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Items\\FurnaceServerManager.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAQwD8AAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T16:23:22.173Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 50,
               "Title": "ResourceCatalog.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceCatalog.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceCatalog.cs",
@@ -679,31 +1007,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "MonsterServerManager.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterServerManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T19:41:03.834Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "BaseballBat.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\BaseballBat.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\BaseballBat.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\BaseballBat.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\BaseballBat.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T18:16:32.119Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 51,
               "Title": "FurnaceClientManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceClientManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\FurnaceClientManager.cs",
@@ -715,19 +1019,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
-              "Title": "PacketHandler.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\dedicate\\PacketHandler.cs",
-              "ViewState": "AgIAAA0BAAAAAAAAAAAQwBkBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T12:57:26.077Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 55,
               "Title": "SceneObjectId.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\SceneObjectId.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\SceneObjectId.cs",
@@ -738,67 +1030,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
-              "Title": "StageNode.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\StageSelect\\StageNode.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\StageSelect\\StageNode.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\StageSelect\\StageNode.cs",
-              "RelativeToolTip": "Assets\\Scripts\\StageSelect\\StageNode.cs",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAQwHUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T22:51:17.21Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 39,
-              "Title": "IClientSender.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\IClientSender.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAewBgAAABWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T15:16:49.725Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "Items.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Items.cs",
-              "ViewState": "AgIAACoAAAAAAAAAAAAIwD0AAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T11:41:43.891Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 28,
-              "Title": "PeerPacketHandler.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Host\\PeerPacketHandler.cs",
-              "ViewState": "AgIAACsAAAAAAAAAAAAtwDwAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T10:50:20.484Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 32,
-              "Title": "PacketDispatcher.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\dedicate\\PacketDispatcher.cs",
-              "ViewState": "AgIAAMgAAAAAAAAAAAAgwC4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T10:07:15.524Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 53,
               "Title": "GachaManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Gacha\\GachaManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Gacha\\GachaManager.cs",
@@ -810,43 +1042,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
-              "Title": "Monster.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\Monster.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAUwC8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T16:16:07.597Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 33,
-              "Title": "PacketSender.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\PacketSender.cs",
-              "ViewState": "AgIAAJgAAAAAAAAAAAASwKQAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T13:57:14.682Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 34,
-              "Title": "IHostSender.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\IHostSender.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAA1wBgAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T13:56:58.734Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 52,
               "Title": "MushroomExplosionSyncBus.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\MushroomExplosionSyncBus.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\MushroomExplosionSyncBus.cs",
@@ -858,7 +1054,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 54,
               "Title": "FurnaceObject.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\FurnaceObject.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\FurnaceObject.cs",
@@ -870,55 +1066,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
-              "Title": "Ore.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Ore.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\Ore.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Ore.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Planet\\Ore.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAYwCcAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T10:29:25.39Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 41,
-              "Title": "DesertWorm.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWorm.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T19:13:09.803Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 43,
-              "Title": "DesertWormAnimator.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\DesertWormAnimator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T15:42:33.881Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 40,
-              "Title": "ResourceObject.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceObject.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\ResourceObject.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\ResourceObject.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Planet\\ResourceObject.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-27T13:39:28.022Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 57,
               "Title": "BaseNetSession.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Core\\BaseNetSession.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Core\\BaseNetSession.cs",
@@ -930,7 +1078,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 56,
               "Title": "HPUIController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\HPUIController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\HPUIController.cs",
@@ -942,7 +1090,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 58,
               "Title": "SoundManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\SoundManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\SoundManager.cs",
@@ -954,7 +1102,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 59,
               "Title": "PeerStatManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\PeerStatManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\PeerStatManager.cs",
@@ -966,31 +1114,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
-              "Title": "DamageTrigger.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\DamageTrigger.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\DamageTrigger.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\DamageTrigger.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Planet\\DamageTrigger.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T09:32:30.604Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 49,
-              "Title": "HostPacketHandler.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Peer\\HostPacketHandler.cs",
-              "ViewState": "AgIAAHYAAAAAAAAAAAAAwC8AAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T11:24:33.373Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 60,
               "Title": "StageUIManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\StageSelect\\StageUIManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\StageSelect\\StageUIManager.cs",
@@ -1002,7 +1126,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 61,
               "Title": "HostStatManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\HostStatManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\HostStatManager.cs",
@@ -1014,7 +1138,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 62,
               "Title": "WormTrap.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\WormTrap.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\WormTrap.cs",
@@ -1026,7 +1150,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 63,
               "Title": "ObjectsGravityController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\ObjectsGravityController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\ObjectsGravityController.cs",
@@ -1038,7 +1162,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 64,
               "Title": "PlayerAnimator.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerAnimator.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerAnimator.cs",
@@ -1050,7 +1174,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 65,
               "Title": "PlanetGravity.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\PlanetGravity.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\PlanetGravity.cs",
@@ -1062,7 +1186,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 66,
               "Title": "Shovel.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Shovel.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Shovel.cs",
@@ -1074,43 +1198,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
-              "Title": "Define.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Define.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\Define.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Define.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Core\\Define.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAAAQwEoAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-22T16:44:55.218Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 58,
-              "Title": "MonsterEnum.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Monster\\MonsterEnum.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-17T20:10:58.109Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 61,
-              "Title": "SpaceshipAssembly.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Crafting\\SpaceshipAssembly.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAawCYAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-28T08:34:42.786Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 68,
               "Title": "Furnace.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\Furnace.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\Furnace.cs",
@@ -1122,7 +1210,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 67,
               "Title": "CraftBubbleController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\CraftBubbleController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\CraftBubbleController.cs",
@@ -1134,31 +1222,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
-              "Title": "PeerSender.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Server\\Dispatcher\\PeerSender.cs",
-              "ViewState": "AgIAALYAAAAAAAAAAAAcwGEAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-04T01:41:11.286Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 63,
-              "Title": "Axe.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Objects\\Axe.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAmwDEAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-20T12:41:20.825Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 70,
               "Title": "FootstepEmitter.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\FootstepEmitter.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\FootstepEmitter.cs",
@@ -1170,7 +1234,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 69,
               "Title": "PlayerLifeServerManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerLifeServerManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerLifeServerManager.cs",
@@ -1182,43 +1246,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
-              "Title": "OtherPlayers.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayers.cs",
-              "ViewState": "AgIAAM8AAAAAAAAAAAAewO4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-05T11:02:23.024Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 65,
-              "Title": "MovingObject.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\MovingObject.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAxwGgAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T16:19:49.231Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 68,
-              "Title": "PlayerItemSystem.cs",
-              "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
-              "ToolTip": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
-              "RelativeToolTip": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerItemSystem.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAnwCYAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-02T09:54:19.087Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 70,
+              "DocumentIndex": 72,
               "Title": "PeerPlayerStat.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\PeerPlayerStat.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\PeerPlayerStat.cs",
@@ -1230,7 +1258,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 69,
+              "DocumentIndex": 71,
               "Title": "PlayerStat.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerStat.cs",
@@ -1242,7 +1270,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 71,
+              "DocumentIndex": 73,
               "Title": "HostPlayerStat.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\HostPlayerStat.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\HostPlayerStat.cs",
@@ -1254,7 +1282,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 72,
+              "DocumentIndex": 74,
               "Title": "PlayerTPCamera.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerTPCamera.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerTPCamera.cs",
@@ -1266,7 +1294,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 73,
+              "DocumentIndex": 75,
               "Title": "BaseStatManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\BaseStatManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\BaseStatManager.cs",
@@ -1278,7 +1306,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 74,
+              "DocumentIndex": 76,
               "Title": "MonoBehaviorSingleton.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\Generic\\MonoBehaviorSingleton.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\Generic\\MonoBehaviorSingleton.cs",
@@ -1290,7 +1318,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 89,
+              "DocumentIndex": 91,
               "Title": "Tree.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\Tree.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\Tree.cs",
@@ -1302,7 +1330,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 75,
+              "DocumentIndex": 77,
               "Title": "MainMultiPlayHandler.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\UI\\Main\\MainMultiPlayHandler.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\UI\\Main\\MainMultiPlayHandler.cs",
@@ -1314,7 +1342,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 76,
+              "DocumentIndex": 78,
               "Title": "LoginManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\LoginManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\LoginManager.cs",
@@ -1326,7 +1354,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 77,
+              "DocumentIndex": 79,
               "Title": "SmeltingRecipe.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Items\\SmeltingRecipe.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Items\\SmeltingRecipe.cs",
@@ -1338,7 +1366,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 78,
+              "DocumentIndex": 80,
               "Title": "OxygenUIController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\OxygenUIController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\OxygenUIController.cs",
@@ -1350,7 +1378,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 92,
+              "DocumentIndex": 94,
               "Title": "OtherPlayerStats.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayerStats.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayerStats.cs",
@@ -1362,7 +1390,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 79,
+              "DocumentIndex": 81,
               "Title": "OtherPlayersGravityController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayersGravityController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\OtherPlayersGravityController.cs",
@@ -1374,7 +1402,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 90,
+              "DocumentIndex": 92,
               "Title": "PeerNetManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Peer\\PeerNetManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Peer\\PeerNetManager.cs",
@@ -1386,7 +1414,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 91,
+              "DocumentIndex": 93,
               "Title": "HostNetManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\Host\\HostNetManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\Host\\HostNetManager.cs",
@@ -1398,7 +1426,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 80,
+              "DocumentIndex": 82,
               "Title": "PacketManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\PacketManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\PacketManager.cs",
@@ -1410,7 +1438,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 83,
+              "DocumentIndex": 85,
               "Title": "TimerController.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\TimerController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\TimerController.cs",
@@ -1422,7 +1450,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 82,
+              "DocumentIndex": 84,
               "Title": "PlayerInput.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\PlayerInput.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\PlayerInput.cs",
@@ -1434,7 +1462,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 81,
+              "DocumentIndex": 83,
               "Title": "SceneLoader.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Core\\SceneLoader.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\SceneLoader.cs",
@@ -1446,7 +1474,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 87,
+              "DocumentIndex": 89,
               "Title": "Crafting.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Crafting\\Crafting.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Crafting\\Crafting.cs",
@@ -1458,7 +1486,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 86,
+              "DocumentIndex": 88,
               "Title": "UILookCamera.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\AllMovingObjects\\Player\\UILookCamera.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AllMovingObjects\\Player\\UILookCamera.cs",
@@ -1470,7 +1498,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 84,
+              "DocumentIndex": 86,
               "Title": "OxygenRecoverTrigger.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Planet\\OxygenRecoverTrigger.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Planet\\OxygenRecoverTrigger.cs",
@@ -1482,7 +1510,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 88,
+              "DocumentIndex": 90,
               "Title": "NetManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\Server\\NetManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Server\\NetManager.cs",
@@ -1494,7 +1522,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 85,
+              "DocumentIndex": 87,
               "Title": "HUDManager.cs",
               "DocumentMoniker": "C:\\Users\\owner\\Desktop\\Files\\TeamProject\\Client\\Assets\\Scripts\\HUD\\HUDManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HUD\\HUDManager.cs",

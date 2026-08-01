@@ -203,6 +203,7 @@ public class MonsterManager : MonoBehaviour
         else Destroy(spawned);
     }
 
+    // 애니메이션 수신부, 새 몬스터 추가 시 이곳에 확장할 것.
     public void UpdateAnimStateFromNetwork(int id, int stateInt)
     {
         if (!monsterDic.TryGetValue(id, out GameObject spawned) || spawned == null)
@@ -220,6 +221,14 @@ public class MonsterManager : MonoBehaviour
                 tint?.PlayHitFlash(1);
             }
 
+            return;
+        }
+
+        KingSlimeAnimator slimeAnimator = spawned.GetComponent<KingSlimeAnimator>();
+        if (slimeAnimator != null)
+        {
+            var state = (KingSlimeAnimState)stateInt;
+            slimeAnimator.SetState(state);
             return;
         }
     }
@@ -247,5 +256,24 @@ public class MonsterManager : MonoBehaviour
 
         DesertWorm worm = spawned.GetComponent<DesertWorm>();
         if (worm != null) { worm.monsterId = id; return; }
+    }
+
+    public void ApplyDamageFromNetwork(int id, int damage)
+    {
+        if (!monsterDic.TryGetValue(id, out GameObject spawned) || spawned == null)
+            return;
+        
+        Monster monsterComp = spawned.GetComponent<Monster>();
+        if (monsterComp != null) monsterComp.ApplyDamage(damage);
+    }
+
+    public void SpawnMeteorFromNetwork(int monsterId, Vector3 position)
+    {
+        if (!monsterDic.TryGetValue(monsterId, out GameObject spawned) || spawned == null)
+            return;
+
+        KingSlime kingSlime = spawned.GetComponent<KingSlime>();
+        if (kingSlime != null)
+            kingSlime.SpawnMeteorFromNetwork(position);
     }
 }

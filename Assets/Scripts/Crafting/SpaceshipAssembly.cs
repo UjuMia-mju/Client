@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Protocol;
 
 [System.Serializable]
 public class SpaceshipMission
@@ -67,7 +66,6 @@ public class SpaceshipAssembly : MonoBehaviour
         return true;
     }
 
-    // TODO : 우주선 완성 시의 연출이나 다음 단계로 넘어가는 로직을 추가할 수 있습니다. UI 담당과의 협업이 필요합니다.
     public void CompleteAssembly()
     {
         Debug.Log("우주선 조립이 완료되었습니다!");

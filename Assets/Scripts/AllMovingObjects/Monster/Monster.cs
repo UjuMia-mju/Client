@@ -66,4 +66,9 @@ public class Monster : MovingObject
         if (this != null && gameObject != null)
             Destroy(gameObject);
     }
+
+    public void ApplyDamage(int damage)
+    {
+        hp -= damage;
+    }
 }

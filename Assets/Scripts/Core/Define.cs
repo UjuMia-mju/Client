@@ -19,7 +19,7 @@ public static class Define
         public const string GAME_1_2   = "Stage01Level02";
         public const string GAME_1_3   = "Stage01Level03";
         public const string GAME_1_4   = "Stage01Level04";
-        // Stage01Level05 — 사용 중단(테스트 씬). 빌드에는 남을 수 있으나 스테이지 선택에서 로드하지 않음.
+        public const string GAME_1_5   = "Stage01Level05";
 
         /// <summary>
         /// DB/서버 스테이지 식별자(map, chapter, stage)에 대응하는 인게임 씬 이름.
@@ -46,6 +46,9 @@ public static class Define
                     case 4:
                         sceneName = GAME_1_4;
                         return true;
+                    case 5:
+                        sceneName = GAME_1_5;
+                        return true;
                 }
             }
 
@@ -64,6 +67,7 @@ public static class Define
             if (sceneName == GAME_1_2) { chapter = 1; stage = 2; return true; }
             if (sceneName == GAME_1_3) { chapter = 1; stage = 3; return true; }
             if (sceneName == GAME_1_4) { chapter = 1; stage = 4; return true; }
+            if (sceneName == GAME_1_5) { chapter = 1; stage = 5; return true; }
 
             return false;
         }

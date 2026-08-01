@@ -871,12 +871,15 @@ public class Player : MovingObject
         if (nearestObject != null && nearestObject.CompareTag(Define.Tag.CRAFT_TABLE))
             return;
 
+
+
         isPlayerGetSomething = false;
         SendItemDetatchedToServer(playerItemSystem.GetCurrentEquipItemClass(), true);
         playerItemSystem.ThrowChargedAim(GetMovingAmount(), GetThrowAimDirection());
         if (trajectoryPreview != null)
             trajectoryPreview.Hide();
         StartCoroutine(IgnoreItemCollisionAfterThrow(playerItemSystem.GetLastThrownItem()));
+
     }
 
 
@@ -969,4 +972,40 @@ public class Player : MovingObject
             PeerStatManager.Instance.RegisterPlayer((ulong)NetManager.Instance._playerId, playerStat);
     }
 
+    public void FindThrowingWeaponAndTriggerIt()
+    {
+        Transform[] children = GetComponentsInChildren<Transform>(true);
+        Transform socketTransform = null;
+        foreach (Transform child in children)
+        {
+            if (child.name == "SOCKET" || child.name == "Socket")
+            {
+                socketTransform = child;
+                break;
+            }
+        }
+
+        if (socketTransform == null) return;
+
+        foreach (Transform child in socketTransform)
+        {
+            if (!child.name.StartsWith("Aqua"))
+            {
+                continue;
+            }
+
+            // Aqua의 바로 아래 자식 중에서 BossDamageTrigger를 찾음
+            Transform boxTransform = child.Find("BossDamageTrigger");
+            if (boxTransform == null)
+            {
+                continue;
+            }
+
+            Aquamarine aquamarine = boxTransform.GetComponent<Aquamarine>();
+            if (aquamarine != null)
+            {
+                aquamarine.SetActiveAquaTrigger();
+            }
+        }
+    }
 }
